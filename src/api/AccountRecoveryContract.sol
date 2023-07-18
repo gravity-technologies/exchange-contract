@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {Account, State, AccountRecoveryType, Signature} from '../DataStructure.sol';
-import {addressExists, removeAddress} from '../util/Address.sol';
-import {checkAndUpdateTimestampAndTxID, getAccountByID} from '../util/Util.sol';
+import {Account, State, AccountRecoveryType, Signature} from "../DataStructure.sol";
+import {addressExists, removeAddress} from "../util/Address.sol";
+import {checkAndUpdateTimestampAndTxID, getAccountByID} from "../util/Util.sol";
 
 abstract contract AccountRecoveryContract {
   function _getState() internal virtual returns (State storage);

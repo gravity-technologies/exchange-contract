@@ -77,17 +77,8 @@ export interface TypedMessage<T extends MessageTypes> {
 }
 
 const generateFile = (primaryType: string, types, methods) => `
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.19;
-
-import {Signature} from '../../DataStructure.sol';
-import {EIP712Domain, eip712domainTypehash, domainHash, recover} from './Common.sol';
-import 'openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol';
-
-// library ${primaryType}Sig {
 ${types}
 ${methods}
-// }
 `
 
 let LOGGING_ENABLED = false
@@ -190,15 +181,15 @@ function ${funcName} (${typeName} memory _input) pure returns (bytes32) {
 function getEncodedValueFor(field: { name: string; type: string }) {
   const hashedTypes = ['bytes', 'string']
   if (basicEncodableTypes.includes(field.type)) {
-    return `_input.${field.name}`
+    return `${field.name}`
   }
 
   if (hashedTypes.includes(field.type)) {
     if (field.type === 'bytes') {
-      return `keccak256(_input.${field.name})`
+      return `keccak256(${field.name})`
     }
     if (field.type === 'string') {
-      return `keccak256(bytes(_input.${field.name}))`
+      return `keccak256(bytes(${field.name}))`
     }
   }
 

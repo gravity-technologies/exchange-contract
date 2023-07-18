@@ -60,7 +60,7 @@ var basicEncodableTypes = [
     'bytes2',
     'bytes1',
 ];
-var generateFile = function (primaryType, types, methods) { return "\n// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.19;\n\nimport {Signature} from '../../DataStructure.sol';\nimport {EIP712Domain, eip712domainTypehash, domainHash, recover} from './Common.sol';\nimport 'openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol';\n\n// library ".concat(primaryType, "Sig {\n").concat(types, "\n").concat(methods, "\n// }\n"); };
+var generateFile = function (primaryType, types, methods) { return "\n".concat(types, "\n").concat(methods, "\n"); };
 var LOGGING_ENABLED = false;
 function generateCodeFrom(types, entryTypes) {
     var results = [];
@@ -119,14 +119,14 @@ function generatePacketHashGetters(types, typeName, fields, packetHashGetters) {
 function getEncodedValueFor(field) {
     var hashedTypes = ['bytes', 'string'];
     if (basicEncodableTypes.includes(field.type)) {
-        return "_input.".concat(field.name);
+        return "".concat(field.name);
     }
     if (hashedTypes.includes(field.type)) {
         if (field.type === 'bytes') {
-            return "keccak256(_input.".concat(field.name, ")");
+            return "keccak256(".concat(field.name, ")");
         }
         if (field.type === 'string') {
-            return "keccak256(bytes(_input.".concat(field.name, "))");
+            return "keccak256(bytes(".concat(field.name, "))");
         }
     }
     return "".concat(packetHashGetterName(field.type), "(_input.").concat(field.name, ")");

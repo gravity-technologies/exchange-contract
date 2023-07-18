@@ -734,4 +734,52 @@ describe('API - Account', function () {
       )
     })
   })
+
+  describe('Security - Prevent Replay Attack', function () {
+    it('Should not allow updating replaying update multisig threshold', async function () {
+      const w1 = wallet()
+      const w2 = wallet()
+
+      const accID = 1
+      const salt = nonce()
+      await contract.createSubAccount(
+        1, // timestamp
+        1, // txID
+        accID, // accountID
+        w1.address, // subAccountID
+        2, // quoteCurrency: USDC
+        3, // marginType: PORTFOLIO_CROSS_MARGIN
+        salt,
+        [genCreateSubAccountSig(w1, accID, w1.address, 2, 3, salt)] // signature
+      )
+
+      await contract.addAccountAdmin(
+        2, // timestamp
+        2, // txID
+        accID, // accountID
+        w2.address, // signer
+        salt,
+        [genAddAccountAdminSig(w1, accID, w2.address, salt)] // signature
+      )
+
+      await contract.setAccountMultiSigThreshold(
+        3, // timestamp
+        3, // txID
+        accID, // accountID
+        2, // multiSigThreshold
+        salt,
+        [genSetAccountMultiSigThresholdSig(w1, accID, 2, salt)] // signature
+      )
+      expectToThrowAsync(
+        contract.setAccountMultiSigThreshold(
+          3, // timestamp
+          3, // txID
+          accID, // accountID
+          2, // multiSigThreshold
+          salt,
+          [genSetAccountMultiSigThresholdSig(w1, accID, 2, salt)] // signature
+        )
+      )
+    })
+  })
 })

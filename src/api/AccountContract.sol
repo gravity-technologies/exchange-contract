@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {getAddAccountAdminPayloadPacketHash, getAddTransferSubAccountPayloadPacketHash, getAddWithdrawalAddressPayloadPacketHash, getCreateSubAccountPayloadPacketHash, getRemoveAccountAdminPayloadPacketHash, getRemoveTransferSubAccountPayloadPacketHash, getRemoveWithdrawalAddressPayloadPacketHash, getSetAccountMultiSigThresholdPayloadPacketHash} from './signature/generated/AccountSig.sol';
-import {Signer, SubAccount, SignatureState, Account, State, Account, Signature, State, SubAccount, Currency, MarginType} from '../DataStructure.sol';
-import {verify} from './signature/Common.sol';
-import {addAddress, addressExists, removeAddress} from '../util/Address.sol';
-import {checkAndUpdateTimestampAndTxID, getAccountAndSubAccountByID, getAccountByID} from '../util/Util.sol';
-import 'openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol';
+import {getAddAccountAdminPayloadPacketHash, getAddTransferSubAccountPayloadPacketHash, getAddWithdrawalAddressPayloadPacketHash, getCreateSubAccountPayloadPacketHash, getRemoveAccountAdminPayloadPacketHash, getRemoveTransferSubAccountPayloadPacketHash, getRemoveWithdrawalAddressPayloadPacketHash, getSetAccountMultiSigThresholdPayloadPacketHash} from "./signature/generated/AccountSig.sol";
+import {verify} from "./signature/Common.sol";
+import {SubAccount, Account, State, Account, Signature, SubAccount, Currency, MarginType} from "../DataStructure.sol";
+import {addAddress, addressExists, removeAddress} from "../util/Address.sol";
+import {checkAndUpdateTimestampAndTxID, getAccountAndSubAccountByID, getAccountByID} from "../util/Util.sol";
+import {ECDSA} from "openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 abstract contract AccountContract {
   function _getState() internal virtual returns (State storage);
@@ -24,7 +24,7 @@ abstract contract AccountContract {
     State storage state = _getState();
     checkAndUpdateTimestampAndTxID(state, timestamp, txID);
     (Account storage acc, SubAccount storage sub) = getAccountAndSubAccountByID(state, accountID, subAccountID);
-    require(sub.accountID == 0, 'subaccount already exists');
+    require(sub.accountID == 0, "subaccount already exists");
 
     // ---------- Signature Verification -----------
     _requireQuorum(acc.multiSigThreshold, signatures.length);
@@ -68,7 +68,7 @@ abstract contract AccountContract {
     State storage state = _getState();
     checkAndUpdateTimestampAndTxID(state, timestamp, txID);
     Account storage acc = getAccountByID(state, accountID);
-    require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, 'multiSigThreshold is invalid');
+    require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "multiSigThreshold is invalid");
 
     // ---------- Signature Verification -----------
     _requireQuorum(acc.multiSigThreshold, signatures.length);
@@ -208,7 +208,7 @@ abstract contract AccountContract {
 
 function _requireQuorum(uint256 quorum, uint256 numSignatures) pure {
   // If the account is new, the threshold is 0, but we still need at least 1 signature.
-  require(numSignatures >= _max(quorum, 1), 'insufficient signatures');
+  require(numSignatures >= _max(quorum, 1), "insufficient signatures");
 }
 
 function _max(uint a, uint b) pure returns (uint) {
@@ -224,7 +224,7 @@ function _requiresAllAdminSignatures(
 ) {
   for (uint i = 0; i < signatures.length; i++) {
     Signature calldata sig = signatures[i];
-    require(addressExists(admins, sig.signer), 'signer not an admin');
+    require(addressExists(admins, sig.signer), "invalid signature");
     verify(isExecuted, timestamp, hash, sig);
   }
 }

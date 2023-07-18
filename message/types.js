@@ -17,10 +17,15 @@ const Primary = KeyMirror({
   RemoveAccountGuardianPayload: 0,
 
   // SubAccount
+  AddSubAccountSignerPayload: 0,
+  RemoveSubAccountSignerPayload: 0,
+  SetSubAccountMarginTypePayload: 0,
+  SetSubAccountSignerPermissionsPayload: 0,
 
   // Trade
 })
 
+// -------------- Account --------------
 const CreateSubAccountPayload = {
   primaryType: Primary.CreateSubAccountPayload,
   domain,
@@ -153,6 +158,60 @@ const RemoveAccountGuardianPayload = {
   },
 }
 
+// -------------- SubAccount --------------
+const SetSubAccountMarginTypePayload = {
+  primaryType: Primary.SetSubAccountMarginTypePayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.SetSubAccountMarginTypePayload]: [
+      { name: 'subAccountID', type: 'address' },
+      { name: 'marginType', type: 'uint8' },
+      { name: 'nonce', type: 'uint32' },
+    ],
+  },
+}
+
+const AddSubAccountSignerPayload = {
+  primaryType: Primary.AddSubAccountSignerPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.AddSubAccountSignerPayload]: [
+      { name: 'subAccountID', type: 'address' },
+      { name: 'signer', type: 'address' },
+      { name: 'permissions', type: 'uint16' },
+      { name: 'nonce', type: 'uint32' },
+    ],
+  },
+}
+const SetSubAccountSignerPermissionsPayload = {
+  primaryType: Primary.SetSubAccountSignerPermissionsPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.SetSubAccountSignerPermissionsPayload]: [
+      { name: 'subAccountID', type: 'address' },
+      { name: 'signer', type: 'address' },
+      { name: 'permissions', type: 'uint64' },
+      { name: 'nonce', type: 'uint32' },
+    ],
+  },
+}
+
+const RemoveSubAccountSignerPayload = {
+  primaryType: Primary.RemoveSubAccountSignerPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.RemoveSubAccountSignerPayload]: [
+      { name: 'subAccountID', type: 'address' },
+      { name: 'signer', type: 'address' },
+      { name: 'nonce', type: 'uint32' },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -168,4 +227,10 @@ module.exports = {
   // Account Recovery
   AddAccountGuardianPayload,
   RemoveAccountGuardianPayload,
+
+  // SubAccount
+  AddSubAccountSignerPayload,
+  RemoveSubAccountSignerPayload,
+  SetSubAccountMarginTypePayload,
+  SetSubAccountSignerPermissionsPayload,
 }
