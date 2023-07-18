@@ -8,12 +8,12 @@ function checkAndUpdateTimestampAndTxID(
   uint64 newTimestamp,
   uint64 newTxID
 ) {
-  require(newTimestamp > state.lastTxTime, 'timestamp must be increasing');
+  require(newTimestamp > state.timestamp, 'timestamp must be increasing');
   require(
     newTxID == state.lastTxID + 1,
     'transactionID must be increasing by 1'
   );
-  state.lastTxTime = newTimestamp;
+  state.timestamp = newTimestamp;
   state.lastTxID = newTxID;
 }
 
@@ -33,3 +33,8 @@ function getAccountAndSubAccountByID(
 ) view returns (Account storage, SubAccount storage) {
   return (state.accounts[accountID], state.subAccounts[subAccountID]);
 }
+
+// function preventReplay(State storage state, bytes32 hash) {
+//   require(!state.signatureExecuted[hash], 'operation was replayed');
+//   state.signatureExecuted[hash] = true;
+// }

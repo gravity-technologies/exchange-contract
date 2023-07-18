@@ -46,11 +46,11 @@ uint64 constant SubAccountPermChangeMarginType = 1 << 7;
 struct Signature {
   // The address of the signer
   address signer;
+  bytes32 r;
+  bytes32 s;
+  uint8 v;
   // Timestamp after which this signature expires. Use 0 for no expiration.
   uint64 expiration;
-  uint256 R;
-  uint256 S;
-  uint8 V;
 }
 
 struct State {
@@ -58,6 +58,8 @@ struct State {
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
   mapping(address => SessionKey) sessionKeys;
+  // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
+  mapping(bytes32 => bool) signatureExecuted;
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
   OrderState orders;
@@ -68,7 +70,7 @@ struct State {
   // A Safety Module is created per quote + underlying currency pair
   mapping(Currency => mapping(Currency => SafetyModulePool)) safetyModule;
   // Latest Transaction time
-  uint64 lastTxTime;
+  uint64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
 }
@@ -190,7 +192,7 @@ struct ConfigState {
 // TODO: align on the set of configs
 struct RiskConfig {
   // fxp 3.2
-  uint32[] SpotMoves;
+  uint32[] spotMoves;
   // fxp 3.2
   uint32[] volMoves;
   // discount

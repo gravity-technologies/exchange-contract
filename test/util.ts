@@ -19,3 +19,12 @@ export async function expectNotToThrowAsync(promise: Promise<any>) {
   }
   expect(error).to.be.null
 }
+
+export function buf(s: string): Buffer {
+  return Buffer.from(s.substring(2), 'hex')
+}
+
+export function getTimestamp(addDays: number = 10): number {
+  const deltaInMs = addDays * 24 * 60 * 60 * 1000
+  return Math.floor((Date.now() + deltaInMs) * 1000)
+}
