@@ -6,13 +6,15 @@
 
 ### Getting Started
 
- * Use Foundry: 
+- Use Foundry:
+
 ```bash
 forge install
 forge test
 ```
 
- * Use Hardhat:
+- Use Hardhat:
+
 ```bash
 npm install
 npx hardhat test
@@ -20,19 +22,22 @@ npx hardhat test
 
 ### Features
 
- * Write / run tests with either Hardhat or Foundry:
+- Write / run tests with either Hardhat or Foundry:
+
 ```bash
 forge test
 # or
 npx hardhat test
 ```
 
- * Use Hardhat's task framework
+- Use Hardhat's task framework
+
 ```bash
 npx hardhat example
 ```
 
- * Install libraries with Foundry which work with Hardhat.
+- Install libraries with Foundry which work with Hardhat.
+
 ```bash
 forge install rari-capital/solmate # Already in this repo, just an example
 ```

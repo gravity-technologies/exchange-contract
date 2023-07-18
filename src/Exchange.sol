@@ -9,4 +9,8 @@ contract GRVTExchange {
     struct SubAccount {
         uint id;
     }
+
+    function hello() public pure returns (string memory) {
+        return "hi";
+    }
 }
