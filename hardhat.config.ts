@@ -4,6 +4,7 @@ import fs from 'fs'
 import 'hardhat-gas-reporter'
 import 'hardhat-preprocessor'
 import { HardhatUserConfig, task } from 'hardhat/config'
+import 'hardhat-contract-sizer'
 
 import example from './tasks/example'
 

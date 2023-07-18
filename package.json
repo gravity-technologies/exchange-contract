@@ -12,7 +12,8 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "forge": "forge test",
-    "prettier": "prettier --write ./**/*.ts"
+    "prettier": "prettier --write ./**/*.ts",
+    "sizer": "forge build --sizes"
   },
   "author": "GRVT <engineers@gravitygroup.io>",
   "license": "UNLICENSED",
