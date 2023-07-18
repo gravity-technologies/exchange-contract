@@ -1,12 +1,9 @@
-import { expect } from "chai";
-import { ethers } from "hardhat";
+import { expect } from 'chai'
+import { ethers } from 'hardhat'
 
-describe("Token", function () {
-  it("Should return name Token", async function () {
-    const Token = await ethers.getContractFactory("Token");
-    const token = await Token.deploy();
-    await token.deployed();
-
-    expect(await token.name()).to.equal("Token");
-  });
-});
+describe('Exchange', function () {
+    it('Should return hi', async function () {
+        const contract = await ethers.deployContract('GRVTExchange')
+        expect(await contract.hello()).to.equal('hi')
+    })
+})
