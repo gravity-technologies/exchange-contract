@@ -1,6 +1,7 @@
-import fs from 'fs'
 import '@nomiclabs/hardhat-waffle'
 import '@typechain/hardhat'
+import fs from 'fs'
+import 'hardhat-gas-reporter'
 import 'hardhat-preprocessor'
 import { HardhatUserConfig, task } from 'hardhat/config'
 
