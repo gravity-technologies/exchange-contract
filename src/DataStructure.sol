@@ -1,48 +1,63 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+enum MarginType {
+  UNSPECIFIED,
+  ISOLATED,
+  SIMPLE_CROSS_MARGIN,
+  PORTFOLIO_CROSS_MARGIN
+}
+
 enum Currency {
+  UNSPECIFIED,
   USDC,
-  BTC,
-  ETH
+  USDT,
+  ETH,
+  BTC
 }
 
 enum Instrument {
-  FUTURES,
+  UNSPECIFIED,
   PERPS,
+  FUTURES,
   CALL,
   PUT
 }
 
-// Permissions
-uint64 constant PermDeposit = 1;
-uint64 constant PermWithdrawal = 1 << 1;
-uint64 constant PermTransfer = 1 << 2;
-uint64 constant PermTrade = 1 << 3;
-uint64 constant PermAddSigner = 1 << 4;
-uint64 constant PermRemoveSigner = 1 << 5;
-uint64 constant PermChangeMarginType = 1 << 6;
+enum AccountRecoveryType {
+  UNSPECIFIED,
+  GUARDIAN,
+  SUB_ACCOUNT_SIGNERS
+}
 
-uint64 constant AdminPermissions = PermDeposit |
-  PermWithdrawal |
-  PermTransfer |
-  PermTrade |
-  PermAddSigner |
-  PermRemoveSigner |
-  PermChangeMarginType;
+// SubAccountPermissions:
+// Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
+// To check if user has a certain permission, just do a bitwise AND
+// ie: permission & mask > 0
+uint64 constant SubAccountPermAdmin = 1;
+uint64 constant SubAccountPermDeposit = 1 << 1;
+uint64 constant SubAccountPermWithdrawal = 1 << 2;
+uint64 constant SubAccountPermTransfer = 1 << 3;
+uint64 constant SubAccountPermTrade = 1 << 4;
+uint64 constant SubAccountPermAddSigner = 1 << 5;
+uint64 constant SubAccountPermRemoveSigner = 1 << 6;
+uint64 constant SubAccountPermChangeMarginType = 1 << 7;
 
 struct Signature {
+  // The address of the signer
   address signer;
+  // Timestamp after which this signature expires. Use 0 for no expiration.
   uint64 expiration;
   uint256 R;
   uint256 S;
+  uint8 V;
 }
 
 struct State {
   // Accounts and Sessions
   mapping(uint32 => Account) accounts;
-  mapping(uint32 => SubAccount) subAccounts;
-  mapping(address => uint128) sessionKeys;
+  mapping(address => SubAccount) subAccounts;
+  mapping(address => SessionKey) sessionKeys;
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
   OrderState orders;
@@ -51,9 +66,10 @@ struct State {
   // Configuration
   ConfigState config;
   // A Safety Module is created per quote + underlying currency pair
-  mapping(uint8 => mapping(uint8 => SafetyModulePool)) safetyModule;
-  // Transaction ID and time
-  uint64 lastTransactionTime;
+  mapping(Currency => mapping(Currency => SafetyModulePool)) safetyModule;
+  // Latest Transaction time
+  uint64 lastTxTime;
+  // Latest Transaction ID
   uint64 lastTxID;
 }
 
@@ -61,34 +77,37 @@ struct Account {
   uint32 id;
   // Number of account admin signers required to make any privileged changes on the account level. Defaults to 1
   // This affects the multi-sigs required to onboard new account admins, guardians, withdrawal, and transfer addresses
-  uint8 multiSigThreshold;
-  // All users who have Account Admin privileges. They automatically inherit all permissions on subaccount level
+  // uint256 instead of uint8 to reduce gas cost
+  // See :
+  //   - https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html#layout-of-state-variables-in-storage
+  //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
+  uint multiSigThreshold;
+  // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   address[] admins;
   // Guardians who are authorized to participate in key recovery quorum
   // Both retail and institutional accounts can rely on guardians for key recovery
   // Institutions have an additional option to rely on their sub account signers
   address[] guardians;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
-  address[] onboardedWithdrawlAddresses;
+  address[] onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Sub Accounts
-  address[] onboardedTranferSubAccount;
+  address[] onboardedTransferSubAccounts;
   // A record of all SubAccounts owned by the account
   // Helps in sub account signer quorum computation during key recovery
-  uint32[] subAccounts;
+  address[] subAccounts;
 }
 
 struct SubAccount {
+  // The wallet address of this subaccount, which also acts as the subaccount ID
+  address id;
   // The Account that this Sub Account belongs to
   uint32 accountID;
-  // SIMPLE / PORTFOLIO / OPTIMAL
-  uint8 marginType;
+  MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
   // The total amount of base currency that the sub account possesses
   // Expressed in base currency decimal units
-  // TODO: Defined as int65 IExchange
   int64 balance;
-  // SMO: CONSIDER NOT REFLECTING THIS IN LIQUIDATIONS, EXCHANGES TYPICALLY WAIT FOR SETTLEMENT TOO
   // The total amount of base currency that the sub account has deposited, but not yet confirmed by L1 finality
   // Take this into account when liquidating a sub account
   // But do not take this into account when calculating the sub account's balance
@@ -100,15 +119,12 @@ struct SubAccount {
   Signer[] authorizedSigners;
   // The timestamp that the sub account was last funded at
   uint64 lastAppliedFundingTimestamp;
-  // Whether the sub account is being liquidated
-  bool isUnderLiquidation;
 }
 
 struct Derivative {
   Instrument instrument;
   Currency underlying;
   Currency quote;
-  uint8 decimals;
   uint32 expiration;
   uint64 strikePrice;
 }
@@ -117,7 +133,6 @@ struct DerivativePosition {
   // The derivative contract held in this position
   Derivative derivative;
   // Number of contracts held in this position
-  // TODO: Defined as int65 IExchange
   int64 contractBalance;
   // The average entry price of the contracts held in this position
   // Used for computing unrealized P&L
@@ -132,8 +147,8 @@ struct DerivativePosition {
 struct Signer {
   // The public key of the signer
   address signingKey;
-  // Bitmask of permissions (Deposit, Withdraw, Transfer, Trade, Add Signer, Remove Signer, Change Margin Type)
-  uint64 Permission;
+  // Bitmask of SubAccountPermissions (Deposit, Withdraw, Transfer, Trade, Add Signer, Remove Signer, Change Margin Type)
+  uint64 permission;
 }
 
 struct OrderState {
@@ -163,6 +178,7 @@ struct SettledInstrument {
   uint32 expiration;
 }
 
+// TODO: align on the set of configs
 struct ConfigState {
   // eg. 5% = 500bps = 50000 CentiBeeps
   uint64 safetyModuleTargetInsuranceToDailyVolumeRatio;
@@ -171,6 +187,7 @@ struct ConfigState {
   address gravityAdminRecoveryWallet;
 }
 
+// TODO: align on the set of configs
 struct RiskConfig {
   // fxp 3.2
   uint32[] SpotMoves;
@@ -182,7 +199,7 @@ struct RiskConfig {
 
 struct SessionKey {
   // If this is a session key, this is the main signing key that owns the session key
-  // The smart contract will validate that the session key only has a subset of the main signing key's permissions
+  // The smart contract will validate that the session key only has a subset of the main signing key's SubAccountPermissions
   // MainSigningKey ContractAddress
 
   // The session key that is tagged to the main signing key
@@ -198,7 +215,7 @@ struct SessionKey {
 // Use a sigmoid curve like https://en.wikipedia.org/wiki/Generalised_logistic_function
 struct SafetyModulePool {
   // Maps SubAccounts to their LP Tokens
-  mapping(uint32 => uint64) lpTokens;
+  mapping(address => uint64) lpTokens;
   // Depositors receive LP Tokens equivalent to (DepositSize * TotalLpTokens / TotalBalance)
   // Withdrawers receive Quote Currency equivalent to (LpTokensReturned * TotalBalance / TotalLpTokens)
   uint64 totalLpTokens;
