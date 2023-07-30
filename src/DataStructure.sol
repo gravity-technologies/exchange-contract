@@ -58,11 +58,9 @@ struct State {
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
   mapping(address => SessionKey) sessionKeys;
-  // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
-  mapping(bytes32 => bool) signatureExecuted;
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
-  OrderState orders;
+  SignatureState signatures;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
   // Configuration
@@ -153,9 +151,11 @@ struct Signer {
   uint64 permission;
 }
 
-struct OrderState {
-  mapping(uint128 => bool) fullDerivativeOrderMatched;
-  mapping(uint128 => uint64[]) partialDerivativeOrderMatched;
+struct SignatureState {
+  mapping(bytes32 => bool) fullDerivativeOrderMatched;
+  mapping(bytes32 => uint64[]) partialDerivativeOrderMatched;
+  // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
+  mapping(bytes32 => bool) isExecuted;
 }
 
 struct PriceState {
@@ -207,7 +207,7 @@ struct SessionKey {
   // The session key that is tagged to the main signing key
   address sessionKey;
   // The last timestamp that the signer can sign at
-  // We can apply a max one day expiry on session keys
+  // We can apply a _max one day expiry on session keys
   uint64 authorizationExpiry;
 }
 

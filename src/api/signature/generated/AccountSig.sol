@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
+// Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {Currency, MarginType, Signature} from '../../DataStructure.sol';
-import {verify} from './Common.sol';
+import {Currency, MarginType, Signature} from '../../../DataStructure.sol';
+import {verify} from '../Common.sol';
 import 'openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol';
 
 bytes32 constant _CREATE_SUBACCOUNT_PAYLOAD_TYPEHASH = keccak256(
@@ -33,17 +34,8 @@ bytes32 constant _ADD_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH = keccak256(
   'AddAccountAdminPayload(uint32 accountID,address signer,uint32 nonce)'
 );
 
-function getAddAccountAdminPayloadPacketHash(
-  uint32 accountID,
-  address signer,
-  uint32 nonce
-) pure returns (bytes32) {
-  bytes memory encoded = abi.encode(
-    _ADD_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH,
-    accountID,
-    signer,
-    nonce
-  );
+function getAddAccountAdminPayloadPacketHash(uint32 accountID, address signer, uint32 nonce) pure returns (bytes32) {
+  bytes memory encoded = abi.encode(_ADD_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH, accountID, signer, nonce);
   return keccak256(encoded);
 }
 
@@ -51,17 +43,8 @@ bytes32 constant _REMOVE_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH = keccak256(
   'RemoveAccountAdminPayload(uint32 accountID,address signer,uint32 nonce)'
 );
 
-function getRemoveAccountAdminPayloadPacketHash(
-  uint32 accountID,
-  address signer,
-  uint32 nonce
-) pure returns (bytes32) {
-  bytes memory encoded = abi.encode(
-    _REMOVE_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH,
-    accountID,
-    signer,
-    nonce
-  );
+function getRemoveAccountAdminPayloadPacketHash(uint32 accountID, address signer, uint32 nonce) pure returns (bytes32) {
+  bytes memory encoded = abi.encode(_REMOVE_ACCOUNT_ADMIN_PAYLOAD_TYPE_HASH, accountID, signer, nonce);
   return keccak256(encoded);
 }
 
@@ -92,12 +75,7 @@ function getAddWithdrawalAddressPayloadPacketHash(
   address withdrawalAddress,
   uint32 nonce
 ) pure returns (bytes32) {
-  bytes memory encoded = abi.encode(
-    _ADD_WITHDRAWAL_ADDRESS_PAYLOAD_TYPE_HASH,
-    accountID,
-    withdrawalAddress,
-    nonce
-  );
+  bytes memory encoded = abi.encode(_ADD_WITHDRAWAL_ADDRESS_PAYLOAD_TYPE_HASH, accountID, withdrawalAddress, nonce);
   return keccak256(encoded);
 }
 
@@ -110,12 +88,7 @@ function getRemoveWithdrawalAddressPayloadPacketHash(
   address withdrawalAddress,
   uint32 nonce
 ) pure returns (bytes32) {
-  bytes memory encoded = abi.encode(
-    _REMOVE_WITHDRAWAL_ADDRESS_PAYLOAD_TYPE_HASH,
-    accountID,
-    withdrawalAddress,
-    nonce
-  );
+  bytes memory encoded = abi.encode(_REMOVE_WITHDRAWAL_ADDRESS_PAYLOAD_TYPE_HASH, accountID, withdrawalAddress, nonce);
   return keccak256(encoded);
 }
 
@@ -128,12 +101,7 @@ function getAddTransferSubAccountPayloadPacketHash(
   address transferSubAccount,
   uint32 nonce
 ) pure returns (bytes32) {
-  bytes memory encoded = abi.encode(
-    _ADD_TRANSFER_SUB_ACCOUNT_PAYLOAD_TYPE_HASH,
-    accountID,
-    transferSubAccount,
-    nonce
-  );
+  bytes memory encoded = abi.encode(_ADD_TRANSFER_SUB_ACCOUNT_PAYLOAD_TYPE_HASH, accountID, transferSubAccount, nonce);
   return keccak256(encoded);
 }
 

@@ -5,14 +5,14 @@ import {Account, State, AccountRecoveryType, Signature} from '../DataStructure.s
 import {addressExists, removeAddress} from '../util/Address.sol';
 import {checkAndUpdateTimestampAndTxID, getAccountByID} from '../util/Util.sol';
 
-abstract contract AccountRecoveryAPI {
+abstract contract AccountRecoveryContract {
   function _getState() internal virtual returns (State storage);
 
-  function AddAccountGuardian(
+  function addAccountGuardian(
     uint64 timestamp,
     uint64 txID,
     uint32 accountID,
-    address signer // Signature[] memory signatures
+    address signer // Signature[] calldata signatures
   ) public {
     State storage state = _getState();
     checkAndUpdateTimestampAndTxID(state, timestamp, txID);
@@ -26,11 +26,11 @@ abstract contract AccountRecoveryAPI {
     account.guardians.push(signer);
   }
 
-  function RemoveAccountGuardian(
+  function removeAccountGuardian(
     uint64 timestamp,
     uint64 txID,
     uint32 accountID,
-    address signer // Signature[] memory signatures
+    address signer // Signature[] calldata signatures
   ) public {
     State storage state = _getState();
     checkAndUpdateTimestampAndTxID(state, timestamp, txID);
@@ -39,7 +39,7 @@ abstract contract AccountRecoveryAPI {
     removeAddress(account.guardians, signer, false);
   }
 
-  // function RecoverAccountAdmin(
+  // function recoverAccountAdmin(
   //   State storage state,
   //   uint64 timestamp,
   //   uint64 txID,
@@ -47,7 +47,7 @@ abstract contract AccountRecoveryAPI {
   //   AccountRecoveryType recoveryType,
   //   address oldAdmin,
   //   address recoveryAdmin,
-  //   Signature[] memory signatures
+  //   Signature[] calldata signatures
   // ) {
   //   checkAndUpdateTimestampAndTxID(state, timestamp, txID);
   //   // Account storage account = getAccountByID(state, accountID);

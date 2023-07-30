@@ -128,9 +128,10 @@ export function generateCodeFrom(types, entryTypes: string[]) {
       return
     }
 
-    const typeHash = `bytes32 constant ${screamingSnakeCase(
-      typeName + 'TypeHash'
-    )} = keccak256("${encodeType(typeName, types.types)}");\n`
+    const typeHash = `bytes32 constant ${screamingSnakeCase(typeName + 'TypeHash')} = keccak256("${encodeType(
+      typeName,
+      types.types
+    )}");\n`
     const struct = `struct ${typeName} {\n${fields
       .map((field) => {
         return `  ${field.type} ${field.name};\n`
@@ -144,36 +145,24 @@ export function generateCodeFrom(types, entryTypes: string[]) {
   return { setup: results, packetHashGetters: [...new Set(packetHashGetters)] }
 }
 
-function generatePacketHashGetters(
-  types,
-  typeName,
-  fields,
-  packetHashGetters: Array<string> = []
-) {
+function generatePacketHashGetters(types, typeName, fields, packetHashGetters: Array<string> = []) {
   fields.forEach((field) => {
     const arrayMatch = field.type.match(/(.+)\[\]/)
     if (arrayMatch) {
       const basicType = arrayMatch[1]
       if (types.types[basicType]) {
         packetHashGetters.push(`
-function ${packetHashGetterName(field.type)} (${
-          field.type
-        } memory _input) pure returns (bytes32) {
+function ${packetHashGetterName(field.type)} (${field.type} memory _input) pure returns (bytes32) {
   bytes memory encoded;
-  // HELLO
   for (uint i = 0; i < _input.length; i++) {
-    encoded = abi.encodePacked(encoded, ${packetHashGetterName(
-      basicType
-    )}(_input[i]));
+    encoded = abi.encodePacked(encoded, ${packetHashGetterName(basicType)}(_input[i]));
   }
   return keccak256(encoded);
 }
 `)
       } else {
         packetHashGetters.push(`
-function ${packetHashGetterName(field.type)} (${
-          field.type
-        } memory _input) pure returns (bytes32) {
+function ${packetHashGetterName(field.type)} (${field.type} memory _input) pure returns (bytes32) {
   return keccak256(abi.encodePacked(_input));
 }
 `)
@@ -233,16 +222,12 @@ function packetHashGetterName(typeName) {
  */
 function generateArrayPacketHashGetter(typeName, packetHashGetters) {
   packetHashGetters.push(`
-  function ${packetHashGetterName(
-    typeName
-  )} (${typeName} memory _input) pure returns (bytes32) {
+  function ${packetHashGetterName(typeName)} (${typeName} memory _input) pure returns (bytes32) {
     bytes memory encoded;
     for (uint i = 0; i < _input.length; i++) {
       encoded = bytes.concat(
         encoded,
-        ${packetHashGetterName(
-          typeName.substr(0, typeName.length - 2)
-        )}(_input[i])
+        ${packetHashGetterName(typeName.substr(0, typeName.length - 2))}(_input[i])
       );
     }
     bytes32 hash = keccak256(encoded);
@@ -250,10 +235,7 @@ function generateArrayPacketHashGetter(typeName, packetHashGetters) {
   }`)
 }
 
-export function generateSolidity<T extends MessageTypes>(
-  typeDef: TypedMessage<T>,
-  entryTypes: string[]
-) {
+export function generateSolidity<T extends MessageTypes>(typeDef: TypedMessage<T>, entryTypes: string[]) {
   const { setup, packetHashGetters } = generateCodeFrom(typeDef, entryTypes)
 
   const types: string[] = []
@@ -269,10 +251,6 @@ export function generateSolidity<T extends MessageTypes>(
   })
 
   // Generate entrypoint methods
-  const newFileString = generateFile(
-    String(typeDef.primaryType),
-    types.join('\n'),
-    methods.join('\n')
-  )
+  const newFileString = generateFile(String(typeDef.primaryType), types.join('\n'), methods.join('\n'))
   return newFileString
 }

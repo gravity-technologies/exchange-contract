@@ -2,17 +2,17 @@
 pragma solidity ^0.8.19;
 
 import {State} from './DataStructure.sol';
-import {AccountAPI} from './api/Account.sol';
-import {AccountRecoveryAPI} from './api/AccountRecovery.sol';
+import {AccountContract} from './api/AccountContract.sol';
+import {AccountRecoveryContract} from './api/AccountRecoveryContract.sol';
 import {SubAccountAPI} from './api/SubAccount.sol';
 
-contract GRVTExchange is AccountAPI, AccountRecoveryAPI, SubAccountAPI {
+contract GRVTExchange is AccountContract, AccountRecoveryContract, SubAccountAPI {
   State state;
 
   function _getState()
     internal
     view
-    override(AccountAPI, AccountRecoveryAPI, SubAccountAPI)
+    override(AccountContract, AccountRecoveryContract, SubAccountAPI)
     returns (State storage)
   {
     return state;
