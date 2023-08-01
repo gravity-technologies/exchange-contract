@@ -18,10 +18,10 @@ function requireUniqSig(State storage state, bytes32 payloadHash, Signature call
 }
 
 // Verify that a signature is valid. Caller need to prevent replay attack
-
 function requireValidSig(uint64 timestamp, bytes32 payloadHash, Signature calldata sig) pure {
   require(sig.expiration > 0 && sig.expiration > timestamp, "expired");
   bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, payloadHash));
   (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
   require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
 }
+

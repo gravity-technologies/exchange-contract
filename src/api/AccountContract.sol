@@ -155,6 +155,7 @@ abstract contract AccountContract is HelperContract {
     _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
+    // TODO: check if we need to maintain at least 1 withdrawal address
     removeAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress, false);
   }
 

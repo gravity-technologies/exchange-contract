@@ -86,22 +86,22 @@ describe("API - SubAccount", function () {
       expectToThrowAsync(addSubSigner(contract, ts, ts, alice, subID, bob.address, Perm.None))
     })
 
-    // it("fails if the signer is already a subaccount signer", async function () {
-    //   // Setup
-    //   const admin = wallet()
-    //   const accID = 1
-    //   let ts = 1
-    //   const subID = wallet().address
-    //   await createSubAcc(contract, admin, ts, ts, accID, subID)
+    it("fails if the signer is already a subaccount signer", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = 1
+      let ts = 1
+      const subID = wallet().address
+      await createSubAcc(contract, admin, ts, ts, accID, subID)
 
-    //   // Test
-    //   const signer = wallet().address
+      // Test
+      const signer = wallet().address
 
-    //   ts++
-    //   await addSubSigner(contract, ts, ts, admin, subID, signer, 1)
-    //   ts++
-    //   expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, signer, 1))
-    // })
+      ts++
+      await addSubSigner(contract, ts, ts, admin, subID, signer, 1)
+      ts++
+      expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, signer, 1))
+    })
   })
 
   describe("setSubAccountSignerPermissions", function () {
