@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {getAddAccountAdminPayloadPacketHash, getAddTransferSubAccountPayloadPacketHash, getAddWithdrawalAddressPayloadPacketHash, getCreateSubAccountPayloadPacketHash, getRemoveAccountAdminPayloadPacketHash, getRemoveTransferSubAccountPayloadPacketHash, getRemoveWithdrawalAddressPayloadPacketHash, getSetAccountMultiSigThresholdPayloadPacketHash} from "./signature/generated/AccountSig.sol";
-import {verify} from "./signature/Common.sol";
+import {HelperContract} from "./HelperContract.sol";
+import {hashAddAccountAdmin, hashAddTransferSubAccount, hashAddWithdrawalAddress, hashCreateSubAccount, hashRemoveAccountAdmin, hashRemoveTransferSubAccount, hashRemoveWithdrawalAddress, hashSetMultiSigThreshold} from "./signature/generated/AccountSig.sol";
 import {SubAccount, Account, State, Account, Signature, SubAccount, Currency, MarginType} from "../DataStructure.sol";
 import {addAddress, addressExists, removeAddress} from "../util/Address.sol";
-import {checkAndUpdateTimestampAndTxID, getAccountAndSubAccountByID, getAccountByID} from "../util/Util.sol";
 
-abstract contract AccountContract {
+abstract contract AccountContract is HelperContract {
   function _getState() internal virtual returns (State storage);
 
   function createSubAccount(
@@ -21,19 +20,20 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    (Account storage acc, SubAccount storage sub) = getAccountAndSubAccountByID(state, accountID, subAccountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = state.accounts[accountID];
+    SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == 0, "subaccount already exists");
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getCreateSubAccountPayloadPacketHash(accountID, subAccountID, quoteCurrency, marginType, nonce);
+    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
     if (acc.id == 0) {
+      require(signatures.length > 0, "no signature");
       for (uint i = 0; i < signatures.length; i++) {
-        verify(state.signatures.isExecuted, timestamp, hash, signatures[i]);
+        _preventHashReplay(state, hash, signatures[i]);
       }
     } else {
-      _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+      _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     }
     // ------- End of Signature Verification -------
 
@@ -65,14 +65,13 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "invalid threshold");
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getSetAccountMultiSigThresholdPayloadPacketHash(accountID, multiSigThreshold, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     acc.multiSigThreshold = multiSigThreshold;
@@ -87,13 +86,12 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getAddAccountAdminPayloadPacketHash(accountID, signer, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashAddAccountAdmin(accountID, signer, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     addAddress(acc.admins, signer);
@@ -108,13 +106,12 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getRemoveAccountAdminPayloadPacketHash(accountID, signer, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashRemoveAccountAdmin(accountID, signer, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     removeAddress(acc.admins, signer, true);
@@ -129,13 +126,12 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getAddWithdrawalAddressPayloadPacketHash(accountID, withdrawalAddress, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     addAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress);
@@ -150,13 +146,12 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getRemoveWithdrawalAddressPayloadPacketHash(accountID, withdrawalAddress, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     removeAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress, false);
@@ -171,13 +166,12 @@ abstract contract AccountContract {
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accountID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getAddTransferSubAccountPayloadPacketHash(accountID, transferSubAccount, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashAddTransferSubAccount(accountID, transferSubAccount, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
     addAddress(acc.onboardedTransferSubAccounts, transferSubAccount);
@@ -186,44 +180,20 @@ abstract contract AccountContract {
   function removeTransferSubAccount(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
-    address transferSubAccount,
+    uint32 accID,
+    address subAcc,
     uint32 nonce,
     Signature[] calldata signatures
   ) external {
     State storage state = _getState();
-    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = getAccountByID(state, accountID);
+    _setTimestampAndTxID(state, timestamp, txID);
+    Account storage acc = _requireAccount(state, accID);
 
     // ---------- Signature Verification -----------
-    _requireQuorum(acc.multiSigThreshold, signatures.length);
-    bytes32 hash = getRemoveTransferSubAccountPayloadPacketHash(accountID, transferSubAccount, nonce);
-    _requiresAllAdminSignatures(state.signatures.isExecuted, timestamp, acc.admins, hash, signatures);
+    bytes32 hash = hashRemoveTransferSubAccount(accID, subAcc, nonce);
+    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
     // ------- End of Signature Verification -------
 
-    removeAddress(acc.onboardedTransferSubAccounts, transferSubAccount, false);
-  }
-}
-
-function _requireQuorum(uint256 quorum, uint256 numSignatures) pure {
-  // If the account is new, the threshold is 0, but we still need at least 1 signature.
-  require(numSignatures >= _max(quorum, 1), "insufficient signatures");
-}
-
-function _max(uint a, uint b) pure returns (uint) {
-  return a >= b ? a : b;
-}
-
-function _requiresAllAdminSignatures(
-  mapping(bytes32 => bool) storage isExecuted,
-  uint64 timestamp,
-  address[] memory admins,
-  bytes32 hash,
-  Signature[] calldata signatures
-) {
-  for (uint i = 0; i < signatures.length; i++) {
-    Signature calldata sig = signatures[i];
-    require(addressExists(admins, sig.signer), "invalid signature");
-    verify(isExecuted, timestamp, hash, sig);
+    removeAddress(acc.onboardedTransferSubAccounts, subAcc, false);
   }
 }
