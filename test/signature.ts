@@ -266,6 +266,39 @@ export function genRecoverAccountAdminPayloadSig(
   })
 }
 
+// Config
+export function genScheduleConfigSig(
+  wallet: Wallet,
+  key: number,
+  value: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.ScheduleConfigPayload,
+    message: {
+      key,
+      value,
+      nonce,
+    },
+  })
+}
+
+export function genSetConfigSig(
+  wallet: Wallet,
+  key: number,
+  value: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.SetConfigPayload,
+    message: {
+      key,
+      value,
+      nonce,
+    },
+  })
+}
+
 function sign(wallet: Wallet, msgParams: any): Signature {
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),

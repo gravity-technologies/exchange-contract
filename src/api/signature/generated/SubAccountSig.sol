@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {MarginType} from "../../../DataStructure.sol";
+import "../../../DataStructure.sol";
 
 // keccak256("SetSubAccountMarginTypePayload(address subAccountID,uint8 marginType,uint32 nonce)");
 bytes32 constant _SET_SUB_MARGIN_H = bytes32(0x178137bbe59243e5e269559ce483e30e48a0774adcfddd1c8ce0a894d1f7838a);

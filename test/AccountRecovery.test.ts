@@ -1,5 +1,5 @@
-import { Contract } from "ethers"
 import { ethers } from "hardhat"
+import { GRVTExchange } from "../typechain-types"
 import {
   addAccAdmin,
   addAccGuardian,
@@ -7,26 +7,23 @@ import {
   createSubAcc,
   recoverAccAdmin,
   removeAccGuardian,
-  removeSubSigner,
   setMultisigThreshold,
-  setSignerPermission,
-  setSubAccountMarginType,
 } from "./api"
 import {
   genAddAccountGuardianPayloadSig,
   genRecoverAccountAdminPayloadSig,
   genRemoveAccountGuardianPayloadSig,
-  genRemoveSubAccountSignerPayloadSig,
-  genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
-import { AccountRecoveryType, MarginType, Perm } from "./type"
-import { expectToThrowAsync, nonce, wallet } from "./util"
+import { AccountRecoveryType, ConfigID } from "./type"
+import { Bytes32, bytes32, expectToThrowAsync, getConfigArray, nonce, wallet } from "./util"
 
 describe("API - AccountRecovery", function () {
-  let contract: Contract
+  let contract: GRVTExchange
+  const grvt = wallet()
 
   beforeEach(async () => {
-    contract = await ethers.deployContract("GRVTExchange")
+    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
+    contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
   })
 
   describe("addAccountGuardian", function () {
@@ -68,7 +65,7 @@ describe("API - AccountRecovery", function () {
       // Test
       const guardian = wallet().address
       ts++
-      expectToThrowAsync(addAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "signer not admin")
+      await expectToThrowAsync(addAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "ineligible signer")
     })
 
     it("fails if account does not exist", async function () {
@@ -77,7 +74,7 @@ describe("API - AccountRecovery", function () {
 
       // Test
       const guardian = wallet().address
-      expectToThrowAsync(addAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "account does not exist")
+      await expectToThrowAsync(addAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "account does not exist")
     })
 
     it("fails if invalid signature", async function () {
@@ -93,7 +90,7 @@ describe("API - AccountRecovery", function () {
       ts++
       const salt = nonce()
       const sig = genAddAccountGuardianPayloadSig(admin, accID, guardian, salt + 1)
-      expectToThrowAsync(contract.addAccountGuardian(ts, ts, accID, guardian, salt, [sig]), "invalid signature")
+      await expectToThrowAsync(contract.addAccountGuardian(ts, ts, accID, guardian, salt, [sig]), "invalid signature")
     })
 
     it("fails if quorum is not met", async function () {
@@ -115,8 +112,7 @@ describe("API - AccountRecovery", function () {
       await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
-      // expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian), "")
-      expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian), "failed quorum")
+      await expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian), "failed quorum")
     })
 
     it("fails if guardian already exists", async function () {
@@ -132,7 +128,7 @@ describe("API - AccountRecovery", function () {
       ts++
       await addAccGuardian(contract, [admin], ts, ts, accID, guardian)
       ts++
-      expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian), "address exists")
+      await expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian), "address exists")
     })
   })
 
@@ -190,7 +186,7 @@ describe("API - AccountRecovery", function () {
       // Test
       const guardian = wallet().address
       ts++
-      expectToThrowAsync(removeAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "signer not admin")
+      await expectToThrowAsync(removeAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "ineligible signer")
     })
 
     it("fails if account does not exist", async function () {
@@ -199,7 +195,10 @@ describe("API - AccountRecovery", function () {
 
       // Test
       const guardian = wallet().address
-      expectToThrowAsync(removeAccGuardian(contract, [wallet()], ts, ts, accID, guardian), "account does not exist")
+      await expectToThrowAsync(
+        removeAccGuardian(contract, [wallet()], ts, ts, accID, guardian),
+        "account does not exist"
+      )
     })
 
     it("fails if invalid signature", async function () {
@@ -215,7 +214,10 @@ describe("API - AccountRecovery", function () {
       ts++
       const salt = nonce()
       const sig = genRemoveAccountGuardianPayloadSig(admin, accID, guardian, salt + 1)
-      expectToThrowAsync(contract.removeAccountGuardian(ts, ts, accID, guardian, salt, [sig]), "invalid signature")
+      await expectToThrowAsync(
+        contract.removeAccountGuardian(ts, ts, accID, guardian, salt, [sig]),
+        "invalid signature"
+      )
     })
 
     it("fails if quorum is not met", async function () {
@@ -237,7 +239,7 @@ describe("API - AccountRecovery", function () {
       await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
-      expectToThrowAsync(removeAccGuardian(contract, [admin], ts, ts, accID, guardian), "failed quorum")
+      await expectToThrowAsync(removeAccGuardian(contract, [admin], ts, ts, accID, guardian), "failed quorum")
     })
 
     it("fails if guardian does not exists", async function () {
@@ -249,13 +251,9 @@ describe("API - AccountRecovery", function () {
       await createSubAcc(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
-      const guardian = wallet().address
       const guardian2 = wallet().address
       ts++
-      await addAccGuardian(contract, [admin], ts, ts, accID, guardian)
-      ts++
-      removeAccGuardian(contract, [admin], ts, ts, accID, guardian2)
-      expectToThrowAsync(addAccGuardian(contract, [admin], ts, ts, accID, guardian2), "address exists")
+      await expectToThrowAsync(removeAccGuardian(contract, [admin], ts, ts, accID, guardian2), "not found")
     })
   })
 
@@ -340,16 +338,15 @@ describe("API - AccountRecovery", function () {
           salt
         ),
       ]
-      expectToThrowAsync(
+      await expectToThrowAsync(
         contract.recoverAccountAdmin(
           ts,
           ts,
-          guardian,
           accID,
-          AccountRecoveryType.SUB_ACCOUNT_SIGNERS,
+          AccountRecoveryType.GUARDIAN,
           oldAdmin.address,
           newAdmin.address,
-          salt,
+          salt + 2,
           sigs
         ),
         "invalid signature"
@@ -363,7 +360,7 @@ describe("API - AccountRecovery", function () {
       const accID = 1
       let ts = 1
 
-      expectToThrowAsync(
+      await expectToThrowAsync(
         recoverAccAdmin(
           contract,
           [wallet()],
@@ -396,7 +393,7 @@ describe("API - AccountRecovery", function () {
       await addAccGuardian(contract, [oldAdmin], ts, ts, accID, guardian2.address)
 
       ts++
-      expectToThrowAsync(
+      await expectToThrowAsync(
         recoverAccAdmin(
           contract,
           [guardian],
@@ -407,7 +404,7 @@ describe("API - AccountRecovery", function () {
           oldAdmin.address,
           newAdmin.address
         ),
-        "not enough votes"
+        "failed quorum"
       )
     })
 
@@ -426,10 +423,10 @@ describe("API - AccountRecovery", function () {
       await addAccGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
 
       ts++
-      expectToThrowAsync(
+      await expectToThrowAsync(
         recoverAccAdmin(
           contract,
-          [guardian],
+          [wallet()],
           ts,
           ts,
           accID,
@@ -437,7 +434,7 @@ describe("API - AccountRecovery", function () {
           oldAdmin.address,
           newAdmin.address
         ),
-        "invalid voter"
+        "ineligible signer"
       )
     })
   })

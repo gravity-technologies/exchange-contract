@@ -2,18 +2,12 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {Currency, MarginType} from "../../../DataStructure.sol";
+import "../../../DataStructure.sol";
 
 // keccak256("CreateSubAccountPayload(uint32 accountID,address subAccountID,uint8 quoteCurrency,uint8 marginType,uint32 nonce)");
 bytes32 constant _CREATE_SUBACCOUNT_H = bytes32(0x6cafe27909faed17c65dae473a28613eec3d8c662247fdc3921f8f98a0c15385);
 
-function hashCreateSubAccount(
-  uint32 accID,
-  address subID,
-  Currency currency,
-  MarginType margin,
-  uint32 nonce
-) pure returns (bytes32) {
+function hashCreateSubAccount( uint32 accID, address subID, Currency currency, MarginType margin, uint32 nonce) pure returns (bytes32) {
   return keccak256(abi.encode( _CREATE_SUBACCOUNT_H, accID, subID, uint8(currency), uint8(margin), nonce));
 }
 

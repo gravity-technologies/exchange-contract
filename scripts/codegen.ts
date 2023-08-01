@@ -1,4 +1,4 @@
-import { TypedDataUtils } from 'signtypeddata-v5'
+import { TypedDataUtils } from "signtypeddata-v5"
 const { encodeType } = TypedDataUtils
 
 function camelCase(str) {
@@ -8,32 +8,32 @@ function camelCase(str) {
 }
 
 function screamingSnakeCase(camelCaseString) {
-  return camelCaseString.replace(/([A-Z])/g, '_$1').toUpperCase()
+  return camelCaseString.replace(/([A-Z])/g, "_$1").toUpperCase()
 }
 
 const basicEncodableTypes = [
-  'address',
-  'bool',
-  'int',
-  'uint',
-  'int8',
-  'uint8',
-  'int16',
-  'uint16',
-  'int32',
-  'uint32',
-  'int64',
-  'uint64',
-  'int128',
-  'uint128',
-  'int256',
-  'uint256',
-  'bytes32',
-  'bytes16',
-  'bytes8',
-  'bytes4',
-  'bytes2',
-  'bytes1',
+  "address",
+  "bool",
+  "int",
+  "uint",
+  "int8",
+  "uint8",
+  "int16",
+  "uint16",
+  "int32",
+  "uint32",
+  "int64",
+  "uint64",
+  "int128",
+  "uint128",
+  "int256",
+  "uint256",
+  "bytes32",
+  "bytes16",
+  "bytes8",
+  "bytes4",
+  "bytes2",
+  "bytes1",
 ]
 
 export interface MessageTypeProperty {
@@ -115,11 +115,11 @@ export function generateCodeFrom(types, entryTypes: string[]) {
     const typeName = type.name
     const fields = type.fields
 
-    if (typeName === 'EIP712Domain') {
+    if (typeName === "EIP712Domain") {
       return
     }
 
-    const typeHash = `bytes32 constant ${screamingSnakeCase(typeName + 'TypeHash')} = keccak256("${encodeType(
+    const typeHash = `bytes32 constant ${screamingSnakeCase(typeName + "H")} = keccak256("${encodeType(
       typeName,
       types.types
     )}");\n`
@@ -127,7 +127,7 @@ export function generateCodeFrom(types, entryTypes: string[]) {
       .map((field) => {
         return `  ${field.type} ${field.name};\n`
       })
-      .join('')}}\n`
+      .join("")}}\n`
 
     generatePacketHashGetters(types, typeName, fields, packetHashGetters)
     results.push({ struct, typeHash })
@@ -159,15 +159,15 @@ function ${packetHashGetterName(field.type)} (${field.type} memory _input) pure 
 `)
       }
     } else {
-      if (typeName === 'EIP712Domain') {
+      if (typeName === "EIP712Domain") {
         return
       }
       const funcName = packetHashGetterName(typeName)
       packetHashGetters.push(`
 function ${funcName} (${typeName} memory _input) pure returns (bytes32) {
   bytes memory encoded = abi.encode(
-    ${screamingSnakeCase(typeName + 'TypeHash')},
-    ${fields.map(getEncodedValueFor).join(',\n      ')}
+    ${screamingSnakeCase(typeName + "TypeHash")},
+    ${fields.map(getEncodedValueFor).join(",\n      ")}
   );
   return keccak256(encoded);
 }
@@ -179,16 +179,16 @@ function ${funcName} (${typeName} memory _input) pure returns (bytes32) {
 }
 
 function getEncodedValueFor(field: { name: string; type: string }) {
-  const hashedTypes = ['bytes', 'string']
+  const hashedTypes = ["bytes", "string"]
   if (basicEncodableTypes.includes(field.type)) {
     return `${field.name}`
   }
 
   if (hashedTypes.includes(field.type)) {
-    if (field.type === 'bytes') {
+    if (field.type === "bytes") {
       return `keccak256(${field.name})`
     }
-    if (field.type === 'string') {
+    if (field.type === "string") {
       return `keccak256(bytes(${field.name}))`
     }
   }
@@ -197,13 +197,13 @@ function getEncodedValueFor(field: { name: string; type: string }) {
 }
 
 function packetHashGetterName(typeName) {
-  if (typeName === 'EIP712Domain') {
-    return camelCase('GET_EIP_712_DOMAIN_PACKET_HASH')
+  if (typeName === "EIP712Domain") {
+    return camelCase("GET_EIP_712_DOMAIN_PACKET_HASH")
   }
-  if (typeName.includes('[]')) {
+  if (typeName.includes("[]")) {
     return `get${typeName.substr(0, typeName.length - 2)}ArrayPacketHash`
   }
-  return `get${typeName}PacketHash`
+  return `hash${typeName}`
 }
 
 /**
@@ -242,6 +242,6 @@ export function generateSolidity<T extends MessageTypes>(typeDef: TypedMessage<T
   })
 
   // Generate entrypoint methods
-  const newFileString = generateFile(String(typeDef.primaryType), types.join('\n'), methods.join('\n'))
+  const newFileString = generateFile(String(typeDef.primaryType), types.join("\n"), methods.join("\n"))
   return newFileString
 }

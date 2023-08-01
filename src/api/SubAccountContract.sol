@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {HelperContract} from "./HelperContract.sol";
-import {hashSetMarginType, hashAddSigner, hashSetSignerPermissions, hashRemoveSigner} from "./signature/generated/SubAccountSig.sol";
-import {Account, MarginType, Signature, Signer, State, SubAccount, SubAccountPermAddSigner, SubAccountPermAdmin, SubAccountPermChangeMarginType, SubAccountPermRemoveSignerPermission, SubAccountPermUpdateSigner} from "../DataStructure.sol";
-import {addressExists} from "../util/Address.sol";
+import "./HelperContract.sol";
+import "./signature/generated/SubAccountSig.sol";
+import "../DataStructure.sol";
+import "../util/Address.sol";
 
-abstract contract SubAccountContract is HelperContract {
-  function _getState() internal virtual returns (State storage);
-
+contract SubAccountContract is HelperContract {
   function setSubAccountMarginType(
     uint64 timestamp,
     uint64 txID,
@@ -17,10 +15,9 @@ abstract contract SubAccountContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(state, subAccID);
-    Account storage acc = _requireAccount(state, sub.accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    Account storage acc = _requireAccount(sub.accountID);
 
     require(marginType != MarginType.UNSPECIFIED, "invalid margin");
     // To change margin type requires that there's no OPEN position
@@ -30,7 +27,7 @@ abstract contract SubAccountContract is HelperContract {
     _requirePermission(acc, sub, sig.signer, SubAccountPermChangeMarginType);
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(state, hashSetMarginType(subAccID, marginType, nonce), sig);
+    _preventHashReplay(hashSetMarginType(subAccID, marginType, nonce), sig);
     // ------- End of Signature Verification -------
 
     // No op if the marginType is the same
@@ -51,15 +48,14 @@ abstract contract SubAccountContract is HelperContract {
     // new signer permission is valid, and is a subset of current signer permission
     // signature is valid
     // caller owns the account/subaccount
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(state, subAccID);
-    Account storage acc = _requireAccount(state, sub.accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    Account storage acc = _requireAccount(sub.accountID);
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAddSigner);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddSigner(subAccID, signer, permissions, nonce);
-    _preventHashReplay(state, hash, sig);
+    _preventHashReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     Signer[] storage signers = sub.authorizedSigners;
@@ -71,28 +67,27 @@ abstract contract SubAccountContract is HelperContract {
   function setSubAccountSignerPermissions(
     uint64 timestamp,
     uint64 txID,
-    address subAccID,
+    address subID,
     address signer,
-    uint64 permissions,
+    uint64 perms,
     uint32 nonce,
     Signature calldata sig
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(state, subAccID);
-    Account storage acc = _requireAccount(state, sub.accountID);
-    _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermUpdateSigner);
+    _setTimestampAndTxID(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subID);
+    Account storage acc = _requireAccount(sub.accountID);
+    _requireUpsertSigner(acc, sub, sig.signer, perms, SubAccountPermUpdateSignerPermission);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashSetSignerPermissions(subAccID, signer, permissions, nonce);
-    _preventHashReplay(state, hash, sig);
+    bytes32 hash = hashSetSignerPermissions(subID, signer, perms, nonce);
+    _preventHashReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     // Update permission
     Signer[] storage signers = sub.authorizedSigners;
     (uint idx, bool found) = _findSigner(signers, signer);
     require(found, "signer not found");
-    signers[idx] = Signer(signer, permissions);
+    signers[idx] = Signer(signer, perms);
   }
 
   function removeSubAccountSigner(
@@ -103,15 +98,14 @@ abstract contract SubAccountContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(state, subAccID);
-    Account storage acc = _requireAccount(state, sub.accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    Account storage acc = _requireAccount(sub.accountID);
 
-    _requirePermission(acc, sub, sig.signer, SubAccountPermRemoveSignerPermission);
+    _requirePermission(acc, sub, sig.signer, SubAccountPermRemoveSigner);
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(state, hashRemoveSigner(subAccID, signer, nonce), sig);
+    _preventHashReplay(hashRemoveSigner(subAccID, signer, nonce), sig);
     // ------- End of Signature Verification -------
 
     // If we reach here, that means the user calling this API is an admin. Hence, even after we remove the last
@@ -150,9 +144,9 @@ abstract contract SubAccountContract is HelperContract {
     uint64 actorAuthz = _getPermSet(sub, actor);
     if (actorAuthz & SubAccountPermAdmin > 0) return;
     // Actor must have the ability to call the function
-    require(actorAuthz & requiredPerm > 0, "actor can't call function");
+    require(actorAuthz & requiredPerm > 0, "actor cannot call function");
     // Actor can only grant permissions that actor has
-    require(actorAuthz & grantedAuthz == grantedAuthz, "actor can't grant permission");
+    require(actorAuthz & grantedAuthz == grantedAuthz, "actor cannot grant permission");
   }
 
   // Return the permission set of the signerAddress in the subAccount

@@ -1,25 +1,21 @@
-import '@nomiclabs/hardhat-waffle'
-import '@typechain/hardhat'
-import fs from 'fs'
-import 'hardhat-gas-reporter'
-import 'hardhat-preprocessor'
-import { HardhatUserConfig, task } from 'hardhat/config'
-
-import example from './tasks/example'
+import "@nomicfoundation/hardhat-toolbox"
+import "@nomiclabs/hardhat-ethers"
+import fs from "fs"
+import "hardhat-gas-reporter"
+import "hardhat-preprocessor"
+import { HardhatUserConfig, task } from "hardhat/config"
 
 function getRemappings() {
   return fs
-    .readFileSync('remappings.txt', 'utf8')
-    .split('\n')
+    .readFileSync("remappings.txt", "utf8")
+    .split("\n")
     .filter(Boolean)
-    .map((line) => line.trim().split('='))
+    .map((line) => line.trim().split("="))
 }
-
-task('example', 'Example task').setAction(example)
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: '0.8.20',
+    version: "0.8.20",
     settings: {
       optimizer: {
         enabled: true,
@@ -28,8 +24,8 @@ const config: HardhatUserConfig = {
     },
   },
   paths: {
-    sources: './src', // Use ./src rather than ./contracts as Hardhat expects
-    cache: './cache_hardhat', // Use a different cache for Hardhat than Foundry
+    sources: "./src", // Use ./src rather than ./contracts as Hardhat expects
+    cache: "./cache_hardhat", // Use a different cache for Hardhat than Foundry
   },
   // This fully resolves paths for imports in the ./lib directory for Hardhat
   preprocess: {
@@ -45,6 +41,9 @@ const config: HardhatUserConfig = {
         return line
       },
     }),
+  },
+  gasReporter: {
+    enabled: true,
   },
 }
 
