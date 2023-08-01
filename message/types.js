@@ -30,7 +30,13 @@ const Primary = KeyMirror({
   // Session Key
   AddSessionKeyPayload: 0,
 
+  // Transfer
+  DepositPayload: 0,
+  TransferPayload: 0,
+  WithdrawalPayload: 0,
+
   // Trade
+  TradePayload: 0,
 })
 
 // -------------- Account --------------
@@ -276,6 +282,96 @@ const AddSessionKeyPayload = {
   },
 }
 
+// -------------- Transfer --------------
+const DepositPayload = {
+  primaryType: Primary.DepositPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.DepositPayload]: [
+      { name: "fromEthAddress", type: "address" },
+      { name: "toSubAccount", type: "address" },
+      { name: "numTokens", type: "uint64" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+const WithdrawalPayload = {
+  primaryType: Primary.WithdrawalPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.WithdrawalPayload]: [
+      { name: "fromSubAccount", type: "address" },
+      { name: "toEthAddress", type: "address" },
+      { name: "numTokens", type: "uint64" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+const TransferPayload = {
+  primaryType: Primary.TransferPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.TransferPayload]: [
+      { name: "fromSubAccount", type: "address" },
+      { name: "toSubAccount", type: "address" },
+      { name: "numTokens", type: "uint64" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+const TradePayload = {
+  primaryType: Primary.TransferPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.TradePayload]: [
+      { name: "trade", type: "Trade" },
+      { name: "nonce", type: "uint32" },
+    ],
+    Trade: [
+      { name: "takerOrder", type: "Order" },
+      { name: "makerOrders", type: "OrderMatch[]" },
+    ],
+    Order: [
+      { name: "subAccountID", type: "uint32" },
+      { name: "isMarket", type: "bool" },
+      { name: "timeInForce", type: "uint8" },
+      { name: "limitPrice", type: "uint64" },
+      { name: "takerFeePercentageCap", type: "uint32" },
+      { name: "makerFeePercentageCap", type: "uint32" },
+      { name: "postOnly", type: "bool" },
+      { name: "reduceOnly", type: "bool" },
+      { name: "isPayingBaseCurrency", type: "bool" },
+      { name: "legs", type: "OrderLeg[]" },
+      { name: "signature", type: "Signature" },
+    ],
+    OrderLeg: [
+      { name: "derivative", type: "uint128" },
+      { name: "contractSize", type: "uint64" },
+      { name: "limitPrice", type: "uint64" },
+      { name: "ocoLimitPrice", type: "uint64" },
+      { name: "isBuyingContract", type: "bool" },
+    ],
+    OrderMatch: [
+      { name: "makerOrder", type: "Order" },
+      { name: "numContractsMatched", type: "uint64[]" },
+      { name: "takerFeePercentageCharged", type: "uint32" },
+      { name: "makerFeePercentageCharged", type: "uint32" },
+    ],
+    Signature: [
+      { name: "signer", type: "address" },
+      { name: "r", type: "uint256" },
+      { name: "s", type: "uint256" },
+      { name: "v", type: "uint8" },
+      { name: "expiration", type: "int64" },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -305,4 +401,12 @@ module.exports = {
 
   // Session
   AddSessionKeyPayload,
+
+  // Transfer
+  DepositPayload,
+  TransferPayload,
+  WithdrawalPayload,
+
+  // Trade
+  TradePayload,
 }
