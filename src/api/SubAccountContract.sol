@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "./HelperContract.sol";
 import "./signature/generated/SubAccountSig.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract SubAccountContract is HelperContract {
@@ -27,14 +27,13 @@ contract SubAccountContract is HelperContract {
   ) external {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
-    Account storage acc = _requireAccount(sub.accountID);
 
     require(marginType != MarginType.UNSPECIFIED, "invalid margin");
     // To change margin type requires that there's no OPEN position
     // See Binance: https://www.binance.com/en/support/faq/how-to-switch-between-cross-margin-mode-and-isolated-margin-mode-360038075852#:~:text=You%20are%20not%20allowed%20to%20change%20the%20margin%20mode%20if%20you%20have%20any%20open%20orders%20or%20positions%3B
     // TODO: revise this to if subaccount is liquidatable under new margin model. If it is not, we allow it through.
     require(sub.options.keys.length + sub.futures.keys.length + sub.perps.keys.length == 0, "open positions exist");
-    _requirePermission(acc, sub, sig.signer, SubAccountPermChangeMarginType);
+    _requirePermission(sub, sig.signer, SubAccountPermChangeMarginType);
 
     // ---------- Signature Verification -----------
     _preventReplay(hashSetMarginType(subAccID, marginType, nonce), sig);
@@ -134,9 +133,8 @@ contract SubAccountContract is HelperContract {
   ) external {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
-    Account storage acc = _requireAccount(sub.accountID);
 
-    _requirePermission(acc, sub, sig.signer, SubAccountPermRemoveSigner);
+    _requirePermission(sub, sig.signer, SubAccountPermRemoveSigner);
 
     // ---------- Signature Verification -----------
     _preventReplay(hashRemoveSigner(subAccID, signer, nonce), sig);
@@ -150,18 +148,6 @@ contract SubAccountContract is HelperContract {
     require(found, "signer not found");
     signers[idx] = signers[signers.length - 1];
     signers.pop();
-  }
-
-  // Check if the caller has certain permissions on a subaccount
-  function _requirePermission(
-    Account storage acc,
-    SubAccount storage sub,
-    address signer,
-    uint64 requiredPerm
-  ) private view {
-    if (addressExists(acc.admins, signer)) return;
-    uint64 signerAuthz = _getPermSet(sub, signer);
-    require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
   }
 
   // Used for add and update signer permission. Perform additional check that the new permission is a subset of the caller's permission if the caller is not an admin
@@ -181,18 +167,6 @@ contract SubAccountContract is HelperContract {
     require(actorAuthz & requiredPerm > 0, "actor cannot call function");
     // Actor can only grant permissions that actor has
     require(actorAuthz & grantedAuthz == grantedAuthz, "actor cannot grant permission");
-  }
-
-  // Return the permission set of the signerAddress in the subAccount
-  // If signerAddress not found in subaccount, return 0: no permission
-  function _getPermSet(SubAccount storage subAccount, address signerAddress) private view returns (uint64) {
-    uint length = subAccount.authorizedSigners.length;
-    Signer[] storage signers = subAccount.authorizedSigners;
-    for (uint256 i = 0; i < length; i++) {
-      Signer storage signer = signers[i];
-      if (signer.signingKey == signerAddress) return signer.permission;
-    }
-    return 0;
   }
 
   function _findSigner(Signer[] storage signers, address signerAddress) private view returns (uint, bool) {
@@ -228,7 +202,8 @@ contract SubAccountContract is HelperContract {
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key
-    state.sessionKeys[sig.signer] = SessionKey(sessionKey, cappedExpiry);
+    state.sessionToUser[sessionKey] = Session(sig.signer, cappedExpiry);
+    state.userToSession[sig.signer] = sessionKey;
   }
 
   /// @notice Removing signature verification only makes session keys safer.
@@ -240,7 +215,9 @@ contract SubAccountContract is HelperContract {
   /// @param signer The address of the signer
   function removeSessionKey(uint64 timestamp, uint64 txID, address signer) external {
     _setSequence(timestamp, txID);
-    delete state.sessionKeys[signer];
+    address session = state.userToSession[signer];
+    delete state.sessionToUser[session];
+    delete state.userToSession[signer];
   }
 
   function _min(uint64 a, uint64 b) private pure returns (uint64) {

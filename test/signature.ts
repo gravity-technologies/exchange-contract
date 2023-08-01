@@ -3,14 +3,7 @@ import { Wallet, utils } from "ethers"
 import { buf, getTimestampNs } from "./util"
 import * as Types from "../message/type"
 import { randomInt } from "crypto"
-
-interface Signature {
-  signer: string
-  expiration: number // expiration timestamp in nano seconds
-  r: Buffer
-  s: Buffer
-  v: number
-}
+import { OrderNoSignature, Signature } from "./type"
 
 export function genCreateSubAccountSig(
   wallet: Wallet,
@@ -316,6 +309,13 @@ export function genRemoveSessionKeySig(wallet: Wallet): Signature {
 }
 
 // Trade
+export function genOrderSig(wallet: Wallet, order: OrderNoSignature): Signature {
+  return sign(wallet, {
+    ...Types.OrderPayload,
+    message: order,
+  })
+}
+
 // Transfer
 export function genDepositSig(
   wallet: Wallet,
@@ -372,11 +372,14 @@ export function genTransferSig(
 }
 
 function sign(wallet: Wallet, msgParams: any): Signature {
+  // console.log("msg", msgParams.primaryType, msgParams.message)
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
     data: msgParams,
     version: SignTypedDataVersion.V4,
   })
+
+  // console.log("sig", sig)
   const { r, s, v } = utils.splitSignature(sig)
   return {
     signer: wallet.address,
@@ -384,5 +387,6 @@ function sign(wallet: Wallet, msgParams: any): Signature {
     r: buf(r),
     s: buf(s),
     v,
+    nonce: msgParams.message.nonce,
   }
 }

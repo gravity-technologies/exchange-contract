@@ -36,7 +36,7 @@ const Primary = KeyMirror({
   WithdrawalPayload: 0,
 
   // Trade
-  TradePayload: 0,
+  Order: 0,
 })
 
 // -------------- Account --------------
@@ -323,31 +323,24 @@ const TransferPayload = {
   },
 }
 
-const TradePayload = {
-  primaryType: Primary.TransferPayload,
+const OrderPayload = {
+  primaryType: Primary.Order,
   domain,
   types: {
     EIP712Domain,
-    [Primary.TradePayload]: [
-      { name: "trade", type: "Trade" },
-      { name: "nonce", type: "uint32" },
-    ],
-    Trade: [
-      { name: "takerOrder", type: "Order" },
-      { name: "makerOrders", type: "OrderMatch[]" },
-    ],
-    Order: [
-      { name: "subAccountID", type: "uint32" },
+    [Primary.Order]: [
+      { name: "subAccountID", type: "address" },
       { name: "isMarket", type: "bool" },
       { name: "timeInForce", type: "uint8" },
       { name: "limitPrice", type: "uint64" },
+      { name: "ocoLimitPrice", type: "uint64" },
       { name: "takerFeePercentageCap", type: "uint32" },
       { name: "makerFeePercentageCap", type: "uint32" },
       { name: "postOnly", type: "bool" },
       { name: "reduceOnly", type: "bool" },
       { name: "isPayingBaseCurrency", type: "bool" },
       { name: "legs", type: "OrderLeg[]" },
-      { name: "signature", type: "Signature" },
+      { name: "nonce", type: "uint32" },
     ],
     OrderLeg: [
       { name: "derivative", type: "uint128" },
@@ -355,19 +348,6 @@ const TradePayload = {
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "isBuyingContract", type: "bool" },
-    ],
-    OrderMatch: [
-      { name: "makerOrder", type: "Order" },
-      { name: "numContractsMatched", type: "uint64[]" },
-      { name: "takerFeePercentageCharged", type: "uint32" },
-      { name: "makerFeePercentageCharged", type: "uint32" },
-    ],
-    Signature: [
-      { name: "signer", type: "address" },
-      { name: "r", type: "uint256" },
-      { name: "s", type: "uint256" },
-      { name: "v", type: "uint8" },
-      { name: "expiration", type: "int64" },
     ],
   },
 }
@@ -408,5 +388,5 @@ module.exports = {
   WithdrawalPayload,
 
   // Trade
-  TradePayload,
+  OrderPayload,
 }

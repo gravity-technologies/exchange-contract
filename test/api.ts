@@ -5,12 +5,16 @@ import {
   genAddAccountGuardianPayloadSig,
   genAddSessionKeySig,
   genAddSubAccountSignerPayloadSig,
+  genAddTransferSubAccountPayloadSig,
+  genAddWithdrawalAddressSig,
   genCreateSubAccountSig,
   genDepositSig,
   genRecoverAccountAdminPayloadSig,
+  genRemoveAccountAdminSig,
   genRemoveAccountGuardianPayloadSig,
-  genRemoveSessionKeySig,
   genRemoveSubAccountSignerPayloadSig,
+  genRemoveTransferSubAccountPayloadSig,
+  genRemoveWithdrawalAddressSig,
   genScheduleConfigSig,
   genSetAccountMultiSigThresholdSig,
   genSetConfigSig,
@@ -49,6 +53,19 @@ export async function addAccAdmin(
   await contract.addAccountAdmin(ts, txID, accID, signer, salt, sigs)
 }
 
+export async function removeAccAdmin(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: number,
+  signer: string
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genRemoveAccountAdminSig(txSigner, accID, signer, salt))
+  await contract.removeAccountAdmin(ts, txID, accID, signer, salt, sigs)
+}
+
 export async function setMultisigThreshold(
   contract: GRVTExchange,
   txSigners: Wallet[],
@@ -60,6 +77,58 @@ export async function setMultisigThreshold(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genSetAccountMultiSigThresholdSig(txSigner, accID, multiSigThreshold, salt))
   await contract.setAccountMultiSigThreshold(ts, txID, accID, multiSigThreshold, salt, sigs)
+}
+
+export async function addWithdrawalAddress(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: number,
+  withdrawalAddress: string
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genAddWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
+  await contract.addWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs)
+}
+
+export async function removeWithdrawalAddress(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: number,
+  withdrawalAddress: string
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genRemoveWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
+  await contract.removeWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs)
+}
+
+export async function addTransferSubAccount(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: number,
+  subID: string
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genAddTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
+  await contract.addTransferSubAccount(ts, txID, accID, subID, salt, sigs)
+}
+
+export async function removeTransferSubAccount(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: number,
+  subID: string
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genRemoveTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
+  await contract.removeTransferSubAccount(ts, txID, accID, subID, salt, sigs)
 }
 
 // Sub Account

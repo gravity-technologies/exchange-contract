@@ -29,7 +29,6 @@ jobs:
       - name: Run Forge build
         run: |
           forge --version
-          forge build --sizes
         id: build
 
       - name: Run Forge tests
@@ -51,8 +50,8 @@ jobs:
       - name: Setup Node 16
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
-          cache: 'yarn'
+          node-version: "16.x"
+          cache: "yarn"
 
       - name: Install Node dependencies
         run: |
