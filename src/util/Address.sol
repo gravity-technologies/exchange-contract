@@ -22,14 +22,23 @@ function addAddress(address[] storage arr, address targetAddress) {
   arr.push(targetAddress);
 }
 
-function removeAddress(address[] storage arr, address addressToRemove) {
+function removeAddress(
+  address[] storage arr,
+  address addressToRemove,
+  bool preventRemovingLastElement
+) {
   for (uint256 i = 0; i < arr.length; i++) {
-    if (arr[i] == addressToRemove) {
-      // Move the last element to the position of the element to be removed
-      arr[i] = arr[arr.length - 1];
-      arr.pop();
-      return;
+    if (arr[i] != addressToRemove) {
+      continue;
     }
+    require(
+      !preventRemovingLastElement || arr.length > 1,
+      'cannot remove the last address'
+    );
+    // Move the last element to the position of the element to be removed
+    arr[i] = arr[arr.length - 1];
+    arr.pop();
+    return;
   }
   revert('address not found');
 }

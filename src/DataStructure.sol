@@ -46,11 +46,11 @@ uint64 constant SubAccountPermChangeMarginType = 1 << 7;
 struct Signature {
   // The address of the signer
   address signer;
+  bytes32 r;
+  bytes32 s;
+  uint8 v;
   // Timestamp after which this signature expires. Use 0 for no expiration.
   uint64 expiration;
-  uint256 R;
-  uint256 S;
-  uint8 V;
 }
 
 struct State {
@@ -60,7 +60,7 @@ struct State {
   mapping(address => SessionKey) sessionKeys;
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
-  OrderState orders;
+  SignatureState signatures;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
   // Configuration
@@ -68,7 +68,7 @@ struct State {
   // A Safety Module is created per quote + underlying currency pair
   mapping(Currency => mapping(Currency => SafetyModulePool)) safetyModule;
   // Latest Transaction time
-  uint64 lastTxTime;
+  uint64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
 }
@@ -151,9 +151,11 @@ struct Signer {
   uint64 permission;
 }
 
-struct OrderState {
-  mapping(uint128 => bool) fullDerivativeOrderMatched;
-  mapping(uint128 => uint64[]) partialDerivativeOrderMatched;
+struct SignatureState {
+  mapping(bytes32 => bool) fullDerivativeOrderMatched;
+  mapping(bytes32 => uint64[]) partialDerivativeOrderMatched;
+  // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
+  mapping(bytes32 => bool) isExecuted;
 }
 
 struct PriceState {
@@ -190,7 +192,7 @@ struct ConfigState {
 // TODO: align on the set of configs
 struct RiskConfig {
   // fxp 3.2
-  uint32[] SpotMoves;
+  uint32[] spotMoves;
   // fxp 3.2
   uint32[] volMoves;
   // discount
@@ -205,7 +207,7 @@ struct SessionKey {
   // The session key that is tagged to the main signing key
   address sessionKey;
   // The last timestamp that the signer can sign at
-  // We can apply a max one day expiry on session keys
+  // We can apply a _max one day expiry on session keys
   uint64 authorizationExpiry;
 }
 
