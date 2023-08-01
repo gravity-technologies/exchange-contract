@@ -150,10 +150,6 @@ function sign(wallet: Wallet, msgParams: any): Signature {
     data: msgParams,
     version: SignTypedDataVersion.V4,
   })
-  // console.log(
-  //   '🦊 MetamaskSig      = ',
-  //   sig.toLocaleLowerCase().substring(0, 50) + '...'
-  // )
   const { r, s, v } = utils.splitSignature(sig)
   return {
     signer: wallet.address,

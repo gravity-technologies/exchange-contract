@@ -41,7 +41,8 @@ uint64 constant SubAccountPermTransfer = 1 << 3;
 uint64 constant SubAccountPermTrade = 1 << 4;
 uint64 constant SubAccountPermAddSigner = 1 << 5;
 uint64 constant SubAccountPermRemoveSigner = 1 << 6;
-uint64 constant SubAccountPermChangeMarginType = 1 << 7;
+uint64 constant SubAccountPermUpdteSignerPermission = 1 << 7;
+uint64 constant SubAccountPermChangeMarginType = 1 << 8;
 
 struct Signature {
   // The address of the signer
