@@ -60,5 +60,6 @@ jobs:
 
       - name: Run Hardhat tests
         run: |
+          yarn prettier:check
           yarn test
         id: hardhat-test

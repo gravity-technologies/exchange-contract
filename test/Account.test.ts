@@ -1,36 +1,27 @@
-import { Contract, Wallet } from 'ethers'
-import { ethers } from 'hardhat'
+import { Contract } from "ethers"
+import { ethers } from "hardhat"
 import {
   genAddAccountAdminSig,
-  genCreateSubAccountSig,
-  genSetAccountMultiSigThresholdSig,
-  genRemoveAccountAdminSig,
-  genAddWithdrawalAddressSig,
-  genRemoveWithdrawalAddressSig,
   genAddTransferSubAccountPayloadSig,
+  genAddWithdrawalAddressSig,
+  genCreateSubAccountSig,
+  genRemoveAccountAdminSig,
   genRemoveTransferSubAccountPayloadSig,
-} from './signature'
-import { expectNotToThrowAsync, expectToThrowAsync } from './util'
-import { randomInt } from 'crypto'
+  genRemoveWithdrawalAddressSig,
+  genSetAccountMultiSigThresholdSig,
+} from "./signature"
+import { expectNotToThrowAsync, expectToThrowAsync, nonce, wallet } from "./util"
 
-function wallet(): Wallet {
-  return ethers.Wallet.createRandom()
-}
-
-function nonce() {
-  return randomInt(22021991)
-}
-
-describe('API - Account', function () {
+describe("API - Account", function () {
   let contract: Contract
 
   beforeEach(async () => {
-    contract = await ethers.deployContract('GRVTExchange')
+    contract = await ethers.deployContract("GRVTExchange")
   })
 
   // TODO: fix this test
-  describe('createSubAccount', function () {
-    it('Should create sub account successfully', async function () {
+  describe("createSubAccount", function () {
+    it("Should create sub account successfully", async function () {
       const w = wallet()
       // console.log('📮 SignerAddress    = ', w.address.toLocaleLowerCase())
       const salt = nonce()
@@ -49,7 +40,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error if account already exists', async function () {
+    it("Error if account already exists", async function () {
       const w = wallet()
       const accID = 1
 
@@ -80,8 +71,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('addAccountAdmin', function () {
-    it('Should add admin successfully', async function () {
+  describe("addAccountAdmin", function () {
+    it("Should add admin successfully", async function () {
       const w1 = wallet()
       const w2 = wallet()
 
@@ -108,7 +99,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if account does not exist', async function () {
+    it("Reject if account does not exist", async function () {
       const w = wallet()
       const salt = nonce()
       const accID = 1
@@ -124,7 +115,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('No-op if admin address already exists', async function () {
+    it("No-op if admin address already exists", async function () {
       const w = wallet()
       const salt = nonce()
       const accID = 1
@@ -151,8 +142,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('removeAccountAdmin', function () {
-    it('Should remove successfully', async function () {
+  describe("removeAccountAdmin", function () {
+    it("Should remove successfully", async function () {
       const w1 = wallet()
       const w2 = wallet()
       const salt = nonce()
@@ -188,7 +179,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error when removing the last admin', async function () {
+    it("Error when removing the last admin", async function () {
       const w1 = wallet()
       const w2 = wallet()
       const salt = nonce()
@@ -217,7 +208,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error if account does not exist', async function () {
+    it("Error if account does not exist", async function () {
       const w1 = wallet()
       const accID = 1
       const salt = nonce()
@@ -234,7 +225,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error if admin address does not exist', async function () {
+    it("Error if admin address does not exist", async function () {
       const w1 = wallet()
       const accID = 1
       const salt = nonce()
@@ -263,8 +254,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('addWithdrawalAddress', function () {
-    it('should add withdrawal address successfully', async function () {
+  describe("addWithdrawalAddress", function () {
+    it("should add withdrawal address successfully", async function () {
       const w = wallet()
       const withdrawalAddress = wallet().address
       const accID = 1
@@ -290,7 +281,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if account does not exist', async function () {
+    it("Reject if account does not exist", async function () {
       const withdrawalAddress = wallet().address
       const accID = 1
       const salt = nonce()
@@ -307,7 +298,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if withdrawal address already exists', async function () {
+    it("Reject if withdrawal address already exists", async function () {
       const w = wallet()
       const withdrawalAddress = wallet().address
       const accID = 1
@@ -346,8 +337,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('removeWithdrawalAddress', function () {
-    it('Should remove withdrawal address successfully', async function () {
+  describe("removeWithdrawalAddress", function () {
+    it("Should remove withdrawal address successfully", async function () {
       const w = wallet()
       const accID = 1
       const salt = nonce()
@@ -383,7 +374,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error if account does not exist', async function () {
+    it("Error if account does not exist", async function () {
       const withdrawalAddress = wallet().address
       const accID = 1
       const salt = nonce()
@@ -400,7 +391,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Error if withdrawal address does not exist', async function () {
+    it("Error if withdrawal address does not exist", async function () {
       // Create an account explicitly for this test
       const w = wallet()
       const accID = 1
@@ -443,8 +434,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('addTransferSubAccount', function () {
-    it('Success', async function () {
+  describe("addTransferSubAccount", function () {
+    it("Success", async function () {
       // Create an account explicitly for this test
       const w = wallet()
       const accID = 1
@@ -472,7 +463,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if account does not exist', async function () {
+    it("Reject if account does not exist", async function () {
       const transferSubAccount = wallet().address
       const accID = 1
       const salt = nonce()
@@ -490,7 +481,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('No-op if transfer subaccount already exists', async function () {
+    it("No-op if transfer subaccount already exists", async function () {
       const w = wallet()
       const accID = 1
       const salt = nonce()
@@ -531,8 +522,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('setAccountMultiSigThreshold', function () {
-    it('Should update multisig threshold successfully', async function () {
+  describe("setAccountMultiSigThreshold", function () {
+    it("Should update multisig threshold successfully", async function () {
       const w1 = wallet()
       const w2 = wallet()
 
@@ -568,7 +559,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if threshold = 0', async function () {
+    it("Reject if threshold = 0", async function () {
       // TODO: add 1 admin here
       const accID = 1
       const salt = nonce()
@@ -584,7 +575,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if threshold > number of admins', async function () {
+    it("Reject if threshold > number of admins", async function () {
       const accID = 1
       const salt = nonce()
       expectToThrowAsync(
@@ -599,8 +590,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('removeTransferSubAccount', function () {
-    it('Should remove transfer subaccount successfully', async function () {
+  describe("removeTransferSubAccount", function () {
+    it("Should remove transfer subaccount successfully", async function () {
       // Create an account explicitly for this test
       const w = wallet()
       const accID = 1
@@ -639,7 +630,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if account does not exist', async function () {
+    it("Reject if account does not exist", async function () {
       const transferSubAccount = wallet().address
       const accID = 1
       const salt = nonce()
@@ -657,7 +648,7 @@ describe('API - Account', function () {
       )
     })
 
-    it('Reject if transfer subaccount doesn not exist', async function () {
+    it("Reject if transfer subaccount doesn not exist", async function () {
       const w = wallet()
       const accID = 1
       const salt = nonce()
@@ -687,8 +678,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('Security - Prevent Replay Attack', function () {
-    it('Should not allow updating replaying update multisig threshold', async function () {
+  describe("Security - Prevent Replay Attack", function () {
+    it("Should not allow updating replaying update multisig threshold", async function () {
       const w1 = wallet()
       const w2 = wallet()
 
@@ -735,8 +726,8 @@ describe('API - Account', function () {
     })
   })
 
-  describe('Security - Prevent Replay Attack', function () {
-    it('Should not allow updating replaying update multisig threshold', async function () {
+  describe("Security - Prevent Replay Attack", function () {
+    it("Should not allow updating replaying update multisig threshold", async function () {
       const w1 = wallet()
       const w2 = wallet()
 

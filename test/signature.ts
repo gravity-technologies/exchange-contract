@@ -1,8 +1,8 @@
-import { SignTypedDataVersion, signTypedData } from '@metamask/eth-sig-util'
-import { Wallet, utils } from 'ethers'
-import { buf, getTimestamp } from './util'
-import * as Types from '../message/types'
-import { randomInt } from 'crypto'
+import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
+import { Wallet, utils } from "ethers"
+import { buf, getTimestampNs } from "./util"
+import * as Types from "../message/types"
+import { randomInt } from "crypto"
 
 interface Signature {
   signer: string
@@ -144,6 +144,128 @@ export function genRemoveTransferSubAccountPayloadSig(
   })
 }
 
+// SubAccount
+export function genSetSubAccountMarginTypePayloadSig(
+  wallet: Wallet,
+  subAccountID: string,
+  marginType: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.SetSubAccountMarginTypePayload,
+    message: {
+      subAccountID,
+      marginType,
+      nonce,
+    },
+  })
+}
+
+export function genAddSubAccountSignerPayloadSig(
+  wallet: Wallet,
+  subAccountID: string,
+  signer: string,
+  permissions: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.AddSubAccountSignerPayload,
+    message: {
+      subAccountID,
+      signer,
+      permissions,
+      nonce,
+    },
+  })
+}
+
+export function genSetSubAccountSignerPermissionsPayloadSig(
+  wallet: Wallet,
+  subAccountID: string,
+  signer: string,
+  permissions: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.SetSubAccountSignerPermissionsPayload,
+    message: {
+      subAccountID,
+      signer,
+      permissions,
+      nonce,
+    },
+  })
+}
+
+export function genRemoveSubAccountSignerPayloadSig(
+  wallet: Wallet,
+  subAccountID: string,
+  signer: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RemoveSubAccountSignerPayload,
+    message: {
+      subAccountID,
+      signer,
+      nonce,
+    },
+  })
+}
+
+// Account Recovery
+export function genAddAccountGuardianPayloadSig(
+  wallet: Wallet,
+  accountID: number,
+  signer: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.AddAccountGuardianPayload,
+    message: {
+      accountID,
+      signer,
+      nonce,
+    },
+  })
+}
+
+export function genRemoveAccountGuardianPayloadSig(
+  wallet: Wallet,
+  accountID: number,
+  signer: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RemoveAccountGuardianPayload,
+    message: {
+      accountID,
+      signer,
+      nonce,
+    },
+  })
+}
+
+export function genRecoverAccountAdminPayloadSig(
+  wallet: Wallet,
+  accountID: number,
+  recoveryType: number,
+  oldAdmin: string,
+  recoveryAdmin: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RecoverAccountAdminPayload,
+    message: {
+      accountID,
+      recoveryType,
+      oldAdmin,
+      recoveryAdmin,
+      nonce,
+    },
+  })
+}
+
 function sign(wallet: Wallet, msgParams: any): Signature {
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
@@ -153,7 +275,7 @@ function sign(wallet: Wallet, msgParams: any): Signature {
   const { r, s, v } = utils.splitSignature(sig)
   return {
     signer: wallet.address,
-    expiration: getTimestamp(),
+    expiration: getTimestampNs(),
     r: buf(r),
     s: buf(s),
     v,
