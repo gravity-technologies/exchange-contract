@@ -114,16 +114,16 @@ contract AccountContract is HelperContract {
   function addWithdrawalAddress(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    uint32 accID,
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
     _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
+    Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
+    bytes32 hash = hashAddWithdrawalAddress(accID, withdrawalAddress, nonce);
     _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
@@ -133,16 +133,16 @@ contract AccountContract is HelperContract {
   function removeWithdrawalAddress(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    uint32 accID,
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
     _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
+    Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
+    bytes32 hash = hashRemoveWithdrawalAddress(accID, withdrawalAddress, nonce);
     _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
@@ -153,16 +153,16 @@ contract AccountContract is HelperContract {
   function addTransferSubAccount(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    uint32 accID,
     address transferSubAccount,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
     _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
+    Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddTransferSubAccount(accountID, transferSubAccount, nonce);
+    bytes32 hash = hashAddTransferSubAccount(accID, transferSubAccount, nonce);
     _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 

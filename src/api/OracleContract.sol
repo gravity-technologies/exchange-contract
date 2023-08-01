@@ -6,7 +6,7 @@ import "./signature/generated/TransferSig.sol";
 import "../DataStructure.sol";
 import "../util/Address.sol";
 
-abstract contract OracleContract is HelperContract {
+abstract contract OracleContract {
   // TODO
   // 1. PRICING
   // get spot price
@@ -26,12 +26,12 @@ abstract contract OracleContract is HelperContract {
   // - Settlement tick: either eager or lazily update
 
   // TODO
-  function _getDerivPrice(uint128 id) internal pure returns (uint256) {
-    return uint256(id);
+  function _getDerivPrice(uint128 id) internal pure returns (uint64) {
+    return uint64(id);
   }
 
   // TODO
-  function _getInterestRate(uint128 id) internal pure returns (uint256) {
-    return uint256(id);
+  function _getInterestRate(uint128 id) internal pure returns (uint64) {
+    return uint64(id);
   }
 }

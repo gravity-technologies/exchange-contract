@@ -60,6 +60,7 @@ export const ConfigID = {
   PM_INITIAL_MARGIN_FACTOR: 16,
   PM_NET_SHORT_OPTION_MINIMUM: 17,
   ADMIN_RECOVERY_ADDRESS: 18,
+  FEE_SUB_ACCOUNT_ID: 19,
 }
 
 export const NumConfig = Object.keys(ConfigID).length

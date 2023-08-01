@@ -6,7 +6,6 @@ import "../DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../DataStructure.sol";
 import "../util/Address.sol";
-import "openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 // import "hardhat/console.sol";
 
@@ -44,10 +43,11 @@ contract ConfigContract is HelperContract {
    * 15 / PM_LONG_TERM_VEGA_POWER / Uint (4)
    * 16 / PM_INITIAL_MARGIN_FACTOR / Uint (4)
    * 17 / PM_NET_SHORT_OPTION_MINIMUM / Uint (4)
-   * 18 / ADMIN_RECOVERY_Uint / Address (2)
+   * 18 / ADMIN_RECOVERY_ADDRESS / Address (2)
    * 19 / FEE_SUB_ACCOUNT_ID / Address (2)
+   * 20 / PERP_FUNDING_RATE / Uint (4)
    */
-  uint256 private constant _CONFIG_TYPE = 0x22444444444444444440;
+  uint256 private constant _CONFIG_TYPE = 0x422444444444444444440;
 
   // ---------------- Events ----------------
   // event ConfigScheduledEvent(CfgID indexed configID, bytes32 value);

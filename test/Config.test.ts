@@ -109,15 +109,14 @@ describe("API - Config", function () {
 
       // schedule
       let ts = 1
-      const call = scheduleConfig(contract, grvt, ts, ts, ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100))
-      await expect(call).to.not.be.reverted
+      await scheduleConfig(contract, grvt, ts, ts, ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100))
 
       // Update,
       ts++
       // Fails: timestamp < than the timelock duration (1 day)
       await expectToThrowAsync(
         setConfig(contract, grvt, ts, ts, ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100)),
-        "config is still locked"
+        "config is locked"
       )
       // Success: timestamp > than the timelock duration (1 day)
       await setConfig(contract, grvt, 90000, ts, ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100))

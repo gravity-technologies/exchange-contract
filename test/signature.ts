@@ -10,6 +10,7 @@ interface Signature {
   r: Buffer
   s: Buffer
   v: number
+  nonce: number
 }
 
 export function genCreateSubAccountSig(
@@ -384,5 +385,6 @@ function sign(wallet: Wallet, msgParams: any): Signature {
     r: buf(r),
     s: buf(s),
     v,
+    nonce: randomInt(22021991),
   }
 }

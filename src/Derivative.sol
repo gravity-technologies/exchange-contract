@@ -25,19 +25,23 @@ struct Derivative {
   uint64 strikePrice;
 }
 
+// The type of each field in this struct have been extended from the one defined in https://github.com/gravity-technologies/smart-contract-interface/blob/main/state.go#L74C23-L74C23
+// This is to allow better packing of the struct in storage
 struct DerivativePosition {
   // The derivative contract held in this position
   uint128 id;
-  // Number of contracts held in this position
-  uint128 contractBalance;
+  // Number of contracts held in this position. This is uint64 in
+  // uint64 in contract interface, but extends to uint128 to fill half a slot in storage
+  int128 contractBalance;
   // The average entry price of the contracts held in this position
   // Used for computing unrealized P&L
   // This value experiences rounding errors, so it is not guaranteed to be accurate, use as an indicator only
   // Important to track on StateMachine to serve unrealized P&L queries, but not important to track on the
   // smart contract. Smart contract doesn't rely on this field for any logic
+  // uint64 in contract interface, but extends to uint128 to fill half a slot in storage
   uint128 averageEntryPrice;
   // (expressed in USD with 10 decimal points)
-  uint128 lastAppliedFundingIndex;
+  uint64 lastAppliedFundingIndex;
 }
 
 // Copied and modified from https://solidity-by-example.org/app/iterable-mapping/

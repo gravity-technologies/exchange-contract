@@ -16,6 +16,14 @@ enum AccountRecoveryType {
   SUB_ACCOUNT_SIGNERS
 }
 
+enum TimeInForce {
+  UNSPECIFIED,
+  GOOD_TILL_TIME,
+  ALL_OR_NONE,
+  IMMEDIATE_OR_CANCEL,
+  FILL_OR_KILL
+}
+
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
 // To check if user has a certain permission, just do a bitwise AND
@@ -38,6 +46,7 @@ struct Signature {
   uint8 v;
   // Timestamp after which this signature expires. Use 0 for no expiration.
   uint64 expiration;
+  uint32 nonce;
 }
 
 struct State {
@@ -45,7 +54,8 @@ struct State {
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
   // Session keys are used to auto sign trade on behalf of the user
-  mapping(address => SessionKey) sessionKeys;
+  mapping(address => address) sessionToSubAccount;
+  mapping(address => SessionKey) subAccountToSession;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
@@ -98,7 +108,7 @@ struct SubAccount {
   Currency quoteCurrency;
   // The total amount of base currency that the sub account possesses
   // Expressed in base currency decimal units
-  int64 balance;
+  int128 balance;
   // The total amount of base currency that the sub account has deposited, but not yet confirmed by L1 finality
   // Take this into account when liquidating a sub account
   // But do not take this into account when calculating the sub account's balance
@@ -232,35 +242,73 @@ enum ConfigID {
 }
 
 // --------------- Trade --------------
-struct TradePayload {
-  Trade trade;
-  uint32 nonce;
-}
-
 struct Trade {
   Order takerOrder;
   OrderMatch[] makerOrders;
 }
 
 struct Order {
-  uint32 subAccountID;
+  // The subaccount initiating the order
+  address subAccountID;
+  /// @dev No logic in contract related to this field
+  //If the order is a market order
+  // Market Orders do not have a limit price, and are always executed according to the maker order price.
+  // Market Orders must always be taker orders
   bool isMarket;
-  uint8 timeInForce;
+  /// @dev No logic in contract related to this field
+  // Four supported types of orders: GTT, IOC, AON, FOK
+  // PARTIAL EXECUTION = GTT / IOC - allows partial size execution on each leg
+  // FULL EXECUTION = AON / FOK - only allows full size execution on all legs
+  // TAKER ONLY = IOC / FOK - only allows taker orders
+  // MAKER OR TAKER = GTT / AON - allows maker or taker orders
+  // Exchange only supports (GTT, IOC, FOK)
+  // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
+  TimeInForce timeInForce;
+  // ONLY APPLICABLE WHEN TimeInForce = AON / FOK AND IsMarket = FALSE
+  // The limit price of the full order, expressed in USD Price.
+  // This is the total amount of base currency to pay/receive for all legs.
   uint64 limitPrice;
+  uint64 ocoLimitPrice;
+  // The taker fee percentage cap signed by the order.
+  // This is the maximum taker fee percentage the order sender is willing to pay for the order.
   uint32 takerFeePercentageCap;
+  // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
   uint32 makerFeePercentageCap;
+  /// @dev No logic in contract related to this field
+  // If True, Order must be a maker order. It has to fill the orderbook instead of match it.
+  // If False, Order can be either a maker or taker order.
+  //
+  // |               | Must Fill All | Can Fill Partial
+  // | Must Be Taker | FOK + False   | IOC + False
+  // | Can Be Either | AON + False   | GTC + False
+  // | Must Be Maker | AON + True    | GTC + True
   bool postOnly;
+  /// @dev No logic in contract related to this field
+  // If True, Order must reduce the position size, or be cancelled
   bool reduceOnly;
+  /// @dev No logic in contract related to this field
   bool isPayingBaseCurrency;
+  // The legs present in this order
+  // The legs must be sorted by Derivative: Instrument/Underlying/BaseCurrency/Expiration/StrikePrice
   OrderLeg[] legs;
+  uint32 nonce;
   Signature signature;
 }
 
 struct OrderLeg {
-  uint128 derivative;
+  uint128 derivID;
+  // The total number of derivative contracts to trade in this leg, expressed in derivative decimal units
   uint64 contractSize;
+  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE
+  // The limit price of the order leg, expressed in USD Price.
+  // This is the total amount of base currency to pay/receive for all legs.
   uint64 limitPrice;
+  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE AND IsOCO = TRUE
+  // If a OCO order is specified, this must contain the other limit price
+  // User must sign both limit prices, and activator is free to swap them depending on which trigger is activated
+  // The smart contract will always validate both limit prices, by arranging them in ascending order
   uint64 ocoLimitPrice;
+  // Specifies if the order leg is a buy or sell
   bool isBuyingContract;
 }
 
