@@ -39,21 +39,22 @@ contract HelperContract {
     bytes32 hash,
     Signature[] calldata sigs
   ) internal {
+    uint numSigs = sigs.length;
     // 1. Check that there are no duplicate signing key in the signatures
-    for (uint i = 0; i < sigs.length; i++)
-      for (uint j = i + 1; j < sigs.length; j++) {
+    for (uint i = 0; i < numSigs; i++)
+      for (uint j = i + 1; j < numSigs; j++) {
         require(sigs[i].signer != sigs[j].signer, "duplicate signing key");
       }
 
     // 2. Check that the signatures form a quorum
-    require(sigs.length >= quorum, "failed quorum");
+    require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
     require(!state.signatures.isExecuted[hash], "invalid transaction");
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     uint64 timestamp = state.timestamp;
-    for (uint i = 0; i < sigs.length; i++) {
+    for (uint i = 0; i < numSigs; i++) {
       require(addressExists(eligibleSigners, sigs[i].signer), "ineligible signer");
       _requireValidSig(timestamp, hash, sigs[i]);
     }
@@ -69,17 +70,36 @@ contract HelperContract {
   /// @dev Verify that a signature is valid with replay attack prevention
   /// To understand why require the payload hash to be unique, and not the signature, read
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
-  function _preventReplay(bytes32 payloadHash, Signature calldata sig) internal {
-    require(!state.signatures.isExecuted[payloadHash], "replayed payload");
-    _requireValidSig(state.timestamp, payloadHash, sig);
-    state.signatures.isExecuted[payloadHash] = true;
+  function _preventReplay(bytes32 hash, Signature calldata sig) internal {
+    require(!state.signatures.isExecuted[hash], "replayed payload");
+    _requireValidSig(state.timestamp, hash, sig);
+    state.signatures.isExecuted[hash] = true;
   }
 
   // Verify that a signature is valid. Caller need to prevent replay attack
-  function _requireValidSig(uint64 timestamp, bytes32 payloadHash, Signature calldata sig) internal pure {
+  function _requireValidSig(uint64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
     require(sig.expiration > 0 && sig.expiration > timestamp, "expired");
-    bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, payloadHash));
+    bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
+  }
+
+  // Check if the caller has certain permissions on a subaccount
+  function _requirePermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
+    Account storage acc = _requireAccount(sub.accountID);
+    if (addressExists(acc.admins, signer)) return;
+    uint64 signerAuthz = _getPermSet(sub, signer);
+    require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
+  }
+
+  // Return the permission set of the signerAddress in the subAccount
+  // If signerAddress not found in subaccount, return 0: no permission
+  function _getPermSet(SubAccount storage subAccount, address signerAddress) internal view returns (uint64) {
+    uint length = subAccount.authorizedSigners.length;
+    Signer[] storage signers = subAccount.authorizedSigners;
+    for (uint256 i = 0; i < length; i++) {
+      if (signers[i].signingKey == signerAddress) return signers[i].permission;
+    }
+    return 0;
   }
 }

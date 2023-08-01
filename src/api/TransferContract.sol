@@ -81,23 +81,23 @@ abstract contract TransferContract is PositionValueContract {
   ///
   /// @param timestamp Timestamp of the transaction
   /// @param txID Transaction ID
-  /// @param fromSubAcc Sub account to transfer from
-  /// @param toSubAcc Sub account to transfer to
+  /// @param fromSubID Sub account to transfer from
+  /// @param toSubID Sub account to transfer to
   /// @param numTokens Number of tokens to transfer
   /// @param nonce Nonce of the transaction
   /// @param sig Signature of the transaction
   function transfer(
     uint64 timestamp,
     uint64 txID,
-    address fromSubAcc,
-    address toSubAcc,
+    address fromSubID,
+    address toSubID,
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
-    SubAccount storage fromSub = _requireSubAccount(fromSubAcc);
-    SubAccount storage toSub = _requireSubAccount(toSubAcc);
+    SubAccount storage fromSub = _requireSubAccount(fromSubID);
+    SubAccount storage toSub = _requireSubAccount(toSubID);
 
     require(fromSub.accountID == toSub.accountID, "different account");
     require(fromSub.quoteCurrency == toSub.quoteCurrency, "different currency");
@@ -106,7 +106,7 @@ abstract contract TransferContract is PositionValueContract {
     // Account storage acc = _requireAccount( sub.accountID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashTransfer(fromSubAcc, toSubAcc, numTokens, nonce), sig);
+    _preventReplay(hashTransfer(fromSubID, toSubID, numTokens, nonce), sig);
     // ------- End of Signature Verification -------
 
     require(int64(numTokens) <= _getTotalValue(fromSub), "withdrawal amount > total value");

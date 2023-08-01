@@ -5,7 +5,7 @@ import "./HelperContract.sol";
 import "./OracleContract.sol";
 import "../DataStructure.sol";
 
-contract PositionValueContract is HelperContract, OracleContract {
+contract PositionValueContract is OracleContract {
   /// @dev return the total value of a sub account
   function _getTotalValue(SubAccount storage sub) internal view returns (int256) {
     return sub.balance + _getPositionsPnl(sub.perps) + _getPositionsPnl(sub.futures) + _getPositionsPnl(sub.options);
