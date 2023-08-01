@@ -6,6 +6,7 @@ import {AccountContract} from "./api/AccountContract.sol";
 import {AccountRecoveryContract} from "./api/AccountRecoveryContract.sol";
 import {SubAccountContract} from "./api/SubAccountContract.sol";
 
+// TODO: do we need to emit event for each of the account/subaccount CRUD?
 contract GRVTExchange is AccountContract, AccountRecoveryContract, SubAccountContract {
   State state;
 

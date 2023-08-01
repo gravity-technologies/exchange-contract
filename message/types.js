@@ -23,6 +23,10 @@ const Primary = KeyMirror({
   SetSubAccountMarginTypePayload: 0,
   SetSubAccountSignerPermissionsPayload: 0,
 
+  // Session Key
+  AddSessionKeyPayload: 0,
+  RemoveSessionKeyPayload: 0,
+
   // Trade
 })
 
@@ -229,6 +233,33 @@ const RecoverAccountAdminPayload = {
   },
 }
 
+// -------------- Session Keys --------------
+const AddSessionKeyPayload = {
+  primaryType: Primary.AddSessionKeyPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.AddSessionKeyPayload]: [
+      { name: "subAccountID", type: "address" },
+      { name: "sessionKey", type: "address" },
+      { name: "expiry", type: "uint64" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+const RemoveSessionKeyPayload = {
+  primaryType: Primary.RemoveSessionKeyPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.RemoveSessionKeyPayload]: [
+      { name: "subAccountID", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -251,4 +282,8 @@ module.exports = {
   RemoveSubAccountSignerPayload,
   SetSubAccountMarginTypePayload,
   SetSubAccountSignerPermissionsPayload,
+
+  // Session
+  AddSessionKeyPayload,
+  RemoveSessionKeyPayload,
 }

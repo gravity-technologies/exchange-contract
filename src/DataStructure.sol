@@ -55,9 +55,10 @@ struct Signature {
 }
 
 struct State {
-  // Accounts and Sessions
+  // Accounts
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
+  // Session keys are used to auto sign trade on behalf of the user
   mapping(address => SessionKey) sessionKeys;
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
@@ -201,15 +202,11 @@ struct RiskConfig {
 }
 
 struct SessionKey {
-  // If this is a session key, this is the main signing key that owns the session key
-  // The smart contract will validate that the session key only has a subset of the main signing key's SubAccountPermissions
-  // MainSigningKey ContractAddress
-
   // The session key that is tagged to the main signing key
-  address sessionKey;
+  address key;
   // The last timestamp that the signer can sign at
-  // We can apply a _max one day expiry on session keys
-  uint64 authorizationExpiry;
+  // We can apply a max one day expiry on session keys
+  uint64 expiry;
 }
 
 // See https://docs.google.com/document/d/1nXArbQMm-wbdRCoYR8FSPKCHZQxT8sAm8cjhq_16jSw/edit#heading=h.fqlr6k6zp9p2

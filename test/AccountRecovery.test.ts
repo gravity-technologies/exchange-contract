@@ -7,19 +7,14 @@ import {
   createSubAcc,
   recoverAccAdmin,
   removeAccGuardian,
-  removeSubSigner,
   setMultisigThreshold,
-  setSignerPermission,
-  setSubAccountMarginType,
 } from "./api"
 import {
   genAddAccountGuardianPayloadSig,
   genRecoverAccountAdminPayloadSig,
   genRemoveAccountGuardianPayloadSig,
-  genRemoveSubAccountSignerPayloadSig,
-  genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
-import { AccountRecoveryType, MarginType, Perm } from "./type"
+import { AccountRecoveryType } from "./type"
 import { expectToThrowAsync, nonce, wallet } from "./util"
 
 describe("API - AccountRecovery", function () {

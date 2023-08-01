@@ -32,3 +32,15 @@ function hashRemoveSigner(address subID, address signer, uint32 nonce) pure retu
   return keccak256(abi.encode(_DEL_SIGNER_H, subID, signer, nonce));
 }
 
+bytes32 constant _ADD_SESSION_KEY_PAYLOAD_TYPE_HASH = keccak256("AddSessionKeyPayload(address subAccountID,address sessionKey,uint64 expiry,uint32 nonce)");
+
+function getAddSessionKeyPayloadPacketHash(address subAccountID, address sessionKey, uint64 expiry, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_ADD_SESSION_KEY_PAYLOAD_TYPE_HASH, subAccountID, sessionKey, expiry, nonce));
+}
+
+bytes32 constant _REMOVE_SESSION_KEY_PAYLOAD_TYPE_HASH = keccak256("RemoveSessionKeyPayload(address subAccountID,uint32 nonce)");
+
+function getRemoveSessionKeyPayloadPacketHash(address subAccountID, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_REMOVE_SESSION_KEY_PAYLOAD_TYPE_HASH, subAccountID, nonce));
+}
+

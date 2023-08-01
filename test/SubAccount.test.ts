@@ -44,7 +44,7 @@ describe("API - SubAccount", function () {
       // Test
       const signer = wallet()
       ts++
-      addSubSigner(contract, ts, ts, admin, subID, signer.address, 1)
+      addSubSigner(contract, ts, ts, admin, subID, signer.address, Perm.Admin)
     })
 
     it("fails if subaccount doesn't exists", async function () {

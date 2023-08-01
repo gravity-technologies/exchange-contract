@@ -2,10 +2,12 @@ import { Contract, Wallet } from "ethers"
 import {
   genAddAccountAdminSig,
   genAddAccountGuardianPayloadSig,
+  genAddSessionKeySig,
   genAddSubAccountSignerPayloadSig,
   genCreateSubAccountSig,
   genRecoverAccountAdminPayloadSig,
   genRemoveAccountGuardianPayloadSig,
+  genRemoveSessionKeySig,
   genRemoveSubAccountSignerPayloadSig,
   genSetAccountMultiSigThresholdSig,
   genSetSubAccountMarginTypePayloadSig,
@@ -151,4 +153,25 @@ export async function recoverAccAdmin(
     genRecoverAccountAdminPayloadSig(txSigner, accountID, recoveryType, oldAdmin, recoveryAdmin, salt)
   )
   await contract.recoverAccountAdmin(ts, txID, accountID, recoveryType, oldAdmin, recoveryAdmin, salt, sigs)
+}
+
+// Session
+export async function addSessionKey(
+  contract: Contract,
+  txSigner: Wallet,
+  ts: number,
+  txID: number,
+  subID: string,
+  sessionKey: string,
+  expiry: number
+) {
+  const salt = nonce()
+  const sig = genAddSessionKeySig(txSigner, subID, sessionKey, expiry, salt)
+  await contract.addSessionKey(ts, txID, subID, sessionKey, expiry, salt, sig)
+}
+
+export async function removeSessionKey(contract: Contract, txSigner: Wallet, ts: number, txID: number, subID: string) {
+  const salt = nonce()
+  const sig = genRemoveSessionKeySig(txSigner, subID, salt)
+  await contract.removeSessionKey(ts, txID, subID, salt, sig)
 }

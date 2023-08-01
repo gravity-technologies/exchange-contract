@@ -175,4 +175,56 @@ abstract contract SubAccountContract is HelperContract {
     }
     return (0, false);
   }
+
+  function addSessionKey(
+    uint64 timestamp,
+    uint64 txID,
+    address subAccountID,
+    address sessionKey,
+    uint64 expiry,
+    uint32 nonce,
+    Signature calldata sig
+  ) external {
+    State storage state = _getState();
+    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(state, subAccountID);
+    Account storage acc = _requireAccount(state, sub.accountID);
+
+    require(expiry > timestamp, "invalid expiry");
+    // Cap the expiry to timestamp + maxSessionDurationInSec
+    uint64 cappedExpiry = min(expiry, timestamp + _MAX_SESSION_DURATION_NANO);
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = getAddSessionKeyPayloadPacketHash(subAccountID, sessionKey, expiry, nonce);
+    verify(state.signatures.isExecuted, timestamp, hash, sig);
+    // ------- End of Signature Verification -------
+
+    // Check that the signer owns the sub account
+    _requirePermission(acc, sub, sig.signer, SubAccountPermTrade);
+
+    // Overwrite any existing session key
+    state.sessionKeys[sig.signer] = SessionKey(sessionKey, cappedExpiry);
+  }
+
+  function removeSessionKey(
+    uint64 timestamp,
+    uint64 txID,
+    address subAccountID,
+    uint32 nonce,
+    Signature calldata sig
+  ) external {
+    State storage state = _getState();
+    checkAndUpdateTimestampAndTxID(state, timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(state, subAccountID);
+    Account storage acc = _requireAccount(state, sub.accountID);
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = getRemoveSessionKeyPayloadPacketHash(subAccountID, nonce);
+    verify(state.signatures.isExecuted, timestamp, hash, sig);
+    // ------- End of Signature Verification -------
+
+    // Check that the signer owns the sub account
+    _requirePermission(acc, sub, sig.signer, SubAccountPermTrade);
+    delete state.sessionKeys[sig.signer];
+  }
 }

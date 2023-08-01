@@ -266,6 +266,39 @@ export function genRecoverAccountAdminPayloadSig(
   })
 }
 
+// Session
+export function genAddSessionKeySig(
+  wallet: Wallet,
+  subAccountID: string,
+  sessionKey: string,
+  expiry: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.AddSessionKeyPayload,
+    message: {
+      subAccountID,
+      sessionKey,
+      expiry,
+      nonce,
+    },
+  })
+}
+
+export function genRemoveSessionKeySig(
+  wallet: Wallet,
+  subAccountID: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RemoveSessionKeyPayload,
+    message: {
+      subAccountID,
+      nonce,
+    },
+  })
+}
+
 function sign(wallet: Wallet, msgParams: any): Signature {
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
