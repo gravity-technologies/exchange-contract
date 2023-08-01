@@ -23,6 +23,13 @@ const Primary = KeyMirror({
   SetSubAccountMarginTypePayload: 0,
   SetSubAccountSignerPermissionsPayload: 0,
 
+  // Config
+  ScheduleConfigPayload: 0,
+  SetConfigPayload: 0,
+
+  // Session Key
+  AddSessionKeyPayload: 0,
+
   // Trade
 })
 
@@ -229,6 +236,46 @@ const RecoverAccountAdminPayload = {
   },
 }
 
+// Config
+const ScheduleConfigPayload = {
+  primaryType: Primary.ScheduleConfigPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.ScheduleConfigPayload]: [
+      { name: "key", type: "uint8" },
+      { name: "value", type: "bytes32" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+const SetConfigPayload = {
+  primaryType: Primary.SetConfigPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.SetConfigPayload]: [
+      { name: "key", type: "uint8" },
+      { name: "value", type: "bytes32" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+// -------------- Session Keys --------------
+const AddSessionKeyPayload = {
+  primaryType: Primary.AddSessionKeyPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.AddSessionKeyPayload]: [
+      { name: "sessionKey", type: "address" },
+      { name: "keyExpiry", type: "uint64" },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -251,4 +298,11 @@ module.exports = {
   RemoveSubAccountSignerPayload,
   SetSubAccountMarginTypePayload,
   SetSubAccountSignerPermissionsPayload,
+
+  // Config
+  ScheduleConfigPayload,
+  SetConfigPayload,
+
+  // Session
+  AddSessionKeyPayload,
 }

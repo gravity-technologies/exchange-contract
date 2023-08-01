@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {MarginType} from "../../../DataStructure.sol";
+import "../../../DataStructure.sol";
 
 // keccak256("SetSubAccountMarginTypePayload(address subAccountID,uint8 marginType,uint32 nonce)");
 bytes32 constant _SET_SUB_MARGIN_H = bytes32(0x178137bbe59243e5e269559ce483e30e48a0774adcfddd1c8ce0a894d1f7838a);
@@ -32,3 +32,9 @@ function hashRemoveSigner(address subID, address signer, uint32 nonce) pure retu
   return keccak256(abi.encode(_DEL_SIGNER_H, subID, signer, nonce));
 }
 
+// keccak256("AddSessionKeyPayload(address sessionKey,uint64 keyExpiry)");
+bytes32 constant _ADD_SESSION_KEY_H = bytes32(0x0b69f852130d50178374c92a4a2fffb7b2febbf99ad113833de090bc8489f493);
+
+function hashAddSessionKey(address key, uint64 keyExpiry) pure returns (bytes32) {
+  return keccak256(abi.encode(_ADD_SESSION_KEY_H, key, keyExpiry));
+}

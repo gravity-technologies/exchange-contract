@@ -39,3 +39,33 @@ export const Perm = {
   UpdateSignerPermission: 1 << 7,
   ChangeMarginType: 1 << 8,
 }
+
+export const ConfigID = {
+  UNSPECIFIED: 0,
+  SM_FUTURES_INITIAL_MARGIN: 1,
+  SM_FUTURES_MAINTENANCE_MARGIN: 2,
+  SM_FUTURES_VARIABLE_MARGIN: 3,
+  SM_OPTIONS_INITIAL_MARGIN_HIGH: 4,
+  SM_OPTIONS_INITIAL_MARGIN_LOW: 5,
+  SM_OPTIONS_MAINTENANCE_MARGIN_HIGH: 6,
+  SM_OPTIONS_MAINTENANCE_MARGIN_LOW: 7,
+  SM_OPTIONS_VARIABLE_MARGIN: 8,
+  PM_SPOT_MOVE: 9,
+  PM_VOL_MOVE_UP: 10,
+  PM_VOL_MOVE_DOWN: 11,
+  PM_SPOT_MOVE_EXTREME: 12,
+  PM_EXTREME_MOVE_DISCOUNT: 13,
+  PM_SHORT_TERM_VEGA_POWER: 14,
+  PM_LONG_TERM_VEGA_POWER: 15,
+  PM_INITIAL_MARGIN_FACTOR: 16,
+  PM_NET_SHORT_OPTION_MINIMUM: 17,
+  ADMIN_RECOVERY_ADDRESS: 18,
+}
+
+export const NumConfig = Object.keys(ConfigID).length
+
+export type ScheduleConfigEntry = {
+  lockEndTime: number
+  exists: number
+  value: string
+}

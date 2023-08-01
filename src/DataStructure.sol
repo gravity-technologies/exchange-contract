@@ -40,8 +40,8 @@ uint64 constant SubAccountPermWithdrawal = 1 << 2;
 uint64 constant SubAccountPermTransfer = 1 << 3;
 uint64 constant SubAccountPermTrade = 1 << 4;
 uint64 constant SubAccountPermAddSigner = 1 << 5;
-uint64 constant SubAccountPermRemoveSignerPermission = 1 << 6;
-uint64 constant SubAccountPermUpdateSigner = 1 << 7;
+uint64 constant SubAccountPermRemoveSigner = 1 << 6;
+uint64 constant SubAccountPermUpdateSignerPermission = 1 << 7;
 uint64 constant SubAccountPermChangeMarginType = 1 << 8;
 
 struct Signature {
@@ -55,23 +55,27 @@ struct Signature {
 }
 
 struct State {
-  // Accounts and Sessions
+  // Accounts
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
+  // Session keys are used to auto sign trade on behalf of the user
   mapping(address => SessionKey) sessionKeys;
+  // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
   SignatureState signatures;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
-  // Configuration
-  ConfigState config;
   // A Safety Module is created per quote + underlying currency pair
   mapping(Currency => mapping(Currency => SafetyModulePool)) safetyModule;
   // Latest Transaction time
   uint64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
+  // Config
+  mapping(ConfigID => bytes32) configs;
+  mapping(ConfigID => ScheduledConfigEntry) scheduledConfig;
+  mapping(ConfigID => ConfigTimelockRule[]) configTimelocks;
 }
 
 struct Account {
@@ -120,6 +124,30 @@ struct SubAccount {
   Signer[] authorizedSigners;
   // The timestamp that the sub account was last funded at
   uint64 lastAppliedFundingTimestamp;
+}
+
+// A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
+// Previous timelock entries will be overwritten.
+//
+// A SetConfig() call will remove the timelock entry from the state (for the config identifier).
+struct ScheduledConfigEntry {
+  // The timestamp at which the config will be unlocked
+  uint lockEndTime;
+  // The value the config will be set to when it is unlocked
+  bytes32 value;
+}
+
+struct ConfigTimelockRule {
+  // Number of nanoseconds the config is locked for if the rule applies
+  uint64 lockDuration;
+  // This only applies for Int Configs.
+  // It expresses the maximum delta (in the positive direction) that the config value
+  // can be changed by in order for this rule to apply
+  uint256 deltaPositive;
+  // This only applies for Int Configs.
+  // It expresses the maximum delta (in the negative direction) that the config value
+  // can be changed by in order for this rule to apply
+  uint256 deltaNegative;
 }
 
 struct Derivative {
@@ -181,35 +209,12 @@ struct SettledInstrument {
   uint32 expiration;
 }
 
-// TODO: align on the set of configs
-struct ConfigState {
-  // eg. 5% = 500bps = 50000 CentiBeeps
-  uint64 safetyModuleTargetInsuranceToDailyVolumeRatio;
-  uint64 safetyModuleLiquidationFee;
-  // This is the address of the gravity wallet that supports the recovery of the admin wallet
-  address gravityAdminRecoveryWallet;
-}
-
-// TODO: align on the set of configs
-struct RiskConfig {
-  // fxp 3.2
-  uint32[] spotMoves;
-  // fxp 3.2
-  uint32[] volMoves;
-  // discount
-  uint32 discount;
-}
-
 struct SessionKey {
-  // If this is a session key, this is the main signing key that owns the session key
-  // The smart contract will validate that the session key only has a subset of the main signing key's SubAccountPermissions
-  // MainSigningKey ContractAddress
-
   // The session key that is tagged to the main signing key
-  address sessionKey;
+  address key;
   // The last timestamp that the signer can sign at
-  // We can apply a _max one day expiry on session keys
-  uint64 authorizationExpiry;
+  // We can apply a max one day expiry on session keys
+  uint64 expiry;
 }
 
 // See https://docs.google.com/document/d/1nXArbQMm-wbdRCoYR8FSPKCHZQxT8sAm8cjhq_16jSw/edit#heading=h.fqlr6k6zp9p2
@@ -223,4 +228,39 @@ struct SafetyModulePool {
   // Withdrawers receive Quote Currency equivalent to (LpTokensReturned * TotalBalance / TotalLpTokens)
   uint64 totalLpTokens;
   uint64 totalBalance;
+}
+
+enum ConfigType {
+  UNSPECIFIED,
+  BOOL,
+  ADDRESS,
+  INT,
+  UINT
+}
+
+// See https://docs.google.com/spreadsheets/d/1MEp2BMtBjkdfTn7WXc_egh5ucc1UK8v6ibNWUuzW6AI/edit#gid=0 for the most up to date list of configs
+enum ConfigID {
+  UNSPECIFIED,
+  // SIMPLE MARGIN CONFIGS
+  SM_FUTURES_INITIAL_MARGIN,
+  SM_FUTURES_MAINTENANCE_MARGIN,
+  SM_FUTURES_VARIABLE_MARGIN,
+  SM_OPTIONS_INITIAL_MARGIN_HIGH,
+  SM_OPTIONS_INITIAL_MARGIN_LOW,
+  SM_OPTIONS_MAINTENANCE_MARGIN_HIGH,
+  SM_OPTIONS_MAINTENANCE_MARGIN_LOW,
+  SM_OPTIONS_VARIABLE_MARGIN,
+  // PORTFOLIO MARGIN CONFIGS
+  PM_SPOT_MOVE,
+  PM_VOL_MOVE_UP,
+  PM_VOL_MOVE_DOWN,
+  PM_SPOT_MOVE_EXTREME,
+  PM_EXTREME_MOVE_DISCOUNT,
+  PM_SHORT_TERM_VEGA_POWER,
+  PM_LONG_TERM_VEGA_POWER,
+  PM_INITIAL_MARGIN_FACTOR,
+  PM_NET_SHORT_OPTION_MINIMUM,
+  // ADMIN
+  ADMIN_RECOVERY_ADDRESS,
+  FEE_SUB_ACCOUNT_ID // the sub account that collects fees
 }
