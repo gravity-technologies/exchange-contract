@@ -6,7 +6,6 @@ import {verify} from "./signature/Common.sol";
 import {SubAccount, Account, State, Account, Signature, SubAccount, Currency, MarginType} from "../DataStructure.sol";
 import {addAddress, addressExists, removeAddress} from "../util/Address.sol";
 import {checkAndUpdateTimestampAndTxID, getAccountAndSubAccountByID, getAccountByID} from "../util/Util.sol";
-import {ECDSA} from "openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 abstract contract AccountContract {
   function _getState() internal virtual returns (State storage);
@@ -68,7 +67,7 @@ abstract contract AccountContract {
     State storage state = _getState();
     checkAndUpdateTimestampAndTxID(state, timestamp, txID);
     Account storage acc = getAccountByID(state, accountID);
-    require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "multiSigThreshold is invalid");
+    require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "invalid threshold");
 
     // ---------- Signature Verification -----------
     _requireQuorum(acc.multiSigThreshold, signatures.length);

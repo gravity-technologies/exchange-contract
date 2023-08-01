@@ -100,7 +100,7 @@ function generatePacketHashGetters(types, typeName, fields, packetHashGetters) {
         if (arrayMatch) {
             var basicType = arrayMatch[1];
             if (types.types[basicType]) {
-                packetHashGetters.push("\nfunction ".concat(packetHashGetterName(field.type), " (").concat(field.type, " memory _input) pure returns (bytes32) {\n  bytes memory encoded;\n  // HELLO\n  for (uint i = 0; i < _input.length; i++) {\n    encoded = abi.encodePacked(encoded, ").concat(packetHashGetterName(basicType), "(_input[i]));\n  }\n  return keccak256(encoded);\n}\n"));
+                packetHashGetters.push("\nfunction ".concat(packetHashGetterName(field.type), " (").concat(field.type, " memory _input) pure returns (bytes32) {\n  bytes memory encoded;\n  for (uint i = 0; i < _input.length; i++) {\n    encoded = abi.encodePacked(encoded, ").concat(packetHashGetterName(basicType), "(_input[i]));\n  }\n  return keccak256(encoded);\n}\n"));
             }
             else {
                 packetHashGetters.push("\nfunction ".concat(packetHashGetterName(field.type), " (").concat(field.type, " memory _input) pure returns (bytes32) {\n  return keccak256(abi.encodePacked(_input));\n}\n"));
