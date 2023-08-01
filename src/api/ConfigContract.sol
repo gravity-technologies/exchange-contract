@@ -148,8 +148,8 @@ contract ConfigContract is HelperContract {
     // If the lock duration is 0, config can be changed immediately without further check.
     // Otherwise, this config value must match the scheduled config value
     if (_getLockDuration(key, value) != 0) {
-      require(schedule.value == value, "config must match scheduled value");
-      require(schedule.lockEndTime <= timestamp, "config is still locked");
+      require(schedule.value == value, "mismatch scheduled");
+      require(schedule.lockEndTime <= timestamp, "config is locked");
     }
     state.configs[key] = value;
   }
@@ -198,7 +198,7 @@ contract ConfigContract is HelperContract {
     }
 
     // delta is out of range
-    require(false, "config change out of allowed range");
+    require(false, "out of range");
 
     // Should never reach here
     return 0;

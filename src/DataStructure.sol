@@ -1,27 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import "./Derivative.sol";
+
 enum MarginType {
   UNSPECIFIED,
   ISOLATED,
   SIMPLE_CROSS_MARGIN,
   PORTFOLIO_CROSS_MARGIN
-}
-
-enum Currency {
-  UNSPECIFIED,
-  USDC,
-  USDT,
-  ETH,
-  BTC
-}
-
-enum Instrument {
-  UNSPECIFIED,
-  PERPS,
-  FUTURES,
-  CALL,
-  PUT
 }
 
 enum AccountRecoveryType {
@@ -119,7 +105,9 @@ struct SubAccount {
   // Expressed in base currency decimal units
   uint64 pendingDeposits;
   // Mapping from the uint128 representation to derivate position
-  DerivativePosition[] derivativePositions;
+  DerivativeCollection options;
+  DerivativeCollection futures;
+  DerivativeCollection perps;
   // Signers who are authorized to trade on this sub account
   Signer[] authorizedSigners;
   // The timestamp that the sub account was last funded at
@@ -148,29 +136,6 @@ struct ConfigTimelockRule {
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
   uint256 deltaNegative;
-}
-
-struct Derivative {
-  Instrument instrument;
-  Currency underlying;
-  Currency quote;
-  uint32 expiration;
-  uint64 strikePrice;
-}
-
-struct DerivativePosition {
-  // The derivative contract held in this position
-  Derivative derivative;
-  // Number of contracts held in this position
-  int64 contractBalance;
-  // The average entry price of the contracts held in this position
-  // Used for computing unrealized P&L
-  // This value experiences rounding errors, so it is not guaranteed to be accurate, use as an indicator only
-  // Important to track on StateMachine to serve unrealized P&L queries, but not important to track on the
-  // smart contract. Smart contract doesn't rely on this field for any logic
-  uint64 averageEntryPrice;
-  // (expressed in USD with 10 decimal points)
-  uint64 lastAppliedFundingIndex;
 }
 
 struct Signer {
@@ -230,6 +195,7 @@ struct SafetyModulePool {
   uint64 totalBalance;
 }
 
+// --------------- Config --------------
 enum ConfigType {
   UNSPECIFIED,
   BOOL,
@@ -263,4 +229,44 @@ enum ConfigID {
   // ADMIN
   ADMIN_RECOVERY_ADDRESS,
   FEE_SUB_ACCOUNT_ID // the sub account that collects fees
+}
+
+// --------------- Trade --------------
+struct TradePayload {
+  Trade trade;
+  uint32 nonce;
+}
+
+struct Trade {
+  Order takerOrder;
+  OrderMatch[] makerOrders;
+}
+
+struct Order {
+  uint32 subAccountID;
+  bool isMarket;
+  uint8 timeInForce;
+  uint64 limitPrice;
+  uint32 takerFeePercentageCap;
+  uint32 makerFeePercentageCap;
+  bool postOnly;
+  bool reduceOnly;
+  bool isPayingBaseCurrency;
+  OrderLeg[] legs;
+  Signature signature;
+}
+
+struct OrderLeg {
+  uint128 derivative;
+  uint64 contractSize;
+  uint64 limitPrice;
+  uint64 ocoLimitPrice;
+  bool isBuyingContract;
+}
+
+struct OrderMatch {
+  Order makerOrder;
+  uint64[] numContractsMatched;
+  uint32 takerFeePercentageCharged;
+  uint32 makerFeePercentageCharged;
 }

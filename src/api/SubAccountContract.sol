@@ -33,7 +33,7 @@ contract SubAccountContract is HelperContract {
     // To change margin type requires that there's no OPEN position
     // See Binance: https://www.binance.com/en/support/faq/how-to-switch-between-cross-margin-mode-and-isolated-margin-mode-360038075852#:~:text=You%20are%20not%20allowed%20to%20change%20the%20margin%20mode%20if%20you%20have%20any%20open%20orders%20or%20positions%3B
     // TODO: revise this to if subaccount is liquidatable under new margin model. If it is not, we allow it through.
-    require(sub.derivativePositions.length == 0, "open positions exist");
+    require(sub.options.keys.length + sub.futures.keys.length + sub.perps.keys.length == 0, "open positions exist");
     _requirePermission(acc, sub, sig.signer, SubAccountPermChangeMarginType);
 
     // ---------- Signature Verification -----------

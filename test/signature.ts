@@ -315,6 +315,62 @@ export function genRemoveSessionKeySig(wallet: Wallet): Signature {
   return genAddSessionKeySig(wallet, "0x12345", 10000000)
 }
 
+// Trade
+// Transfer
+export function genDepositSig(
+  wallet: Wallet,
+  fromEthAddress: string,
+  toSubaccount: string,
+  numTokens: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.DepositPayload,
+    message: {
+      fromEthAddress,
+      toSubaccount,
+      numTokens,
+      nonce,
+    },
+  })
+}
+
+export function genWithdrawalSig(
+  wallet: Wallet,
+  fromSubaccount: string,
+  toEthAddress: string,
+  numTokens: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.WithdrawalPayload,
+    message: {
+      fromSubaccount,
+      toEthAddress,
+      numTokens,
+      nonce,
+    },
+  })
+}
+
+export function genTransferSig(
+  wallet: Wallet,
+  fromSubaccount: string,
+  toSubaccount: string,
+  numTokens: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.TransferPayload,
+    message: {
+      fromSubaccount,
+      toSubaccount,
+      numTokens,
+      nonce,
+    },
+  })
+}
+
 function sign(wallet: Wallet, msgParams: any): Signature {
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
