@@ -27,7 +27,10 @@ const Primary = KeyMirror({
   AddSessionKeyPayload: 0,
   RemoveSessionKeyPayload: 0,
 
-  // Trade
+  // Transfer
+  DepositPayload: 0,
+  TransferPayload: 0,
+  WithdrawalPayload: 0,
 })
 
 // -------------- Account --------------
@@ -260,6 +263,44 @@ const RemoveSessionKeyPayload = {
   },
 }
 
+// -------------- Transfer --------------
+const DepositPayload = {
+  primaryType: Primary.DepositPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.DepositPayload]: [
+      { name: "fromEthAddress", type: "address" },
+      { name: "toSubAccount", type: "address" },
+      { name: "numTokens", type: "uint64" },
+    ],
+  },
+}
+const WithdrawalPayload = {
+  primaryType: Primary.WithdrawalPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.WithdrawalPayload]: [
+      { name: "fromSubAccount", type: "address" },
+      { name: "toEthAddress", type: "address" },
+      { name: "numTokens", type: "uint64" },
+    ],
+  },
+}
+const TransferPayload = {
+  primaryType: Primary.TransferPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.TransferPayload]: [
+      { name: "fromSubAccount", type: "address" },
+      { name: "toSubAccount", type: "address" },
+      { name: "numTokens", type: "uint64" },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -286,4 +327,9 @@ module.exports = {
   // Session
   AddSessionKeyPayload,
   RemoveSessionKeyPayload,
+
+  // Transfer
+  DepositPayload,
+  TransferPayload,
+  WithdrawalPayload,
 }
