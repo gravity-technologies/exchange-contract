@@ -1,5 +1,5 @@
-const KeyMirror = require('keymirror')
-const { EIP712Domain, domain } = require('./common.js')
+const KeyMirror = require("keymirror")
+const { EIP712Domain, domain } = require("./common.js")
 
 const Primary = KeyMirror({
   // Account
@@ -15,6 +15,7 @@ const Primary = KeyMirror({
   // Account Recovery
   AddAccountGuardianPayload: 0,
   RemoveAccountGuardianPayload: 0,
+  RecoverAccountAdminPayload: 0,
 
   // SubAccount
   AddSubAccountSignerPayload: 0,
@@ -32,11 +33,11 @@ const CreateSubAccountPayload = {
   types: {
     EIP712Domain,
     [Primary.CreateSubAccountPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'subAccountID', type: 'address' },
-      { name: 'quoteCurrency', type: 'uint8' },
-      { name: 'marginType', type: 'uint8' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "subAccountID", type: "address" },
+      { name: "quoteCurrency", type: "uint8" },
+      { name: "marginType", type: "uint8" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -47,9 +48,9 @@ const SetAccountMultiSigThresholdPayload = {
   types: {
     EIP712Domain,
     [Primary.SetAccountMultiSigThresholdPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'multiSigThreshold', type: 'uint8' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "multiSigThreshold", type: "uint8" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -60,9 +61,9 @@ const AddAccountAdminPayload = {
   types: {
     EIP712Domain,
     [Primary.AddAccountAdminPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'signer', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -73,9 +74,9 @@ const RemoveAccountAdminPayload = {
   types: {
     EIP712Domain,
     [Primary.RemoveAccountAdminPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'signer', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -86,9 +87,9 @@ const AddWithdrawalAddressPayload = {
   types: {
     EIP712Domain,
     [Primary.AddWithdrawalAddressPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'withdrawalAddress', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "withdrawalAddress", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -99,9 +100,9 @@ const RemoveWithdrawalAddressPayload = {
   types: {
     EIP712Domain,
     [Primary.RemoveWithdrawalAddressPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'withdrawalAddress', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "withdrawalAddress", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -112,9 +113,9 @@ const AddTransferSubAccountPayload = {
   types: {
     EIP712Domain,
     [Primary.AddTransferSubAccountPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'transferSubAccount', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "transferSubAccount", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -125,35 +126,9 @@ const RemoveTransferSubAccountPayload = {
   types: {
     EIP712Domain,
     [Primary.RemoveTransferSubAccountPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'transferSubAccount', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
-    ],
-  },
-}
-
-const AddAccountGuardianPayload = {
-  primaryType: Primary.AddAccountGuardianPayload,
-  domain,
-  types: {
-    EIP712Domain,
-    [Primary.AddAccountGuardianPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'signer', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
-    ],
-  },
-}
-
-const RemoveAccountGuardianPayload = {
-  primaryType: Primary.RemoveAccountGuardianPayload,
-  domain,
-  types: {
-    EIP712Domain,
-    [Primary.RemoveAccountGuardianPayload]: [
-      { name: 'accountID', type: 'uint32' },
-      { name: 'signer', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "accountID", type: "uint32" },
+      { name: "transferSubAccount", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -165,9 +140,9 @@ const SetSubAccountMarginTypePayload = {
   types: {
     EIP712Domain,
     [Primary.SetSubAccountMarginTypePayload]: [
-      { name: 'subAccountID', type: 'address' },
-      { name: 'marginType', type: 'uint8' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "subAccountID", type: "address" },
+      { name: "marginType", type: "uint8" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -178,10 +153,10 @@ const AddSubAccountSignerPayload = {
   types: {
     EIP712Domain,
     [Primary.AddSubAccountSignerPayload]: [
-      { name: 'subAccountID', type: 'address' },
-      { name: 'signer', type: 'address' },
-      { name: 'permissions', type: 'uint16' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "subAccountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "permissions", type: "uint16" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -191,10 +166,10 @@ const SetSubAccountSignerPermissionsPayload = {
   types: {
     EIP712Domain,
     [Primary.SetSubAccountSignerPermissionsPayload]: [
-      { name: 'subAccountID', type: 'address' },
-      { name: 'signer', type: 'address' },
-      { name: 'permissions', type: 'uint64' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "subAccountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "permissions", type: "uint64" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -205,9 +180,51 @@ const RemoveSubAccountSignerPayload = {
   types: {
     EIP712Domain,
     [Primary.RemoveSubAccountSignerPayload]: [
-      { name: 'subAccountID', type: 'address' },
-      { name: 'signer', type: 'address' },
-      { name: 'nonce', type: 'uint32' },
+      { name: "subAccountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+// Account Recovery
+const AddAccountGuardianPayload = {
+  primaryType: Primary.AddAccountGuardianPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.AddAccountGuardianPayload]: [
+      { name: "accountID", type: "uint32" },
+      { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+const RemoveAccountGuardianPayload = {
+  primaryType: Primary.RemoveAccountGuardianPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.RemoveAccountGuardianPayload]: [
+      { name: "accountID", type: "uint32" },
+      { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+const RecoverAccountAdminPayload = {
+  primaryType: Primary.RecoverAccountAdminPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.RecoverAccountAdminPayload]: [
+      { name: "accountID", type: "uint32" },
+      { name: "recoveryType", type: "uint8" },
+      { name: "oldAdmin", type: "address" },
+      { name: "recoveryAdmin", type: "address" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
@@ -227,6 +244,7 @@ module.exports = {
   // Account Recovery
   AddAccountGuardianPayload,
   RemoveAccountGuardianPayload,
+  RecoverAccountAdminPayload,
 
   // SubAccount
   AddSubAccountSignerPayload,
