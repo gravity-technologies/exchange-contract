@@ -31,6 +31,10 @@ const Primary = KeyMirror({
   AddSessionKeyPayload: 0,
 
   // Trade
+
+  // Safety Module
+  DepositIntoSafetyModulePayload: 0,
+  WithdrawFromSafetyModulePayload: 0,
 })
 
 // -------------- Account --------------
@@ -276,6 +280,35 @@ const AddSessionKeyPayload = {
   },
 }
 
+// -------------- Safety Module --------------
+const DepositIntoSafetyModulePayload = {
+  primaryType: Primary.DepositIntoSafetyModulePayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.DepositIntoSafetyModulePayload]: [
+      { name: "subAccountID", type: "address" },
+      { name: "quote", type: "uint8" },
+      { name: "underlying", type: "uint8" },
+      { name: "numTokens", type: "uint64" },
+    ],
+  },
+}
+
+const WithdrawFromSafetyModulePayload = {
+  primaryType: Primary.WithdrawFromSafetyModulePayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.WithdrawFromSafetyModulePayload]: [
+      { name: "subAccountID", type: "address" },
+      { name: "quote", type: "uint8" },
+      { name: "underlying", type: "uint8" },
+      { name: "numTokens", type: "uint64" },
+    ],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -305,4 +338,8 @@ module.exports = {
 
   // Session
   AddSessionKeyPayload,
+
+  // Safety Module
+  DepositIntoSafetyModulePayload,
+  WithdrawFromSafetyModulePayload,
 }

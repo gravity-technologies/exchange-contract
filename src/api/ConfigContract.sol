@@ -6,7 +6,6 @@ import "../DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../DataStructure.sol";
 import "../util/Address.sol";
-import "openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 // import "hardhat/console.sol";
 
