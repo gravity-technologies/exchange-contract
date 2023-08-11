@@ -17,7 +17,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == 0, "subaccount already exists");
@@ -61,7 +61,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "invalid threshold");
 
@@ -81,7 +81,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
@@ -100,7 +100,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
@@ -119,7 +119,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
@@ -138,7 +138,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
@@ -158,7 +158,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
@@ -177,7 +177,7 @@ contract AccountContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------

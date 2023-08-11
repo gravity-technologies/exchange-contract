@@ -11,7 +11,9 @@ contract HelperContract {
   // precomputed value for keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVTEx")), keccak256(bytes("0")), 0, address(0)));
   bytes32 private constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
 
-  function _setTimestampAndTxID(uint64 timestamp, uint64 txID) internal {
+  /// @dev set the system timestamp and last transactionID.
+  /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
+  function _setSequence(uint64 timestamp, uint64 txID) internal {
     require(timestamp > state.timestamp, "invalid timestamp");
     require(txID == state.lastTxID + 1, "invalid txID");
     state.timestamp = timestamp;

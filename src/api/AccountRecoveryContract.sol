@@ -18,7 +18,7 @@ contract AccountRecoveryContract is HelperContract {
     // Check that
     // - all signatures belong to admins
     // - quorum
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
@@ -37,7 +37,7 @@ contract AccountRecoveryContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
@@ -68,7 +68,7 @@ contract AccountRecoveryContract is HelperContract {
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     require(addressExists(acc.admins, oldAdmin), "admin does not exist");
