@@ -106,8 +106,7 @@ contract SubAccountContract is HelperContract {
     _requireUpsertSigner(acc, sub, sig.signer, perms, SubAccountPermUpdateSignerPermission);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashSetSignerPermissions(subID, signer, perms, nonce);
-    _preventReplay(hash, sig);
+    _preventReplay(hashSetSignerPermissions(subID, signer, perms, nonce), sig);
     // ------- End of Signature Verification -------
 
     // Update permission
