@@ -104,7 +104,7 @@ contract ConfigContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
     require(sig.signer == _getAddressCfg(CfgID.ADMIN_RECOVERY_ADDRESS), "unauthorized");
@@ -133,7 +133,7 @@ contract ConfigContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
     require(sig.signer == _getAddressCfg(CfgID.ADMIN_RECOVERY_ADDRESS), "unauthorized");

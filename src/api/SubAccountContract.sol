@@ -25,7 +25,7 @@ contract SubAccountContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
     Account storage acc = _requireAccount(sub.accountID);
 
@@ -67,7 +67,7 @@ contract SubAccountContract is HelperContract {
     // new signer permission is valid, and is a subset of current signer permission
     // signature is valid
     // caller owns the account/subaccount
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subID);
     Account storage acc = _requireAccount(sub.accountID);
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAddSigner);
@@ -100,7 +100,7 @@ contract SubAccountContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subID);
     Account storage acc = _requireAccount(sub.accountID);
     _requireUpsertSigner(acc, sub, sig.signer, perms, SubAccountPermUpdateSignerPermission);
@@ -133,7 +133,7 @@ contract SubAccountContract is HelperContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
     Account storage acc = _requireAccount(sub.accountID);
 
@@ -218,7 +218,7 @@ contract SubAccountContract is HelperContract {
     uint64 keyExpiry,
     Signature calldata sig
   ) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
 
     require(keyExpiry > timestamp, "invalid expiry");
     // Cap the expiry to timestamp + maxSessionDurationInSec
@@ -240,7 +240,7 @@ contract SubAccountContract is HelperContract {
   /// @param txID The transaction ID of the transaction
   /// @param signer The address of the signer
   function removeSessionKey(uint64 timestamp, uint64 txID, address signer) external {
-    _setTimestampAndTxID(timestamp, txID);
+    _setSequence(timestamp, txID);
     delete state.sessionKeys[signer];
   }
 
