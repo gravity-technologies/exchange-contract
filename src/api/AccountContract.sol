@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {HelperContract} from "./HelperContract.sol";
-import {hashAddAccountAdmin, hashAddTransferSubAccount, hashAddWithdrawalAddress, hashCreateSubAccount, hashRemoveAccountAdmin, hashRemoveTransferSubAccount, hashRemoveWithdrawalAddress, hashSetMultiSigThreshold} from "./signature/generated/AccountSig.sol";
-import {SubAccount, Account, State, Account, Signature, SubAccount, Currency, MarginType} from "../DataStructure.sol";
-import {addAddress, addressExists, removeAddress} from "../util/Address.sol";
+import "./HelperContract.sol";
+import "./signature/generated/AccountSig.sol";
+import "../DataStructure.sol";
+import "../util/Address.sol";
 
-abstract contract AccountContract is HelperContract {
-  function _getState() internal virtual returns (State storage);
-
+contract AccountContract is HelperContract {
   function createSubAccount(
     uint64 timestamp,
     uint64 txID,
@@ -17,10 +15,9 @@ abstract contract AccountContract is HelperContract {
     Currency quoteCurrency,
     MarginType marginType,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
+    _setTimestampAndTxID(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == 0, "subaccount already exists");
@@ -28,12 +25,12 @@ abstract contract AccountContract is HelperContract {
     // ---------- Signature Verification -----------
     bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
     if (acc.id == 0) {
-      require(signatures.length > 0, "no signature");
-      for (uint i = 0; i < signatures.length; i++) {
-        _preventHashReplay(state, hash, signatures[i]);
+      require(sigs.length > 0, "no signature");
+      for (uint i = 0; i < sigs.length; i++) {
+        _preventHashReplay(hash, sigs[i]);
       }
     } else {
-      _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+      _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     }
     // ------- End of Signature Verification -------
 
@@ -51,7 +48,7 @@ abstract contract AccountContract is HelperContract {
       acc.id = accountID;
       acc.multiSigThreshold = 1;
       // the first account admins is the signer of the first signature
-      acc.admins.push(signatures[0].signer);
+      acc.admins.push(sigs[0].signer);
       acc.subAccounts.push(subAccountID);
     }
   }
@@ -62,16 +59,15 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     uint8 multiSigThreshold,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "invalid threshold");
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     acc.multiSigThreshold = multiSigThreshold;
@@ -83,15 +79,14 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     address signer,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddAccountAdmin(accountID, signer, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     addAddress(acc.admins, signer);
@@ -103,15 +98,14 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     address signer,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashRemoveAccountAdmin(accountID, signer, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     removeAddress(acc.admins, signer, true);
@@ -123,15 +117,14 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     address withdrawalAddress,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     addAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress);
@@ -143,17 +136,17 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     address withdrawalAddress,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
+    // TODO: check if we need to maintain at least 1 withdrawal address
     removeAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress, false);
   }
 
@@ -163,15 +156,14 @@ abstract contract AccountContract is HelperContract {
     uint32 accountID,
     address transferSubAccount,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accountID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddTransferSubAccount(accountID, transferSubAccount, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     addAddress(acc.onboardedTransferSubAccounts, transferSubAccount);
@@ -183,15 +175,14 @@ abstract contract AccountContract is HelperContract {
     uint32 accID,
     address subAcc,
     uint32 nonce,
-    Signature[] calldata signatures
+    Signature[] calldata sigs
   ) external {
-    State storage state = _getState();
-    _setTimestampAndTxID(state, timestamp, txID);
-    Account storage acc = _requireAccount(state, accID);
+    _setTimestampAndTxID(timestamp, txID);
+    Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashRemoveTransferSubAccount(accID, subAcc, nonce);
-    _requireSignatureQuorum(state, acc.admins, acc.multiSigThreshold, hash, signatures);
+    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     removeAddress(acc.onboardedTransferSubAccounts, subAcc, false);

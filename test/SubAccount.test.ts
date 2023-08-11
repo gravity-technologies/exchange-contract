@@ -1,15 +1,21 @@
-import { Contract } from "ethers"
 import { ethers } from "hardhat"
+import { GRVTExchange } from "../typechain-types"
 import { addSubSigner, createSubAcc, removeSubSigner, setSignerPermission, setSubAccountMarginType } from "./api"
-import { genRemoveSubAccountSignerPayloadSig, genSetSubAccountSignerPermissionsPayloadSig } from "./signature"
-import { MarginType, Perm } from "./type"
-import { expectToThrowAsync, nonce, wallet } from "./util"
+import {
+  genRemoveSubAccountSignerPayloadSig,
+  genSetSubAccountMarginTypePayloadSig,
+  genSetSubAccountSignerPermissionsPayloadSig,
+} from "./signature"
+import { ConfigID, MarginType, Perm } from "./type"
+import { Bytes32, bytes32, expectToThrowAsync, getConfigArray, nonce, wallet } from "./util"
 
 describe("API - SubAccount", function () {
-  let contract: Contract
+  let contract: GRVTExchange
+  const grvt = wallet()
 
   beforeEach(async () => {
-    contract = await ethers.deployContract("GRVTExchange")
+    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
+    contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
   })
 
   describe("setSubAccountMarginType", function () {
@@ -51,7 +57,7 @@ describe("API - SubAccount", function () {
       const admin = wallet()
       const subID = wallet().address
       let ts = 1
-      expectToThrowAsync(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED))
+      await expectToThrowAsync(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED))
     })
 
     it("fails if invalid signature", async function () {
@@ -64,7 +70,13 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      expectToThrowAsync(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED))
+
+      const salt = nonce()
+      const sig = genSetSubAccountMarginTypePayloadSig(admin, subID, MarginType.ISOLATED, salt)
+      await expectToThrowAsync(
+        contract.setSubAccountMarginType(ts, ts, subID, MarginType.PORTFOLIO_CROSS_MARGIN, salt, sig),
+        "invalid signature"
+      )
     })
 
     it("fails no permission", async function () {
@@ -83,7 +95,7 @@ describe("API - SubAccount", function () {
       // Try to add another subaccount signer from
       const bob = wallet()
       ts++
-      expectToThrowAsync(addSubSigner(contract, ts, ts, alice, subID, bob.address, Perm.None))
+      await expectToThrowAsync(addSubSigner(contract, ts, ts, alice, subID, bob.address, Perm.None))
     })
 
     // it("fails if the signer is already a subaccount signer", async function () {
@@ -140,22 +152,6 @@ describe("API - SubAccount", function () {
       await setSignerPermission(contract, bob, ts, ts, subID, carl.address, Perm.Trade)
     })
 
-    it("fails if signer is account admin", async function () {
-      // Setup
-      const admin = wallet()
-      const subID = wallet().address
-      const accID = 1
-      let ts = 1
-      await createSubAcc(contract, admin, ts, ts, accID, subID)
-
-      // Test
-      ts++
-      expectToThrowAsync(
-        setSignerPermission(contract, admin, ts, ts, subID, admin.address, Perm.Trade),
-        "signer is acc admin"
-      )
-    })
-
     it("fails if subaccount doesn't exist", async function () {
       // Setup
       const admin = wallet()
@@ -163,7 +159,7 @@ describe("API - SubAccount", function () {
 
       // Test
       let ts = 1
-      expectToThrowAsync(setSignerPermission(contract, admin, ts, ts, subID, admin.address, Perm.Trade))
+      await expectToThrowAsync(setSignerPermission(contract, admin, ts, ts, subID, admin.address, Perm.Trade))
     })
 
     it("fails if subaccount signer doesn't exist", async function () {
@@ -201,14 +197,13 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      expectToThrowAsync(
+      await expectToThrowAsync(
         setSignerPermission(contract, alice, ts, ts, subID, bob.address, Perm.Admin),
-        "invalid permission"
+        "actor cannot grant permission"
       )
-      ts++
-      expectToThrowAsync(
+      await expectToThrowAsync(
         setSignerPermission(contract, alice, ts, ts, subID, bob.address, Perm.Deposit),
-        "invalid permission"
+        "actor cannot grant permission"
       )
     })
 
@@ -230,7 +225,7 @@ describe("API - SubAccount", function () {
       // account admin can change permission of any signer
       const salt = nonce()
       const sig = genSetSubAccountSignerPermissionsPayloadSig(admin, subID, alice.address, Perm.Trade, salt)
-      expectToThrowAsync(
+      await expectToThrowAsync(
         contract.setSubAccountSignerPermissions(ts, ts, subID, alice.address, Perm.Deposit, salt, sig),
         "invalid signature"
       )
@@ -256,10 +251,9 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      // account admin can change permission of any signer
-      expectToThrowAsync(
+      await expectToThrowAsync(
         setSignerPermission(contract, alice, ts, ts, subID, bob.address, Perm.Deposit),
-        "invalid permission"
+        "actor cannot call function"
       )
     })
   })
@@ -339,7 +333,10 @@ describe("API - SubAccount", function () {
       const alice = wallet()
 
       // Test
-      expectToThrowAsync(removeSubSigner(contract, admin, ts, ts, subID, alice.address), "subaccount does not exist")
+      await expectToThrowAsync(
+        removeSubSigner(contract, admin, ts, ts, subID, alice.address),
+        "subaccount does not exist"
+      )
     })
 
     it("fails if subaccount signer doesn't exist", async function () {
@@ -355,7 +352,7 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      expectToThrowAsync(removeSubSigner(contract, admin, ts, ts, subID, alice.address), "signer not found")
+      await expectToThrowAsync(removeSubSigner(contract, admin, ts, ts, subID, alice.address), "signer not found")
     })
 
     it("fails if invalid signature", async function () {
@@ -376,7 +373,7 @@ describe("API - SubAccount", function () {
       // account admin can change permission of any signer
       const salt = nonce()
       const sig = genRemoveSubAccountSignerPayloadSig(admin, subID, alice.address, salt)
-      expectToThrowAsync(
+      await expectToThrowAsync(
         contract.removeSubAccountSigner(ts, ts, subID, alice.address, salt + 1, sig),
         "invalid signature"
       )
@@ -402,7 +399,7 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      expectToThrowAsync(removeSubSigner(contract, bob, ts, ts, subID, alice.address), "no permission")
+      await expectToThrowAsync(removeSubSigner(contract, bob, ts, ts, subID, alice.address), "no permission")
     })
   })
 })

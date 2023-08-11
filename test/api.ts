@@ -1,22 +1,27 @@
-import { Contract, Wallet } from "ethers"
+import { Wallet } from "ethers"
+import { GRVTExchange } from "../typechain-types/index"
 import {
   genAddAccountAdminSig,
   genAddAccountGuardianPayloadSig,
+  genAddSessionKeySig,
   genAddSubAccountSignerPayloadSig,
   genCreateSubAccountSig,
   genRecoverAccountAdminPayloadSig,
   genRemoveAccountGuardianPayloadSig,
+  genRemoveSessionKeySig,
   genRemoveSubAccountSignerPayloadSig,
+  genScheduleConfigSig,
   genSetAccountMultiSigThresholdSig,
+  genSetConfigSig,
   genSetSubAccountMarginTypePayloadSig,
   genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
 import { AccountRecoveryType, Currency, MarginType } from "./type"
-import { nonce } from "./util"
+import { Bytes32, nonce } from "./util"
 
 // Account
 export async function createSubAcc(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
   txID: number,
@@ -29,7 +34,7 @@ export async function createSubAcc(
 }
 
 export async function addAccAdmin(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
   txID: number,
@@ -42,7 +47,7 @@ export async function addAccAdmin(
 }
 
 export async function setMultisigThreshold(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
   txID: number,
@@ -56,7 +61,7 @@ export async function setMultisigThreshold(
 
 // Sub Account
 export async function setSubAccountMarginType(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
   txID: number,
@@ -69,7 +74,7 @@ export async function setSubAccountMarginType(
 }
 
 export async function addSubSigner(
-  contract: Contract,
+  contract: GRVTExchange,
   ts: number,
   txID: number,
   txSigner: Wallet,
@@ -83,7 +88,7 @@ export async function addSubSigner(
 }
 
 export async function setSignerPermission(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
   txID: number,
@@ -97,7 +102,7 @@ export async function setSignerPermission(
 }
 
 export async function removeSubSigner(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
   txID: number,
@@ -111,7 +116,7 @@ export async function removeSubSigner(
 
 // Account Recovery
 export async function addAccGuardian(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
   txID: number,
@@ -124,7 +129,7 @@ export async function addAccGuardian(
 }
 
 export async function removeAccGuardian(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
   txID: number,
@@ -137,7 +142,7 @@ export async function removeAccGuardian(
 }
 
 export async function recoverAccAdmin(
-  contract: Contract,
+  contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
   txID: number,
@@ -151,4 +156,48 @@ export async function recoverAccAdmin(
     genRecoverAccountAdminPayloadSig(txSigner, accountID, recoveryType, oldAdmin, recoveryAdmin, salt)
   )
   await contract.recoverAccountAdmin(ts, txID, accountID, recoveryType, oldAdmin, recoveryAdmin, salt, sigs)
+}
+
+// Config
+export async function scheduleConfig(
+  contract: GRVTExchange,
+  txSigner: Wallet,
+  ts: number,
+  txID: number,
+  key: number,
+  value: Bytes32
+) {
+  const salt = nonce()
+  const sig = genScheduleConfigSig(txSigner, key, value, salt)
+  await contract.scheduleConfig(ts, txID, key, value, salt, sig)
+}
+
+export async function setConfig(
+  contract: GRVTExchange,
+  txSigner: Wallet,
+  ts: number,
+  txID: number,
+  key: number,
+  value: Bytes32
+) {
+  const salt = nonce()
+  const sig = genSetConfigSig(txSigner, key, value, salt)
+  await contract.setConfig(ts, txID, key, value, salt, sig)
+}
+
+// Session
+export async function addSessionKey(
+  contract: GRVTExchange,
+  txSigner: Wallet,
+  ts: number,
+  txID: number,
+  sessionKey: string,
+  keyExpiry: number
+) {
+  const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry)
+  await contract.addSessionKey(ts, txID, sessionKey, keyExpiry, sig)
+}
+
+export async function removeSessionKey(contract: GRVTExchange, txSigner: Wallet, ts: number, txID: number) {
+  await contract.removeSessionKey(ts, txID, txSigner.address)
 }
