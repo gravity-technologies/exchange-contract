@@ -66,10 +66,10 @@ contract HelperContract {
     return a >= b ? a : b;
   }
 
-  // Verify that a signature is valid with replay attack prevention
-  // To understand why require the payload hash to be unique, and not the signature, read
-  // https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
-  function _preventHashReplay(bytes32 payloadHash, Signature calldata sig) internal {
+  /// @dev Verify that a signature is valid with replay attack prevention
+  /// To understand why require the payload hash to be unique, and not the signature, read
+  /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
+  function _preventReplay(bytes32 payloadHash, Signature calldata sig) internal {
     require(!state.signatures.isExecuted[payloadHash], "replayed payload");
     _requireValidSig(state.timestamp, payloadHash, sig);
     state.signatures.isExecuted[payloadHash] = true;

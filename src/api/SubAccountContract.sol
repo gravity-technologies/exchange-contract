@@ -37,7 +37,7 @@ contract SubAccountContract is HelperContract {
     _requirePermission(acc, sub, sig.signer, SubAccountPermChangeMarginType);
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(hashSetMarginType(subAccID, marginType, nonce), sig);
+    _preventReplay(hashSetMarginType(subAccID, marginType, nonce), sig);
     // ------- End of Signature Verification -------
 
     sub.marginType = marginType;
@@ -73,7 +73,7 @@ contract SubAccountContract is HelperContract {
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAddSigner);
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(hashAddSigner(subID, signer, permissions, nonce), sig);
+    _preventReplay(hashAddSigner(subID, signer, permissions, nonce), sig);
     // ------- End of Signature Verification -------
 
     Signer[] storage signers = sub.authorizedSigners;
@@ -107,7 +107,7 @@ contract SubAccountContract is HelperContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashSetSignerPermissions(subID, signer, perms, nonce);
-    _preventHashReplay(hash, sig);
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     // Update permission
@@ -140,7 +140,7 @@ contract SubAccountContract is HelperContract {
     _requirePermission(acc, sub, sig.signer, SubAccountPermRemoveSigner);
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(hashRemoveSigner(subAccID, signer, nonce), sig);
+    _preventReplay(hashRemoveSigner(subAccID, signer, nonce), sig);
     // ------- End of Signature Verification -------
 
     // If we reach here, that means the user calling this API is an admin. Hence, even after we remove the last
@@ -225,7 +225,7 @@ contract SubAccountContract is HelperContract {
     uint64 cappedExpiry = _min(keyExpiry, timestamp + uint64(_MAX_SESSION_DURATION_NANO));
 
     // ---------- Signature Verification -----------
-    _preventHashReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
+    _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key

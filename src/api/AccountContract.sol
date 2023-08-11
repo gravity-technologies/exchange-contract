@@ -27,7 +27,7 @@ contract AccountContract is HelperContract {
     if (acc.id == 0) {
       require(sigs.length > 0, "no signature");
       for (uint i = 0; i < sigs.length; i++) {
-        _preventHashReplay(hash, sigs[i]);
+        _preventReplay(hash, sigs[i]);
       }
     } else {
       _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);

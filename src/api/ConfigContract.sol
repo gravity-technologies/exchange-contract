@@ -108,7 +108,7 @@ contract ConfigContract is HelperContract {
 
     // ---------- Signature Verification -----------
     require(sig.signer == _getAddressCfg(CfgID.ADMIN_RECOVERY_ADDRESS), "unauthorized");
-    _preventHashReplay(hashScheduleConfig(key, value, nonce), sig);
+    _preventReplay(hashScheduleConfig(key, value, nonce), sig);
     // ------- End of Signature Verification -------
 
     // find the timelock for this config value and update the config
@@ -137,7 +137,7 @@ contract ConfigContract is HelperContract {
 
     // ---------- Signature Verification -----------
     require(sig.signer == _getAddressCfg(CfgID.ADMIN_RECOVERY_ADDRESS), "unauthorized");
-    _preventHashReplay(hashSetConfig(key, value, nonce), sig);
+    _preventReplay(hashSetConfig(key, value, nonce), sig);
     // ------- End of Signature Verification -------
 
     // find the lock duration
