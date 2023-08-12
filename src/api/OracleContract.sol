@@ -25,6 +25,36 @@ abstract contract OracleContract is HelperContract {
   // - Funding perpetual: iterate through perps to compute new balance
   // - Settlement tick: either eager or lazily update
 
+  function priceTick(
+    uint64 timestamp,
+    uint64 txID,
+    AssetPriceEntry[] calldata priceTick,
+    Signature calldata signature
+  ) external {
+    // Implement the logic for PriceTick
+    // ...
+  }
+
+  function rateTick(
+    uint64 timestamp,
+    uint64 txID,
+    RiskFreeRateEntry[] calldata rateTick,
+    Signature calldata signature
+  ) external {
+    // Implement the logic for RateTick
+    // ...
+  }
+
+  function fundingTick(uint64 timestamp, uint64 txID, FundingTick calldata funding) external {
+    // Implement the logic for FundingTick
+    // ...
+  }
+
+  function settlementTick(uint64 timestamp, uint64 txID, SettlementTick calldata settlement) external {
+    // Implement the logic for SettlementTick
+    // ...
+  }
+
   // TODO
   function _getDerivPrice(uint128 id) internal pure returns (uint256) {
     return uint256(id);

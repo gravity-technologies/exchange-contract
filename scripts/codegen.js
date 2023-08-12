@@ -61,7 +61,6 @@ var basicEncodableTypes = [
     "bytes1",
 ];
 var generateFile = function (primaryType, types, methods) { return "\n".concat(types, "\n").concat(methods, "\n"); };
-var LOGGING_ENABLED = false;
 function generateCodeFrom(types, entryTypes) {
     var results = [];
     var packetHashGetters = [];

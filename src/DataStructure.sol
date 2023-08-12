@@ -319,3 +319,30 @@ struct OrderMatch {
   uint32 takerFeePercentageCharged;
   uint32 makerFeePercentageCharged;
 }
+
+// --------------- Oracle --------------
+struct AssetPriceEntry {
+  uint128 id;
+  uint128 price;
+}
+
+struct RiskFreeRateEntry {
+  uint128 id;
+  uint128 rate;
+}
+
+struct FundingTickPayload {
+  uint128 id;
+}
+
+struct FundingTick {
+  uint128 id;
+}
+
+struct SettlementTickPayload {
+  uint128 id;
+}
+
+struct SettlementTick {
+  uint128 id;
+}

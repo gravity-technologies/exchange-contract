@@ -37,6 +37,12 @@ const Primary = KeyMirror({
 
   // Trade
   Order: 0,
+
+  // Oracle
+  PriceTickPayload: 0,
+  RateTickPayload: 0,
+  FundingTickPayload: 0,
+  SettlementTickPayload: 0,
 })
 
 // -------------- Account --------------
@@ -351,6 +357,65 @@ const OrderPayload = {
   },
 }
 
+// -------------- Oracle --------------
+const PriceTickPayload = {
+  primaryType: Primary.PriceTickPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.PriceTickPayload]: [
+      { name: "priceTick", type: "AssetPriceEntry[]" },
+      { name: "nonce", type: "uint32" },
+    ],
+    AssetPriceEntry: [
+      { name: "id", type: "uint128" },
+      { name: "price", type: "uint128" },
+    ],
+  },
+}
+
+const RateTickPayload = {
+  primaryType: Primary.RateTickPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.RateTickPayload]: [
+      { name: "rateTick", type: "RiskFreeRateEntry[]" },
+      { name: "nonce", type: "uint32" },
+    ],
+    RiskFreeRateEntry: [
+      { name: "id", type: "uint128" },
+      { name: "rate", type: "uint128" },
+    ],
+  },
+}
+
+const FundingTickPayload = {
+  primaryType: Primary.FundingTickPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.FundingTickPayload]: [
+      { name: "funding", type: "FundingTick" },
+      { name: "nonce", type: "uint32" },
+    ],
+    FundingTick: [{ name: "id", type: "uint128" }],
+  },
+}
+
+const SettlementTickPayload = {
+  primaryType: Primary.SettlementTickPayload,
+  domain,
+  types: {
+    EIP712Domain,
+    [Primary.SettlementTickPayload]: [
+      { name: "settlement", type: "SettlementTick" },
+      { name: "nonce", type: "uint32" },
+    ],
+    SettlementTick: [{ name: "id", type: "uint128" }],
+  },
+}
+
 module.exports = {
   // Account
   CreateSubAccountPayload,
@@ -388,4 +453,10 @@ module.exports = {
 
   // Trade
   OrderPayload,
+
+  // Oracle
+  PriceTickPayload,
+  RateTickPayload,
+  FundingTickPayload,
+  SettlementTickPayload,
 }
