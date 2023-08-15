@@ -163,7 +163,9 @@ struct SignatureState {
 }
 
 struct PriceState {
-  // No need to store oracle prices, they are lazily uploaded at point of liquidation
+  mapping(uint128 => uint64) derivatives;
+  mapping(uint128 => uint64) interestRates;
+  // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
   // We centrally upload funding rates. On smart contract side, we simply apply a tiny minmax clamp
@@ -296,7 +298,7 @@ struct Order {
 }
 
 struct OrderLeg {
-  uint128 derivID;
+  uint128 derivative;
   // The total number of derivative contracts to trade in this leg, expressed in derivative decimal units
   uint64 contractSize;
   // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE

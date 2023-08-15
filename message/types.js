@@ -324,15 +324,16 @@ const TransferPayload = {
 }
 
 const OrderPayload = {
-  primaryType: Primary.TransferPayload,
+  primaryType: Primary.Order,
   domain,
   types: {
     EIP712Domain,
     [Primary.Order]: [
-      { name: "subAccountID", type: "uint32" },
+      { name: "subAccountID", type: "address" },
       { name: "isMarket", type: "bool" },
       { name: "timeInForce", type: "uint8" },
       { name: "limitPrice", type: "uint64" },
+      { name: "ocoLimitPrice", type: "uint64" },
       { name: "takerFeePercentageCap", type: "uint32" },
       { name: "makerFeePercentageCap", type: "uint32" },
       { name: "postOnly", type: "bool" },

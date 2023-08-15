@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import "./BaseTradeContract.sol";
 import "./HelperContract.sol";
 import "./signature/generated/TransferSig.sol";
 import "../DataStructure.sol";
 import "../util/Address.sol";
 
-abstract contract TransferContract is HelperContract {
+abstract contract TransferContract is BaseTradeContract {
   /**
    * @notice Deposit collateral into a sub account
    *
@@ -26,7 +27,7 @@ abstract contract TransferContract is HelperContract {
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
-  ) external {
+  ) external nonReentrant {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(toSubID);
 
@@ -60,7 +61,7 @@ abstract contract TransferContract is HelperContract {
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
-  ) external {
+  ) external nonReentrant {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(fromSubID);
     Account storage acc = _requireAccount(sub.accountID);
@@ -85,7 +86,7 @@ abstract contract TransferContract is HelperContract {
     sub.balance -= numTokensInt128;
 
     // 3. Verify valid total value
-    require(_getTotalValue(sub) >= 0, "invalid total value");
+    _requireValidTotalValue(sub);
 
     // 4. Call the bridging contract
     // TODO

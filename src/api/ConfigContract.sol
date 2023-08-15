@@ -7,8 +7,6 @@ import "./signature/generated/ConfigSig.sol";
 import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../DataStructure.sol";
 import "../util/Address.sol";
 
-// import "hardhat/console.sol";
-
 contract ConfigContract is HelperContract {
   // --------------- Constants ---------------
   uint private constant CENTIBEEP = 1;

@@ -1,15 +1,13 @@
-const { keccak256 } = require('ethers/lib/utils')
-
 const EIP712Domain = [
-  { name: 'name', type: 'string' },
-  { name: 'version', type: 'string' },
-  { name: 'chainId', type: 'uint256' },
-  { name: 'verifyingContract', type: 'address' },
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
+  { name: "chainId", type: "uint256" },
+  { name: "verifyingContract", type: "address" },
 ]
 
 const domain = {
-  name: 'GRVTEx',
-  version: '0', // testnet
+  name: "GRVTEx",
+  version: "0", // testnet
   chainId: 0,
   verifyingContract: 0,
 }

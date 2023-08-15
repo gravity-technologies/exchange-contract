@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import "./BaseTradeContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/TradeSig.sol";
 import "../DataStructure.sol";
 import "../util/Address.sol";
 import "../util/Trade.sol";
 
-abstract contract TradeContract is ConfigContract {
+abstract contract TradeContract is ConfigContract, BaseTradeContract {
   /**
    * @notice Trade derivatives between 2 subaccounts
    * 1.	Verify signature
@@ -25,7 +26,7 @@ abstract contract TradeContract is ConfigContract {
    * @param txID Transaction ID
    * @param trade the trade payload
    */
-  function derivativeTrade(uint64 timestamp, uint64 txID, Trade calldata trade) external {
+  function derivativeTrade(uint64 timestamp, uint64 txID, Trade calldata trade) public nonReentrant {
     _setSequence(timestamp, txID);
 
     // Validation
@@ -40,15 +41,14 @@ abstract contract TradeContract is ConfigContract {
     // Update balances
     uint fees = _updateBalances(taker, trade.makerOrders);
 
-    // Run total value check for taker and each maker
+    // // Run total value check for taker and each maker
     _verifyValidTotalValue(taker, trade.makerOrders);
 
-    // Deposit fees
+    // // Deposit fees
     _depositFee(uint128(fees));
 
-    // Update the fulfilment of each order leg
+    // TODO: Update the fulfilment of each order leg
     // Maintain, update the remaining quantity for each taker and maker order.
-    // Ensure that the remaining quantity is always >= 0
   }
 
   /**
@@ -59,62 +59,30 @@ abstract contract TradeContract is ConfigContract {
    */
   function _updateBalances(SubAccount storage taker, OrderMatch[] calldata matches) internal returns (uint128) {
     uint128 fees;
-    uint numMakerOrders = matches.length;
 
-    for (uint i = 0; i < numMakerOrders; i++) {
+    for (uint i = 0; i < matches.length; i++) {
       OrderMatch calldata om = matches[i];
       SubAccount storage maker = _requireSubAccount(om.makerOrder.subAccountID);
       _perpFunding(maker);
 
-      uint numLegs = om.numContractsMatched.length;
-      uint128 totalValue;
-
-      for (uint j = 0; j < numLegs; j++) {
+      for (uint j = 0; j < om.numContractsMatched.length; j++) {
         OrderLeg calldata makerLeg = om.makerOrder.legs[j];
-        // Qty is originally uint64, upcasting to uint128 to make it compatible with the math below
         uint128 qty = om.numContractsMatched[j];
         require(qty > 0, "invalid qty");
-        DerivativePosition storage takerPos = _getPosition(taker, makerLeg.derivID);
-        DerivativePosition storage makerPos = _getPosition(maker, makerLeg.derivID);
 
-        uint128 legValue = makerLeg.limitPrice * qty;
-        totalValue += legValue;
+        // Update position balances
+        (int128 takerCollDelta, int128 makerCollDelta) = _updatePositionBalances(
+          makerLeg,
+          _getPosition(taker, makerLeg.derivative),
+          _getPosition(maker, makerLeg.derivative),
+          qty
+        );
 
-        int128 takerCollDelta;
-        int128 makerCollDelta;
-        // Minimise directly updating storage variables `takerPos.contractBalance` and `makerPos.contractBalance`
-        int128 takerPosQty = takerPos.contractBalance;
-        int128 makerPosQty = makerPos.contractBalance;
-        // Qty is originally uint64 which was upcasted to uint128. This conversion below
-        // is safe, and used to make the balance calculation logic simpler without too much typecasting
-        int128 qtyInt128 = int128(qty);
-        if (makerLeg.isBuyingContract) {
-          require(takerPos.contractBalance >= qtyInt128, "insufficient balance");
-          takerPosQty -= qtyInt128;
-          makerPosQty += qtyInt128;
-          // TODO: check the math here. On paper this downcasting is wrong, but in practice we might never use the full range of int128 for leg value anyway.
-          // To check with TradeData on the maximum value of legValue
-          takerCollDelta = int128(legValue);
-          makerCollDelta = -int128(legValue);
-        } else {
-          require(makerPos.contractBalance >= qtyInt128, "insufficient balance");
-          takerPosQty += qtyInt128;
-          makerPosQty -= qtyInt128;
-          // TODO: check the math here. On paper this downcasting is wrong, but in practice we might never use the full range of int128 for leg value anyway.
-          // To check with TradeData on the maximum value of legValue
-          takerCollDelta = -int128(legValue);
-          makerCollDelta = int128(legValue);
-        }
-        takerPos.contractBalance = takerPosQty;
-        makerPos.contractBalance = makerPosQty;
-
-        // Compute fees. takerFeePercentageCharged and makerFeePercentageCharged are upcasted from uint32 to int128, which are safe
-        uint128 takerFee = _abs(takerCollDelta * int128(uint128(om.takerFeePercentageCharged)));
-        uint128 makerFee = _abs(makerCollDelta * int128(uint128(om.makerFeePercentageCharged)));
-
+        // Compute fees and update collateral balances
+        uint128 takerFee = _calculateFee(takerCollDelta, om.takerFeePercentageCharged);
+        uint128 makerFee = _calculateFee(makerCollDelta, om.makerFeePercentageCharged);
         taker.balance += takerCollDelta - int128(takerFee);
         maker.balance += makerCollDelta - int128(makerFee);
-
         fees += takerFee + makerFee;
       }
     }
@@ -122,13 +90,40 @@ abstract contract TradeContract is ConfigContract {
     return fees;
   }
 
+  function _updatePositionBalances(
+    OrderLeg calldata leg,
+    DerivativePosition storage takerPos,
+    DerivativePosition storage makerPos,
+    uint128 qty
+  ) internal returns (int128 takerCollDelta, int128 makerCollDelta) {
+    int128 qtyInt128 = int128(qty);
+    int128 legValueInt128 = int128(leg.limitPrice * qty);
+
+    if (leg.isBuyingContract) {
+      takerPos.contractBalance -= qtyInt128;
+      makerPos.contractBalance += qtyInt128;
+      // TODO: check the math here. On paper this downcasting is wrong, but in practice we might never use the full range of int128 for leg value anyway.
+      // To check with TradeData on the maximum value of legValue
+      return (legValueInt128, -legValueInt128);
+    }
+
+    takerPos.contractBalance += qtyInt128;
+    makerPos.contractBalance -= qtyInt128;
+    // TODO: check the math here. On paper this downcasting is wrong, but in practice we might never use the full range of int128 for leg value anyway.
+    // To check with TradeData on the maximum value of legValue
+    return (-legValueInt128, legValueInt128);
+  }
+
+  function _calculateFee(int128 collDelta, uint32 feePercentage) internal pure returns (uint128 fee) {
+    return _abs(collDelta * int128(uint128(feePercentage)));
+  }
+
   function _abs(int128 x) private pure returns (uint128) {
     return x >= 0 ? uint128(x) : uint128(-x);
   }
 
   function _depositFee(uint128 fee) private {
-    SubAccount storage feeSub = _requireSubAccount(_getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID));
-    feeSub.balance += int128(fee);
+    _requireSubAccount(_getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID)).balance += int128(fee);
   }
 
   // Verify that the signatures are valid and that the taker and maker has permission to trade
@@ -158,7 +153,7 @@ abstract contract TradeContract is ConfigContract {
     address subFromSession = state.sessionToSubAccount[sig.signer];
     if (subFromSession == address(0)) sub = _requireSubAccount(sig.signer);
     else sub = _requireSubAccount(subFromSession);
-    require(orderSubAccountID == sub.id, "invalid subaccount");
+    require(orderSubAccountID == sub.id, "subaccount cannot trade");
     _requirePermission(sub, sig.signer, SubAccountPermTrade);
   }
 
@@ -177,19 +172,27 @@ abstract contract TradeContract is ConfigContract {
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint numLegs = takerLegs.length;
     require(numMakers > 0, "empty maker orders");
+    numLegs = takerLegs.length;
 
     // 1. Verify each order
     _verifyOrder(takerOrder, false);
+    address feeSubID = _getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID);
+    require(takerOrder.subAccountID != feeSubID, "fee subaccount cannot be taker");
     for (uint j = 0; j < numMakers; j++) {
-      require(makerOrders[j].makerOrder.legs.length == numLegs, "inconsistent num legs");
+      Order calldata makerOrder = makerOrders[j].makerOrder;
+      require(makerOrder.legs.length == numLegs, "inconsistent num legs");
       _verifyOrder(makerOrders[j].makerOrder, true);
 
-      // TODO
-      // check that maker and taker are distinct
-      // check that those are not fee positions
+      require(makerOrder.subAccountID != takerOrder.subAccountID, "self-trade");
+      require(makerOrder.subAccountID != feeSubID, "fee subaccount cannot be maker");
     }
 
-    // 2. If full order, just perform signature replay prevention
+    // 2. Each derivative must have a price
+    for (uint i = 0; i < numLegs; i++) {
+      _getDerivPrice(takerLegs[i].derivative);
+    }
+
+    // 3. If full order, just perform signature replay prevention
     if (tif != TimeInForce.GOOD_TILL_TIME && tif != TimeInForce.IMMEDIATE_OR_CANCEL) {
       require(!state.signatures.fullDerivativeOrderMatched[takerOrderID], "order is replayed");
       for (uint i = 0; i < numMakers; i++) {
@@ -199,7 +202,7 @@ abstract contract TradeContract is ConfigContract {
       return;
     }
 
-    // 3. If partial, then we have to track the quantities are still enough
+    // 4. If partial, then we have to track the quantities are still enough
     // Assert that for each maker order, the matched leq qty is less than the makerOrder.leg qty
     // Assert that for taker order, the total matched qty per leg is less than the takerOrder.leg qty
 
@@ -210,7 +213,6 @@ abstract contract TradeContract is ConfigContract {
     for (uint i = 0; i < numLegs; i++) {
       // Total quantity matched per leg
       uint total = 0;
-      // Quantity matched fo
       Order calldata makerOrder = makerOrders[i].makerOrder;
       for (uint j = 0; j < numMakers; j++) {
         uint64 qty = makerOrders[j].numContractsMatched[i];
@@ -225,11 +227,11 @@ abstract contract TradeContract is ConfigContract {
 
   function _verifyValidTotalValue(SubAccount storage taker, OrderMatch[] calldata matches) private view {
     // Run total value check for taker and each maker
-    require(_getTotalValue(taker) >= 0, "invalid total value");
+    _requireValidTotalValue(taker);
     uint numMakerOrders = matches.length;
     for (uint i = 0; i < numMakerOrders; i++) {
       SubAccount storage maker = _requireSubAccount(matches[i].makerOrder.subAccountID);
-      require(_getTotalValue(maker) >= 0, "invalid total value");
+      _requireValidTotalValue(maker);
     }
   }
 }

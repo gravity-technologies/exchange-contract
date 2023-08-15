@@ -12,7 +12,6 @@ import {
   genRecoverAccountAdminPayloadSig,
   genRemoveAccountAdminSig,
   genRemoveAccountGuardianPayloadSig,
-  genRemoveSessionKeySig,
   genRemoveSubAccountSignerPayloadSig,
   genRemoveTransferSubAccountPayloadSig,
   genRemoveWithdrawalAddressSig,

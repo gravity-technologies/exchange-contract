@@ -4,8 +4,8 @@ pragma solidity ^0.8.19;
 
 import "../../../DataStructure.sol";
 
-// keccak256("Order(uint32 subAccountID,bool isMarket,uint8 timeInForce,uint64 limitPrice,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,bool isPayingBaseCurrency,OrderLeg[] legs,uint32 nonce)OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
-bytes32 constant _ORDER_H = bytes32(0x808ca432c7cd4578319bb24c8a8c60793764bd4d21c897e27b96c0bb8e6f71a0);
+// keccak256("Order(address subAccountID,bool isMarket,uint8 timeInForce,uint64 limitPrice,uint64 ocoLimitPrice,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,bool isPayingBaseCurrency,OrderLeg[] legs,uint32 nonce)OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
+bytes32 constant _ORDER_H = bytes32(0x07ffec62d266471031104189858e1420c7c9b5b9e997dd2cd93d28431c4c2aa5);
 
 // keccak256("OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
 bytes32 constant _LEG_H = bytes32(0x6a1114282cec490e531ba67ea409944dee9d423e4921909d25afc9f4af988add);
@@ -35,6 +35,7 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
 /// @dev hash the order leg, but sort the limit price and ocoLimitPrice so that we can always use either 1 of the prices
 function hashOrderLeg(OrderLeg calldata l) pure returns (bytes32) {
   if (l.limitPrice < l.ocoLimitPrice)
-    return keccak256(abi.encode(_LEG_H, l.derivID, l.contractSize, l.limitPrice, l.ocoLimitPrice, l.isBuyingContract));
-  return keccak256(abi.encode(_LEG_H, l.derivID, l.contractSize, l.ocoLimitPrice, l.limitPrice, l.isBuyingContract));
+    return
+      keccak256(abi.encode(_LEG_H, l.derivative, l.contractSize, l.limitPrice, l.ocoLimitPrice, l.isBuyingContract));
+  return keccak256(abi.encode(_LEG_H, l.derivative, l.contractSize, l.ocoLimitPrice, l.limitPrice, l.isBuyingContract));
 }

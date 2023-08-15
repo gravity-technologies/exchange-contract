@@ -31,7 +31,7 @@ struct DerivativePosition {
   // The derivative contract held in this position
   uint128 id;
   // Number of contracts held in this position. This is uint64 in
-  // uint64 in contract interface, but extends to uint128 to fill half a slot in storage
+  // int64 in contract interface, but extends to int128 to fill half a slot in storage
   int128 contractBalance;
   // The average entry price of the contracts held in this position
   // Used for computing unrealized P&L
