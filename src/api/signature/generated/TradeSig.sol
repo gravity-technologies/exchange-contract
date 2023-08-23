@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import "../../../DataStructure.sol";
+import "../../../types/DataStructure.sol";
 
 // keccak256("Order(address subAccountID,bool isMarket,uint8 timeInForce,uint64 limitPrice,uint64 ocoLimitPrice,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,bool isPayingBaseCurrency,OrderLeg[] legs,uint32 nonce)OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
 bytes32 constant _ORDER_H = bytes32(0x07ffec62d266471031104189858e1420c7c9b5b9e997dd2cd93d28431c4c2aa5);

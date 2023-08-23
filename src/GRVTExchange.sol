@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import {ConfigID, State} from "./DataStructure.sol";
+import {ConfigID, State} from "./types/DataStructure.sol";
 import "./api/AccountContract.sol";
 import "./api/AccountRecoveryContract.sol";
 import "./api/ConfigContract.sol";

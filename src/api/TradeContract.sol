@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import "./BaseTradeContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/TradeSig.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "../util/Address.sol";
 import "../util/Trade.sol";
 
@@ -36,7 +36,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     SubAccount storage taker = _requireSubAccount(trade.takerOrder.subAccountID);
 
     // Run perpetual funding
-    _perpFunding(taker);
+    _perpFundingAndSettleFuturesOptions(taker);
 
     // Update balances
     uint fees = _updateBalances(taker, trade.makerOrders);
@@ -63,7 +63,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     for (uint i = 0; i < matches.length; i++) {
       OrderMatch calldata om = matches[i];
       SubAccount storage maker = _requireSubAccount(om.makerOrder.subAccountID);
-      _perpFunding(maker);
+      _perpFundingAndSettleFuturesOptions(taker);
 
       for (uint j = 0; j < om.numContractsMatched.length; j++) {
         OrderLeg calldata makerLeg = om.makerOrder.legs[j];
@@ -176,52 +176,50 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
 
     // 1. Verify each order
     _verifyOrder(takerOrder, false);
-    address feeSubID = _getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID);
-    require(takerOrder.subAccountID != feeSubID, "fee subaccount cannot be taker");
     for (uint j = 0; j < numMakers; j++) {
       Order calldata makerOrder = makerOrders[j].makerOrder;
       require(makerOrder.legs.length == numLegs, "inconsistent num legs");
       _verifyOrder(makerOrders[j].makerOrder, true);
 
       require(makerOrder.subAccountID != takerOrder.subAccountID, "self-trade");
-      require(makerOrder.subAccountID != feeSubID, "fee subaccount cannot be maker");
     }
 
     // 2. Each derivative must have a price
     for (uint i = 0; i < numLegs; i++) {
-      _getDerivPrice(takerLegs[i].derivative);
+      require(state.prices.derivatives[id], "invalid derivative price");
     }
 
     // 3. If full order, just perform signature replay prevention
-    if (tif != TimeInForce.GOOD_TILL_TIME && tif != TimeInForce.IMMEDIATE_OR_CANCEL) {
+    if (tif == TimeInForce.ALL_OR_NONE && tif == TimeInForce.FILL_OR_KILL) {
       require(!state.signatures.fullDerivativeOrderMatched[takerOrderID], "order is replayed");
       for (uint i = 0; i < numMakers; i++) {
         bytes32 makerOrderID = hashOrder(makerOrders[i].makerOrder);
         require(!state.signatures.fullDerivativeOrderMatched[makerOrderID], "order is replayed");
       }
-      return;
-    }
+    } else if (tif == TimeInForce.GOOD_TILL_TIME && tif == TimeInForce.IMMEDIATE_OR_CANCEL) {
+      // 4. If partial, then we have to track the quantities are still enough
+      // Assert that for each maker order, the matched leq qty is less than the makerOrder.leg qty
+      // Assert that for taker order, the total matched qty per leg is less than the takerOrder.leg qty
 
-    // 4. If partial, then we have to track the quantities are still enough
-    // Assert that for each maker order, the matched leq qty is less than the makerOrder.leg qty
-    // Assert that for taker order, the total matched qty per leg is less than the takerOrder.leg qty
+      // A map that keep track of the matched qty for each leg for an order
+      mapping(bytes32 => uint64[]) storage preMatched = state.signatures.partialDerivativeOrderMatched;
 
-    // A map that keep track of the matched qty for each leg for an order
-    mapping(bytes32 => uint64[]) storage preMatched = state.signatures.partialDerivativeOrderMatched;
-
-    uint64[] storage preMatchedTaker = preMatched[takerOrderID];
-    for (uint i = 0; i < numLegs; i++) {
-      // Total quantity matched per leg
-      uint total = 0;
-      Order calldata makerOrder = makerOrders[i].makerOrder;
-      for (uint j = 0; j < numMakers; j++) {
-        uint64 qty = makerOrders[j].numContractsMatched[i];
-        uint64[] storage preMatchedMaker = preMatched[hashOrder(makerOrder)];
-        // There's no risk of out-of-bound error here, since trade has already been validated to be correct
-        require(preMatchedMaker[i] + qty <= makerOrder.legs[i].contractSize, "insufficient qty");
-        total += qty;
+      uint64[] storage preMatchedTaker = preMatched[takerOrderID];
+      for (uint i = 0; i < numLegs; i++) {
+        // Total quantity matched per leg
+        uint total = 0;
+        Order calldata makerOrder = makerOrders[i].makerOrder;
+        for (uint j = 0; j < numMakers; j++) {
+          uint64 qty = makerOrders[j].numContractsMatched[i];
+          uint64[] storage preMatchedMaker = preMatched[hashOrder(makerOrder)];
+          // There's no risk of out-of-bound error here, since trade has already been validated to be correct
+          require(preMatchedMaker[i] + qty <= makerOrder.legs[i].contractSize, "insufficient qty");
+          total += qty;
+        }
+        require(total + preMatchedTaker[i] <= takerLegs[i].contractSize, "insufficient qty");
       }
-      require(total + preMatchedTaker[i] <= takerLegs[i].contractSize, "insufficient qty");
+    } else {
+      require(false, "tif not supported");
     }
   }
 

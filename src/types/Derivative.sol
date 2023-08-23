@@ -33,13 +33,6 @@ struct DerivativePosition {
   // Number of contracts held in this position. This is uint64 in
   // int64 in contract interface, but extends to int128 to fill half a slot in storage
   int128 contractBalance;
-  // The average entry price of the contracts held in this position
-  // Used for computing unrealized P&L
-  // This value experiences rounding errors, so it is not guaranteed to be accurate, use as an indicator only
-  // Important to track on StateMachine to serve unrealized P&L queries, but not important to track on the
-  // smart contract. Smart contract doesn't rely on this field for any logic
-  // uint64 in contract interface, but extends to uint128 to fill half a slot in storage
-  uint128 averageEntryPrice;
   // (expressed in USD with 10 decimal points)
   uint64 lastAppliedFundingIndex;
 }

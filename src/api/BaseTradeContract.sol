@@ -2,18 +2,18 @@
 pragma solidity ^0.8.19;
 
 import "./HelperContract.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 
 contract BaseTradeContract is HelperContract {
   error InvalidTotalValue(address subAccountID, int256 value);
 
   /// @dev return the total value of a sub account
-  function _getTotalValue(SubAccount storage sub) internal view returns (int256) {
+  function _getUsdValue(SubAccount storage sub) internal view returns (int256) {
     return sub.balance + _getPositionsPnl(sub.perps) + _getPositionsPnl(sub.futures) + _getPositionsPnl(sub.options);
   }
 
   function _requireValidTotalValue(SubAccount storage sub) internal view {
-    int256 val = _getTotalValue(sub);
+    int256 val = _getUsdValue(sub);
     if (val < 0) {
       revert InvalidTotalValue(sub.id, val);
     }
@@ -26,7 +26,7 @@ contract BaseTradeContract is HelperContract {
     uint count = keys.length;
     for (uint i = 0; i < count; i++) {
       DerivativePosition storage pos = values[keys[i]];
-      int256 price = int256(uint256(_getDerivPrice(pos.id)));
+      int256 price = int256(uint256(state.PriceState.Derivative[pos.id]));
       pnl += (price - int128(pos.averageEntryPrice)) * int128(pos.contractBalance);
     }
     return pnl;
@@ -40,7 +40,7 @@ contract BaseTradeContract is HelperContract {
     for (uint i = 0; i < count; i++) {
       DerivativePosition storage perp = values[keys[i]];
       // Upcasting from uint64 -> int128 is safe
-      int128 price = int128(uint128(_getDerivPrice(perp.id)));
+      int128 price = int128(uint128(state.prices.derivatives[perp.id]));
       // Upcasting from uint64 -> int128 is safe
       int128 lastPerpPrice = int128(uint128(perp.lastAppliedFundingIndex));
       balanceDelta += (price - lastPerpPrice) * perp.contractBalance;
@@ -49,15 +49,17 @@ contract BaseTradeContract is HelperContract {
   }
 
   // TODO
-  function _getDerivPrice(uint128 id) internal view returns (uint64) {
-    uint64 price = state.prices.derivatives[id];
-    require(price > 0, "invalid derivative price");
-    return price;
+  function _getInterestRate(uint128 id) internal view returns (uint64) {
+    return state.prices.interestRates[id];
   }
 
-  // TODO
-  function _getInterestRate(uint128 id) internal view returns (uint64) {
-    uint64 interest = state.prices.interestRates[id];
-    return interest;
+  function _settleOptions(sub storage SubAccount) internal {}
+
+  function _settleFutures(sub storage SubAccount) internal {}
+
+  function _perpFundingAndSettleFuturesOptions(sub storage SubAccount) internal {
+    _perpFunding(sub);
+    _settleFutures(sub);
+    _settleOptions(sub);
   }
 }

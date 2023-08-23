@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 
 uint constant _MAX_NUM_LEGS = 10;
 

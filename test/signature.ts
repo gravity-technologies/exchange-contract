@@ -1,10 +1,9 @@
 import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
-import { Wallet, utils } from "ethers"
-import { buf, getTimestampNs } from "./util"
-import * as Types from "../message/types"
 import { randomInt } from "crypto"
-import { Order, OrderNoSignature, Signature } from "./type"
-import { string } from "hardhat/internal/core/params/argumentTypes"
+import { Wallet, utils } from "ethers"
+import * as Types from "../message/types"
+import { OrderNoSignature, Signature } from "./type"
+import { buf, getTimestampNs } from "./util"
 
 export function genCreateSubAccountSig(
   wallet: Wallet,
@@ -373,14 +372,14 @@ export function genTransferSig(
 }
 
 function sign(wallet: Wallet, msgParams: any): Signature {
-  console.log("msg", msgParams.primaryType, msgParams.message)
+  // console.log("msg", msgParams.primaryType, msgParams.message)
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
     data: msgParams,
     version: SignTypedDataVersion.V4,
   })
 
-  console.log("sig", sig)
+  // console.log("sig", sig)
   const { r, s, v } = utils.splitSignature(sig)
   return {
     signer: wallet.address,

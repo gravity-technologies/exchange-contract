@@ -4,12 +4,13 @@ pragma solidity ^0.8.19;
 import "./BaseTradeContract.sol";
 import "./HelperContract.sol";
 import "./signature/generated/TransferSig.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 abstract contract TransferContract is BaseTradeContract {
   /**
    * @notice Deposit collateral into a sub account
+   * TODO: To review after bridging approach is confirmed
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
@@ -27,7 +28,7 @@ abstract contract TransferContract is BaseTradeContract {
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
-  ) external nonReentrant {
+  ) external {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(toSubID);
 
@@ -74,7 +75,7 @@ abstract contract TransferContract is BaseTradeContract {
     int128 numTokensInt128 = int128(uint128(numTokens));
 
     // 1. Ensure that the user can only withdraw up to the total value of the subaccount
-    require(numTokensInt128 <= _getTotalValue(sub), "overwithdraw");
+    require(numTokensInt128 <= _getUsdValue(sub), "overwithdraw");
 
     _requirePermission(sub, sig.signer, SubAccountPermWithdrawal);
 
@@ -135,7 +136,7 @@ abstract contract TransferContract is BaseTradeContract {
     _perpFunding(toSub);
 
     // Must have enough balances before transfering
-    require(numTokensInt128 <= _getTotalValue(fromSub), "withdrawal amount > total value");
+    require(numTokensInt128 <= _getUsdValue(fromSub), "withdrawal amount > total value");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashTransfer(fromSubID, toSubID, numTokens, nonce), sig);

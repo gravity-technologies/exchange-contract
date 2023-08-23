@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {AccountRecoveryType as Recovery} from "../../../DataStructure.sol";
+import {AccountRecoveryType as Recovery} from "../../../types/DataStructure.sol";
 
 // keccak256("AddAccountGuardianPayload(uint32 accountID,address signer,uint32 nonce)");
 bytes32 constant _ADD_GUARDIAN_H = bytes32(0xfa60a1fcd920572ddfb19818360dd471bfd34008d635d67640de725583efa10b);
@@ -21,6 +21,12 @@ function hashRemoveGuardian(uint32 accID, address signer, uint32 nonce) pure ret
 // keccak256("RecoverAccountAdminPayload(uint32 accountID,uint8 recoveryType,address oldAdmin,address recoveryAdmin,uint32 nonce)");
 bytes32 constant _RECOVER_ADMIN_H = bytes32(0x172b9cadc30752a2b2fa5b30c58d75fa112339b91739a34ef8055ec6a5f405e0);
 
-function hashRecoverAdmin(uint32 accID, Recovery typ, address oldAdmin, address newAdmin, uint32 nonce) pure returns (bytes32) {
+function hashRecoverAdmin(
+  uint32 accID,
+  Recovery typ,
+  address oldAdmin,
+  address newAdmin,
+  uint32 nonce
+) pure returns (bytes32) {
   return keccak256(abi.encode(_RECOVER_ADMIN_H, accID, uint8(typ), oldAdmin, newAdmin, nonce));
 }

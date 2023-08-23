@@ -3,7 +3,7 @@ pragma solidity ^0.8.19;
 
 import "./HelperContract.sol";
 import "./signature/generated/SubAccountSig.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract SubAccountContract is HelperContract {

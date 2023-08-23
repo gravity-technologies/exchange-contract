@@ -2,9 +2,9 @@
 pragma solidity ^0.8.19;
 
 import "./HelperContract.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
-import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../DataStructure.sol";
+import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract ConfigContract is HelperContract {
