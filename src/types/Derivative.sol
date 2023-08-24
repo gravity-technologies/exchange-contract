@@ -1,58 +1,28 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
-enum Instrument {
-  UNSPECIFIED,
-  PERPS,
-  FUTURES,
-  CALL,
-  PUT
-}
-
-enum Currency {
-  UNSPECIFIED,
-  USDC,
-  USDT,
-  ETH,
-  BTC
-}
-
-struct Derivative {
-  Instrument instrument;
-  Currency underlying;
-  Currency quote;
-  uint32 expiration;
-  uint64 strikePrice;
-}
-
 // The type of each field in this struct have been extended from the one defined in https://github.com/gravity-technologies/smart-contract-interface/blob/main/state.go#L74C23-L74C23
 // This is to allow better packing of the struct in storage
 struct DerivativePosition {
   // The derivative contract held in this position
-  uint128 id;
+  uint256 id;
   // Number of contracts held in this position. This is uint64 in
-  // int64 in contract interface, but extends to int128 to fill half a slot in storage
-  int128 contractBalance;
+  // int64 in contract interface
+  int64 contractBalance;
   // (expressed in USD with 10 decimal points)
   uint64 lastAppliedFundingIndex;
+  // Timestamp when this position was created
+  uint64 createdAt;
 }
 
 // Copied and modified from https://solidity-by-example.org/app/iterable-mapping/
 struct DerivativeCollection {
-  uint128[] keys;
-  mapping(uint128 => DerivativePosition) values;
-  mapping(uint128 => uint) index;
+  uint256[] keys;
+  mapping(uint256 => DerivativePosition) values;
+  mapping(uint256 => uint) index;
 }
 
-function get(DerivativeCollection storage map, uint128 key) view returns (DerivativePosition storage) {
-  return map.values[key];
-}
-
-function getKeyAtIndex(DerivativeCollection storage map, uint index) view returns (uint128) {
-  return map.keys[index];
-}
-
-function set(DerivativeCollection storage map, uint128 key, DerivativePosition storage val) {
+function set(DerivativeCollection storage map, uint256 key, DerivativePosition storage val) {
   if (map.values[key].id == 0) {
     map.values[key] = val;
   } else {
@@ -62,13 +32,13 @@ function set(DerivativeCollection storage map, uint128 key, DerivativePosition s
   }
 }
 
-function remove(DerivativeCollection storage map, uint128 key) {
+function remove(DerivativeCollection storage map, uint256 key) {
   if (map.values[key].id == 0) return;
 
   delete map.values[key];
 
-  uint index = map.index[key];
-  uint128 lastKey = map.keys[map.keys.length - 1];
+  uint256 index = map.index[key];
+  uint256 lastKey = map.keys[map.keys.length - 1];
 
   map.index[lastKey] = index;
   delete map.index[key];

@@ -35,7 +35,6 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
 /// @dev hash the order leg, but sort the limit price and ocoLimitPrice so that we can always use either 1 of the prices
 function hashOrderLeg(OrderLeg calldata l) pure returns (bytes32) {
   if (l.limitPrice < l.ocoLimitPrice)
-    return
-      keccak256(abi.encode(_LEG_H, l.derivative, l.contractSize, l.limitPrice, l.ocoLimitPrice, l.isBuyingContract));
-  return keccak256(abi.encode(_LEG_H, l.derivative, l.contractSize, l.ocoLimitPrice, l.limitPrice, l.isBuyingContract));
+    return keccak256(abi.encode(_LEG_H, l.assetID, l.size, l.limitPrice, l.ocoLimitPrice, l.isBuyingAsset));
+  return keccak256(abi.encode(_LEG_H, l.assetID, l.size, l.ocoLimitPrice, l.limitPrice, l.isBuyingAsset));
 }

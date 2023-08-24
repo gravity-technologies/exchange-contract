@@ -202,9 +202,8 @@ contract SubAccountContract is HelperContract {
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key
-    state.subAccountToSession[sig.signer] = SessionKey(sessionKey, cappedExpiry);
-    require(state.sessionToSubAccount[sessionKey] == address(0), "session key already exists");
-    state.sessionToSubAccount[sessionKey] = sig.signer;
+    state.sessionToUser[sessionKey] = Session(sig.signer, cappedExpiry);
+    state.userToSession[sig.signer] = sessionKey;
   }
 
   /// @notice Removing signature verification only makes session keys safer.
@@ -216,9 +215,9 @@ contract SubAccountContract is HelperContract {
   /// @param signer The address of the signer
   function removeSessionKey(uint64 timestamp, uint64 txID, address signer) external {
     _setSequence(timestamp, txID);
-    SessionKey storage session = state.subAccountToSession[signer];
-    delete state.sessionToSubAccount[session.key];
-    delete state.subAccountToSession[signer];
+    address session = state.userToSession[signer];
+    delete state.sessionToUser[session];
+    delete state.userToSession[signer];
   }
 
   function _min(uint64 a, uint64 b) private pure returns (uint64) {

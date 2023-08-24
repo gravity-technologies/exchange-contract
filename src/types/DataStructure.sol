@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import "./Constant.sol";
 import "./Derivative.sol";
 
 enum MarginType {
@@ -22,6 +23,22 @@ enum TimeInForce {
   ALL_OR_NONE,
   IMMEDIATE_OR_CANCEL,
   FILL_OR_KILL
+}
+
+enum Instrument {
+  UNSPECIFIED,
+  PERPS,
+  FUTURES,
+  CALL,
+  PUT
+}
+
+enum Currency {
+  UNSPECIFIED,
+  USDC,
+  USDT,
+  ETH,
+  BTC
 }
 
 // SubAccountPermissions:
@@ -49,13 +66,16 @@ struct Signature {
   uint32 nonce;
 }
 
+// sub_signer -> session_signer
+// sub_signer -> subaccount
+// given a signer, need to find subaccount
 struct State {
   // Accounts
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
-  // Session keys are used to auto sign trade on behalf of the user
-  mapping(address => address) sessionToSubAccount;
-  mapping(address => SessionKey) subAccountToSession;
+  // Map from session key to user and expiry. Session keys are used to auto sign trade on behalf of the user
+  mapping(address => Session) sessionToUser;
+  mapping(address => address) userToSession;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
@@ -156,14 +176,15 @@ struct Signer {
 }
 
 struct SignatureState {
-  mapping(bytes32 => bool) fullDerivativeOrderMatched;
-  mapping(bytes32 => uint64[]) partialDerivativeOrderMatched;
+  mapping(bytes32 => uint64[]) orderMatched;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   mapping(bytes32 => bool) isExecuted;
 }
 
 struct PriceState {
-  mapping(uint128 => uint64) derivatives;
+  // Asset price is int64 because we need
+  // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
+  mapping(uint256 => int64) assets;
   mapping(uint128 => uint64) interestRates;
   // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
@@ -177,7 +198,7 @@ struct PriceState {
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
-  mapping(Instrument => uint64) settledPrices;
+  mapping(uint256 => uint64) settled;
 }
 
 // There is only one settled price per underlying/expiration pair
@@ -186,9 +207,9 @@ struct SettledInstrument {
   uint32 expiration;
 }
 
-struct SessionKey {
-  // The session key that is tagged to the main signing key
-  address key;
+struct Session {
+  // The address of the user that create this session
+  address user;
   // The last timestamp that the signer can sign at
   // We can apply a max one day expiry on session keys
   uint64 expiry;
@@ -298,9 +319,9 @@ struct Order {
 }
 
 struct OrderLeg {
-  uint128 derivative;
+  uint256 assetID;
   // The total number of derivative contracts to trade in this leg, expressed in derivative decimal units
-  uint64 contractSize;
+  uint64 size;
   // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE
   // The limit price of the order leg, expressed in USD Price.
   // This is the total amount of base currency to pay/receive for all legs.
@@ -311,7 +332,7 @@ struct OrderLeg {
   // The smart contract will always validate both limit prices, by arranging them in ascending order
   uint64 ocoLimitPrice;
   // Specifies if the order leg is a buy or sell
-  bool isBuyingContract;
+  bool isBuyingAsset;
 }
 
 struct OrderMatch {
@@ -319,4 +340,14 @@ struct OrderMatch {
   uint64[] numContractsMatched;
   uint32 takerFeePercentageCharged;
   uint32 makerFeePercentageCharged;
+}
+
+struct Derivative {
+  Instrument instrument;
+  Currency underlying;
+  uint256 underlyingAssetID;
+  Currency quote;
+  uint256 quoteAssetID;
+  uint32 expiration;
+  uint64 strikePrice;
 }

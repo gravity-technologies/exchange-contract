@@ -31,6 +31,6 @@ function _verifyOrder(Order calldata o, bool isMakerOrder) pure {
   // 11. Validate legs are sorted by derivative ID
   OrderLeg[] calldata legs = o.legs;
   for (uint i = 1; i < legs.length; i++) {
-    require(legs[i - 1].derivative < legs[i].derivative, "legs not sorted");
+    require(legs[i - 1].assetID < legs[i].assetID, "legs not sorted");
   }
 }

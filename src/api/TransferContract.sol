@@ -75,7 +75,7 @@ abstract contract TransferContract is BaseTradeContract {
     int128 numTokensInt128 = int128(uint128(numTokens));
 
     // 1. Ensure that the user can only withdraw up to the total value of the subaccount
-    require(numTokensInt128 <= _getUsdValue(sub), "overwithdraw");
+    require(numTokensInt128 <= _getSubAccountUsdValue(sub), "overwithdraw");
 
     _requirePermission(sub, sig.signer, SubAccountPermWithdrawal);
 
@@ -83,11 +83,11 @@ abstract contract TransferContract is BaseTradeContract {
 
     _perpFunding(sub);
 
-    // 2. Update balance
-    sub.balance -= numTokensInt128;
+    // 2. Update collateral balance (charging a fee)
+    sub.balance -= numTokensInt128 - WITHDRAWAL_FEE;
 
     // 3. Verify valid total value
-    _requireValidTotalValue(sub);
+    _requireValidSubAccountUsdValue(sub);
 
     // 4. Call the bridging contract
     // TODO
@@ -136,7 +136,7 @@ abstract contract TransferContract is BaseTradeContract {
     _perpFunding(toSub);
 
     // Must have enough balances before transfering
-    require(numTokensInt128 <= _getUsdValue(fromSub), "withdrawal amount > total value");
+    require(numTokensInt128 <= _getSubAccountUsdValue(fromSub), "withdrawal amount > total value");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashTransfer(fromSubID, toSubID, numTokens, nonce), sig);

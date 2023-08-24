@@ -3,7 +3,8 @@ pragma solidity ^0.8.19;
 
 import "../types/DataStructure.sol";
 import "../GRVTExchange.sol";
-import "hardhat/console.sol";
+
+// import "hardhat/console.sol";
 
 contract TradeTestPrep is GRVTExchange {
   uint32 takerAccID = 1;
@@ -15,7 +16,7 @@ contract TradeTestPrep is GRVTExchange {
   uint32 feeAccID = 999;
   address feeAddr = 0x5034fDb1387Ae20Ea2614e323666E863cbE363a8; // 0x7c4978a1147256ecd75161c96fc40fb08a26672fbb9497b2505ec873cdf9e6e8
 
-  uint128 derivative = 0x1234;
+  uint256 assetID = 0x1234;
 
   constructor(bytes32[] memory _initialConfig) GRVTExchange(_initialConfig) {
     // Setup Fee position
@@ -31,22 +32,22 @@ contract TradeTestPrep is GRVTExchange {
     makerSub.balance += 10000000;
 
     // Setup derivative price
-    state.prices.derivatives[derivative] = 1000; // Finalise price/balance representation
+    state.prices.assets[assetID] = 1000; // Finalise price/balance representation
   }
 
   function trade(uint64 timestamp, uint64 txID, Trade calldata t) external {
     derivativeTrade(timestamp, txID, t);
-    console.log("taker");
+    // console.log("taker");
     _reportSub(takerAddr);
-    console.log("maker");
+    // console.log("maker");
     _reportSub(takerAddr);
-    console.log("fee");
+    // console.log("fee");
     _reportSub(_getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID));
   }
 
   function _reportSub(address subID) private view {
-    SubAccount storage sub = _requireSubAccount(subID);
-    console.logInt(sub.balance);
+    // SubAccount storage sub = _requireSubAccount(subID);
+    // console.logInt(sub.balance);
   }
 
   function initSubAccount(address adminAddress, uint32 accID, address subID) private {
