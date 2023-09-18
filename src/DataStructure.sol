@@ -35,14 +35,12 @@ enum AccountRecoveryType {
 // To check if user has a certain permission, just do a bitwise AND
 // ie: permission & mask > 0
 uint64 constant SubAccountPermAdmin = 1;
-uint64 constant SubAccountPermDeposit = 1 << 1;
-uint64 constant SubAccountPermWithdrawal = 1 << 2;
-uint64 constant SubAccountPermTransfer = 1 << 3;
 uint64 constant SubAccountPermTrade = 1 << 4;
-uint64 constant SubAccountPermAddSigner = 1 << 5;
-uint64 constant SubAccountPermRemoveSigner = 1 << 6;
-uint64 constant SubAccountPermUpdateSignerPermission = 1 << 7;
-uint64 constant SubAccountPermChangeMarginType = 1 << 8;
+
+// AccountPermissions:
+uint64 constant AccountPermAdmin = 1;
+uint64 constant AccountPermWithdraw = 1 << 1;
+uint64 constant AccountPermTransfer = 1 << 2;
 
 struct Signature {
   // The address of the signer
@@ -79,7 +77,7 @@ struct State {
 }
 
 struct Account {
-  uint32 id;
+  address id;
   // Number of account admin signers required to make any privileged changes on the account level. Defaults to 1
   // This affects the multi-sigs required to onboard new account admins, guardians, withdrawal, and transfer addresses
   // uint256 instead of uint8 to reduce gas cost
@@ -96,7 +94,7 @@ struct Account {
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
   address[] onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Sub Accounts
-  address[] onboardedTransferSubAccounts;
+  address[] onboardedTransferAccounts;
   // A record of all SubAccounts owned by the account
   // Helps in sub account signer quorum computation during key recovery
   address[] subAccounts;
@@ -104,15 +102,16 @@ struct Account {
 
 struct SubAccount {
   // The wallet address of this subaccount, which also acts as the subaccount ID
-  address id;
+  uint32 id;
   // The Account that this Sub Account belongs to
-  uint32 accountID;
+  address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
   // The total amount of base currency that the sub account possesses
   // Expressed in base currency decimal units
   int64 balance;
+  // TODO: Change this since deposits are at account level
   // The total amount of base currency that the sub account has deposited, but not yet confirmed by L1 finality
   // Take this into account when liquidating a sub account
   // But do not take this into account when calculating the sub account's balance
