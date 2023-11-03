@@ -91,7 +91,7 @@ contract SubAccountContract is HelperContract {
   /// @param perms The new permissions of the signer as a bitmask
   /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
-  function setSubAccountSignerPermissions(
+  function SetSubAccountSignerPermissions(
     uint64 timestamp,
     uint64 txID,
     address subID,
