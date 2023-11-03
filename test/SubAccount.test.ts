@@ -116,7 +116,7 @@ describe("API - SubAccount", function () {
     // })
   })
 
-  describe("setSubAccountSignerPermissions", function () {
+  describe("SetSubAccountSignerPermissions", function () {
     it("acc-admin/sub-account-admin/signer-with-permission can change permission of subaccount signer", async function () {
       // Setup
       const admin = wallet()
@@ -226,7 +226,7 @@ describe("API - SubAccount", function () {
       const salt = nonce()
       const sig = genSetSubAccountSignerPermissionsPayloadSig(admin, subID, alice.address, Perm.Trade, salt)
       await expectToThrowAsync(
-        contract.setSubAccountSignerPermissions(ts, ts, subID, alice.address, Perm.Deposit, salt, sig),
+        contract.SetSubAccountSignerPermissions(ts, ts, subID, alice.address, Perm.Deposit, salt, sig),
         "invalid signature"
       )
     })

@@ -98,7 +98,7 @@ export async function setSignerPermission(
 ) {
   const salt = nonce()
   const sig = genSetSubAccountSignerPermissionsPayloadSig(txSigner, subID, signer, permission, salt)
-  await contract.setSubAccountSignerPermissions(ts, txID, subID, signer, permission, salt, sig)
+  await contract.SetSubAccountSignerPermissions(ts, txID, subID, signer, permission, salt, sig)
 }
 
 export async function removeSubSigner(
