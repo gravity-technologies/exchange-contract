@@ -1,7 +1,7 @@
 import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
 import { Wallet, utils } from "ethers"
 import { buf, getTimestampNs } from "./util"
-import * as Types from "../message/ts/type"
+import * as Types from "../message/type"
 import { randomInt } from "crypto"
 
 interface Signature {
