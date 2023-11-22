@@ -94,7 +94,7 @@ export const AddAccountSigner = {
     [PrimaryType.AddAccountSigner]: [
       { name: "accountID", type: "address" },
       { name: "signer", type: "address" },
-      { name: "permissions", type: "uint16" },
+      { name: "permissions", type: "uint64" },
       { name: "nonce", type: "uint32" },
     ],
   },
@@ -108,7 +108,7 @@ export const SetAccountSignerPermissions = {
     [PrimaryType.AddAccountSigner]: [
       { name: "accountID", type: "address" },
       { name: "signer", type: "address" },
-      { name: "permissions", type: "uint16" },
+      { name: "permissions", type: "uint64" },
       { name: "nonce", type: "uint32" },
     ],
   },
@@ -216,7 +216,7 @@ export const AddSubAccountSigner = {
     [PrimaryType.AddSubAccountSigner]: [
       { name: "subAccountID", type: "uint64" },
       { name: "signer", type: "address" },
-      { name: "permissions", type: "uint16" },
+      { name: "permissions", type: "uint64" },
       { name: "nonce", type: "uint32" },
     ],
   },
