@@ -1,19 +1,53 @@
-import "@nomicfoundation/hardhat-toolbox"
-import "@nomiclabs/hardhat-ethers"
-import fs from "fs"
-import "hardhat-gas-reporter"
-import "hardhat-preprocessor"
-import { HardhatUserConfig, task } from "hardhat/config"
+import { HardhatUserConfig } from "hardhat/config"
 
-function getRemappings() {
-  return fs
-    .readFileSync("remappings.txt", "utf8")
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => line.trim().split("="))
-}
+import "@matterlabs/hardhat-zksync-node"
+import "@matterlabs/hardhat-zksync-deploy"
+import "@matterlabs/hardhat-zksync-solc"
+import "@matterlabs/hardhat-zksync-verify"
 
 const config: HardhatUserConfig = {
+  defaultNetwork: "zkSyncSepoliaTestnet",
+  networks: {
+    zkSyncSepoliaTestnet: {
+      url: "https://sepolia.era.zksync.dev",
+      ethNetwork: "sepolia",
+      zksync: true,
+      verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
+    },
+    zkSyncMainnet: {
+      url: "https://mainnet.era.zksync.io",
+      ethNetwork: "mainnet",
+      zksync: true,
+      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
+    },
+    zkSyncGoerliTestnet: {
+      // deprecated network
+      url: "https://testnet.era.zksync.dev",
+      ethNetwork: "goerli",
+      zksync: true,
+      verifyURL: "https://zksync2-testnet-explorer.zksync.dev/contract_verification",
+    },
+    dockerizedNode: {
+      url: "http://localhost:3050",
+      ethNetwork: "http://localhost:8545",
+      zksync: true,
+    },
+    inMemoryNode: {
+      url: "http://127.0.0.1:8011",
+      ethNetwork: "", // in-memory node doesn't support eth node; removing this line will cause an error
+      zksync: true,
+    },
+    hardhat: {
+      zksync: true,
+    },
+  },
+  zksolc: {
+    version: "latest",
+    settings: {
+      // find all available options in the official documentation
+      // https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-solc.html#configuration
+    },
+  },
   solidity: {
     version: "0.8.20",
     settings: {
@@ -22,28 +56,6 @@ const config: HardhatUserConfig = {
         runs: 200,
       },
     },
-  },
-  paths: {
-    sources: "./src", // Use ./src rather than ./contracts as Hardhat expects
-    cache: "./cache_hardhat", // Use a different cache for Hardhat than Foundry
-  },
-  // This fully resolves paths for imports in the ./lib directory for Hardhat
-  preprocess: {
-    eachLine: (hre) => ({
-      transform: (line: string) => {
-        if (line.match(/^\s*import /i)) {
-          getRemappings().forEach(([find, replace]) => {
-            if (line.match(find)) {
-              line = line.replace(find, replace)
-            }
-          })
-        }
-        return line
-      },
-    }),
-  },
-  gasReporter: {
-    enabled: true,
   },
 }
 
