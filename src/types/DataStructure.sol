@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.19;
 
+import "./Constant.sol";
+import "./Derivative.sol";
+
 enum MarginType {
   UNSPECIFIED,
   ISOLATED,
@@ -8,12 +11,18 @@ enum MarginType {
   PORTFOLIO_CROSS_MARGIN
 }
 
-enum Currency {
+enum AccountRecoveryType {
   UNSPECIFIED,
-  USDC,
-  USDT,
-  ETH,
-  BTC
+  GUARDIAN,
+  SUB_ACCOUNT_SIGNERS
+}
+
+enum TimeInForce {
+  UNSPECIFIED,
+  GOOD_TILL_TIME,
+  ALL_OR_NONE,
+  IMMEDIATE_OR_CANCEL,
+  FILL_OR_KILL
 }
 
 enum Instrument {
@@ -24,10 +33,12 @@ enum Instrument {
   PUT
 }
 
-enum AccountRecoveryType {
+enum Currency {
   UNSPECIFIED,
-  GUARDIAN,
-  SUB_ACCOUNT_SIGNERS
+  USDC,
+  USDT,
+  ETH,
+  BTC
 }
 
 // SubAccountPermissions:
@@ -52,14 +63,19 @@ struct Signature {
   uint8 v;
   // Timestamp after which this signature expires. Use 0 for no expiration.
   uint64 expiration;
+  uint32 nonce;
 }
 
+// sub_signer -> session_signer
+// sub_signer -> subaccount
+// given a signer, need to find subaccount
 struct State {
   // Accounts
   mapping(uint32 => Account) accounts;
   mapping(address => SubAccount) subAccounts;
-  // Session keys are used to auto sign trade on behalf of the user
-  mapping(address => SessionKey) sessionKeys;
+  // Map from session key to user and expiry. Session keys are used to auto sign trade on behalf of the user
+  mapping(address => Session) sessionToUser;
+  mapping(address => address) userToSession;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
@@ -110,16 +126,17 @@ struct SubAccount {
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
-  // The total amount of base currency that the sub account possesses
-  // Expressed in base currency decimal units
-  int64 balance;
+  // The total amount of base currency that the sub account possesses, 9 decimal places
+  int128 balanceE9;
   // The total amount of base currency that the sub account has deposited, but not yet confirmed by L1 finality
+  // 9 decimal places
   // Take this into account when liquidating a sub account
   // But do not take this into account when calculating the sub account's balance
-  // Expressed in base currency decimal units
-  uint64 pendingDeposits;
-  // Mapping from the uint128 representation to derivate position
-  DerivativePosition[] derivativePositions;
+  uint64 pendingDepositsE9;
+  // Mapping from the uint256 representation to derivate position
+  DerivativeCollection options;
+  DerivativeCollection futures;
+  DerivativeCollection perps;
   // Signers who are authorized to trade on this sub account
   Signer[] authorizedSigners;
   // The timestamp that the sub account was last funded at
@@ -150,29 +167,6 @@ struct ConfigTimelockRule {
   uint256 deltaNegative;
 }
 
-struct Derivative {
-  Instrument instrument;
-  Currency underlying;
-  Currency quote;
-  uint32 expiration;
-  uint64 strikePrice;
-}
-
-struct DerivativePosition {
-  // The derivative contract held in this position
-  Derivative derivative;
-  // Number of contracts held in this position
-  int64 contractBalance;
-  // The average entry price of the contracts held in this position
-  // Used for computing unrealized P&L
-  // This value experiences rounding errors, so it is not guaranteed to be accurate, use as an indicator only
-  // Important to track on StateMachine to serve unrealized P&L queries, but not important to track on the
-  // smart contract. Smart contract doesn't rely on this field for any logic
-  uint64 averageEntryPrice;
-  // (expressed in USD with 10 decimal points)
-  uint64 lastAppliedFundingIndex;
-}
-
 struct Signer {
   // The public key of the signer
   address signingKey;
@@ -181,14 +175,17 @@ struct Signer {
 }
 
 struct SignatureState {
-  mapping(bytes32 => bool) fullDerivativeOrderMatched;
-  mapping(bytes32 => uint64[]) partialDerivativeOrderMatched;
+  mapping(bytes32 => uint64[]) orderMatched;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   mapping(bytes32 => bool) isExecuted;
 }
 
 struct PriceState {
-  // No need to store oracle prices, they are lazily uploaded at point of liquidation
+  // Asset price is int64 because we need
+  // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
+  mapping(uint256 => int64) assets;
+  mapping(uint128 => uint64) interestRates;
+  // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
   // We centrally upload funding rates. On smart contract side, we simply apply a tiny minmax clamp
@@ -200,7 +197,7 @@ struct PriceState {
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
-  mapping(Instrument => uint64) settledPrices;
+  mapping(uint256 => uint64) settled;
 }
 
 // There is only one settled price per underlying/expiration pair
@@ -209,9 +206,9 @@ struct SettledInstrument {
   uint32 expiration;
 }
 
-struct SessionKey {
-  // The session key that is tagged to the main signing key
-  address key;
+struct Session {
+  // The address of the user that create this session
+  address user;
   // The last timestamp that the signer can sign at
   // We can apply a max one day expiry on session keys
   uint64 expiry;
@@ -230,6 +227,7 @@ struct SafetyModulePool {
   uint64 totalBalance;
 }
 
+// --------------- Config --------------
 enum ConfigType {
   UNSPECIFIED,
   BOOL,
@@ -263,4 +261,92 @@ enum ConfigID {
   // ADMIN
   ADMIN_RECOVERY_ADDRESS,
   FEE_SUB_ACCOUNT_ID // the sub account that collects fees
+}
+
+// --------------- Trade --------------
+struct Trade {
+  Order takerOrder;
+  OrderMatch[] makerOrders;
+}
+
+struct Order {
+  // The subaccount initiating the order
+  address subAccountID;
+  /// @dev No logic in contract related to this field
+  //If the order is a market order
+  // Market Orders do not have a limit price, and are always executed according to the maker order price.
+  // Market Orders must always be taker orders
+  bool isMarket;
+  /// @dev No logic in contract related to this field
+  // Four supported types of orders: GTT, IOC, AON, FOK
+  // PARTIAL EXECUTION = GTT / IOC - allows partial size execution on each leg
+  // FULL EXECUTION = AON / FOK - only allows full size execution on all legs
+  // TAKER ONLY = IOC / FOK - only allows taker orders
+  // MAKER OR TAKER = GTT / AON - allows maker or taker orders
+  // Exchange only supports (GTT, IOC, FOK)
+  // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
+  TimeInForce timeInForce;
+  // ONLY APPLICABLE WHEN TimeInForce = AON / FOK AND IsMarket = FALSE
+  // The limit price of the full order, expressed in USD Price.
+  // This is the total amount of base currency to pay/receive for all legs.
+  uint64 limitPrice;
+  uint64 ocoLimitPrice;
+  // The taker fee percentage cap signed by the order.
+  // This is the maximum taker fee percentage the order sender is willing to pay for the order.
+  uint32 takerFeePercentageCap;
+  // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
+  uint32 makerFeePercentageCap;
+  /// @dev No logic in contract related to this field
+  // If True, Order must be a maker order. It has to fill the orderbook instead of match it.
+  // If False, Order can be either a maker or taker order.
+  //
+  // |               | Must Fill All | Can Fill Partial
+  // | Must Be Taker | FOK + False   | IOC + False
+  // | Can Be Either | AON + False   | GTC + False
+  // | Must Be Maker | AON + True    | GTC + True
+  bool postOnly;
+  /// @dev No logic in contract related to this field
+  // If True, Order must reduce the position size, or be cancelled
+  bool reduceOnly;
+  /// @dev No logic in contract related to this field
+  bool isPayingBaseCurrency;
+  // The legs present in this order
+  // The legs must be sorted by Derivative: Instrument/Underlying/BaseCurrency/Expiration/StrikePrice
+  OrderLeg[] legs;
+  uint32 nonce;
+  Signature signature;
+}
+
+struct OrderLeg {
+  uint256 assetID;
+  // The total number of derivative contracts to trade in this leg, expressed in derivative decimal units
+  uint64 size;
+  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE
+  // The limit price of the order leg, expressed in USD Price.
+  // This is the total amount of base currency to pay/receive for all legs.
+  uint64 limitPrice;
+  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE AND IsOCO = TRUE
+  // If a OCO order is specified, this must contain the other limit price
+  // User must sign both limit prices, and activator is free to swap them depending on which trigger is activated
+  // The smart contract will always validate both limit prices, by arranging them in ascending order
+  uint64 ocoLimitPrice;
+  // Specifies if the order leg is a buy or sell
+  bool isBuyingAsset;
+}
+
+struct OrderMatch {
+  Order makerOrder;
+  uint64[] numAssetsMatched;
+  uint32 takerFeePercentageCharged;
+  uint32 makerFeePercentageCharged;
+}
+
+struct Derivative {
+  Instrument instrument;
+  Currency underlying;
+  uint256 underlyingAssetID;
+  Currency quote;
+  uint256 quoteAssetID;
+  uint32 expiration;
+  uint64 strikePrice;
 }

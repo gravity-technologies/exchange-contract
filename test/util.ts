@@ -37,8 +37,11 @@ export function getTimestampNs(addDays: number = 10): number {
   return Math.floor((Date.now() + deltaInMs) * 1000)
 }
 
-export function wallet(): Wallet {
-  return ethers.Wallet.createRandom()
+export function wallet(pkHex?: string): Wallet {
+  if (pkHex == null) {
+    return ethers.Wallet.createRandom()
+  }
+  return new ethers.Wallet(pkHex)
 }
 
 export function nonce() {

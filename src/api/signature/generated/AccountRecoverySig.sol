@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import {AccountRecoveryType as Recovery} from "../../../DataStructure.sol";
+import {AccountRecoveryType as Recovery} from "../../../types/DataStructure.sol";
 
 // keccak256("AddAccountGuardian(uint32 accountID,address signer,uint32 nonce)");
 bytes32 constant _ADD_GUARDIAN_H = bytes32(0xfa60a1fcd920572ddfb19818360dd471bfd34008d635d67640de725583efa10b);

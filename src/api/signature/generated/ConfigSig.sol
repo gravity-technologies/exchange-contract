@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import "../../../DataStructure.sol";
+import "../../../types/DataStructure.sol";
 
 // keccak256("ScheduleConfig(uint8 key,bytes32 value,uint32 nonce)");
 bytes32 constant _SCHEDULE_CONFIG_H = bytes32(0xd2e4668a3738dc6aaf9b47c7bf3eecfd828c00addb19327a393673d4581550d0);

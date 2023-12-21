@@ -73,7 +73,6 @@ export interface TypedMessage<T extends MessageTypes> {
     verifyingContract?: string
     salt?: ArrayBuffer
   }
-  // message: Record<string, unknown>
 }
 
 const generateFile = (primaryType: string, types, methods) => `
@@ -81,7 +80,6 @@ ${types}
 ${methods}
 `
 
-let LOGGING_ENABLED = false
 type Result = {
   struct: string
   typeHash: string

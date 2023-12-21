@@ -2,7 +2,7 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.19;
 
-import "../../../DataStructure.sol";
+import "../../../types/DataStructure.sol";
 
 // keccak256("CreateSubAccount(uint32 accountID,address subAccountID,uint8 quoteCurrency,uint8 marginType,uint32 nonce)");
 bytes32 constant _CREATE_SUBACCOUNT_H = bytes32(0x6cafe27909faed17c65dae473a28613eec3d8c662247fdc3921f8f98a0c15385);

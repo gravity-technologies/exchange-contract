@@ -2,13 +2,10 @@
 pragma solidity ^0.8.19;
 
 import "./HelperContract.sol";
-import "../DataStructure.sol";
+import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
-import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../DataStructure.sol";
+import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
-import "openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
-
-// import "hardhat/console.sol";
 
 contract ConfigContract is HelperContract {
   // --------------- Constants ---------------
@@ -44,10 +41,11 @@ contract ConfigContract is HelperContract {
    * 15 / PM_LONG_TERM_VEGA_POWER / Uint (4)
    * 16 / PM_INITIAL_MARGIN_FACTOR / Uint (4)
    * 17 / PM_NET_SHORT_OPTION_MINIMUM / Uint (4)
-   * 18 / ADMIN_RECOVERY_Uint / Address (2)
+   * 18 / ADMIN_RECOVERY_ADDRESS / Address (2)
    * 19 / FEE_SUB_ACCOUNT_ID / Address (2)
+   * 20 / PERP_FUNDING_RATE / Uint (4)
    */
-  uint256 private constant _CONFIG_TYPE = 0x22444444444444444440;
+  uint256 private constant _CONFIG_TYPE = 0x422444444444444444440;
 
   // ---------------- Events ----------------
   // event ConfigScheduledEvent(CfgID indexed configID, bytes32 value);
@@ -148,8 +146,8 @@ contract ConfigContract is HelperContract {
     // If the lock duration is 0, config can be changed immediately without further check.
     // Otherwise, this config value must match the scheduled config value
     if (_getLockDuration(key, value) != 0) {
-      require(schedule.value == value, "config must match scheduled value");
-      require(schedule.lockEndTime <= timestamp, "config is still locked");
+      require(schedule.value == value, "mismatch scheduled");
+      require(schedule.lockEndTime <= timestamp, "config is locked");
     }
     state.configs[key] = value;
   }
@@ -198,7 +196,7 @@ contract ConfigContract is HelperContract {
     }
 
     // delta is out of range
-    require(false, "config change out of allowed range");
+    require(false, "out of range");
 
     // Should never reach here
     return 0;
