@@ -39,6 +39,7 @@ export function genAddAccountAdminSig(
   wallet: Wallet,
   accountID: string,
   signer: string,
+  permissions: number,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
@@ -46,6 +47,7 @@ export function genAddAccountAdminSig(
     message: {
       accountID,
       signer,
+      permissions,
       nonce,
     },
   })
@@ -67,7 +69,7 @@ export function genSetAccountMultiSigThresholdSig(
   })
 }
 
-export function genRemoveAccountAdminSig(
+export function genRemoveAccountSignerSig(
   wallet: Wallet,
   accountID: string,
   signer: string,

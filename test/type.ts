@@ -27,7 +27,15 @@ export enum AccountRecoveryType {
   SUB_ACCOUNT_SIGNERS,
 }
 
-export const Perm = {
+export const AccPerm = {
+  None: 0,
+  Admin: 1,
+  InternalTransfer: 1 << 1,
+  ExternalTransfer: 1 << 2,
+  Withdrawal: 1 << 3,
+}
+
+export const SubPerm = {
   None: 0,
   Admin: 1,
   Deposit: 1 << 1,

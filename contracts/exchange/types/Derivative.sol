@@ -3,33 +3,31 @@ pragma solidity ^0.8.20;
 
 // The type of each field in this struct have been extended from the one defined in https://github.com/gravity-technologies/smart-contract-interface/blob/main/state.go#L74C23-L74C23
 // This is to allow better packing of the struct in storage
-struct DerivativePosition {
+struct Position {
   // The derivative contract held in this position
   uint256 id;
   // Number of contracts held in this position.
   int64 balance;
   // (expressed in USD with 10 decimal points)
-  uint64 lastAppliedFundingIndex;
-  // Timestamp when this position was created
-  uint64 createdAt;
+  int64 lastAppliedFundingIndex;
 }
 
 // Copied and modified from https://solidity-by-example.org/app/iterable-mapping/
-struct DerivativeCollection {
+struct PositionsMap {
   uint256[] keys;
-  mapping(uint256 => DerivativePosition) values;
+  mapping(uint256 => Position) values;
   mapping(uint256 => uint) index;
 }
 
-function set(DerivativeCollection storage map, uint256 key, DerivativePosition storage val) {
+function set(PositionsMap storage map, uint256 key, Position storage pos) {
   if (map.values[key].id != 0) {
-    map.values[key] = val;
+    map.values[key] = pos;
     map.index[key] = map.keys.length;
     map.keys.push(key);
-  } else map.values[key] = val;
+  } else map.values[key] = pos;
 }
 
-function remove(DerivativeCollection storage map, uint256 key) {
+function remove(PositionsMap storage map, uint256 key) {
   if (map.values[key].id == 0) return;
 
   delete map.values[key];
