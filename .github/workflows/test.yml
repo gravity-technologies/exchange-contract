@@ -10,31 +10,31 @@ env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-  foundry:
-    strategy:
-      fail-fast: true
+  # foundry:
+  #   strategy:
+  #     fail-fast: true
 
-    name: Foundry project
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
+  #   name: Foundry project
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         submodules: recursive
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
+  #     - name: Install Foundry
+  #       uses: foundry-rs/foundry-toolchain@v1
+  #       with:
+  #         version: nightly
 
-      - name: Run Forge build
-        run: |
-          forge --version
-        id: build
+  #     - name: Run Forge build
+  #       run: |
+  #         forge --version
+  #       id: build
 
-      - name: Run Forge tests
-        run: |
-          forge test -vvv
-        id: forge-test
+  #     - name: Run Forge tests
+  #       run: |
+  #         forge test -vvv
+  #       id: forge-test
 
   hardhat:
     strategy:
@@ -47,10 +47,10 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup Node 16
+      - name: Setup Node 20
         uses: actions/setup-node@v3
         with:
-          node-version: "16.x"
+          node-version: "20.x"
           cache: "yarn"
 
       - name: Install Node dependencies

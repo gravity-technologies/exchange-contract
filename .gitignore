@@ -8,6 +8,8 @@ node_modules/
 #Hardhat files
 cache_hardhat/
 artifacts/
+artifacts-zk
+cache-zk
 
 #Hardhat plugin files
 typechain-types/
@@ -275,3 +277,11 @@ dist
 .pnp.*
 
 scripts/codegen.js
+
+# hardhat artifacts
+artifacts
+cache
+
+# zksync artifacts
+artifacts-zk
+cache-zk
