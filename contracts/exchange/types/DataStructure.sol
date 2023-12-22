@@ -71,8 +71,8 @@ struct Signature {
 // given a signer, need to find subaccount
 struct State {
   // Accounts
-  mapping(uint32 => Account) accounts;
-  mapping(address => SubAccount) subAccounts;
+  mapping(address => Account) accounts;
+  mapping(uint64 => SubAccount) subAccounts;
   // Map from session key to user and expiry. Session keys are used to auto sign trade on behalf of the user
   mapping(address => Session) sessionToUser;
   mapping(address => address) userToSession;
@@ -95,7 +95,7 @@ struct State {
 }
 
 struct Account {
-  uint32 id;
+  address id;
   // Number of account admin signers required to make any privileged changes on the account level. Defaults to 1
   // This affects the multi-sigs required to onboard new account admins, guardians, withdrawal, and transfer addresses
   // uint256 instead of uint8 to reduce gas cost
@@ -112,17 +112,17 @@ struct Account {
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
   address[] onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Sub Accounts
-  address[] onboardedTransferSubAccounts;
+  address[] onboardedTransferAccounts;
   // A record of all SubAccounts owned by the account
   // Helps in sub account signer quorum computation during key recovery
-  address[] subAccounts;
+  uint64[] subAccounts;
 }
 
 struct SubAccount {
   // The wallet address of this subaccount, which also acts as the subaccount ID
-  address id;
+  uint64 id;
   // The Account that this Sub Account belongs to
-  uint32 accountID;
+  address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
@@ -271,7 +271,7 @@ struct Trade {
 
 struct Order {
   // The subaccount initiating the order
-  address subAccountID;
+  uint64 subAccountID;
   /// @dev No logic in contract related to this field
   //If the order is a market order
   // Market Orders do not have a limit price, and are always executed according to the maker order price.

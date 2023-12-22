@@ -10,7 +10,7 @@ contract AccountRecoveryContract is HelperContract {
   function addAccountGuardian(
     uint64 timestamp,
     uint64 txID,
-    uint32 accID,
+    address accID,
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
@@ -32,7 +32,7 @@ contract AccountRecoveryContract is HelperContract {
   function removeAccountGuardian(
     uint64 timestamp,
     uint64 txID,
-    uint32 accID,
+    address accID,
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
@@ -61,7 +61,7 @@ contract AccountRecoveryContract is HelperContract {
   function recoverAccountAdmin(
     uint64 timestamp,
     uint64 txID,
-    uint32 accID,
+    address accID,
     AccountRecoveryType recoveryType,
     address oldAdmin,
     address newAdmin,
@@ -86,8 +86,8 @@ contract AccountRecoveryContract is HelperContract {
 
   // Return all signers in an account without duplicates
   function _getSigners(Account storage acc) internal view returns (address[] memory) {
-    address[] storage accSubs = acc.subAccounts;
-    mapping(address => SubAccount) storage allSubs = state.subAccounts;
+    uint64[] storage accSubs = acc.subAccounts;
+    mapping(uint64 => SubAccount) storage allSubs = state.subAccounts;
 
     // If all signers are unique, the cardinality is maxSigners
     // Otherwise, the number of unique signers will be < maxSigners

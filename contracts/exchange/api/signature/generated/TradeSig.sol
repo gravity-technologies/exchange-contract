@@ -4,11 +4,13 @@ pragma solidity ^0.8.20;
 
 import "../../../types/DataStructure.sol";
 
-// keccak256("Order(address subAccountID,bool isMarket,uint8 timeInForce,uint64 limitPrice,uint64 ocoLimitPrice,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,bool isPayingBaseCurrency,OrderLeg[] legs,uint32 nonce)OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
-bytes32 constant _ORDER_H = bytes32(0x07ffec62d266471031104189858e1420c7c9b5b9e997dd2cd93d28431c4c2aa5);
+bytes32 constant _ORDER_H = keccak256(
+  "Order(uint64 subAccountID,bool isMarket,uint8 timeInForce,uint64 limitPrice,uint64 ocoLimitPrice,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,bool isPayingBaseCurrency,OrderLeg[] legs,uint32 nonce)OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
+);
 
-// keccak256("OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)");
-bytes32 constant _LEG_H = bytes32(0x6a1114282cec490e531ba67ea409944dee9d423e4921909d25afc9f4af988add);
+bytes32 constant _LEG_H = keccak256(
+  "OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
+);
 
 function hashOrder(Order calldata o) pure returns (bytes32) {
   bytes memory legsEncoded;

@@ -9,6 +9,52 @@ import "../util/Address.sol";
 contract SubAccountContract is HelperContract {
   uint private constant _MAX_SESSION_DURATION_NANO = 1 days;
 
+  function createSubAccount(
+    uint64 timestamp,
+    uint64 txID,
+    address accountID,
+    uint64 subAccountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    uint32 nonce,
+    Signature[] calldata sigs
+  ) external {
+    _setSequence(timestamp, txID);
+    Account storage acc = state.accounts[accountID];
+    SubAccount storage sub = state.subAccounts[subAccountID];
+    require(sub.accountID == address(0), "subaccount already exists");
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
+    if (acc.id == address(0)) {
+      require(sigs.length > 0, "no signature");
+      for (uint i = 0; i < sigs.length; i++) {
+        _preventReplay(hash, sigs[i]);
+      }
+    } else {
+      _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    }
+    // ------- End of Signature Verification -------
+
+    // Create subaccount
+    sub.id = subAccountID;
+    sub.accountID = accountID;
+    sub.marginType = marginType;
+    sub.quoteCurrency = quoteCurrency;
+    sub.lastAppliedFundingTimestamp = timestamp;
+    // We will not create any authorizedSigners in subAccount upon creation.
+    // All account admins are presumably authorizedSigners
+
+    // Create a new account if one did not exist
+    if (acc.id == address(0)) {
+      acc.id = accountID;
+      acc.multiSigThreshold = 1;
+      // the first account admins is the signer of the first signature
+      acc.admins.push(sigs[0].signer);
+      acc.subAccounts.push(subAccountID);
+    }
+  }
+
   /// @notice Change the margin type of a subaccount
   ///
   /// @param timestamp The timestamp of the transaction
@@ -20,7 +66,7 @@ contract SubAccountContract is HelperContract {
   function setSubAccountMarginType(
     uint64 timestamp,
     uint64 txID,
-    address subAccID,
+    uint64 subAccID,
     MarginType marginType,
     uint32 nonce,
     Signature calldata sig
@@ -55,7 +101,7 @@ contract SubAccountContract is HelperContract {
   function addSubAccountSigner(
     uint64 timestamp,
     uint64 txID,
-    address subID,
+    uint64 subID,
     address signer,
     uint16 permissions,
     uint32 nonce,
@@ -93,7 +139,7 @@ contract SubAccountContract is HelperContract {
   function SetSubAccountSignerPermissions(
     uint64 timestamp,
     uint64 txID,
-    address subID,
+    uint64 subID,
     address signer,
     uint64 perms,
     uint32 nonce,
@@ -126,7 +172,7 @@ contract SubAccountContract is HelperContract {
   function removeSubAccountSigner(
     uint64 timestamp,
     uint64 txID,
-    address subAccID,
+    uint64 subAccID,
     address signer,
     uint32 nonce,
     Signature calldata sig

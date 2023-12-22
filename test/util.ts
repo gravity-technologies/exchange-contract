@@ -1,8 +1,7 @@
-import { ethers } from "hardhat"
 import { expect } from "chai"
 import { randomInt } from "crypto"
-import { Wallet } from "ethers"
-import { NumConfig, ScheduleConfigEntry } from "./type"
+import { Wallet, utils } from "ethers"
+import { NumConfig } from "./type"
 
 export async function expectToThrowAsync(promise: Promise<any>, message?: string) {
   let error = null
@@ -39,9 +38,9 @@ export function getTimestampNs(addDays: number = 10): number {
 
 export function wallet(pkHex?: string): Wallet {
   if (pkHex == null) {
-    return ethers.Wallet.createRandom()
+    return Wallet.createRandom()
   }
-  return new ethers.Wallet(pkHex)
+  return new Wallet(pkHex)
 }
 
 export function nonce() {
@@ -52,11 +51,11 @@ export type CfgMap = Map<number, Bytes32>
 
 export function bytes32(v: string | number | Wallet): Bytes32 {
   if (typeof v === "number") {
-    v = ethers.utils.hexValue(v)
+    v = utils.hexValue(v)
   } else if (v instanceof Wallet) {
     v = v.address
   }
-  return ethers.utils.hexZeroPad(v, 32)
+  return utils.hexZeroPad(v, 32)
 }
 
 export type Bytes32 = string

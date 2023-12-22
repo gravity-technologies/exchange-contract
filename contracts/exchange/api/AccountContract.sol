@@ -7,56 +7,26 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract AccountContract is HelperContract {
-  function createSubAccount(
-    uint64 timestamp,
-    uint64 txID,
-    uint32 accountID,
-    address subAccountID,
-    Currency quoteCurrency,
-    MarginType marginType,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
+  function createAccount(uint64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
-    SubAccount storage sub = state.subAccounts[subAccountID];
-    require(sub.accountID == 0, "subaccount already exists");
+    require(acc.id == address(0), "account already exists");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
-    if (acc.id == 0) {
-      require(sigs.length > 0, "no signature");
-      for (uint i = 0; i < sigs.length; i++) {
-        _preventReplay(hash, sigs[i]);
-      }
-    } else {
-      _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
-    }
+    bytes32 hash = hashCreateAccount(accountID, sig.nonce);
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
-    // Create subaccount
-    sub.id = subAccountID;
-    sub.accountID = accountID;
-    sub.marginType = marginType;
-    sub.quoteCurrency = quoteCurrency;
-    sub.lastAppliedFundingTimestamp = timestamp;
-    // We will not create any authorizedSigners in subAccount upon creation.
-    // All account admins are presumably authorizedSigners
-
-    // Create a new account if one did not exist
-    if (acc.id == 0) {
-      acc.id = accountID;
-      acc.multiSigThreshold = 1;
-      // the first account admins is the signer of the first signature
-      acc.admins.push(sigs[0].signer);
-      acc.subAccounts.push(subAccountID);
-    }
+    // Create account
+    acc.id = accountID;
+    acc.multiSigThreshold = 1;
+    acc.admins.push(sig.signer);
   }
 
   function setAccountMultiSigThreshold(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    address accountID,
     uint8 multiSigThreshold,
     uint32 nonce,
     Signature[] calldata sigs
@@ -76,7 +46,7 @@ contract AccountContract is HelperContract {
   function addAccountAdmin(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    address accountID,
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
@@ -95,7 +65,7 @@ contract AccountContract is HelperContract {
   function removeAccountAdmin(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    address accountID,
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
@@ -114,7 +84,7 @@ contract AccountContract is HelperContract {
   function addWithdrawalAddress(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    address accountID,
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
@@ -133,7 +103,7 @@ contract AccountContract is HelperContract {
   function removeWithdrawalAddress(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
+    address accountID,
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
@@ -153,8 +123,7 @@ contract AccountContract is HelperContract {
   function addTransferSubAccount(
     uint64 timestamp,
     uint64 txID,
-    uint32 accountID,
-    address transferSubAccount,
+    address accountID,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
@@ -162,18 +131,17 @@ contract AccountContract is HelperContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddTransferSubAccount(accountID, transferSubAccount, nonce);
+    bytes32 hash = hashAddTransferAccount(accountID, nonce);
     _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
-    // ------- End of Signature Verification -------
+    // ------- End hashAddTransferAccount -------
 
-    addAddress(acc.onboardedTransferSubAccounts, transferSubAccount);
+    addAddress(acc.onboardedTransferAccounts, accountID);
   }
 
-  function removeTransferSubAccount(
+  function removeTransferAccount(
     uint64 timestamp,
     uint64 txID,
-    uint32 accID,
-    address subAcc,
+    address accID,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
@@ -181,10 +149,10 @@ contract AccountContract is HelperContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveTransferSubAccount(accID, subAcc, nonce);
+    bytes32 hash = hashRemoveTransferAccount(accID, nonce);
     _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    removeAddress(acc.onboardedTransferSubAccounts, subAcc, false);
+    removeAddress(acc.onboardedTransferAccounts, accID, false);
   }
 }

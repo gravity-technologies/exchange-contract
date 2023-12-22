@@ -22,15 +22,15 @@ contract HelperContract is ReentrancyGuard {
     state.lastTxID = txID;
   }
 
-  function _requireAccount(uint32 accID) internal view returns (Account storage) {
+  function _requireAccount(address accID) internal view returns (Account storage) {
     Account storage acc = state.accounts[accID];
-    require(acc.id > 0, "account does not exist");
+    require(acc.id != address(0), "account does not exist");
     return acc;
   }
 
-  function _requireSubAccount(address subAccID) internal view returns (SubAccount storage) {
+  function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
-    require(sub.id != address(0), "subaccount does not exist");
+    require(sub.id != 0, "subaccount does not exist");
     return sub;
   }
 

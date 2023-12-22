@@ -158,7 +158,8 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   // }
 
   function _depositFee(uint128 fee) private {
-    _requireSubAccount(_getAddressCfg(CfgID.FEE_SUB_ACCOUNT_ID)).balanceE9 += int128(fee);
+    uint64 feeSubID = uint64(_getUintCfg(CfgID.FEE_SUB_ACCOUNT_ID));
+    _requireSubAccount(feeSubID).balanceE9 += int128(fee);
   }
 
   // ------------------------------------------------------
@@ -184,7 +185,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     }
   }
 
-  function _requireTradePermission(address signer, address orderSubAccountID) private view {
+  function _requireTradePermission(address signer, uint64 orderSubAccountID) private view {
     // If there's an existing session, the signer of the signature is a session key. We get the user from the session data
     // Otherwise the signer of the signature is an actual user
     address user;

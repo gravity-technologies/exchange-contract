@@ -5,7 +5,7 @@ import "./HelperContract.sol";
 import "../types/DataStructure.sol";
 
 contract BaseTradeContract is HelperContract {
-  error InvalidTotalValue(address subAccountID, int256 value);
+  error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   /// @dev return the total value of a sub account with 18 decimal places
   function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (int128) {

@@ -24,7 +24,7 @@ abstract contract TransferContract is BaseTradeContract {
     uint64 timestamp,
     uint64 txID,
     address ethAddress,
-    address toSubID,
+    uint64 toSubID,
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
@@ -57,7 +57,7 @@ abstract contract TransferContract is BaseTradeContract {
   function withdrawal(
     uint64 timestamp,
     uint64 txID,
-    address fromSubID,
+    uint64 fromSubID,
     address toEthAddress,
     uint64 numTokens,
     uint32 nonce,
@@ -107,8 +107,10 @@ abstract contract TransferContract is BaseTradeContract {
   function transfer(
     uint64 timestamp,
     uint64 txID,
-    address fromSubID,
-    address toSubID,
+    address fromAccount,
+    uint64 fromSubID,
+    address toAccount,
+    uint64 toSubID,
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
@@ -126,7 +128,7 @@ abstract contract TransferContract is BaseTradeContract {
     require(fromSub.quoteCurrency == toSub.quoteCurrency, "different currency");
 
     // Check if the subaccount belongs to the whilelisted transfer subaccounts
-    require(addressExists(acc.onboardedTransferSubAccounts, toSubID), "invalid transfer subaccount");
+    require(addressExists(acc.onboardedTransferAccounts, toAccount), "invalid transfer subaccount");
 
     // Run perp funding to update the balances of fromSub and toSub
     _fundPerp(fromSub);
