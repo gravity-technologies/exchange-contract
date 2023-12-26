@@ -1,7 +1,7 @@
 import { Wallet } from "ethers"
 import { GRVTExchange } from "../typechain-types/index"
 import {
-  genAddAccountAdminSig,
+  genAddAccountAdminSig as genAddAccountSignerSig,
   genAddAccountGuardianPayloadSig,
   genAddSessionKeySig,
   genAddSubAccountSignerPayloadSig,
@@ -11,7 +11,7 @@ import {
   genCreateSubAccountSig,
   genDepositSig,
   genRecoverAccountAdminPayloadSig,
-  genRemoveAccountAdminSig,
+  genRemoveAccountSignerSig,
   genRemoveAccountGuardianPayloadSig,
   genRemoveSubAccountSignerPayloadSig,
   genRemoveTransferSubAccountPayloadSig,
@@ -27,17 +27,16 @@ import {
 import { AccountRecoveryType, Currency, MarginType } from "./type"
 import { Bytes32, nonce } from "./util"
 
-const MAX_GAS = 2_000_000_000
+export const MAX_GAS = 2_000_000_000
 
 // Account
 export async function createAccount(contract: GRVTExchange, txSigner: Wallet, ts: number, txID: number, accID: string) {
   const salt = nonce()
   const sig = genCreateAccountSig(txSigner, accID, salt)
-  const tx = await contract.createAccount(ts, txID, accID, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return await contract.createAccount(ts, txID, accID, sig, { gasLimit: MAX_GAS })
 }
 
-export async function createSubAcc(
+export async function createSubAccount(
   contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
@@ -47,7 +46,7 @@ export async function createSubAcc(
 ) {
   const salt = nonce()
   const sig = genCreateSubAccountSig(txSigner, accID, subID, Currency.USDC, MarginType.PORTFOLIO_CROSS_MARGIN, salt)
-  const tx = await contract.createSubAccount(
+  return contract.createSubAccount(
     ts,
     txID,
     accID,
@@ -55,12 +54,26 @@ export async function createSubAcc(
     Currency.USDC,
     MarginType.PORTFOLIO_CROSS_MARGIN,
     salt,
-    [sig]
+    sig,
+    { gasLimit: MAX_GAS }
   )
-  await tx.wait()
 }
 
-export async function addAccAdmin(
+export async function addAccountSigner(
+  contract: GRVTExchange,
+  txSigners: Wallet[],
+  ts: number,
+  txID: number,
+  accID: string,
+  signer: string,
+  permissions: number
+) {
+  const salt = nonce()
+  const sigs = txSigners.map((txSigner) => genAddAccountSignerSig(txSigner, accID, signer, permissions, salt))
+  return contract.addAccountSigner(ts, txID, accID, signer, permissions, salt, sigs, { gasLimit: MAX_GAS })
+}
+
+export async function removeAccountSigner(
   contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
@@ -69,23 +82,8 @@ export async function addAccAdmin(
   signer: string
 ) {
   const salt = nonce()
-  const sigs = txSigners.map((txSigner) => genAddAccountAdminSig(txSigner, accID, signer, salt))
-  const tx = await contract.addAccountAdmin(ts, txID, accID, signer, salt, sigs, { gasLimit: MAX_GAS })
-  await tx.wait()
-}
-
-export async function removeAccAdmin(
-  contract: GRVTExchange,
-  txSigners: Wallet[],
-  ts: number,
-  txID: number,
-  accID: string,
-  signer: string
-) {
-  const salt = nonce()
-  const sigs = txSigners.map((txSigner) => genRemoveAccountAdminSig(txSigner, accID, signer, salt))
-  const tx = await contract.removeAccountAdmin(ts, txID, accID, signer, salt, sigs, { gasLimit: MAX_GAS })
-  await tx.wait()
+  const sigs = txSigners.map((txSigner) => genRemoveAccountSignerSig(txSigner, accID, signer, salt))
+  return contract.removeAccountSigner(ts, txID, accID, signer, salt, sigs, { gasLimit: MAX_GAS })
 }
 
 export async function setMultisigThreshold(
@@ -98,7 +96,7 @@ export async function setMultisigThreshold(
 ) {
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genSetAccountMultiSigThresholdSig(txSigner, accID, multiSigThreshold, salt))
-  const tx = await contract.setAccountMultiSigThreshold(ts, txID, accID, multiSigThreshold, salt, sigs, {
+  return contract.setAccountMultiSigThreshold(ts, txID, accID, multiSigThreshold, salt, sigs, {
     gasLimit: MAX_GAS,
   })
 }
@@ -113,8 +111,7 @@ export async function addWithdrawalAddress(
 ) {
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genAddWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
-  const tx = await contract.addWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.addWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, { gasLimit: MAX_GAS })
 }
 
 export async function removeWithdrawalAddress(
@@ -127,10 +124,9 @@ export async function removeWithdrawalAddress(
 ) {
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genRemoveWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
-  const tx = await contract.removeWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, {
+  return contract.removeWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, {
     gasLimit: MAX_GAS,
   })
-  await tx.wait()
 }
 
 // export async function addTransferSubAccount(
@@ -143,8 +139,8 @@ export async function removeWithdrawalAddress(
 // ) {
 //   const salt = nonce()
 //   const sigs = txSigners.map((txSigner) => genAddTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
-// const tx = await contract.addTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
-// await tx.wait()
+// return contract.addTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
+//
 // }
 
 // export async function removeTransferSubAccount(
@@ -157,8 +153,8 @@ export async function removeWithdrawalAddress(
 // ) {
 //   const salt = nonce()
 //   const sigs = txSigners.map((txSigner) => genRemoveTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
-// const tx = await contract.removeTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
-// await tx.wait()
+// return contract.removeTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
+//
 // }
 
 // Sub Account
@@ -172,8 +168,7 @@ export async function setSubAccountMarginType(
 ) {
   const salt = nonce()
   const sig = genSetSubAccountMarginTypePayloadSig(txSigner, subID, marginType, salt)
-  const tx = await contract.setSubAccountMarginType(ts, txID, subID, marginType, salt, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.setSubAccountMarginType(ts, txID, subID, marginType, salt, sig, { gasLimit: MAX_GAS })
 }
 
 export async function addSubSigner(
@@ -187,13 +182,12 @@ export async function addSubSigner(
 ) {
   const salt = nonce()
   const sig = genAddSubAccountSignerPayloadSig(txSigner, subID, newSigner, permission, salt)
-  const tx = await contract.addSubAccountSigner(ts, txID, subID, newSigner, permission, salt, sig, {
+  return contract.addSubAccountSigner(ts, txID, subID, newSigner, permission, salt, sig, {
     gasLimit: MAX_GAS,
   })
-  await tx.wait()
 }
 
-export async function setSignerPermission(
+export async function setSubAccountSignerPermission(
   contract: GRVTExchange,
   txSigner: Wallet,
   ts: number,
@@ -204,10 +198,9 @@ export async function setSignerPermission(
 ) {
   const salt = nonce()
   const sig = genSetSubAccountSignerPermissionsPayloadSig(txSigner, subID, signer, permission, salt)
-  const tx = await contract.SetSubAccountSignerPermissions(ts, txID, subID, signer, permission, salt, sig, {
+  return contract.SetSubAccountSignerPermissions(ts, txID, subID, signer, permission, salt, sig, {
     gasLimit: MAX_GAS,
   })
-  await tx.wait()
 }
 
 export async function removeSubSigner(
@@ -220,12 +213,11 @@ export async function removeSubSigner(
 ) {
   const salt = nonce()
   const sig = genRemoveSubAccountSignerPayloadSig(txSigner, subID, signer, salt)
-  const tx = await contract.removeSubAccountSigner(ts, txID, subID, signer, salt, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.removeSubAccountSigner(ts, txID, subID, signer, salt, sig, { gasLimit: MAX_GAS })
 }
 
 // Account Recovery
-export async function addAccGuardian(
+export async function addAccountGuardian(
   contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
@@ -235,11 +227,10 @@ export async function addAccGuardian(
 ) {
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genAddAccountGuardianPayloadSig(txSigner, accID, guardian, salt))
-  const tx = await contract.addAccountGuardian(ts, txID, accID, guardian, salt, sigs, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.addAccountGuardian(ts, txID, accID, guardian, salt, sigs, { gasLimit: MAX_GAS })
 }
 
-export async function removeAccGuardian(
+export async function removeAccountGuardian(
   contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
@@ -249,11 +240,10 @@ export async function removeAccGuardian(
 ) {
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genRemoveAccountGuardianPayloadSig(txSigner, accID, signer, salt))
-  const tx = await contract.removeAccountGuardian(ts, txID, accID, signer, salt, sigs, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.removeAccountGuardian(ts, txID, accID, signer, salt, sigs, { gasLimit: MAX_GAS })
 }
 
-export async function recoverAccAdmin(
+export async function recoverAccountAdmin(
   contract: GRVTExchange,
   txSigners: Wallet[],
   ts: number,
@@ -267,20 +257,9 @@ export async function recoverAccAdmin(
   const sigs = txSigners.map((txSigner) =>
     genRecoverAccountAdminPayloadSig(txSigner, accountID, recoveryType, oldAdmin, recoveryAdmin, salt)
   )
-  const tx = await contract.recoverAccountAdmin(
-    ts,
-    txID,
-    accountID,
-    recoveryType,
-    oldAdmin,
-    recoveryAdmin,
-    salt,
-    sigs,
-    {
-      gasLimit: MAX_GAS,
-    }
-  )
-  await tx.wait()
+  return contract.recoverAccountAdmin(ts, txID, accountID, recoveryType, oldAdmin, recoveryAdmin, salt, sigs, {
+    gasLimit: MAX_GAS,
+  })
 }
 
 // Config
@@ -294,8 +273,7 @@ export async function scheduleConfig(
 ) {
   const salt = nonce()
   const sig = genScheduleConfigSig(txSigner, key, value, salt)
-  const tx = await contract.scheduleConfig(ts, txID, key, value, salt, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.scheduleConfig(ts, txID, key, value, salt, sig, { gasLimit: MAX_GAS })
 }
 
 export async function setConfig(
@@ -308,8 +286,7 @@ export async function setConfig(
 ) {
   const salt = nonce()
   const sig = genSetConfigSig(txSigner, key, value, salt)
-  const tx = await contract.setConfig(ts, txID, key, value, salt, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.setConfig(ts, txID, key, value, salt, sig, { gasLimit: MAX_GAS })
 }
 
 // Session
@@ -322,12 +299,11 @@ export async function addSessionKey(
   keyExpiry: number
 ) {
   const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry)
-  const tx = await contract.addSessionKey(ts, txID, sessionKey, keyExpiry, sig, { gasLimit: MAX_GAS })
+  return contract.addSessionKey(ts, txID, sessionKey, keyExpiry, sig, { gasLimit: MAX_GAS })
 }
 
 export async function removeSessionKey(contract: GRVTExchange, txSigner: Wallet, ts: number, txID: number) {
-  const tx = await contract.removeSessionKey(ts, txID, txSigner.address)
-  await tx.wait()
+  return contract.removeSessionKey(ts, txID, txSigner.address)
 }
 
 // Trade
@@ -344,8 +320,7 @@ export async function deposit(
 ) {
   const salt = nonce()
   const sig = genDepositSig(txSigner, fromEthAddress, toSubAccount, numTokens, salt)
-  const tx = await contract.deposit(ts, txID, fromEthAddress, toSubAccount, numTokens, salt, sig, { gasLimit: MAX_GAS })
-  await tx.wait()
+  return contract.deposit(ts, txID, fromEthAddress, toSubAccount, numTokens, salt, sig, { gasLimit: MAX_GAS })
 }
 
 export async function withdraw(
@@ -359,10 +334,9 @@ export async function withdraw(
 ) {
   const salt = nonce()
   const sig = genWithdrawalSig(txSigner, fromSubAccount, toEthAddress, numTokens, salt)
-  const tx = await contract.withdrawal(ts, txID, fromSubAccount, toEthAddress, numTokens, salt, sig, {
+  return contract.withdrawal(ts, txID, fromSubAccount, toEthAddress, numTokens, salt, sig, {
     gasLimit: MAX_GAS,
   })
-  await tx.wait()
 }
 
 // export async function transfer(
@@ -376,5 +350,5 @@ export async function withdraw(
 // ) {
 //   const salt = nonce()
 //   const sig = genTransferSig(txSigner, fromSubAccount, toSubAccount, numTokens, salt)
-// const tx = await contract.transfer(ts, txID, fromSubAccount, toSubAccount, numTokens, salt, sig, {gasLimit: MAX_GAS})
+// return contract.transfer(ts, txID, fromSubAccount, toSubAccount, numTokens, salt, sig, {gasLimit: MAX_GAS})
 // }

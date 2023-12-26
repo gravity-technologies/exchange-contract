@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import {ConfigID, State} from "./types/DataStructure.sol";
+import {ConfigID} from "./types/DataStructure.sol";
 import "./api/AccountContract.sol";
 import "./api/AccountRecoveryContract.sol";
 import "./api/ConfigContract.sol";
@@ -14,7 +14,7 @@ import "./api/TradeContract.sol";
 // import {BlackScholes as BS} from "./blackscholes/BlackScholes.sol";
 
 contract GRVTExchange is AccountContract, AccountRecoveryContract, SubAccountContract, TransferContract, TradeContract {
-  constructor(bytes32[] memory _initialConfig) {
+  constructor(bytes32[] memory _initialConfig) public {
     _setConfigTimelock();
 
     mapping(ConfigID => bytes32) storage configs = state.configs;

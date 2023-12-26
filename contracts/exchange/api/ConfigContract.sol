@@ -95,7 +95,7 @@ contract ConfigContract is HelperContract {
   /// @param nonce the nonce of the transaction
   /// @param sig the signature of the transaction
   function scheduleConfig(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     CfgID key,
     bytes32 value,
@@ -110,7 +110,7 @@ contract ConfigContract is HelperContract {
     // ------- End of Signature Verification -------
 
     // find the timelock for this config value and update the config
-    uint256 lockDuration = _getLockDuration(key, value);
+    int256 lockDuration = _getLockDuration(key, value);
     state.scheduledConfig[key] = ScheduledConfigEntry(timestamp + lockDuration, value);
   }
 
@@ -124,7 +124,7 @@ contract ConfigContract is HelperContract {
   /// @param nonce the nonce of the transaction
   /// @param sig the signature of the transaction
   function setConfig(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     CfgID key,
     bytes32 value,
@@ -176,7 +176,7 @@ contract ConfigContract is HelperContract {
   /// @dev Find the timelock duration that corresponds to the change in value
   /// Expect the timelocks duration should be in increasing order of delta change and timelock duration
   /// If the delta is out of range, revert the transaction
-  function _getLockDuration(CfgID key, bytes32 newVal) private view returns (uint256) {
+  function _getLockDuration(CfgID key, bytes32 newVal) private view returns (int256) {
     // Shift the config type to the right position and mask it with 0xF (last 4 bits)
     ConfigType typ = ConfigType((_CONFIG_TYPE >> (4 * uint8(key))) & 0xF);
     Rule[] storage rules = state.configTimelocks[key];
