@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./Constant.sol";
 import "./Derivative.sol";
 
 enum MarginType {
@@ -25,7 +24,7 @@ enum TimeInForce {
   FILL_OR_KILL
 }
 
-enum Instrument {
+enum Kind {
   UNSPECIFIED,
   PERPS,
   FUTURES,
@@ -40,6 +39,11 @@ enum Currency {
   ETH,
   BTC
 }
+
+uint64 constant AccountPermAdmin = 1;
+uint64 constant AccountPermInternalTransfer = 1 << 1;
+uint64 constant AccountPermExternalTransfer = 1 << 2;
+uint64 constant AccountPermWithdraw = 1 << 3;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
@@ -62,7 +66,7 @@ struct Signature {
   bytes32 s;
   uint8 v;
   // Timestamp after which this signature expires. Use 0 for no expiration.
-  uint64 expiration;
+  int64 expiration;
   uint32 nonce;
 }
 
@@ -74,18 +78,15 @@ struct State {
   mapping(address => Account) accounts;
   mapping(uint64 => SubAccount) subAccounts;
   // Map from session key to user and expiry. Session keys are used to auto sign trade on behalf of the user
-  mapping(address => Session) sessionToUser;
-  mapping(address => address) userToSession;
+  mapping(address => Session) sessions;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
   SignatureState signatures;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
-  // A Safety Module is created per quote + underlying currency pair
-  mapping(Currency => mapping(Currency => SafetyModulePool)) safetyModule;
   // Latest Transaction time
-  uint64 timestamp;
+  int64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
   // Config
@@ -103,44 +104,44 @@ struct Account {
   //   - https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html#layout-of-state-variables-in-storage
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint multiSigThreshold;
-  // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
-  address[] admins;
+  mapping(Currency => int128) spotBalances;
   // Guardians who are authorized to participate in key recovery quorum
   // Both retail and institutional accounts can rely on guardians for key recovery
   // Institutions have an additional option to rely on their sub account signers
   address[] guardians;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
-  address[] onboardedWithdrawalAddresses;
-  // All subaccounts belonging to the account can only transfer assets to these L2 Sub Accounts
-  address[] onboardedTransferAccounts;
+  mapping(address => bool) onboardedWithdrawalAddresses;
+  // All subaccounts belonging to the account can only transfer assets to these L2 Accounts
+  mapping(address => bool) onboardedTransferAccounts;
   // A record of all SubAccounts owned by the account
   // Helps in sub account signer quorum computation during key recovery
   uint64[] subAccounts;
+  // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
+  mapping(address => uint64) signers;
+  uint256 adminCount;
+  uint256 signerCount;
 }
 
 struct SubAccount {
-  // The wallet address of this subaccount, which also acts as the subaccount ID
+  // The unique id of this subaccount, id > 0
   uint64 id;
   // The Account that this Sub Account belongs to
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
-  // The total amount of base currency that the sub account possesses, 9 decimal places
-  int128 balanceE9;
-  // The total amount of base currency that the sub account has deposited, but not yet confirmed by L1 finality
-  // 9 decimal places
-  // Take this into account when liquidating a sub account
-  // But do not take this into account when calculating the sub account's balance
-  uint64 pendingDepositsE9;
+  // The total amount of base currency that the sub account possesses
+  mapping(Currency => int128) spotBalances;
   // Mapping from the uint256 representation to derivate position
-  DerivativeCollection options;
-  DerivativeCollection futures;
-  DerivativeCollection perps;
+  PositionsMap options;
+  PositionsMap futures;
+  PositionsMap perps;
   // Signers who are authorized to trade on this sub account
-  Signer[] authorizedSigners;
+  mapping(address => uint64) signers;
+  uint256 adminCount;
+  uint256 signerCount;
   // The timestamp that the sub account was last funded at
-  uint64 lastAppliedFundingTimestamp;
+  int64 lastAppliedFundingTimestamp;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
@@ -149,14 +150,14 @@ struct SubAccount {
 // A SetConfig() call will remove the timelock entry from the state (for the config identifier).
 struct ScheduledConfigEntry {
   // The timestamp at which the config will be unlocked
-  uint lockEndTime;
+  int lockEndTime;
   // The value the config will be set to when it is unlocked
   bytes32 value;
 }
 
 struct ConfigTimelockRule {
   // Number of nanoseconds the config is locked for if the rule applies
-  uint64 lockDuration;
+  int64 lockDuration;
   // This only applies for Int Configs.
   // It expresses the maximum delta (in the positive direction) that the config value
   // can be changed by in order for this rule to apply
@@ -165,13 +166,6 @@ struct ConfigTimelockRule {
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
   uint256 deltaNegative;
-}
-
-struct Signer {
-  // The public key of the signer
-  address signingKey;
-  // Bitmask of SubAccountPermissions (Deposit, Withdraw, Transfer, Trade, Add Signer, Remove Signer, Change Margin Type)
-  uint64 permission;
 }
 
 struct SignatureState {
@@ -183,8 +177,8 @@ struct SignatureState {
 struct PriceState {
   // Asset price is int64 because we need
   // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
-  mapping(uint256 => int64) assets;
-  mapping(uint128 => uint64) interestRates;
+  mapping(uint256 => int64) mark;
+  mapping(uint128 => uint64) interest;
   // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
@@ -192,18 +186,12 @@ struct PriceState {
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 10 decimal points
   // TODO: this uint128 represents the derivative
-  mapping(uint128 => uint64) fundingIndices;
-  uint64 previousFundingTimestamp;
+  mapping(uint128 => uint64) fundingIndex;
+  uint64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
-  mapping(uint256 => uint64) settled;
-}
-
-// There is only one settled price per underlying/expiration pair
-struct SettledInstrument {
-  Currency underlying;
-  uint32 expiration;
+  mapping(uint256 => uint64) settlement;
 }
 
 struct Session {
@@ -211,20 +199,7 @@ struct Session {
   address user;
   // The last timestamp that the signer can sign at
   // We can apply a max one day expiry on session keys
-  uint64 expiry;
-}
-
-// See https://docs.google.com/document/d/1nXArbQMm-wbdRCoYR8FSPKCHZQxT8sAm8cjhq_16jSw/edit#heading=h.fqlr6k6zp9p2
-// Liquidation Fee is hard coded by config at eg. 75bps
-// The contribution of the liquidation fee towards the safety module follows the insurance fee curve
-// Use a sigmoid curve like https://en.wikipedia.org/wiki/Generalised_logistic_function
-struct SafetyModulePool {
-  // Maps SubAccounts to their LP Tokens
-  mapping(address => uint64) lpTokens;
-  // Depositors receive LP Tokens equivalent to (DepositSize * TotalLpTokens / TotalBalance)
-  // Withdrawers receive Quote Currency equivalent to (LpTokensReturned * TotalBalance / TotalLpTokens)
-  uint64 totalLpTokens;
-  uint64 totalBalance;
+  int64 expiry;
 }
 
 // --------------- Config --------------
@@ -341,8 +316,8 @@ struct OrderMatch {
   uint32 makerFeePercentageCharged;
 }
 
-struct Derivative {
-  Instrument instrument;
+struct Asset {
+  Kind kind;
   Currency underlying;
   uint256 underlyingAssetID;
   Currency quote;

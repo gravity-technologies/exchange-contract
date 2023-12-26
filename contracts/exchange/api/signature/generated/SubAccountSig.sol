@@ -26,12 +26,12 @@ function hashSetMarginType(uint64 subID, MarginType margin, uint32 nonce) pure r
   return keccak256(abi.encode(_SET_SUB_MARGIN_H, subID, margin, nonce));
 }
 
-bytes32 constant _ADD_SIGNER_H = keccak256(
-  "AddSubAccountSigner(uint64 subAccountID,address signer,uint16 permissions,uint32 nonce)"
+bytes32 constant _ADD_SUB_SIGNER_H = keccak256(
+  "AddSubAccountSigner(uint64 subAccountID,address signer,uint64 permissions,uint32 nonce)"
 );
 
-function hashAddSigner(uint64 subID, address signer, uint64 perms, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_ADD_SIGNER_H, subID, signer, perms, nonce));
+function hashAddSubAccountSigner(uint64 subID, address signer, uint64 perms, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_ADD_SUB_SIGNER_H, subID, signer, perms, nonce));
 }
 
 bytes32 constant _SET_SIGNER_PERM_H = keccak256(
@@ -48,8 +48,8 @@ function hashRemoveSigner(uint64 subID, address signer, uint32 nonce) pure retur
   return keccak256(abi.encode(_DEL_SIGNER_H, subID, signer, nonce));
 }
 
-bytes32 constant _ADD_SESSION_KEY_H = keccak256("AddSessionKey(address sessionKey,uint64 keyExpiry)");
+bytes32 constant _ADD_SESSION_KEY_H = keccak256("AddSessionKey(address sessionKey,int64 keyExpiry)");
 
-function hashAddSessionKey(address key, uint64 keyExpiry) pure returns (bytes32) {
+function hashAddSessionKey(address key, int64 keyExpiry) pure returns (bytes32) {
   return keccak256(abi.encode(_ADD_SESSION_KEY_H, key, keyExpiry));
 }

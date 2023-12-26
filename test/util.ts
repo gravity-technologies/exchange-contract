@@ -2,6 +2,7 @@ import { expect } from "chai"
 import { randomInt } from "crypto"
 import { Wallet, utils } from "ethers"
 import { NumConfig } from "./type"
+import { GRVTExchange } from "../typechain-types"
 
 export async function expectToThrowAsync(promise: Promise<any>, message?: string) {
   let error = null
@@ -12,7 +13,6 @@ export async function expectToThrowAsync(promise: Promise<any>, message?: string
   }
   expect(error).to.be.an("Error")
   if (message != null) {
-    // console.log(error.message)
     expect((<any>error).message).to.include(message)
   }
 }

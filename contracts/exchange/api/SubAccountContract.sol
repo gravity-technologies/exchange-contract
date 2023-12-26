@@ -7,33 +7,33 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract SubAccountContract is HelperContract {
-  uint private constant _MAX_SESSION_DURATION_NANO = 1 days;
+  int64 private constant _MAX_SESSION_DURATION_NANO = 1 days;
 
   function createSubAccount(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address accountID,
     uint64 subAccountID,
     Currency quoteCurrency,
     MarginType marginType,
     uint32 nonce,
-    Signature[] calldata sigs
+    Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
+    require(quoteCurrency != Currency.UNSPECIFIED, "invalid quote currency");
+    require(marginType != MarginType.UNSPECIFIED, "invalid margin type");
+    require(acc.id != address(0), "account does not exist");
+    require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == address(0), "subaccount already exists");
 
+    // requires that the user is an account admin
+    require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
+
     // ---------- Signature Verification -----------
     bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
-    if (acc.id == address(0)) {
-      require(sigs.length > 0, "no signature");
-      for (uint i = 0; i < sigs.length; i++) {
-        _preventReplay(hash, sigs[i]);
-      }
-    } else {
-      _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
-    }
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     // Create subaccount
@@ -45,14 +45,7 @@ contract SubAccountContract is HelperContract {
     // We will not create any authorizedSigners in subAccount upon creation.
     // All account admins are presumably authorizedSigners
 
-    // Create a new account if one did not exist
-    if (acc.id == address(0)) {
-      acc.id = accountID;
-      acc.multiSigThreshold = 1;
-      // the first account admins is the signer of the first signature
-      acc.admins.push(sigs[0].signer);
-      acc.subAccounts.push(subAccountID);
-    }
+    acc.subAccounts.push(subAccountID);
   }
 
   /// @notice Change the margin type of a subaccount
@@ -64,7 +57,7 @@ contract SubAccountContract is HelperContract {
   /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
   function setSubAccountMarginType(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     uint64 subAccID,
     MarginType marginType,
@@ -99,7 +92,7 @@ contract SubAccountContract is HelperContract {
   /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
   function addSubAccountSigner(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     uint64 subID,
     address signer,
@@ -117,14 +110,11 @@ contract SubAccountContract is HelperContract {
     Account storage acc = _requireAccount(sub.accountID);
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAddSigner);
 
-    // ---------- Signature Verification -----------
-    _preventReplay(hashAddSigner(subID, signer, permissions, nonce), sig);
+    // // ---------- Signature Verification -----------
+    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, nonce), sig);
     // ------- End of Signature Verification -------
 
-    Signer[] storage signers = sub.authorizedSigners;
-    (, bool found) = _findSigner(signers, signer);
-    require(!found, "signer already exists");
-    signers.push(Signer(signer, permissions));
+    sub.signers[signer] = permissions;
   }
 
   /// @notice Change the permissions of a subaccount signer
@@ -137,7 +127,7 @@ contract SubAccountContract is HelperContract {
   /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
   function SetSubAccountSignerPermissions(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     uint64 subID,
     address signer,
@@ -155,10 +145,7 @@ contract SubAccountContract is HelperContract {
     // ------- End of Signature Verification -------
 
     // Update permission
-    Signer[] storage signers = sub.authorizedSigners;
-    (uint idx, bool found) = _findSigner(signers, signer);
-    require(found, "signer not found");
-    signers[idx] = Signer(signer, perms);
+    sub.signers[signer] = perms;
   }
 
   /// @notice Remove a signer from a subaccount
@@ -170,7 +157,7 @@ contract SubAccountContract is HelperContract {
   /// @param nonce The nonce of transaction
   /// @param sig The signature of the acting user
   function removeSubAccountSigner(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     uint64 subAccID,
     address signer,
@@ -189,11 +176,7 @@ contract SubAccountContract is HelperContract {
     // If we reach here, that means the user calling this API is an admin. Hence, even after we remove the last
     // subaccount signer, the subaccount is still accessible by the account admins. Thus we skip the logic to
     // require at least 1 admin
-    Signer[] storage signers = sub.authorizedSigners;
-    (uint idx, bool found) = _findSigner(signers, signer);
-    require(found, "signer not found");
-    signers[idx] = signers[signers.length - 1];
-    signers.pop();
+    sub.signers[signer] = 0;
   }
 
   // Used for add and update signer permission. Perform additional check that the new permission is a subset of the caller's permission if the caller is not an admin
@@ -205,22 +188,14 @@ contract SubAccountContract is HelperContract {
     uint64 requiredPerm
   ) private view {
     // Actor is Account Admin. ALLOW
-    if (addressExists(acc.admins, actor)) return;
+    if (signerHasPerm(acc.signers, actor, AccountPermAdmin)) return;
     // Actor is Sub Account Admin. ALLOW
-    uint64 actorAuthz = _getPermSet(sub, actor);
+    uint64 actorAuthz = sub.signers[actor];
     if (actorAuthz & SubAccountPermAdmin > 0) return;
     // Actor must have the ability to call the function
     require(actorAuthz & requiredPerm > 0, "actor cannot call function");
     // Actor can only grant permissions that actor has
     require(actorAuthz & grantedAuthz == grantedAuthz, "actor cannot grant permission");
-  }
-
-  function _findSigner(Signer[] storage signers, address signerAddress) private view returns (uint, bool) {
-    uint length = signers.length;
-    for (uint i = 0; i < length; i++) {
-      if (signers[i].signingKey == signerAddress) return (i, true);
-    }
-    return (0, false);
   }
 
   /// @notice Add a session key to for a signer. This session key will be
@@ -231,25 +206,24 @@ contract SubAccountContract is HelperContract {
   /// @param sessionKey The session key to be added
   /// @param keyExpiry The unix timestamp in nanosecond after which this session expires
   function addSessionKey(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address sessionKey,
-    uint64 keyExpiry,
+    int64 keyExpiry,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
 
-    require(keyExpiry > timestamp, "invalid expiry");
+    require(int64(keyExpiry) > timestamp, "invalid expiry");
     // Cap the expiry to timestamp + maxSessionDurationInSec
-    uint64 cappedExpiry = _min(keyExpiry, timestamp + uint64(_MAX_SESSION_DURATION_NANO));
+    int64 cappedExpiry = _min(keyExpiry, timestamp + _MAX_SESSION_DURATION_NANO);
 
     // ---------- Signature Verification -----------
     _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key
-    state.sessionToUser[sessionKey] = Session(sig.signer, cappedExpiry);
-    state.userToSession[sig.signer] = sessionKey;
+    state.sessions[sessionKey] = Session(sig.signer, cappedExpiry);
   }
 
   /// @notice Removing signature verification only makes session keys safer.
@@ -259,14 +233,12 @@ contract SubAccountContract is HelperContract {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID of the transaction
   /// @param signer The address of the signer
-  function removeSessionKey(uint64 timestamp, uint64 txID, address signer) external {
+  function removeSessionKey(int64 timestamp, uint64 txID, address signer) external {
     _setSequence(timestamp, txID);
-    address session = state.userToSession[signer];
-    delete state.sessionToUser[session];
-    delete state.userToSession[signer];
+    state.sessions[signer].user = address(0);
   }
 
-  function _min(uint64 a, uint64 b) private pure returns (uint64) {
+  function _min(int64 a, int64 b) private pure returns (int64) {
     return a <= b ? a : b;
   }
 }

@@ -31,7 +31,7 @@ function _verifyOrder(SubAccount storage sub, Order calldata o, bool isMakerOrde
       // if long -> selling
       // if shorts -> buying
       OrderLeg calldata leg = o.legs[i];
-      DerivativePosition storage pos = getPosition(sub, leg.assetID);
+      Position storage pos = getPosition(sub, leg.assetID);
       require(
         pos.balance == 0 || (pos.balance > 0 && !leg.isBuyingAsset) || (pos.balance < 0 && leg.isBuyingAsset),
         "invalid reduceOnly"
@@ -46,10 +46,10 @@ function _verifyOrder(SubAccount storage sub, Order calldata o, bool isMakerOrde
   }
 }
 
-function getPosition(SubAccount storage sub, uint256 assetID) view returns (DerivativePosition storage) {
-  Instrument instrument = Instrument(assetID & 0xF);
-  require(instrument != Instrument.UNSPECIFIED, "invalid assetID");
-  if (instrument == Instrument.CALL || instrument == Instrument.PUT) return sub.options.values[assetID];
-  if (instrument == Instrument.PERPS) return sub.perps.values[assetID];
+function getPosition(SubAccount storage sub, uint256 assetID) view returns (Position storage) {
+  Kind instrument = Kind(assetID & 0xF);
+  require(instrument != Kind.UNSPECIFIED, "invalid assetID");
+  if (instrument == Kind.CALL || instrument == Kind.PUT) return sub.options.values[assetID];
+  if (instrument == Kind.PERPS) return sub.perps.values[assetID];
   return sub.futures.values[assetID];
 }

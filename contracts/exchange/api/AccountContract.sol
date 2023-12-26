@@ -7,7 +7,7 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract AccountContract is HelperContract {
-  function createAccount(uint64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
+  function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
@@ -20,11 +20,13 @@ contract AccountContract is HelperContract {
     // Create account
     acc.id = accountID;
     acc.multiSigThreshold = 1;
-    acc.admins.push(sig.signer);
+    acc.adminCount = 1;
+    acc.signerCount = 1;
+    acc.signers[sig.signer] = AccountPermAdmin;
   }
 
   function setAccountMultiSigThreshold(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address accountID,
     uint8 multiSigThreshold,
@@ -33,37 +35,44 @@ contract AccountContract is HelperContract {
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
-    require(multiSigThreshold > 0 && multiSigThreshold <= acc.admins.length, "invalid threshold");
+    require(acc.id != address(0), "account does not exist");
+    require(multiSigThreshold > 0 && multiSigThreshold <= acc.adminCount, "invalid threshold");
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
     acc.multiSigThreshold = multiSigThreshold;
   }
 
-  function addAccountAdmin(
-    uint64 timestamp,
+  function addAccountSigner(
+    int64 timestamp,
     uint64 txID,
     address accountID,
     address signer,
+    uint64 permissions,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
+    require(acc.id != address(0), "account does not exist");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddAccountAdmin(accountID, signer, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    bytes32 hash = hashAddAccountSigner(accountID, signer, permissions, nonce);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    addAddress(acc.admins, signer);
+    uint64 curPerm = acc.signers[signer];
+    if (curPerm & AccountPermAdmin == 0 && permissions & AccountPermAdmin != 0) {
+      acc.adminCount++;
+    }
+    acc.signers[signer] = permissions;
   }
 
-  function removeAccountAdmin(
-    uint64 timestamp,
+  function removeAccountSigner(
+    int64 timestamp,
     uint64 txID,
     address accountID,
     address signer,
@@ -74,15 +83,21 @@ contract AccountContract is HelperContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveAccountAdmin(accountID, signer, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    bytes32 hash = hashRemoveAccountSigner(accountID, signer, nonce);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    removeAddress(acc.admins, signer, true);
+    uint64 curPerm = acc.signers[signer];
+    bool isAdmin = curPerm & AccountPermAdmin != 0;
+    if (isAdmin) {
+      require(acc.adminCount > 1, "require 1 admin");
+      acc.adminCount--;
+    }
+    acc.signers[signer] = 0;
   }
 
   function addWithdrawalAddress(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address accountID,
     address withdrawalAddress,
@@ -94,14 +109,14 @@ contract AccountContract is HelperContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    addAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress);
+    acc.onboardedWithdrawalAddresses[withdrawalAddress] = true;
   }
 
   function removeWithdrawalAddress(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address accountID,
     address withdrawalAddress,
@@ -113,15 +128,14 @@ contract AccountContract is HelperContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    // TODO: check if we need to maintain at least 1 withdrawal address
-    removeAddress(acc.onboardedWithdrawalAddresses, withdrawalAddress, false);
+    acc.onboardedWithdrawalAddresses[withdrawalAddress] = false;
   }
 
-  function addTransferSubAccount(
-    uint64 timestamp,
+  function addTransferAccount(
+    int64 timestamp,
     uint64 txID,
     address accountID,
     uint32 nonce,
@@ -132,14 +146,14 @@ contract AccountContract is HelperContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddTransferAccount(accountID, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End hashAddTransferAccount -------
 
-    addAddress(acc.onboardedTransferAccounts, accountID);
+    acc.onboardedTransferAccounts[accountID] = true;
   }
 
   function removeTransferAccount(
-    uint64 timestamp,
+    int64 timestamp,
     uint64 txID,
     address accID,
     uint32 nonce,
@@ -150,9 +164,9 @@ contract AccountContract is HelperContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashRemoveTransferAccount(accID, nonce);
-    _requireSignatureQuorum(acc.admins, acc.multiSigThreshold, hash, sigs);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    removeAddress(acc.onboardedTransferAccounts, accID, false);
+    acc.onboardedTransferAccounts[accID] = false;
   }
 }

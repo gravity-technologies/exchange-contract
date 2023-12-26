@@ -10,16 +10,18 @@ function hashCreateAccount(address accID, uint32 nonce) pure returns (bytes32) {
   return keccak256(abi.encode(_CREATE_ACCOUNT_H, accID, nonce));
 }
 
-bytes32 constant _ADD_ACC_ADMIN_H = keccak256("AddAccountSigner(address accountID,address signer,uint32 nonce)");
+bytes32 constant _ADD_ACC_SIGNER_H = keccak256(
+  "AddAccountSigner(address accountID,address signer,uint64 permissions,uint32 nonce)"
+);
 
-function hashAddAccountAdmin(address accID, address signer, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_ADD_ACC_ADMIN_H, accID, signer, nonce));
+function hashAddAccountSigner(address accID, address signer, uint64 permissions, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_ADD_ACC_SIGNER_H, accID, signer, permissions, nonce));
 }
 
-bytes32 constant _DEL_ACC_ADMIN_H = keccak256("RemoveAccountSigner(address accountID,address signer,uint32 nonce)");
+bytes32 constant _DEL_ACC_SIGNER_H = keccak256("RemoveAccountSigner(address accountID,address signer,uint32 nonce)");
 
-function hashRemoveAccountAdmin(address accID, address signer, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_DEL_ACC_ADMIN_H, accID, signer, nonce));
+function hashRemoveAccountSigner(address accID, address signer, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_DEL_ACC_SIGNER_H, accID, signer, nonce));
 }
 
 bytes32 constant _SET_ACC_MULTISIG_THRESHOLD_H = keccak256(

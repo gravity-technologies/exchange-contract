@@ -4,7 +4,9 @@ import "@matterlabs/hardhat-zksync-node"
 import "@matterlabs/hardhat-zksync-deploy"
 import "@matterlabs/hardhat-zksync-solc"
 import "@matterlabs/hardhat-zksync-verify"
+import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
+import "hardhat-gas-reporter"
 
 const config: HardhatUserConfig = {
   defaultNetwork: "zkSyncSepoliaTestnet",

@@ -450,6 +450,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@matterlabs/hardhat-zksync-chai-matchers@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@matterlabs/hardhat-zksync-chai-matchers/-/hardhat-zksync-chai-matchers-1.2.1.tgz#af38f77beddb477238d87dcd099822f8f2589a25"
+  integrity sha512-gwbuH50ffOmFX/tfmnC8Q+HkyPobPUDlX+sJUf5sZYon0TEM01OxDsOmJN3yb65uphSAf9sqkEwZ6YWVO6l4gw==
+
 "@matterlabs/hardhat-zksync-deploy@^0.6.5":
   version "0.6.6"
   resolved "https://registry.yarnpkg.com/@matterlabs/hardhat-zksync-deploy/-/hardhat-zksync-deploy-0.6.6.tgz#5c86cf7da859844167d62300528c3e6013ee0286"
