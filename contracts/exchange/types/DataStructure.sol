@@ -177,8 +177,8 @@ struct SignatureState {
 struct PriceState {
   // Asset price is int64 because we need
   // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
-  mapping(uint256 => int64) mark;
-  mapping(uint128 => uint64) interest;
+  mapping(uint256 => uint64) mark;
+  mapping(uint256 => int64) interest;
   // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
@@ -186,7 +186,7 @@ struct PriceState {
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 10 decimal points
   // TODO: this uint128 represents the derivative
-  mapping(uint128 => uint64) fundingIndex;
+  mapping(uint256 => uint64) fundingIndex;
   uint64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
@@ -242,6 +242,14 @@ enum ConfigID {
 struct Trade {
   Order takerOrder;
   OrderMatch[] makerOrders;
+  AssetTradeContext[] tradeContext;
+}
+
+struct AssetTradeContext {
+  uint256 assetID;
+  uint64 markPrice;
+  uint64 underlyingPrice;
+  int32 riskFreeRate;
 }
 
 struct Order {
