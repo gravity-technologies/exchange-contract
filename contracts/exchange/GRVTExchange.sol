@@ -14,7 +14,7 @@ import "./api/TradeContract.sol";
 // import {BlackScholes as BS} from "./blackscholes/BlackScholes.sol";
 
 contract GRVTExchange is AccountContract, AccountRecoveryContract, SubAccountContract, TransferContract, TradeContract {
-  constructor(bytes32[] memory _initialConfig) public {
+  constructor(bytes32[] memory _initialConfig) {
     _setConfigTimelock();
 
     mapping(ConfigID => bytes32) storage configs = state.configs;

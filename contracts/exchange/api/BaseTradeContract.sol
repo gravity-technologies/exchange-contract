@@ -38,18 +38,18 @@ contract BaseTradeContract is HelperContract {
     int128 total = 0;
     uint256[] storage keys = positions.keys;
     mapping(uint256 => Position) storage values = positions.values;
-    mapping(uint256 => int64) storage assetPrices = state.prices.mark;
+    mapping(uint256 => uint64) storage assetPrices = state.prices.mark;
 
     uint count = keys.length;
     for (uint i = 0; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      total += int128(assetPrices[pos.id]) * int128(pos.balance);
+      total += int128(uint128(assetPrices[pos.id])) * int128(pos.balance);
     }
     return total;
   }
 
   // TODO
-  function _getInterestRate(uint128 id) internal view returns (uint64) {
+  function _getInterestRate(uint128 id) internal view returns (int64) {
     return state.prices.interest[id];
   }
 

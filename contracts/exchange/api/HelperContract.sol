@@ -53,7 +53,7 @@ contract HelperContract is ReentrancyGuard {
     // require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
-    require(!state.signatures.isExecuted[hash], "invalid transaction");
+    require(!state.replay.executed[hash], "invalid transaction");
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
@@ -63,7 +63,7 @@ contract HelperContract is ReentrancyGuard {
     }
 
     // 5. Mark the payload hash as executed, to prevent replay attack
-    state.signatures.isExecuted[hash] = true;
+    state.replay.executed[hash] = true;
   }
 
   function _max(uint a, uint b) internal pure returns (uint) {
@@ -74,9 +74,9 @@ contract HelperContract is ReentrancyGuard {
   /// To understand why require the payload hash to be unique, and not the signature, read
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
   function _preventReplay(bytes32 hash, Signature calldata sig) internal {
-    require(!state.signatures.isExecuted[hash], "replayed payload");
+    require(!state.replay.executed[hash], "replayed payload");
     _requireValidSig(state.timestamp, hash, sig);
-    state.signatures.isExecuted[hash] = true;
+    state.replay.executed[hash] = true;
   }
 
   // Verify that a signature is valid. Caller need to prevent replay attack

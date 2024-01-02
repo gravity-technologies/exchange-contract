@@ -82,7 +82,7 @@ struct State {
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   // This tracks the number of contract that has been matched
   // Also used to prevent replay attack
-  SignatureState signatures;
+  ReplayState replay;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
   // Latest Transaction time
@@ -131,11 +131,12 @@ struct SubAccount {
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
   // The total amount of base currency that the sub account possesses
-  mapping(Currency => int128) spotBalances;
+  mapping(Currency => uint64) spotBalances;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
+  mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
   uint256 adminCount;
@@ -168,17 +169,17 @@ struct ConfigTimelockRule {
   uint256 deltaNegative;
 }
 
-struct SignatureState {
-  mapping(bytes32 => uint64[]) orderMatched;
+struct ReplayState {
+  mapping(bytes32 => mapping(uint256 => uint64)) sizeMatched;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
-  mapping(bytes32 => bool) isExecuted;
+  mapping(bytes32 => bool) executed;
 }
 
 struct PriceState {
   // Asset price is int64 because we need
   // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
-  mapping(uint256 => int64) mark;
-  mapping(uint128 => uint64) interest;
+  mapping(uint256 => uint64) mark;
+  mapping(uint256 => int64) interest;
   // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
@@ -186,7 +187,7 @@ struct PriceState {
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 10 decimal points
   // TODO: this uint128 represents the derivative
-  mapping(uint128 => uint64) fundingIndex;
+  mapping(uint256 => uint64) fundingIndex;
   uint64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
@@ -242,6 +243,14 @@ enum ConfigID {
 struct Trade {
   Order takerOrder;
   OrderMatch[] makerOrders;
+  AssetTradeContext[] tradeContext;
+}
+
+struct AssetTradeContext {
+  uint256 assetID;
+  uint64 markPrice;
+  uint64 underlyingPrice;
+  int32 riskFreeRate;
 }
 
 struct Order {
@@ -311,7 +320,7 @@ struct OrderLeg {
 
 struct OrderMatch {
   Order makerOrder;
-  uint64[] numAssetsMatched;
+  uint64[] matchedSize;
   uint32 takerFeePercentageCharged;
   uint32 makerFeePercentageCharged;
 }
