@@ -65,13 +65,13 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   // //   // aggregate the taker fee for each leg. Update the smallest fee.
   // //   // give a discount of 50% (for future) or 100% (for option)
   // //   // Go through each makerOrderMatch
-  // //   for (uint i = 0; i < matches.length; i++) {
+  // //   for (uint i; i < matches.length; ++i) {
   // //     int128 makerFee = 0;
   // //     // Go through each leg matched qty
   // //     // uint64[] calldata matchedAmounts = matches[i].numContractsMatched;
   // //     int128 makerMinLegFee;
   // //     // int128 takerMinLegFee;
-  // //     for (uint j = 0; j < numLegs; j++) {
+  // //     for (uint j; j < numLegs; ++j) {
   // //       OrderLeg calldata leg = matches[i].makerOrder.legs[j];
   // //       int128 legFee = _getLegFee(leg, matches[i].makerFeePercentageCharged);
   // //       if (legFee < makerMinLegFee) makerMinLegFee = legFee;
@@ -135,7 +135,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   //   // check that taker has permission to trade
   //   _requireTradePermission(takerOrder.signature.signer, takerOrder.subAccountID);
   //   uint numMakerOrders = trade.makerOrders.length;
-  //   for (uint i = 0; i < numMakerOrders; i++) {
+  //   for (uint i; i < numMakerOrders; ++i) {
   //     Order calldata order = trade.makerOrders[i].makerOrder;
   //     _requireValidSig(timestamp, hashOrder(order), order.signature);
   //     // check that maker has permission to trade
@@ -162,7 +162,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   //   SubAccount storage taker = _requireSubAccount(takerOrder.subAccountID);
   //   _verifyOrder(taker, takerOrder, false);
   //   uint numLegs = takerOrder.legs.length;
-  //   for (uint j = 0; j < numMakers; ++j) {
+  //   for (uint j; j < numMakers; ++j) {
   //     OrderMatch calldata matching = matches[j];
   //     Order calldata makerOrder = matching.makerOrder;
   //     require(makerOrder.legs.length == numLegs, "inconsistent num legs");
@@ -182,16 +182,16 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   //   Order calldata takerOrder = trade.takerOrder;
   //   OrderLeg[] calldata takerLegs = takerOrder.legs;
   //   uint numLegs = takerLegs.length;
-  //   for (uint i = 0; i < numLegs; ++i) require(state.prices.mark[takerLegs[i].assetID] > 0, "invalid derivative price");
+  //   for (uint i; i < numLegs; ++i) require(state.prices.mark[takerLegs[i].assetID] > 0, "invalid derivative price");
   //   // Store the total matched quantity for each leg. This is used to update the taker fulfilment status
   //   uint64[] memory totalQtyMatchedPerLeg = new uint64[](numLegs);
   //   // For maker: validate each maker leg qty and aggregate the total qty per leg (to be used later to compare with taker's)
-  //   for (uint i = 0; i < trade.makerOrders.length; ++i) {
+  //   for (uint i; i < trade.makerOrders.length; ++i) {
   //     OrderMatch calldata matched = trade.makerOrders[i];
   //     Order calldata makerOrder = matched.makerOrder;
   //     bytes32 matchedOrderID = hashOrder(makerOrder);
   //     uint64[] storage makerPreMatchedQty = _getOrInitMatchedOrderQty(matchedOrderID, numLegs);
-  //     for (uint j = 0; j < numLegs; ++j) {
+  //     for (uint j; j < numLegs; ++j) {
   //       uint64 curMatchedQty = matched.numAssetsMatched[j];
   //       uint64 totalMatchedQty = makerPreMatchedQty[j] + curMatchedQty;
   //       _verifyMatchedQty(makerOrder.timeInForce, totalMatchedQty, makerOrder.legs[j].size);
@@ -205,7 +205,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   //   // For taker
   //   bytes32 takerOrderID = hashOrder(takerOrder);
   //   uint64[] storage takerPreMatchedQty = _getOrInitMatchedOrderQty(takerOrderID, numLegs);
-  //   for (uint i = 0; i < numLegs; ++i) {
+  //   for (uint i; i < numLegs; ++i) {
   //     uint64 curMatchedQty = totalQtyMatchedPerLeg[i];
   //     uint64 totalMatchedQty = takerPreMatchedQty[i] + curMatchedQty;
   //     _verifyMatchedQty(takerOrder.timeInForce, totalMatchedQty, takerOrder.legs[i].size);
@@ -217,7 +217,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   //   uint64[] storage allLegsPreMatchedQty = state.signatures.orderMatched[orderID];
   //   // TODO: change this to a mapping to avoid pushing to storage
   //   if (allLegsPreMatchedQty.length == 0) {
-  //     for (uint j = 0; j < numLegs; ++j) allLegsPreMatchedQty.push(0);
+  //     for (uint j; j < numLegs; ++j) allLegsPreMatchedQty.push(0);
   //   }
   //   return allLegsPreMatchedQty;
   // }
@@ -233,7 +233,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   // // function _verifyValidTotalValue(SubAccount storage taker, OrderMatch[] calldata matches) private view {
   // //   _requireValidSubAccountUsdValue(taker);
   // //   uint numMakerOrders = matches.length;
-  // //   for (uint i = 0; i < numMakerOrders; ++i)
+  // //   for (uint i; i < numMakerOrders; ++i)
   // //     _requireValidSubAccountUsdValue(_requireSubAccount(matches[i].makerOrder.subAccountID));
   // // }
   // // TODO: after we finalize fee verification method

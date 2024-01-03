@@ -30,9 +30,9 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     Order calldata takerOrder = trade.takerOrder;
     bytes32 takerHash = hashOrder(takerOrder);
     uint makerCount = trade.makerOrders.length;
-    for (uint i = 0; i < makerCount; ++i) {
-      uint256 takerSpotDelta = 0;
-      uint256 makerSpotDelta = 0;
+    for (uint i; i < makerCount; ++i) {
+      uint256 takerSpotDelta;
+      uint256 makerSpotDelta;
       OrderMatch calldata makerMatch = trade.makerOrders[i];
       Order calldata makerOrder = makerMatch.makerOrder;
       bytes32 makerHash = hashOrder(makerOrder);
@@ -52,7 +52,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
       }
 
       uint legCount = makerOrder.legs.length;
-      for (uint j = 0; j < legCount; ++j) {
+      for (uint j; j < legCount; ++j) {
         int64 curSz = int64(makerMatch.matchedSize[j]);
         OrderLeg calldata leg = makerOrder.legs[j];
         uint64 preSz = matchedSizes[makerHash][leg.assetID];
@@ -116,7 +116,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     uint takerLegCount = takerOrder.legs.length;
     bool isTakerWholeOrder = takerOrder.timeInForce == TimeInForce.ALL_OR_NONE ||
       trade.takerOrder.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL;
-    for (uint i = 0; i < takerLegCount; ++i) {
+    for (uint i; i < takerLegCount; ++i) {
       OrderLeg calldata leg = takerOrder.legs[i];
       uint64 matchedSize = matchedSizes[takerHash][leg.assetID];
       require(
@@ -146,7 +146,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
   function _updatePricesFromTradeContext(AssetTradeContext[] calldata tradeContext) internal {
     uint count = tradeContext.length;
     PriceState storage prices = state.prices;
-    for (uint i = 0; i < count; ++i) {
+    for (uint i; i < count; ++i) {
       AssetTradeContext calldata ctx = tradeContext[i];
       prices.mark[ctx.assetID] = ctx.markPrice;
       // FIXME: update the correct mark price and interest rate for underlying

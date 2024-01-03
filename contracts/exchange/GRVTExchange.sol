@@ -26,7 +26,7 @@ contract GRVTExchange is
     __ReentrancyGuard_init();
     _setConfigTimelock();
     mapping(ConfigID => bytes32) storage configs = state.configs;
-    for (uint i = 0; i < _initialConfig.length; i++) {
+    for (uint i; i < _initialConfig.length; ++i) {
       configs[ConfigID(i)] = _initialConfig[i];
     }
   }
@@ -40,7 +40,7 @@ contract GRVTExchange is
     // uint strike = 105e18;
     // int rate = 5e16;
 
-    // for (uint i = 0; i < 1; i++) {
+    // for (uint i; i < 1; ++i) {
     //   BS.BlackScholesInputs memory input = BS.BlackScholesInputs(expiry, vol, spot, strike, rate);
     //   (uint call, uint put) = BS.optionPrices(input);
     // }

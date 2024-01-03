@@ -189,7 +189,7 @@ contract ConfigContract is BaseContract {
 
     // Check the Uint delta
     (bool positive, uint256 delta) = _getChangeDeltaUint(newVal, state.configs[key]);
-    for (uint256 i = 0; i < rules.length; i++) {
+    for (uint256 i; i < rules.length; ++i) {
       Rule storage rule = rules[i];
       if ((positive && delta <= rule.deltaPositive) || (!positive && delta <= rule.deltaNegative))
         return rule.lockDuration;

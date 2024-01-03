@@ -35,13 +35,13 @@ contract BaseTradeContract is BaseContract {
   // }
 
   function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (int128) {
-    int128 total = 0;
+    int128 total;
     uint256[] storage keys = positions.keys;
     mapping(uint256 => Position) storage values = positions.values;
     mapping(uint256 => uint64) storage assetPrices = state.prices.mark;
 
     uint count = keys.length;
-    for (uint i = 0; i < count; ++i) {
+    for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
       total += int128(uint128(assetPrices[pos.id])) * int128(pos.balance);
     }
@@ -67,7 +67,7 @@ contract BaseTradeContract is BaseContract {
     // mapping(uint256 => Position) storage values = sub.perps.values;
     // uint count = keys.length;
     // int128 balanceDelta;
-    // for (uint i = 0; i < count; ++i) {
+    // for (uint i; i < count; ++i) {
     //   Position storage perp = values[keys[i]];
     //   // Upcasting from uint64 -> int128 is safe
     //   int128 currentPrice = state.prices.mark[perp.id];
@@ -88,7 +88,7 @@ contract BaseTradeContract is BaseContract {
     // // Update the balance after settling option/future
     // // Use balanceDelta to avoid updating state directly, which is gas expensive
     // int128 balanceDelta = 0;
-    // for (uint i = 0; i < count; ++i) {
+    // for (uint i; i < count; ++i) {
     //   uint256 assetID = keys[i];
     //   Asset memory deriv = _parseAssetID(assetID);
     //   if (uint64(deriv.expiration) <= state.timestamp) {
@@ -107,7 +107,7 @@ contract BaseTradeContract is BaseContract {
     //   }
     // }
     // // Remove the expired derivative
-    // for (uint i = 0; i < expiredCount; ++i) {
+    // for (uint i; i < expiredCount; ++i) {
     //   remove(positions, expiredOptionIDs[expiredOptionIDs[i]]);
     // }
     // // Update total balance
