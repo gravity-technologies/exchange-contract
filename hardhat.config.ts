@@ -8,7 +8,7 @@ import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "zkSyncSepoliaTestnet",
+  defaultNetwork: "dockerizedNode",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",

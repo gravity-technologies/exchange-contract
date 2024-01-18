@@ -1,47 +1,51 @@
-# <h1 align="center"> Hardhat x Foundry Template </h1>
+# zkSync Hardhat project template
 
-**Template repository for getting started quickly with Hardhat and Foundry in one project**
+This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
 
-![Github Actions](https://github.com/devanonon/hardhat-foundry-template/workflows/test/badge.svg)
+## Project Layout
 
-### Getting Started
+- `/contracts`: Contains solidity smart contracts.
+- `/deploy`: Scripts for contract deployment and interaction.
+- `/test`: Test files.
+- `hardhat.config.ts`: Configuration settings.
 
-- Use Foundry:
+## How to Use
 
-```bash
-forge install
-forge test
+- `npm run compile`: Compiles contracts.
+- `npm run deploy`: Deploys using script `/deploy/deploy.ts`.
+- `npm run interact`: Interacts with the deployed contract using `/deploy/interact.ts`.
+- `npm run test`: Tests the contracts.
+
+Note: Both `npm run deploy` and `npm run interact` are set in the `package.json`. You can also run your files directly, for example: `npx hardhat deploy-zksync --script deploy.ts`
+
+### Environment Settings
+
+To keep private keys safe, this project pulls in environment variables from `.env` files. Primarily, it fetches the wallet's private key.
+
+Rename `.env.example` to `.env` and fill in your private key:
+
+```
+WALLET_PRIVATE_KEY=your_private_key_here...
 ```
 
-- Use Hardhat:
+### Network Support
 
-```bash
-npm install
-npx hardhat test
-```
+`hardhat.config.ts` comes with a list of networks to deploy and test contracts. Add more by adjusting the `networks` section in the `hardhat.config.ts`. To make a network the default, set the `defaultNetwork` to its name. You can also override the default using the `--network` option, like: `hardhat test --network dockerizedNode`.
 
-### Features
+### Local Tests
 
-- Write / run tests with either Hardhat or Foundry:
+Running `npm run test` by default runs the [zkSync In-memory Node](https://era.zksync.io/docs/tools/testing/era-test-node.html) provided by the [@matterlabs/hardhat-zksync-node](https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-node.html) tool.
 
-```bash
-forge test
-# or
-npx hardhat test
-```
+Important: zkSync In-memory Node currently supports only the L2 node. If contracts also need L1, use another testing environment like Dockerized Node. Refer to [test documentation](https://era.zksync.io/docs/tools/testing/) for details.
 
-- Use Hardhat's task framework
+## Useful Links
 
-```bash
-npx hardhat example
-```
+- [Docs](https://era.zksync.io/docs/dev/)
+- [Official Site](https://zksync.io/)
+- [GitHub](https://github.com/matter-labs)
+- [Twitter](https://twitter.com/zksync)
+- [Discord](https://join.zksync.dev/)
 
-- Install libraries with Foundry which work with Hardhat.
+## License
 
-```bash
-forge install rari-capital/solmate # Already in this repo, just an example
-```
-
-### Notes
-
-Whenever you install new libraries using Foundry, make sure to update your `remappings.txt` file by running `forge remappings > remappings.txt`. This is required because we use `hardhat-preprocessor` and the `remappings.txt` file to allow Hardhat to resolve libraries you install with Foundry.
+This project is under the [MIT](./LICENSE) license.

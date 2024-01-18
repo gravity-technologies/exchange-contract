@@ -1,6 +1,7 @@
 import * as hre from "hardhat"
 import { getWallet } from "./utils"
 import { ethers } from "ethers"
+import { ContractName } from "./contract"
 
 // Address of the contract to interact with
 const CONTRACT_ADDRESS = ""
@@ -11,7 +12,7 @@ export default async function () {
   console.log(`Running script to interact with contract ${CONTRACT_ADDRESS}`)
 
   // Load compiled contract info
-  const contractArtifact = await hre.artifacts.readArtifact("Greeter")
+  const contractArtifact = await hre.artifacts.readArtifact(ContractName)
 
   // Initialize contract instance for interaction
   const contract = new ethers.Contract(
