@@ -6,6 +6,9 @@ import "@matterlabs/hardhat-zksync-solc"
 import "@matterlabs/hardhat-zksync-verify"
 import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
+// upgradable plugin
+import "@matterlabs/hardhat-zksync-upgradable";
+
 
 const config: HardhatUserConfig = {
   defaultNetwork: "dockerizedNode",

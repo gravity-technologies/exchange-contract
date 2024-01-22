@@ -49,3 +49,7 @@ Important: zkSync In-memory Node currently supports only the L2 node. If contrac
 ## License
 
 This project is under the [MIT](./LICENSE) license.
+
+### About Upgradability
+
+It is still ok to define constant state variables, because the compiler does not reserve a storage slot for these variables, and every occurrence is replaced by the respective constant expression. So the following still works with OpenZeppelin Upgrades:
