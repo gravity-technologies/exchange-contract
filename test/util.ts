@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import { randomInt } from "crypto"
-import { Wallet, utils } from "ethers"
+import { Wallet, ethers } from "ethers"
 import { NumConfig } from "./type"
 import { GRVTExchange } from "../typechain-types"
 
@@ -38,7 +38,9 @@ export function getTimestampNs(addDays: number = 10): number {
 
 export function wallet(pkHex?: string): Wallet {
   if (pkHex == null) {
-    return Wallet.createRandom()
+    var wal = Wallet.createRandom()
+   return new Wallet(wal.privateKey)
+    // return Wallet.createRandom()
   }
   return new Wallet(pkHex)
 }
@@ -51,11 +53,11 @@ export type CfgMap = Map<number, Bytes32>
 
 export function bytes32(v: string | number | Wallet): Bytes32 {
   if (typeof v === "number") {
-    v = utils.hexValue(v)
+    v = ethers.toQuantity(v)
   } else if (v instanceof Wallet) {
     v = v.address
   }
-  return utils.hexZeroPad(v, 32)
+  return ethers.zeroPadBytes(v, 32)
 }
 
 export type Bytes32 = string
