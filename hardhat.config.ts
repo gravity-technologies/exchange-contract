@@ -9,7 +9,7 @@ import '@matterlabs/hardhat-zksync-upgradable';
 import "@typechain/hardhat"
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "dockerizedNode",
+  defaultNetwork: "hardhat",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",
