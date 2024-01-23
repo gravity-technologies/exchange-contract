@@ -6,6 +6,9 @@ import { ethers } from "ethers"
 
 import "@matterlabs/hardhat-zksync-node/dist/type-extensions"
 import "@matterlabs/hardhat-zksync-verify/dist/src/type-extensions"
+// Imports the verify plugin before the upgradable plugin
+import '@matterlabs/hardhat-zksync-verify';
+import '@matterlabs/hardhat-zksync-upgradable';
 
 // Load env file
 dotenv.config()
@@ -172,3 +175,63 @@ export const LOCAL_RICH_WALLETS = [
     privateKey: "0x3eb15da85647edd9a1159a4a13b9e7c56877c4eb33f614546d4db06a51868b1c",
   },
 ]
+
+export const deployContractUpgradable = async (
+  contractArtifactName: string,
+  constructorArguments?: any[],
+  options?: DeployContractOptions
+) => {
+  const log = (message: string) => {
+    if (!options?.silent) console.log(message)
+  }
+
+  log(`\nStarting deployment process of "${contractArtifactName}"...`)
+
+  const zkWallet = options?.wallet ?? getWallet()
+  const deployer = new Deployer(hre, zkWallet)
+  const contract = await deployer.loadArtifact(contractArtifactName).catch((error) => {
+    if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
+      console.error(error.message)
+      throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`
+    } else {
+      throw error
+    }
+  })
+
+  // Estimate contract deployment fee
+  // const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], { kind: "transparent" });
+  // log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
+
+  // Check if the wallet has enough balance
+  // await verifyEnoughBalance(zkWallet, deploymentFee)
+
+  // Deploy the contract to zkSync via proxy
+  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [constructorArguments], { initializer: "initialize" });
+  await proxiedContract.waitForDeployment();
+
+  // const proxiedContract = await deployer.deploy(contract, constructorArguments)
+  const address = await proxiedContract.getAddress()
+  const constructorArgs = proxiedContract.interface.encodeDeploy(constructorArguments)
+  const fullContractSource = `${contract.sourceName}:${contract.contractName}`
+
+  console.log(contractArtifactName + " deployed to:", address);
+
+
+  // Display contract deployment info
+  log(`\n"${contractArtifactName}" was successfully deployed:`)
+  log(` - Contract address: ${address}`)
+  log(` - Contract source: ${fullContractSource}`)
+  log(` - Encoded constructor arguments: ${constructorArgs}\n`)
+
+  if (!options?.noVerify && hre.network.config.verifyURL) {
+    log(`Requesting contract verification...`)
+    await verifyContract({
+      address,
+      contract: fullContractSource,
+      constructorArguments: constructorArgs,
+      bytecode: contract.bytecode,
+    })
+  }
+
+  return proxiedContract
+}
