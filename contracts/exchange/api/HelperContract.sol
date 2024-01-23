@@ -4,9 +4,9 @@ pragma solidity ^0.8.20;
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
-contract HelperContract is ReentrancyGuard {
+contract HelperContract is ReentrancyGuardUpgradeable {
   State internal state;
 
   // eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
