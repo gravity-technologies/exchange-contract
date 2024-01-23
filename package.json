@@ -26,6 +26,9 @@
     "clean": "hardhat clean"
   },
   "devDependencies": {
+    "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
     "@matterlabs/hardhat-zksync-chai-matchers": "^1.2.1",
     "@matterlabs/hardhat-zksync-deploy": "^1.1.2",
     "@matterlabs/hardhat-zksync-node": "^1.0.1",
