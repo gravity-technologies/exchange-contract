@@ -14,7 +14,7 @@ describe.only("API - Account", function () {
     const recoveryAddress = await bytes32(grvt)
     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
     // contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
-    contract = await deployContractUpgradable("GRVTExchange", [config], { wallet, silent: true })
+    contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 
   describe.only("createAccount", function () {

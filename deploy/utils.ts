@@ -206,14 +206,13 @@ export const deployContractUpgradable = async (
   // await verifyEnoughBalance(zkWallet, deploymentFee)
 
   // Deploy the contract to zkSync via proxy
-  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [constructorArguments], { initializer: "initialize" });
+  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [[]], { initializer: "initialize" });
   await proxiedContract.waitForDeployment();
 
   // const proxiedContract = await deployer.deploy(contract, constructorArguments)
   const address = await proxiedContract.getAddress()
   const constructorArgs = proxiedContract.interface.encodeDeploy(constructorArguments)
   const fullContractSource = `${contract.sourceName}:${contract.contractName}`
-
   console.log(contractArtifactName + " deployed to:", address);
 
 
@@ -223,15 +222,15 @@ export const deployContractUpgradable = async (
   log(` - Contract source: ${fullContractSource}`)
   log(` - Encoded constructor arguments: ${constructorArgs}\n`)
 
-  if (!options?.noVerify && hre.network.config.verifyURL) {
-    log(`Requesting contract verification...`)
-    await verifyContract({
-      address,
-      contract: fullContractSource,
-      constructorArguments: constructorArgs,
-      bytecode: contract.bytecode,
-    })
-  }
+  // if (!options?.noVerify && hre.network.config.verifyURL) {
+  //   log(`Requesting contract verification...`)
+  //   await verifyContract({
+  //     address,
+  //     contract: fullContractSource,
+  //     constructorArguments: constructorArgs,
+  //     bytecode: contract.bytecode,
+  //   })
+  // }
 
   return proxiedContract
 }

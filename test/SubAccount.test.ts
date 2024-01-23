@@ -27,7 +27,7 @@ describe("API - SubAccount", function () {
     const recoveryAddress = await bytes32(grvt)
     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
     // contract = await deployContract("GRVTExchange", [config], { wallet, silent: true })
-    contract = await deployContractUpgradable("GRVTExchange", [config], { wallet, silent: true })
+    contract = await deployContractUpgradable("GRVTExchange", [[]], { wallet, silent: true })
   })
 
   describe("createSubAccount", function () {
