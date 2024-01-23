@@ -37,7 +37,7 @@ export async function createAccount(contract: Contract, txSigner: BaseWallet, ts
   const salt = nonce()
   const sig = genCreateAccountSig(txSigner, accID, salt)
   const tx = await contract.createAccount(ts, txID, accID, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function createSubAccount(
@@ -61,7 +61,7 @@ export async function createSubAccount(
     sig,
     txRequestDefault()
   )
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function addAccountSigner(
@@ -76,7 +76,7 @@ export async function addAccountSigner(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genAddAccountSignerSig(txSigner, accID, signer, permissions, salt))
   const tx = await contract.addAccountSigner(ts, txID, accID, signer, permissions, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function removeAccountSigner(
@@ -90,7 +90,7 @@ export async function removeAccountSigner(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genRemoveAccountSignerSig(txSigner, accID, signer, salt))
   const tx = await contract.removeAccountSigner(ts, txID, accID, signer, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function setMultisigThreshold(
@@ -112,7 +112,7 @@ export async function setMultisigThreshold(
     sigs,
     txRequestDefault()
   )
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function addWithdrawalAddress(
@@ -126,7 +126,7 @@ export async function addWithdrawalAddress(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genAddWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
   const tx = await contract.addWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function removeWithdrawalAddress(
@@ -140,7 +140,7 @@ export async function removeWithdrawalAddress(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genRemoveWithdrawalAddressSig(txSigner, accID, withdrawalAddress, salt))
   const tx = await contract.removeWithdrawalAddress(ts, txID, accID, withdrawalAddress, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 // export async function addTransferSubAccount(
@@ -154,7 +154,7 @@ export async function removeWithdrawalAddress(
 //   const salt = nonce()
 //   const sigs = txSigners.map((txSigner) => genAddTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
 // const tx = await contract.addTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
-// return tx.wait()
+// await tx.wait()
 //
 // }
 
@@ -169,7 +169,7 @@ export async function removeWithdrawalAddress(
 //   const salt = nonce()
 //   const sigs = txSigners.map((txSigner) => genRemoveTransferSubAccountPayloadSig(txSigner, accID, subID, salt))
 // const tx = await contract.removeTransferSubAccount(ts, txID, accID, subID, salt, sigs, {gasLimit: MAX_GAS})
-// return tx.wait()
+// await tx.wait()
 //
 // }
 
@@ -185,7 +185,7 @@ export async function setSubAccountMarginType(
   const salt = nonce()
   const sig = genSetSubAccountMarginTypePayloadSig(txSigner, subID, marginType, salt)
   const tx = await contract.setSubAccountMarginType(ts, txID, subID, marginType, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function addSubSigner(
@@ -200,7 +200,7 @@ export async function addSubSigner(
   const salt = nonce()
   const sig = genAddSubAccountSignerPayloadSig(txSigner, subID, newSigner, permission, salt)
   const tx = await contract.addSubAccountSigner(ts, txID, subID, newSigner, permission, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function setSubAccountSignerPermission(
@@ -224,7 +224,7 @@ export async function setSubAccountSignerPermission(
     sig,
     txRequestDefault()
   )
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function removeSubSigner(
@@ -238,7 +238,7 @@ export async function removeSubSigner(
   const salt = nonce()
   const sig = genRemoveSubAccountSignerPayloadSig(txSigner, subID, signer, salt)
   const tx = await contract.removeSubAccountSigner(ts, txID, subID, signer, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 // Account Recovery
@@ -253,7 +253,7 @@ export async function addAccountGuardian(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genAddAccountGuardianPayloadSig(txSigner, accID, guardian, salt))
   const tx = await contract.addAccountGuardian(ts, txID, accID, guardian, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function removeAccountGuardian(
@@ -267,7 +267,7 @@ export async function removeAccountGuardian(
   const salt = nonce()
   const sigs = txSigners.map((txSigner) => genRemoveAccountGuardianPayloadSig(txSigner, accID, signer, salt))
   const tx = await contract.removeAccountGuardian(ts, txID, accID, signer, salt, sigs, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function recoverAccountAdmin(
@@ -295,7 +295,7 @@ export async function recoverAccountAdmin(
     sigs,
     txRequestDefault()
   )
-  return tx.wait()
+  await tx.wait()
 }
 
 // Config
@@ -310,7 +310,7 @@ export async function scheduleConfig(
   const salt = nonce()
   const sig = genScheduleConfigSig(txSigner, key, value, salt)
   const tx = await contract.scheduleConfig(ts, txID, key, value, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function setConfig(
@@ -324,7 +324,7 @@ export async function setConfig(
   const salt = nonce()
   const sig = genSetConfigSig(txSigner, key, value, salt)
   const tx = await contract.setConfig(ts, txID, key, value, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 // Session
@@ -338,13 +338,13 @@ export async function addSessionKey(
 ) {
   const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry)
   const tx = await contract.addSessionKey(ts, txID, sessionKey, keyExpiry, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function removeSessionKey(contract: Contract, txSigner: BaseWallet, ts: number, txID: number) {
   const address = await txSigner.getAddress()
   const tx = await contract.removeSessionKey(ts, txID, address)
-  return tx.wait()
+  await tx.wait()
 }
 
 // Trade
@@ -362,7 +362,7 @@ export async function deposit(
   const salt = nonce()
   const sig = genDepositSig(txSigner, fromEthAddress, toSubAccount, numTokens, salt)
   const tx = await contract.deposit(ts, txID, fromEthAddress, toSubAccount, numTokens, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 export async function withdraw(
@@ -377,7 +377,7 @@ export async function withdraw(
   const salt = nonce()
   const sig = genWithdrawalSig(txSigner, fromSubAccount, toEthAddress, numTokens, salt)
   const tx = await contract.withdrawal(ts, txID, fromSubAccount, toEthAddress, numTokens, salt, sig, txRequestDefault())
-  return tx.wait()
+  await tx.wait()
 }
 
 // export async function transfer(
@@ -392,5 +392,5 @@ export async function withdraw(
 //   const salt = nonce()
 //   const sig = genTransferSig(txSigner, fromSubAccount, toSubAccount, numTokens, salt)
 // const tx = await contract.transfer(ts, txID, fromSubAccount, toSubAccount, numTokens, salt, sig, {gasLimit: MAX_GAS})
-// return tx.wait()
+// await tx.wait()
 // }

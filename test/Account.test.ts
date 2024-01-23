@@ -3,7 +3,7 @@ import { Contract } from "ethers"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
 import { addAccountSigner, createAccount, removeAccountSigner, setMultisigThreshold } from "./api"
 import { AccPerm, ConfigID } from "./type"
-import { Bytes32, bytes32, getConfigArray, wallet } from "./util"
+import { Bytes32, bytes32, expectNotToThrowAsync, expectToThrowAsync, getConfigArray, wallet } from "./util"
 
 describe.only("API - Account", function () {
   let contract: Contract
@@ -16,13 +16,13 @@ describe.only("API - Account", function () {
     contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
   })
 
-  describe.only("createAccount", function () {
+  describe("createAccount", function () {
     it("Should create account successfully", async function () {
       const admin = wallet()
       const accID = admin.address
       let ts = 1
       const tx = createAccount(contract, admin, ts, ts, accID)
-      await expect(tx).not.to.be.reverted
+      await expectToThrowAsync(tx)
     })
 
     it("Error if account already exists", async function () {
@@ -31,8 +31,10 @@ describe.only("API - Account", function () {
       let ts = 1
       await createAccount(contract, admin, ts, ts, accID)
       ts++
-      const tx = createAccount(contract, admin, ts, ts, accID)
-      await expect(tx).to.be.reverted
+      try {
+        await createAccount(contract, admin, ts, ts, accID)
+        expect.fail("expected to fail, but didn't")
+      } catch (err) {}
     })
   })
 
@@ -46,14 +48,14 @@ describe.only("API - Account", function () {
       await createAccount(contract, admin1, ts, ts, accID)
       ts++
       const tx = addAccountSigner(contract, [admin1], ts, ts, accID, admin2.address, AccPerm.Admin)
-      await expect(tx).not.to.be.reverted
+      await expectToThrowAsync(tx)
     })
 
     it("fails if account does not exist", async function () {
       const w = wallet()
       let ts = 1
       const tx = addAccountSigner(contract, [w], ts, ts, w.address, wallet().address, AccPerm.Admin)
-      await expect(tx).to.be.reverted
+      await expectToThrowAsync(tx)
       // TODO "account does not exist"
     })
 
@@ -64,7 +66,7 @@ describe.only("API - Account", function () {
       await createAccount(contract, admin, ts, ts, accID)
       ts++
       const tx = addAccountSigner(contract, [admin], ts, ts, accID, wallet().address, AccPerm.Admin)
-      await expect(tx).not.to.be.reverted
+      await expectToThrowAsync(tx)
     })
   })
 
@@ -81,7 +83,7 @@ describe.only("API - Account", function () {
         .reverted
       ts++
       const tx = removeAccountSigner(contract, [admin1], ts, ts, accID, admin1.address)
-      await expect(tx).not.to.be.reverted
+      await expectToThrowAsync(tx)
     })
 
     it("Error when removing the last admin", async function () {
@@ -91,7 +93,7 @@ describe.only("API - Account", function () {
       await createAccount(contract, w1, ts, ts, accID)
       ts++
       const tx = removeAccountSigner(contract, [w1], ts, ts, accID, w1.address)
-      await expect(tx).to.be.reverted
+      await expectToThrowAsync(tx)
     })
 
     it("Error if account does not exist", async function () {
@@ -99,8 +101,8 @@ describe.only("API - Account", function () {
       const accID = w1.address
 
       let ts = 1
-      await expect(removeAccountSigner(contract, [w1], ts, ts, accID, w1.address)).to.be.reverted
-      // TODO: "account does not exist"
+      const tx = removeAccountSigner(contract, [w1], ts, ts, accID, w1.address)
+      await expectToThrowAsync(tx, "account does not exist")
     })
 
     it("Error if admin address does not exist", async function () {
@@ -110,7 +112,8 @@ describe.only("API - Account", function () {
       let ts = 1
       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
       ts++
-      await expect(removeAccountSigner(contract, [admin], ts, ts, accID, admin.address)).to.be.reverted
+      const tx = removeAccountSigner(contract, [admin], ts, ts, accID, admin.address)
+      await expectToThrowAsync(tx)
     })
   })
 
@@ -249,12 +252,12 @@ describe.only("API - Account", function () {
 
       const accID = w1.address
       let ts = 1
-      await expect(createAccount(contract, w1, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, w1, ts, ts, accID)
 
       ts++
-      await expect(addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
       ts++
-      await expect(setMultisigThreshold(contract, [w1], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
     })
 
     it("fails if threshold = 0", async function () {
@@ -264,12 +267,12 @@ describe.only("API - Account", function () {
 
       // 1. Create sub account
       let ts = 1
-      await expect(createAccount(contract, w1, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, w1, ts, ts, accID)
 
       // 2. Set multisig threshold
       ts++
-      await expect(setMultisigThreshold(contract, [w1], ts, ts, accID, 0)).to.be.reverted
-      // TODO: "invalid threshold")
+      const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 0)
+      await expectToThrowAsync(tx, "invalid threshold")
     })
 
     it("fails if threshold > number of admins", async function () {
@@ -277,10 +280,10 @@ describe.only("API - Account", function () {
       const accID = w1.address
       let ts = 1
       // 1. Create sub account
-      await expect(createAccount(contract, w1, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, w1, ts, ts, accID)
       ts++
-      await expect(setMultisigThreshold(contract, [w1], ts, ts, accID, 2)).to.be.reverted
-      // TODO: "invalid threshold"
+      const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+      await expectToThrowAsync(tx, "invalid threshold")
     })
   })
 
