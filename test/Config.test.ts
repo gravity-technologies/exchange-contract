@@ -8,12 +8,12 @@
 // // import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs"
 
 // describe("API - Config", function () {
-//   let contract: GRVTExchange
+//   let contract: Contract
 //   const grvt = wallet()
 
 //   beforeEach(async () => {
 //     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//     contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//     contract = await ethers.deployContract("GRVTExchange", [config])
 //   })
 
 //   describe("scheduleConfig", function () {
@@ -53,7 +53,7 @@
 //   describe("setConfig", function () {
 //     it("set address config successfully", async function () {
 //       const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//       const contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//       const contract = await ethers.deployContract("GRVTExchange", [config])
 
 //       const newWallet = wallet()
 //       // schedule
@@ -72,7 +72,7 @@
 //           [ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100)],
 //         ])
 //       )
-//       const contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//       const contract = await ethers.deployContract("GRVTExchange", [config])
 
 //       // schedule
 //       let ts = 1
@@ -85,7 +85,7 @@
 
 //     it("can set uint config successfully from initially 0 value", async function () {
 //       const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//       const contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//       const contract = await ethers.deployContract("GRVTExchange", [config])
 
 //       // schedule
 //       let ts = 1
@@ -105,7 +105,7 @@
 
 //     it("fails if config is still locked", async function () {
 //       const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//       const contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//       const contract = await ethers.deployContract("GRVTExchange", [config])
 
 //       // schedule
 //       let ts = 1
@@ -129,7 +129,7 @@
 //           [ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(100)],
 //         ])
 //       )
-//       const contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//       const contract = await ethers.deployContract("GRVTExchange", [config])
 //       let ts = 1
 //       await expectToThrowAsync(
 //         setConfig(contract, grvt, 9000000, ts, ConfigID.SM_FUTURES_INITIAL_MARGIN, bytes32(109)),

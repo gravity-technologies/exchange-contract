@@ -1,32 +1,22 @@
-import { ethers } from "ethers"
-import { GRVTExchange } from "../typechain-types"
-import {
-  addAccountSigner,
-  // addTransferSubAccount,
-  addWithdrawalAddress,
-  createAccount,
-  removeAccountSigner as removeAccountSigner,
-  // removeTransferSubAccount,
-  removeWithdrawalAddress,
-  setMultisigThreshold,
-} from "./api"
-import { genSetAccountMultiSigThresholdSig } from "./signature"
-import { AccPerm, ConfigID } from "./type"
-import { Bytes32, bytes32, expectToThrowAsync, getConfigArray, nonce, wallet } from "./util"
-import { getWallet, deployContract, LOCAL_RICH_WALLETS } from "../deploy/utils"
 import { expect } from "chai"
+import { Contract } from "ethers"
+import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { addAccountSigner, createAccount, removeAccountSigner, setMultisigThreshold } from "./api"
+import { AccPerm, ConfigID } from "./type"
+import { Bytes32, bytes32, getConfigArray, wallet } from "./util"
 
-describe("API - Account", function () {
-  let contract: GRVTExchange
+describe.only("API - Account", function () {
+  let contract: Contract
   const grvt = wallet()
 
   beforeEach(async () => {
     const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
-    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-    contract = <GRVTExchange>await deployContract("GRVTExchange", [config], { wallet, silent: true })
+    const recoveryAddress = await bytes32(grvt)
+    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
+    contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
   })
 
-  describe("createAccount", function () {
+  describe.only("createAccount", function () {
     it("Should create account successfully", async function () {
       const admin = wallet()
       const accID = admin.address

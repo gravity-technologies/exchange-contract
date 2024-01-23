@@ -1,8 +1,7 @@
 import { expect } from "chai"
 import { randomInt } from "crypto"
-import { Wallet, utils } from "ethers"
+import { AbstractSigner, BaseWallet, BytesLike, NonceManager, Wallet, toBeHex, zeroPadValue } from "ethers"
 import { NumConfig } from "./type"
-import { GRVTExchange } from "../typechain-types"
 
 export async function expectToThrowAsync(promise: Promise<any>, message?: string) {
   let error = null
@@ -36,7 +35,7 @@ export function getTimestampNs(addDays: number = 10): number {
   return Math.floor((Date.now() + deltaInMs) * 1000)
 }
 
-export function wallet(pkHex?: string): Wallet {
+export function wallet(pkHex?: string): BaseWallet {
   if (pkHex == null) {
     return Wallet.createRandom()
   }
@@ -49,13 +48,14 @@ export function nonce() {
 
 export type CfgMap = Map<number, Bytes32>
 
-export function bytes32(v: string | number | Wallet): Bytes32 {
+export async function bytes32(v: string | number | AbstractSigner): Promise<Bytes32> {
+  let hex: BytesLike = "0"
   if (typeof v === "number") {
-    v = utils.hexValue(v)
-  } else if (v instanceof Wallet) {
-    v = v.address
+    hex = toBeHex(v)
+  } else if (v instanceof AbstractSigner) {
+    hex = await v.getAddress()
   }
-  return utils.hexZeroPad(v, 32)
+  return zeroPadValue(hex, 32)
 }
 
 export type Bytes32 = string

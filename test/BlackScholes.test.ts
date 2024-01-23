@@ -5,12 +5,12 @@
 // import { ConfigID } from "./type"
 
 // describe("BlackScholes", function () {
-//   let contract: GRVTExchange
+//   let contract: Contract
 //   const grvt = wallet()
 
 //   beforeEach(async () => {
 //     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//     contract = <GRVTExchange>await ethers.deployContract("GRVTExchange", [config])
+//     contract = await ethers.deployContract("GRVTExchange", [config])
 //   })
 
 //   // beforeEach(async () => {

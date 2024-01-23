@@ -1,11 +1,15 @@
 import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
-import { Wallet, utils } from "ethers"
-import { buf, getTimestampNs } from "./util"
-import * as Types from "../signatures/message/type"
 import { randomInt } from "crypto"
+import { BaseWallet, Signature as EtherSig, Wallet } from "ethers"
+import * as Types from "../signatures/message/type"
 import { OrderNoSignature, Signature } from "./type"
+import { buf, getTimestampNs } from "./util"
 
-export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
+export function genCreateAccountSig(
+  wallet: BaseWallet,
+  accountID: string,
+  nonce: number = randomInt(22021991)
+): Signature {
   return sign(wallet, {
     ...Types.CreateAccount,
     message: {
@@ -16,7 +20,7 @@ export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: nu
 }
 
 export function genCreateSubAccountSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   subAccountID: number,
   quoteCurrency: number,
@@ -36,7 +40,7 @@ export function genCreateSubAccountSig(
 }
 
 export function genAddAccountAdminSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   signer: string,
   permissions: number,
@@ -54,7 +58,7 @@ export function genAddAccountAdminSig(
 }
 
 export function genSetAccountMultiSigThresholdSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   multiSigThreshold: number,
   nonce: number = randomInt(22021991)
@@ -70,7 +74,7 @@ export function genSetAccountMultiSigThresholdSig(
 }
 
 export function genRemoveAccountSignerSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   signer: string,
   nonce: number = randomInt(22021991)
@@ -86,7 +90,7 @@ export function genRemoveAccountSignerSig(
 }
 
 export function genAddWithdrawalAddressSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   withdrawalAddress: string,
   nonce: number = randomInt(22021991)
@@ -102,7 +106,7 @@ export function genAddWithdrawalAddressSig(
 }
 
 export function genRemoveWithdrawalAddressSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   withdrawalAddress: string,
   nonce: number = randomInt(22021991)
@@ -118,7 +122,7 @@ export function genRemoveWithdrawalAddressSig(
 }
 
 export function genAddTransferSubAccountPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   transferSubAccount: string,
   nonce: number = randomInt(22021991)
@@ -134,7 +138,7 @@ export function genAddTransferSubAccountPayloadSig(
 }
 
 export function genRemoveTransferSubAccountPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   transferSubAccount: string,
   nonce: number = randomInt(22021991)
@@ -151,7 +155,7 @@ export function genRemoveTransferSubAccountPayloadSig(
 
 // SubAccount
 export function genSetSubAccountMarginTypePayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   subAccountID: number,
   marginType: number,
   nonce: number = randomInt(22021991)
@@ -167,7 +171,7 @@ export function genSetSubAccountMarginTypePayloadSig(
 }
 
 export function genAddSubAccountSignerPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   subAccountID: number,
   signer: string,
   permissions: number,
@@ -185,7 +189,7 @@ export function genAddSubAccountSignerPayloadSig(
 }
 
 export function genSetSubAccountSignerPermissionsPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   subAccountID: number,
   signer: string,
   permissions: number,
@@ -203,7 +207,7 @@ export function genSetSubAccountSignerPermissionsPayloadSig(
 }
 
 export function genRemoveSubAccountSignerPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   subAccountID: number,
   signer: string,
   nonce: number = randomInt(22021991)
@@ -220,7 +224,7 @@ export function genRemoveSubAccountSignerPayloadSig(
 
 // Account Recovery
 export function genAddAccountGuardianPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   signer: string,
   nonce: number = randomInt(22021991)
@@ -236,7 +240,7 @@ export function genAddAccountGuardianPayloadSig(
 }
 
 export function genRemoveAccountGuardianPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   signer: string,
   nonce: number = randomInt(22021991)
@@ -252,7 +256,7 @@ export function genRemoveAccountGuardianPayloadSig(
 }
 
 export function genRecoverAccountAdminPayloadSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   accountID: string,
   recoveryType: number,
   oldAdmin: string,
@@ -273,7 +277,7 @@ export function genRecoverAccountAdminPayloadSig(
 
 // Config
 export function genScheduleConfigSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   key: number,
   value: string,
   nonce: number = randomInt(22021991)
@@ -289,7 +293,7 @@ export function genScheduleConfigSig(
 }
 
 export function genSetConfigSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   key: number,
   value: string,
   nonce: number = randomInt(22021991)
@@ -305,7 +309,7 @@ export function genSetConfigSig(
 }
 
 // Session
-export function genAddSessionKeySig(wallet: Wallet, sessionKey: string, keyExpiry: number): Signature {
+export function genAddSessionKeySig(wallet: BaseWallet, sessionKey: string, keyExpiry: number): Signature {
   return sign(wallet, {
     ...Types.AddSessionKey,
     message: {
@@ -315,13 +319,13 @@ export function genAddSessionKeySig(wallet: Wallet, sessionKey: string, keyExpir
   })
 }
 
-export function genRemoveSessionKeySig(wallet: Wallet): Signature {
+export function genRemoveSessionKeySig(wallet: BaseWallet): Signature {
   // just generate a random signature, as long as the signer is correct
   return genAddSessionKeySig(wallet, "0x12345", 10000000)
 }
 
 // Trade
-export function genOrderSig(wallet: Wallet, order: OrderNoSignature): Signature {
+export function genOrderSig(wallet: BaseWallet, order: OrderNoSignature): Signature {
   return sign(wallet, {
     ...Types.Order,
     message: order,
@@ -330,7 +334,7 @@ export function genOrderSig(wallet: Wallet, order: OrderNoSignature): Signature 
 
 // Transfer
 export function genDepositSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   fromEthAddress: string,
   toSubaccount: string,
   numTokens: number,
@@ -348,7 +352,7 @@ export function genDepositSig(
 }
 
 export function genWithdrawalSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   fromSubaccount: string,
   toEthAddress: string,
   numTokens: number,
@@ -366,7 +370,7 @@ export function genWithdrawalSig(
 }
 
 export function genTransferSig(
-  wallet: Wallet,
+  wallet: BaseWallet,
   fromSubaccount: string,
   toSubaccount: string,
   numTokens: number,
@@ -383,7 +387,7 @@ export function genTransferSig(
   })
 }
 
-function sign(wallet: Wallet, msgParams: any): Signature {
+function sign(wallet: BaseWallet, msgParams: any): Signature {
   // console.log("msg", msgParams.primaryType, msgParams.message)
   const sig = signTypedData({
     privateKey: buf(wallet.privateKey),
@@ -391,8 +395,10 @@ function sign(wallet: Wallet, msgParams: any): Signature {
     version: SignTypedDataVersion.V4,
   })
 
+  const { r, s, v } = EtherSig.from(sig)
+
   // console.log("sig", sig)
-  const { r, s, v } = utils.splitSignature(sig)
+  // console.log("r", r, "s", s, "v", v)
   return {
     signer: wallet.address,
     expiration: getTimestampNs(),
