@@ -1,10 +1,20 @@
 {
   "manifestVersion": "3.2",
-  "proxies": [],
+  "admin": {
+    "address": "0x094499Df5ee555fFc33aF07862e43c90E6FEe501",
+    "txHash": "0x83497b26a56f4fac10d39fdea812fb8c5230010e0bd6793bb890581d526a4689"
+  },
+  "proxies": [
+    {
+      "address": "0xb76eD02Dea1ba444609602BE5D587c4bFfd67153",
+      "txHash": "0x4539822e5da96e5b3f34bdddcca10d7fa052274d7a92148131c047a3d8b22505",
+      "kind": "transparent"
+    }
+  ],
   "impls": {
-    "ef21ef0608d0c5119cf14132a2f309d4005741c1cb3f32ef7eac27be1a1f7b3f": {
-      "address": "0x111C3E89Ce80e62EE88318C2804920D4c96f92bb",
-      "txHash": "0x378a21b41dda2e486f031589660447eb782133f2f2c0e3e4b567a4c7c3721c44",
+    "5715094adb7e2853296fcd17bcca4cfea940882849db5bf5e3f3957d6f8b2f71": {
+      "address": "0x4B5DF730c2e6b28E17013A1485E5d9BC41Efe021",
+      "txHash": "0xdc52b70851e3eec0fe33a30c4d67eb6be780170e01ccf58bb781543c397e15ff",
       "layout": {
         "solcVersion": "0.8.20",
         "storage": [
@@ -12,7 +22,7 @@
             "label": "state",
             "offset": 0,
             "slot": "0",
-            "type": "t_struct(State)6519_storage",
+            "type": "t_struct(State)5192_storage",
             "contract": "HelperContract",
             "src": "contracts/exchange/api/HelperContract.sol:10"
           }
@@ -26,7 +36,7 @@
             "label": "address[]",
             "numberOfBytes": "32"
           },
-          "t_array(t_struct(ConfigTimelockRule)6602_storage)dyn_storage": {
+          "t_array(t_struct(ConfigTimelockRule)5275_storage)dyn_storage": {
             "label": "struct ConfigTimelockRule[]",
             "numberOfBytes": "32"
           },
@@ -50,7 +60,7 @@
             "label": "bytes",
             "numberOfBytes": "32"
           },
-          "t_enum(ConfigID)6664": {
+          "t_enum(ConfigID)5337": {
             "label": "enum ConfigID",
             "members": [
               "UNSPECIFIED",
@@ -76,7 +86,7 @@
             ],
             "numberOfBytes": "1"
           },
-          "t_enum(Currency)6401": {
+          "t_enum(Currency)5074": {
             "label": "enum Currency",
             "members": [
               "UNSPECIFIED",
@@ -87,7 +97,7 @@
             ],
             "numberOfBytes": "1"
           },
-          "t_enum(MarginType)6379": {
+          "t_enum(MarginType)5052": {
             "label": "enum MarginType",
             "members": [
               "UNSPECIFIED",
@@ -113,11 +123,11 @@
             "label": "mapping(address => bool)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(Account)6551_storage)": {
+          "t_mapping(t_address,t_struct(Account)5224_storage)": {
             "label": "mapping(address => struct Account)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(Session)6637_storage)": {
+          "t_mapping(t_address,t_struct(Session)5310_storage)": {
             "label": "mapping(address => struct Session)",
             "numberOfBytes": "32"
           },
@@ -137,23 +147,23 @@
             "label": "mapping(bytes => uint256)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_enum(ConfigID)6664,t_array(t_struct(ConfigTimelockRule)6602_storage)dyn_storage)": {
+          "t_mapping(t_enum(ConfigID)5337,t_array(t_struct(ConfigTimelockRule)5275_storage)dyn_storage)": {
             "label": "mapping(enum ConfigID => struct ConfigTimelockRule[])",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_enum(ConfigID)6664,t_bytes32)": {
+          "t_mapping(t_enum(ConfigID)5337,t_bytes32)": {
             "label": "mapping(enum ConfigID => bytes32)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_enum(ConfigID)6664,t_struct(ScheduledConfigEntry)6595_storage)": {
+          "t_mapping(t_enum(ConfigID)5337,t_struct(ScheduledConfigEntry)5268_storage)": {
             "label": "mapping(enum ConfigID => struct ScheduledConfigEntry)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_enum(Currency)6401,t_int128)": {
+          "t_mapping(t_enum(Currency)5074,t_int128)": {
             "label": "mapping(enum Currency => int128)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_enum(Currency)6401,t_uint64)": {
+          "t_mapping(t_enum(Currency)5074,t_uint64)": {
             "label": "mapping(enum Currency => uint64)",
             "numberOfBytes": "32"
           },
@@ -161,7 +171,7 @@
             "label": "mapping(uint256 => int64)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(Position)6770_storage)": {
+          "t_mapping(t_uint256,t_struct(Position)5443_storage)": {
             "label": "mapping(uint256 => struct Position)",
             "numberOfBytes": "32"
           },
@@ -173,11 +183,11 @@
             "label": "mapping(uint256 => uint64)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint64,t_struct(SubAccount)6590_storage)": {
+          "t_mapping(t_uint64,t_struct(SubAccount)5263_storage)": {
             "label": "mapping(uint64 => struct SubAccount)",
             "numberOfBytes": "32"
           },
-          "t_struct(Account)6551_storage": {
+          "t_struct(Account)5224_storage": {
             "label": "struct Account",
             "members": [
               {
@@ -194,7 +204,7 @@
               },
               {
                 "label": "spotBalances",
-                "type": "t_mapping(t_enum(Currency)6401,t_int128)",
+                "type": "t_mapping(t_enum(Currency)5074,t_int128)",
                 "offset": 0,
                 "slot": "2"
               },
@@ -243,7 +253,7 @@
             ],
             "numberOfBytes": "320"
           },
-          "t_struct(ConfigTimelockRule)6602_storage": {
+          "t_struct(ConfigTimelockRule)5275_storage": {
             "label": "struct ConfigTimelockRule",
             "members": [
               {
@@ -267,7 +277,7 @@
             ],
             "numberOfBytes": "96"
           },
-          "t_struct(Position)6770_storage": {
+          "t_struct(Position)5443_storage": {
             "label": "struct Position",
             "members": [
               {
@@ -291,7 +301,7 @@
             ],
             "numberOfBytes": "64"
           },
-          "t_struct(PositionsMap)6783_storage": {
+          "t_struct(PositionsMap)5456_storage": {
             "label": "struct PositionsMap",
             "members": [
               {
@@ -302,7 +312,7 @@
               },
               {
                 "label": "values",
-                "type": "t_mapping(t_uint256,t_struct(Position)6770_storage)",
+                "type": "t_mapping(t_uint256,t_struct(Position)5443_storage)",
                 "offset": 0,
                 "slot": "1"
               },
@@ -315,7 +325,7 @@
             ],
             "numberOfBytes": "96"
           },
-          "t_struct(PriceState)6632_storage": {
+          "t_struct(PriceState)5305_storage": {
             "label": "struct PriceState",
             "members": [
               {
@@ -351,7 +361,7 @@
             ],
             "numberOfBytes": "160"
           },
-          "t_struct(ReplayState)6613_storage": {
+          "t_struct(ReplayState)5286_storage": {
             "label": "struct ReplayState",
             "members": [
               {
@@ -369,7 +379,7 @@
             ],
             "numberOfBytes": "64"
           },
-          "t_struct(ScheduledConfigEntry)6595_storage": {
+          "t_struct(ScheduledConfigEntry)5268_storage": {
             "label": "struct ScheduledConfigEntry",
             "members": [
               {
@@ -387,7 +397,7 @@
             ],
             "numberOfBytes": "64"
           },
-          "t_struct(Session)6637_storage": {
+          "t_struct(Session)5310_storage": {
             "label": "struct Session",
             "members": [
               {
@@ -405,36 +415,36 @@
             ],
             "numberOfBytes": "32"
           },
-          "t_struct(State)6519_storage": {
+          "t_struct(State)5192_storage": {
             "label": "struct State",
             "members": [
               {
                 "label": "accounts",
-                "type": "t_mapping(t_address,t_struct(Account)6551_storage)",
+                "type": "t_mapping(t_address,t_struct(Account)5224_storage)",
                 "offset": 0,
                 "slot": "0"
               },
               {
                 "label": "subAccounts",
-                "type": "t_mapping(t_uint64,t_struct(SubAccount)6590_storage)",
+                "type": "t_mapping(t_uint64,t_struct(SubAccount)5263_storage)",
                 "offset": 0,
                 "slot": "1"
               },
               {
                 "label": "sessions",
-                "type": "t_mapping(t_address,t_struct(Session)6637_storage)",
+                "type": "t_mapping(t_address,t_struct(Session)5310_storage)",
                 "offset": 0,
                 "slot": "2"
               },
               {
                 "label": "replay",
-                "type": "t_struct(ReplayState)6613_storage",
+                "type": "t_struct(ReplayState)5286_storage",
                 "offset": 0,
                 "slot": "3"
               },
               {
                 "label": "prices",
-                "type": "t_struct(PriceState)6632_storage",
+                "type": "t_struct(PriceState)5305_storage",
                 "offset": 0,
                 "slot": "5"
               },
@@ -452,26 +462,26 @@
               },
               {
                 "label": "configs",
-                "type": "t_mapping(t_enum(ConfigID)6664,t_bytes32)",
+                "type": "t_mapping(t_enum(ConfigID)5337,t_bytes32)",
                 "offset": 0,
                 "slot": "11"
               },
               {
                 "label": "scheduledConfig",
-                "type": "t_mapping(t_enum(ConfigID)6664,t_struct(ScheduledConfigEntry)6595_storage)",
+                "type": "t_mapping(t_enum(ConfigID)5337,t_struct(ScheduledConfigEntry)5268_storage)",
                 "offset": 0,
                 "slot": "12"
               },
               {
                 "label": "configTimelocks",
-                "type": "t_mapping(t_enum(ConfigID)6664,t_array(t_struct(ConfigTimelockRule)6602_storage)dyn_storage)",
+                "type": "t_mapping(t_enum(ConfigID)5337,t_array(t_struct(ConfigTimelockRule)5275_storage)dyn_storage)",
                 "offset": 0,
                 "slot": "13"
               }
             ],
             "numberOfBytes": "448"
           },
-          "t_struct(SubAccount)6590_storage": {
+          "t_struct(SubAccount)5263_storage": {
             "label": "struct SubAccount",
             "members": [
               {
@@ -488,37 +498,37 @@
               },
               {
                 "label": "marginType",
-                "type": "t_enum(MarginType)6379",
+                "type": "t_enum(MarginType)5052",
                 "offset": 28,
                 "slot": "0"
               },
               {
                 "label": "quoteCurrency",
-                "type": "t_enum(Currency)6401",
+                "type": "t_enum(Currency)5074",
                 "offset": 29,
                 "slot": "0"
               },
               {
                 "label": "spotBalances",
-                "type": "t_mapping(t_enum(Currency)6401,t_uint64)",
+                "type": "t_mapping(t_enum(Currency)5074,t_uint64)",
                 "offset": 0,
                 "slot": "1"
               },
               {
                 "label": "options",
-                "type": "t_struct(PositionsMap)6783_storage",
+                "type": "t_struct(PositionsMap)5456_storage",
                 "offset": 0,
                 "slot": "2"
               },
               {
                 "label": "futures",
-                "type": "t_struct(PositionsMap)6783_storage",
+                "type": "t_struct(PositionsMap)5456_storage",
                 "offset": 0,
                 "slot": "5"
               },
               {
                 "label": "perps",
-                "type": "t_struct(PositionsMap)6783_storage",
+                "type": "t_struct(PositionsMap)5456_storage",
                 "offset": 0,
                 "slot": "8"
               },
@@ -591,6 +601,615 @@
             }
           ]
         }
+      }
+    },
+    "29711f97d581a92cc1cd27542f889f00ba6ce85bb21f2eb04e5c475f9108607d": {
+      "address": "0x26b368C3Ed16313eBd6660b72d8e4439a697Cb0B",
+      "txHash": "0x408b0938f1bfba2d067efd4b7a203fced23f581e13dca7817991b8c1d79afb93",
+      "layout": {
+        "solcVersion": "0.8.20",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:88"
+          },
+          {
+            "label": "state",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_struct(State)8277_storage",
+            "contract": "HelperContract",
+            "src": "contracts/exchange/api/HelperContract.sol:10"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_struct(ConfigTimelockRule)8360_storage)dyn_storage": {
+            "label": "struct ConfigTimelockRule[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint64)dyn_storage": {
+            "label": "uint64[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_bytes_memory_ptr": {
+            "label": "bytes",
+            "numberOfBytes": "32"
+          },
+          "t_enum(ConfigID)8422": {
+            "label": "enum ConfigID",
+            "members": [
+              "UNSPECIFIED",
+              "SM_FUTURES_INITIAL_MARGIN",
+              "SM_FUTURES_MAINTENANCE_MARGIN",
+              "SM_FUTURES_VARIABLE_MARGIN",
+              "SM_OPTIONS_INITIAL_MARGIN_HIGH",
+              "SM_OPTIONS_INITIAL_MARGIN_LOW",
+              "SM_OPTIONS_MAINTENANCE_MARGIN_HIGH",
+              "SM_OPTIONS_MAINTENANCE_MARGIN_LOW",
+              "SM_OPTIONS_VARIABLE_MARGIN",
+              "PM_SPOT_MOVE",
+              "PM_VOL_MOVE_UP",
+              "PM_VOL_MOVE_DOWN",
+              "PM_SPOT_MOVE_EXTREME",
+              "PM_EXTREME_MOVE_DISCOUNT",
+              "PM_SHORT_TERM_VEGA_POWER",
+              "PM_LONG_TERM_VEGA_POWER",
+              "PM_INITIAL_MARGIN_FACTOR",
+              "PM_NET_SHORT_OPTION_MINIMUM",
+              "ADMIN_RECOVERY_ADDRESS",
+              "FEE_SUB_ACCOUNT_ID"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_enum(Currency)8159": {
+            "label": "enum Currency",
+            "members": [
+              "UNSPECIFIED",
+              "USDC",
+              "USDT",
+              "ETH",
+              "BTC"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_enum(MarginType)8137": {
+            "label": "enum MarginType",
+            "members": [
+              "UNSPECIFIED",
+              "ISOLATED",
+              "SIMPLE_CROSS_MARGIN",
+              "PORTFOLIO_CROSS_MARGIN"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_int128": {
+            "label": "int128",
+            "numberOfBytes": "16"
+          },
+          "t_int256": {
+            "label": "int256",
+            "numberOfBytes": "32"
+          },
+          "t_int64": {
+            "label": "int64",
+            "numberOfBytes": "8"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(Account)8309_storage)": {
+            "label": "mapping(address => struct Account)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(Session)8395_storage)": {
+            "label": "mapping(address => struct Session)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint64)": {
+            "label": "mapping(address => uint64)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint64))": {
+            "label": "mapping(bytes32 => mapping(uint256 => uint64))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes_memory_ptr,t_uint256)": {
+            "label": "mapping(bytes => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(ConfigID)8422,t_array(t_struct(ConfigTimelockRule)8360_storage)dyn_storage)": {
+            "label": "mapping(enum ConfigID => struct ConfigTimelockRule[])",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(ConfigID)8422,t_bytes32)": {
+            "label": "mapping(enum ConfigID => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(ConfigID)8422,t_struct(ScheduledConfigEntry)8353_storage)": {
+            "label": "mapping(enum ConfigID => struct ScheduledConfigEntry)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(Currency)8159,t_int128)": {
+            "label": "mapping(enum Currency => int128)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(Currency)8159,t_uint64)": {
+            "label": "mapping(enum Currency => uint64)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_int64)": {
+            "label": "mapping(uint256 => int64)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(Position)8528_storage)": {
+            "label": "mapping(uint256 => struct Position)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint64)": {
+            "label": "mapping(uint256 => uint64)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint64,t_struct(SubAccount)8348_storage)": {
+            "label": "mapping(uint64 => struct SubAccount)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Account)8309_storage": {
+            "label": "struct Account",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "multiSigThreshold",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "spotBalances",
+                "type": "t_mapping(t_enum(Currency)8159,t_int128)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "guardians",
+                "type": "t_array(t_address)dyn_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "onboardedWithdrawalAddresses",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "onboardedTransferAccounts",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "subAccounts",
+                "type": "t_array(t_uint64)dyn_storage",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "signers",
+                "type": "t_mapping(t_address,t_uint64)",
+                "offset": 0,
+                "slot": "7"
+              },
+              {
+                "label": "adminCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "8"
+              },
+              {
+                "label": "signerCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "9"
+              }
+            ],
+            "numberOfBytes": "320"
+          },
+          "t_struct(ConfigTimelockRule)8360_storage": {
+            "label": "struct ConfigTimelockRule",
+            "members": [
+              {
+                "label": "lockDuration",
+                "type": "t_int64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "deltaPositive",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "deltaNegative",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(Position)8528_storage": {
+            "label": "struct Position",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "balance",
+                "type": "t_int64",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "lastAppliedFundingIndex",
+                "type": "t_int64",
+                "offset": 8,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(PositionsMap)8541_storage": {
+            "label": "struct PositionsMap",
+            "members": [
+              {
+                "label": "keys",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "values",
+                "type": "t_mapping(t_uint256,t_struct(Position)8528_storage)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "index",
+                "type": "t_mapping(t_uint256,t_uint256)",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_struct(PriceState)8390_storage": {
+            "label": "struct PriceState",
+            "members": [
+              {
+                "label": "mark",
+                "type": "t_mapping(t_uint256,t_uint64)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "interest",
+                "type": "t_mapping(t_uint256,t_int64)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "fundingIndex",
+                "type": "t_mapping(t_uint256,t_uint64)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "fundingTime",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "settlement",
+                "type": "t_mapping(t_uint256,t_uint64)",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(ReplayState)8371_storage": {
+            "label": "struct ReplayState",
+            "members": [
+              {
+                "label": "sizeMatched",
+                "type": "t_mapping(t_bytes32,t_mapping(t_uint256,t_uint64))",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "executed",
+                "type": "t_mapping(t_bytes32,t_bool)",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(ScheduledConfigEntry)8353_storage": {
+            "label": "struct ScheduledConfigEntry",
+            "members": [
+              {
+                "label": "lockEndTime",
+                "type": "t_int256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "value",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Session)8395_storage": {
+            "label": "struct Session",
+            "members": [
+              {
+                "label": "user",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "expiry",
+                "type": "t_int64",
+                "offset": 20,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(State)8277_storage": {
+            "label": "struct State",
+            "members": [
+              {
+                "label": "accounts",
+                "type": "t_mapping(t_address,t_struct(Account)8309_storage)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "subAccounts",
+                "type": "t_mapping(t_uint64,t_struct(SubAccount)8348_storage)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "sessions",
+                "type": "t_mapping(t_address,t_struct(Session)8395_storage)",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "replay",
+                "type": "t_struct(ReplayState)8371_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "prices",
+                "type": "t_struct(PriceState)8390_storage",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "timestamp",
+                "type": "t_int64",
+                "offset": 0,
+                "slot": "10"
+              },
+              {
+                "label": "lastTxID",
+                "type": "t_uint64",
+                "offset": 8,
+                "slot": "10"
+              },
+              {
+                "label": "configs",
+                "type": "t_mapping(t_enum(ConfigID)8422,t_bytes32)",
+                "offset": 0,
+                "slot": "11"
+              },
+              {
+                "label": "scheduledConfig",
+                "type": "t_mapping(t_enum(ConfigID)8422,t_struct(ScheduledConfigEntry)8353_storage)",
+                "offset": 0,
+                "slot": "12"
+              },
+              {
+                "label": "configTimelocks",
+                "type": "t_mapping(t_enum(ConfigID)8422,t_array(t_struct(ConfigTimelockRule)8360_storage)dyn_storage)",
+                "offset": 0,
+                "slot": "13"
+              }
+            ],
+            "numberOfBytes": "448"
+          },
+          "t_struct(SubAccount)8348_storage": {
+            "label": "struct SubAccount",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "accountID",
+                "type": "t_address",
+                "offset": 8,
+                "slot": "0"
+              },
+              {
+                "label": "marginType",
+                "type": "t_enum(MarginType)8137",
+                "offset": 28,
+                "slot": "0"
+              },
+              {
+                "label": "quoteCurrency",
+                "type": "t_enum(Currency)8159",
+                "offset": 29,
+                "slot": "0"
+              },
+              {
+                "label": "spotBalances",
+                "type": "t_mapping(t_enum(Currency)8159,t_uint64)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "options",
+                "type": "t_struct(PositionsMap)8541_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "futures",
+                "type": "t_struct(PositionsMap)8541_storage",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "perps",
+                "type": "t_struct(PositionsMap)8541_storage",
+                "offset": 0,
+                "slot": "8"
+              },
+              {
+                "label": "positionIndex",
+                "type": "t_mapping(t_bytes_memory_ptr,t_uint256)",
+                "offset": 0,
+                "slot": "11"
+              },
+              {
+                "label": "signers",
+                "type": "t_mapping(t_address,t_uint64)",
+                "offset": 0,
+                "slot": "12"
+              },
+              {
+                "label": "adminCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "13"
+              },
+              {
+                "label": "signerCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "14"
+              },
+              {
+                "label": "lastAppliedFundingTimestamp",
+                "type": "t_int64",
+                "offset": 0,
+                "slot": "15"
+              }
+            ],
+            "numberOfBytes": "512"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          },
+          "t_bytes_storage": {
+            "label": "bytes"
+          }
+        },
+        "namespaces": {}
       }
     }
   }

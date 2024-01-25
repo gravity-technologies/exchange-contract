@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 contract HelperContract is ReentrancyGuardUpgradeable {
   State internal state;
@@ -83,7 +83,7 @@ contract HelperContract is ReentrancyGuardUpgradeable {
   function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
     require(sig.expiration > 0 && sig.expiration > timestamp, "expired");
     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, hash));
-    (address addr, ECDSA.RecoverError err, ) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
+    (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
 

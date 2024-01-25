@@ -6,8 +6,8 @@ import { ethers } from "ethers"
 
 import "@matterlabs/hardhat-zksync-node/dist/type-extensions"
 import "@matterlabs/hardhat-zksync-verify/dist/src/type-extensions"
-import '@matterlabs/hardhat-zksync-verify';
-import '@matterlabs/hardhat-zksync-upgradable';
+import "@matterlabs/hardhat-zksync-verify"
+import "@matterlabs/hardhat-zksync-upgradable"
 
 // Load env file
 dotenv.config()
@@ -74,6 +74,7 @@ type DeployContractOptions = {
    */
   wallet?: Wallet
 }
+
 export const deployContract = async (
   contractArtifactName: string,
   constructorArguments?: any[],
@@ -133,22 +134,20 @@ export const deployContractUpgradable = async (
   initializationVariables?: any[],
   options?: DeployContractOptions
 ) => {
-
-  const contractName = contractArtifactName;
-  console.log("Deploying " + contractName + "...");
+  const contractName = contractArtifactName
+  console.log("Deploying " + contractName + "...")
 
   // mnemonic for local node rich wallet
-  const testMnemonic = "stuff slice staff easily soup parent arm payment cotton trade scatter struggle";
-  const zkWallet = Wallet.fromMnemonic(testMnemonic);
+  const testMnemonic = "stuff slice staff easily soup parent arm payment cotton trade scatter struggle"
+  const zkWallet = Wallet.fromMnemonic(testMnemonic)
 
-  const deployer = new Deployer(hre, zkWallet);
+  const deployer = new Deployer(hre, zkWallet)
 
-  const contract = await deployer.loadArtifact(contractName);
-  const box = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [[]], { initializer: "initialize" });
+  const contract = await deployer.loadArtifact(contractName)
+  const box = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [[]], { initializer: "initialize" })
 
-  await box.waitForDeployment();
-  console.log(contractName + " deployed to:", await box.getAddress());
-
+  await box.waitForDeployment()
+  console.log(contractName + " deployed to:", await box.getAddress())
 
   // const log = (message: string) => {
   //   if (!options?.silent) console.log(message)
@@ -175,7 +174,7 @@ export const deployContractUpgradable = async (
   // await verifyEnoughBalance(zkWallet, deploymentFee)
 
   // Deploy the contract to zkSync via proxy
-  
+
   // const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [initializationVariables], { initializer: "initialize" });
   // await proxiedContract.waitForDeployment();
 
@@ -184,7 +183,6 @@ export const deployContractUpgradable = async (
   // const constructorArgs = proxiedContract.interface.encodeDeploy(initializationVariables)
   // const fullContractSource = `${contract.sourceName}:${contract.contractName}`
   // console.log(contractArtifactName + " deployed to:", address);
-
 
   // // Display contract deployment info
   // log(`\n"${contractArtifactName}" was successfully deployed:`)
