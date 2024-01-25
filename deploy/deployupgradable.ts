@@ -1,9 +1,7 @@
 import { ContractName } from "./contract"
 import { deployContractUpgradable } from "./utils"
 
-// An example of a basic deploy script
-// It will deploy a Greeter contract to selected network
-// as well as verify it on Block Explorer if possible for the network
+// Deploy Upgradable Script
 export default async function () {
   const contractArtifactName = ContractName
   const constructorArguments = []

@@ -136,71 +136,61 @@ export const deployContractUpgradable = async (
 ) => {
   const contractName = contractArtifactName
   console.log("Deploying " + contractName + "...")
+  const log = (message: string) => {
+    if (!options?.silent) console.log(message)
+  }
 
-  // mnemonic for local node rich wallet
-  const testMnemonic = "stuff slice staff easily soup parent arm payment cotton trade scatter struggle"
-  const zkWallet = Wallet.fromMnemonic(testMnemonic)
+  log(`\nStarting deployment process of "${contractArtifactName}"...`)
 
+  const zkWallet = options?.wallet ?? getWallet()
   const deployer = new Deployer(hre, zkWallet)
+  const contract = await deployer.loadArtifact(contractArtifactName).catch((error) => {
+    if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
+      console.error(error.message)
+      throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`
+    } else {
+      throw error
+    }
+  })
 
-  const contract = await deployer.loadArtifact(contractName)
-  const box = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [[]], { initializer: "initialize" })
-
-  await box.waitForDeployment()
-  console.log(contractName + " deployed to:", await box.getAddress())
-
-  // const log = (message: string) => {
-  //   if (!options?.silent) console.log(message)
-  // }
-
-  // log(`\nStarting deployment process of "${contractArtifactName}"...`)
-
-  // const zkWallet = options?.wallet ?? getWallet()
-  // const deployer = new Deployer(hre, zkWallet)
-  // const contract = await deployer.loadArtifact(contractArtifactName).catch((error) => {
-  //   if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
-  //     console.error(error.message)
-  //     throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`
-  //   } else {
-  //     throw error
-  //   }
+  // Estimate contract deployment fee
+  // const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
+  //   kind: "transparent",
   // })
-
-  // // Estimate contract deployment fee
-  // const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], { kind: "transparent" });
   // log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
 
   // // Check if the wallet has enough balance
   // await verifyEnoughBalance(zkWallet, deploymentFee)
 
   // Deploy the contract to zkSync via proxy
+  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [initializationVariables], {
+    initializer: "initialize",
+  })
+  await proxiedContract.waitForDeployment()
 
-  // const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [initializationVariables], { initializer: "initialize" });
-  // await proxiedContract.waitForDeployment();
+  // const proxiedContract = await deployer.deploy(contract, constructorArguments)
+  const address = await proxiedContract.getAddress()
+  const constructorArgs = proxiedContract.interface.encodeDeploy(initializationVariables)
+  const fullContractSource = `${contract.sourceName}:${contract.contractName}`
+  console.log(contractArtifactName + " deployed to:", address)
 
-  // // const proxiedContract = await deployer.deploy(contract, constructorArguments)
-  // const address = await proxiedContract.getAddress()
-  // const constructorArgs = proxiedContract.interface.encodeDeploy(initializationVariables)
-  // const fullContractSource = `${contract.sourceName}:${contract.contractName}`
-  // console.log(contractArtifactName + " deployed to:", address);
+  // Display contract deployment info
+  log(`\n"${contractArtifactName}" was successfully deployed:`)
+  log(` - Contract address: ${address}`)
+  log(` - Contract source: ${fullContractSource}`)
+  log(` - Encoded constructor arguments: ${constructorArgs}\n`)
 
-  // // Display contract deployment info
-  // log(`\n"${contractArtifactName}" was successfully deployed:`)
-  // log(` - Contract address: ${address}`)
-  // log(` - Contract source: ${fullContractSource}`)
-  // log(` - Encoded constructor arguments: ${constructorArgs}\n`)
+  if (!options?.noVerify && hre.network.config.verifyURL) {
+    log(`Requesting contract verification...`)
+    await verifyContract({
+      address,
+      contract: fullContractSource,
+      constructorArguments: constructorArgs,
+      bytecode: contract.bytecode,
+    })
+  }
 
-  // if (!options?.noVerify && hre.network.config.verifyURL) {
-  //   log(`Requesting contract verification...`)
-  //   await verifyContract({
-  //     address,
-  //     contract: fullContractSource,
-  //     constructorArguments: constructorArgs,
-  //     bytecode: contract.bytecode,
-  //   })
-  // }
-
-  // return proxiedContract
+  return proxiedContract
 }
 
 /**
