@@ -37,7 +37,7 @@ export const getWallet = (privateKey?: string) => {
   return wallet
 }
 
-export const verifyEnoughBalance = async (wallet: BaseWallet, amount: bigint) => {
+export const verifyEnoughBalance = async (wallet: Wallet, amount: bigint) => {
   // Check if the wallet has enough balance
   const balance = await wallet.getBalance()
   if (balance < amount)
@@ -196,6 +196,34 @@ export const deployContractUpgradable = async (
 
   return proxiedContract
 }
+
+export const upgradeTransparentUpgradeableProxy = async (
+  upgradeContractArtifactName: string,
+  proxyAddress: string,
+  options?: DeployContractOptions
+) => {
+  const contractName = upgradeContractArtifactName
+  console.log("Deploying " + contractName + "...")
+  const log = (message: string) => {
+    if (!options?.silent) console.log(message)
+  }
+
+  log(`\nStarting upgrade process of "${upgradeContractArtifactName}"...`)
+
+  const zkWallet = options?.wallet ?? getWallet()
+  const deployer = new Deployer(hre, zkWallet)
+  const contractV2 = await deployer.loadArtifact(upgradeContractArtifactName).catch((error) => {
+    if (error?.message?.includes(`Artifact for contract "${upgradeContractArtifactName}" not found.`)) {
+      console.error(error.message)
+      throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`
+    } else {
+      throw error
+    }
+  })
+
+  await hre.zkUpgrades.upgradeProxy(deployer.zkWallet, proxyAddress, contractV2)
+}
+
 
 /**
  * Rich wallets can be used for testing purposes.

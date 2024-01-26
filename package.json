@@ -22,6 +22,8 @@
     "build": "npx tsc scripts/codegen.ts --downlevelIteration --declaration",
     "sizer": "forge build --sizes",
     "deploy": "hardhat deploy-zksync --script deploy.ts",
+    "deploy:upgradable": "hardhat deploy-zksync --script deployupgradable.ts",
+    "deploy:upgrade": "hardhat deploy-zksync --script upgrade.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
     "execute": "hardhat deploy-zksync --script",
     "clean": "hardhat clean"
