@@ -153,6 +153,20 @@ export const deployContractUpgradable = async (
     }
   })
 
+  const chainId = hre.network.config.chainId
+  console.log("Chain ID:", chainId)
+
+  // if (chainId != undefined && defaultImplAddresses[chainId] != undefined) {
+  //   // Estimate contract deployment fee
+  //   const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
+  //     kind: "transparent",
+  //   })
+  //   log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
+
+  //   // Check if the wallet has enough balance
+  //   await verifyEnoughBalance(zkWallet, deploymentFee)
+  // }
+
   // Estimate contract deployment fee
   // const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
   //   kind: "transparent",
