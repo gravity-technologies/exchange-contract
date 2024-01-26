@@ -224,6 +224,7 @@ export const upgradeTransparentUpgradeableProxy = async (
   await hre.zkUpgrades.upgradeProxy(deployer.zkWallet, proxyAddress, contractV2)
 }
 
+
 /**
  * Rich wallets can be used for testing purposes.
  * Available on zkSync In-memory node and Dockerized node.
