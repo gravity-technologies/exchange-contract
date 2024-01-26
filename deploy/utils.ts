@@ -66,7 +66,7 @@ type DeployContractOptions = {
    */
   silent?: boolean
   /**
-   * If true, the contract will not be verified on Block Explorer
+   * If true, the contract will  console.log("chainId: " + chainId) not be verified on Block Explorer
    */
   noVerify?: boolean
   /**
@@ -154,27 +154,17 @@ export const deployContractUpgradable = async (
   })
 
   const chainId = hre.network.config.chainId
-  console.log("Chain ID:", chainId)
+  // only chainID 324 and 280 are supported to estimate gas for proxies
+  if (chainId != undefined && (chainId == 324 || chainId == 280)) {
+    // Estimate contract deployment fee
+    const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
+      kind: "transparent",
+    })
+    log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
 
-  // if (chainId != undefined && defaultImplAddresses[chainId] != undefined) {
-  //   // Estimate contract deployment fee
-  //   const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
-  //     kind: "transparent",
-  //   })
-  //   log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
-
-  //   // Check if the wallet has enough balance
-  //   await verifyEnoughBalance(zkWallet, deploymentFee)
-  // }
-
-  // Estimate contract deployment fee
-  // const deploymentFee = await hre.zkUpgrades.estimation.estimateGasProxy(deployer, contract, [], {
-  //   kind: "transparent",
-  // })
-  // log(`Estimated deployment cost: ${ethers.formatEther(deploymentFee)} ETH`)
-
-  // // Check if the wallet has enough balance
-  // await verifyEnoughBalance(zkWallet, deploymentFee)
+    // Check if the wallet has enough balance
+    await verifyEnoughBalance(zkWallet, deploymentFee)
+  }
 
   // Deploy the contract to zkSync via proxy
   const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [initializationVariables], {
