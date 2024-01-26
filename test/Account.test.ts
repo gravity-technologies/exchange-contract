@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import { Contract } from "ethers"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { LOCAL_RICH_WALLETS, deployContract, deployContractUpgradable, getWallet } from "../deploy/utils"
 import { addAccountSigner, createAccount, removeAccountSigner, setMultisigThreshold } from "./api"
 import { AccPerm, ConfigID } from "./type"
 import { Bytes32, bytes32, expectNotToThrowAsync, expectToThrowAsync, getConfigArray, wallet } from "./util"
@@ -13,7 +13,8 @@ describe.only("API - Account", function () {
     const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     const recoveryAddress = await bytes32(grvt)
     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
-    contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
+    // contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
+    contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 
   describe("createAccount", function () {

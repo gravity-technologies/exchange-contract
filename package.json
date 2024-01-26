@@ -23,9 +23,14 @@
     "sizer": "forge build --sizes",
     "deploy": "hardhat deploy-zksync --script deploy.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
+    "execute": "hardhat deploy-zksync --script",
     "clean": "hardhat clean"
   },
   "devDependencies": {
+    "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@openzeppelin/contracts": "^4.9.5",
+    "@openzeppelin/contracts-upgradeable": "^4.9.5", 
     "@matterlabs/hardhat-zksync-chai-matchers": "^1.2.1",
     "@matterlabs/hardhat-zksync-deploy": "^1.1.2",
     "@matterlabs/hardhat-zksync-node": "^1.0.1",
@@ -36,7 +41,6 @@
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.3",
     "@nomicfoundation/hardhat-ethers": "^3.0.5",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
-    "@openzeppelin/contracts": "^5.0.1",
     "@typechain/ethers-v6": "^0.5.1",
     "@typechain/hardhat": "^9.1.0",
     "@types/chai": "^4.3.11",

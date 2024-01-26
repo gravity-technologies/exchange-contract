@@ -285,3 +285,6 @@ cache
 # zksync artifacts
 artifacts-zk
 cache-zk
+
+# upgradable manifest
+.upgradable

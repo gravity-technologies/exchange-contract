@@ -1,14 +1,15 @@
-import { HardhatUserConfig } from "hardhat/config"
-
 import "@matterlabs/hardhat-zksync-node"
 import "@matterlabs/hardhat-zksync-deploy"
 import "@matterlabs/hardhat-zksync-solc"
 import "@matterlabs/hardhat-zksync-verify"
 import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
+// upgradable plugin
+import "@matterlabs/hardhat-zksync-upgradable"
 
+import { HardhatUserConfig } from "hardhat/config"
 const config: HardhatUserConfig = {
-  defaultNetwork: "dockerizedNode",
+  defaultNetwork: "inMemoryNode",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",
@@ -38,6 +39,7 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8011",
       ethNetwork: "", // in-memory node doesn't support eth node; removing this line will cause an error
       zksync: true,
+      chainId: 260, // found using era_test_node run
     },
     hardhat: {
       zksync: true,
