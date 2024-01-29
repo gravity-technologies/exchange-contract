@@ -28,7 +28,8 @@
     "execute": "hardhat deploy-zksync --script",
     "clean": "hardhat clean",
     "draw": "surya inheritance -i contracts/exchange/GRVTExchange.sol | dot -Tpng > GRVTExchange.png",
-    "dependencies": "surya dependencies -i GRVTExchange contracts/exchange/GRVTExchange.sol"
+    "dependencies": "surya dependencies -i GRVTExchange contracts/exchange/GRVTExchange.sol",
+    "draw": "surya inheritance -i contracts/exchange/GRVTExchange.sol | dot -Tpng > GRVTExchange.png"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
