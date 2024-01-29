@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./HelperContract.sol";
+import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID as CfgID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
 
-contract ConfigContract is HelperContract {
+contract ConfigContract is BaseContract {
   // --------------- Constants ---------------
   uint private constant CENTIBEEP = 1;
   uint private constant BEEP = 100;

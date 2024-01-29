@@ -9,8 +9,8 @@
 
 ## Dependencies
 
+- `npm install -g surya`: Install [Consensys Surya](https://github.com/ConsenSys/surya?tab=readme-ov-file) for static analysis of code like drawing inheritance graph. (Optional)
 - Install [Era Test Node](https://docs.zksync.io/build/test-and-debug/era-test-node.html#understanding-the-in-memory-node). To test your installation, run `era_test_node run`.
-- Install [Consensys Surya](https://github.com/ConsenSys/surya?tab=readme-ov-file) for static analysis of code like drawing inheritance graph. (Optional)
 
 ## How to Use
 
@@ -22,7 +22,7 @@
 ## Static Analysis
 
 - `yarn draw`: draw the inherittance graph using the surya consensys module
-  ![GRVTExchange Logo](GRVTExchange.png)
+  ![GRVTExchange Logo](analysis/GRVTExchange.png)
 
 ### Environment Settings
 

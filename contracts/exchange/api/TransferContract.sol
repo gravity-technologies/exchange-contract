@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./BaseTradeContract.sol";
-import "./HelperContract.sol";
+import "./BaseContract.sol";
 import "./signature/generated/TransferSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";

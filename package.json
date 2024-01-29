@@ -27,7 +27,8 @@
     "interact": "hardhat deploy-zksync --script interact.ts",
     "execute": "hardhat deploy-zksync --script",
     "clean": "hardhat clean",
-    "draw": "surya inheritance -i contracts/exchange/GRVTExchange.sol | dot -Tpng > GRVTExchange.png"
+    "draw": "surya inheritance -i contracts/exchange/GRVTExchange.sol | dot -Tpng > analysis/GRVTExchange.png",
+    "dependencies": "surya dependencies -i GRVTExchange contracts/exchange/GRVTExchange.sol > analysis/c3linearization.txt"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
