@@ -22,7 +22,7 @@
 ## Static Analysis
 
 - `yarn draw`: draw the inherittance graph using the surya consensys module
-  ![GRVTExchange Logo](GRVTExchange.png)
+  ![GRVTExchange Logo](analysis/GRVTExchange.png)
 
 ### Environment Settings
 
