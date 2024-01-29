@@ -26,7 +26,8 @@
     "deploy:upgrade": "hardhat deploy-zksync --script upgrade.ts",
     "interact": "hardhat deploy-zksync --script interact.ts",
     "execute": "hardhat deploy-zksync --script",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "draw": "surya inheritance -i contracts/exchange/GRVTExchange.sol | dot -Tpng > GRVTExchange.png"
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-upgradable": "^1.2.1",
