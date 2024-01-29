@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./HelperContract.sol";
+import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 
-contract BaseTradeContract is HelperContract {
+contract BaseTradeContract is BaseContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   /// @dev return the total value of a sub account with 18 decimal places

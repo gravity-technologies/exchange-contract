@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./HelperContract.sol";
+import "./BaseContract.sol";
 import "./signature/generated/AccountRecoverySig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
-contract AccountRecoveryContract is HelperContract {
+contract AccountRecoveryContract is BaseContract {
   function addAccountGuardian(
     int64 timestamp,
     uint64 txID,

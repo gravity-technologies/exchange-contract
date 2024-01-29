@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./HelperContract.sol";
+import "./BaseContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
-contract SubAccountContract is HelperContract {
+contract SubAccountContract is BaseContract {
   int64 private constant _MAX_SESSION_DURATION_NANO = 1 days;
 
   function createSubAccount(
