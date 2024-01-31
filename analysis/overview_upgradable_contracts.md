@@ -3,12 +3,14 @@
 
 ### Overview
 GRVTExchange is the only contract that we deloy as a part of our exchange and it is designed to be an upgradable contract. We use the [transparent proxy pattern](https://blog.openzeppelin.com/the-transparent-proxy-pattern).
+
 ![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/745c0f0a-ffb8-46e1-92cb-4fa139531551)
 
 ### Deploying and Upgrading Contract
 There are two major commands to run 
 1. `yarn deploy:upgradable` - deploys an upgradable contract for the first time and initializes the state.
 2. `yarn deploy:upgrade` - upgrades the contract to a new implementation - proxy remains the same. We need to make sure to declare the correct `PROXY_ADDRESS` in our scripts.
+
 ![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/b4da7300-4f2a-4111-a6cb-be07927321ed)
 
 ### Transparent Proxy Pattern has three major contracts
@@ -36,10 +38,8 @@ contract MyToken is ERC20Upgradeable {
      }
  }
 
-Use of enums in our contracts
-If the enum field lies within one and only one contract, it is absolutely safe for an upgrade. It is also safe if you can ensure that all contracts using the enum are redeployed altogether in case of modification
-Our contracts use enums, so they must take care of the above
-https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2
+### Use of enums in our contracts
+If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also safe if you can ensure that all contracts using the enum are redeployed altogether in case of modification Our contracts use enums, so they must take care of the above.
 
 
 
