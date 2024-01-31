@@ -1,6 +1,52 @@
 ## State Management for Upgradable Contracts
 
 ### Overview
+C3 linearization is used in updating state in upgradable contracts to determine the order of state variables in the inheritance chain. In Solidity, when a contract inherits from multiple contracts, the ordering of state variables is determined by the C3-linearized order of contracts. This affects the storage layout and is crucial for ensuring that state variables are correctly initialized and accessed during contract upgrades. The C3 linearization order is used to avoid issues such as storage layout clashes and to maintain the integrity of the state variables during contract upgrades. The C3 linearization of our contracts are generated [here](https://github.com/gravity-technologies/exchange-contract/blob/upgradable-docs/analysis/upgradable/state_management_upgradable_contracts.md).
+
+
+#### [Simple Example](https://ethereum.stackexchange.com/questions/63403/in-solidity-how-does-the-slot-assignation-work-for-storage-variables-when-there):
+
+contract A is B, C, D {}
+The Storage will be arranged like this:
+```
+Storage B;
+Storage C;
+Storage D;
+Storage A;
+```
+
+Now, if you want to Add E to your already written contract (And not cause memory collisions), this is how you go about doing it.
+
+```
+Contract A2 is A, E { }
+```
+
+The storage will be arranged like this:
+
+```
+Storage B;
+Storage C;
+Storage D;
+Storage A;
+Storage E;
+```
+This will make it safe to upgrade.
+
+If you do it the opposite way:
+
+Contract A2 is E, A { }
+E will be set on the top, and you will mess up the order of your storage slots.
+
+```
+Storage E;
+Storage B;
+Storage C;
+Storage D;
+Storage A;
+```
+
+
+### GRVTExchange contract
 
 GRVTExchange has a global state declared in the [BaseContract](https://github.com/gravity-technologies/exchange-contract/blob/main/contracts/exchange/api/BaseContract.sol#L10) declared as a [State struct](https://github.com/gravity-technologies/exchange-contract/blob/main/contracts/exchange/types/DataStructure.sol#L76).
 
