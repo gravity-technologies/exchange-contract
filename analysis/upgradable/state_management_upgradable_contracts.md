@@ -1,5 +1,26 @@
 ## State Management for Upgradable Contracts
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Simple Example](#simple-example)
+- [C3 Linearization of GRVTExchange Contract](#c3-linearization-of-grvtexchange-contract)
+  - [Example of adding a new var in the base contract](#example-of-adding-a-new-var-in-the-base-contract)
+- [GRVTExchange contract](#grvtexchange-contract)
+  - [A. Expanding the State Struct](#a-expanding-the-state-struct)
+    - [Experiment 1: Extending without using gaps](#experiment-1-extending-without-using-gaps)
+    - [Experiment 2: Extending a new field of value type with gaps](#experiment-2-extending-a-new-field-of-value-type-with-gaps)
+    - [Experiment 3: Extending with a struct field with gaps](#experiment-3-extending-with-a-struct-field-with-gaps)
+    - [Conclusion](#conclusion)
+  - [B. Expanding mappings from Value/Address Type => Structs](#b-expanding-mappings-from-valueaddress-type--structs)
+    - [Experiment: Upgrading a contract by adding a field to a struct that is a value in one of the mappings](#experiment-upgrading-a-contract-by-adding-a-field-to-a-struct-that-is-a-value-in-one-of-the-mappings)
+  - [C. Mappings from Enums => Structs](#c-mappings-from-enums--structs)
+  - [D. Expanding Structs](#d-expanding-structs)
+    - [Experiment 1: Expanding Struct without storage gaps](#experiment-1-expanding-struct-without-storage-gaps)
+    - [Experiment 2: Expanding Struct with storage gaps](#experiment-2-expanding-struct-with-storage-gaps)
+  - [E. Value Types](#e-value-types)
+
+
 ### Overview
 C3 linearization is used in updating state in upgradable contracts to determine the order of state variables in the inheritance chain. In Solidity, when a contract inherits from multiple contracts, the ordering of state variables is determined by the C3-linearized order of contracts. This affects the storage layout and is crucial for ensuring that state variables are correctly initialized and accessed during contract upgrades. The C3 linearization order is used to avoid issues such as storage layout clashes and to maintain the integrity of the state variables during contract upgrades. The C3 linearization of our contracts are generated [here](https://github.com/gravity-technologies/exchange-contract/blob/upgradable-docs/analysis/upgradable/state_management_upgradable_contracts.md).
 
