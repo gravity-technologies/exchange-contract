@@ -39,11 +39,11 @@ contract MyToken is ERC20Upgradeable {
  }
 
 ### Use of enums in our contracts
-If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also safe if you can ensure that all contracts using the enum are redeployed altogether in case of modification Our contracts use enums, so they must take care of the above.
-
+If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also safe if you can ensure that all contracts using the enum are redeployed altogether in case of modification. Our contracts use enums, so they must take care of the above.
 
 
 ### State Management
+State Management must be handled carefully when making upgrades and we dive deeper into the considerations [here](https://github.com/gravity-technologies/exchange-contract/blob/upgradable-docs/analysis/upgradable/state_management_upgradable_contracts.md).
 
 
 ### Why we don’t use namespaced Storage Layout
