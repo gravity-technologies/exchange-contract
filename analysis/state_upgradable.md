@@ -6,18 +6,18 @@ GRVTExchange has a global state declared in the [BaseContract](https://github.co
 
 ```
 struct State {
-  // A. Explore how to expand this State struct
-  // B. Explore how to extend ,appings from Value/Address Type => Structs
+  // A. Expanding State struct
+  // B. Expanding mappings from Value/Address Type => Structs
   mapping(address => Account) accounts;
   mapping(uint64 => SubAccount) subAccounts;
   mapping(address => Session) sessions;
 
-  // C. Mappings from Enums => Structs
+  // C. Expanding mappings from Enums => Structs
   mapping(ConfigID => bytes32) configs;
   mapping(ConfigID => ScheduledConfigEntry) scheduledConfig;
   mapping(ConfigID => ConfigTimelockRule[]) configTimelocks;
 
-  // D. Structs
+  // D. Expanding Structs
   ReplayState replay;
   PriceState prices;
 
@@ -46,6 +46,17 @@ According to Solidity [storage layout](https://docs.soliditylang.org/en/v0.8.13/
 Use [storage gaps](https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#:~:text=Storage%20gaps%20are%20a%20convention,storage%20layout%20of%20child%20contracts.)- a convention for reserving storage slots in a base contract, allowing future versions of that contract to use up those slots without affecting the storage layout of child contracts.
 
 
-### B. Explore how to extend mappings from Value/Address Type => Structs
+### B. Expanding mappings from Value/Address Type => Structs
 
 If the struct is stored in a mapping within the main State struct, there is no need for gaps within the struct that the value leads to (because they are not contiguous with other values). Mapping values are considered to occupy only 32 bytes and the elements they contain are stored starting at a different storage slot that is computed using a Keccak-256 hash because [mapping have unpredictable size and cannot be stored “in between” the state variables preceding and following them](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html#mappings-and-dynamic-arrays).
+
+#### Experiment: Upgrading a contract by adding a field to a struct that is a value in one of the mappings
+![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/96aaf4f5-4e5a-4a7f-9c26-1a9cceaa73cb)
+
+### C. Mappings from Enums => Structs
+
+Mapping from Enums to struct follow the same logic. However, we have to be careful when expanding Enums. If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also [safe](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2) if you can ensure that all contracts using the enum are redeployed altogether in case of modification. Our contracts use enums, so they must take care of the above.
+
+
+### D. Expanding Structs
+
