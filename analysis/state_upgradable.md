@@ -6,21 +6,22 @@ GRVTExchange has a global state declared in the [BaseContract](https://github.co
 
 ```
 struct State {
-  // A. Mappings from Value/Address Type => Structs
+  // A. Explore how to expand this State struct
+  // B. Explore how to extend ,appings from Value/Address Type => Structs
   mapping(address => Account) accounts;
   mapping(uint64 => SubAccount) subAccounts;
   mapping(address => Session) sessions;
 
-  // B. Mappings from Enums => Structs
+  // C. Mappings from Enums => Structs
   mapping(ConfigID => bytes32) configs;
   mapping(ConfigID => ScheduledConfigEntry) scheduledConfig;
   mapping(ConfigID => ConfigTimelockRule[]) configTimelocks;
 
-  // C. Structs
+  // D. Structs
   ReplayState replay;
   PriceState prices;
 
-  // D. Value Types
+  // E. Value Types
   int64 timestamp;
   uint64 lastTxID;
 }
@@ -28,7 +29,7 @@ struct State {
 
 We have commented all the different fields in our global state. We will now dive into making the State variable upgradable and then each of the fields upgradable.
 
-### Expanding the State Struct
+### A. Expanding the State Struct
 
 According to Solidity [storage layout](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html), the elements of structs and arrays are stored after each other, just as if they were given as individual values." So if the struct is used as a state variable, then you should use gaps.
 
@@ -43,3 +44,8 @@ According to Solidity [storage layout](https://docs.soliditylang.org/en/v0.8.13/
 
 #### Conclusion
 Use [storage gaps](https://docs.openzeppelin.com/upgrades-plugins/1.x/writing-upgradeable#:~:text=Storage%20gaps%20are%20a%20convention,storage%20layout%20of%20child%20contracts.)- a convention for reserving storage slots in a base contract, allowing future versions of that contract to use up those slots without affecting the storage layout of child contracts.
+
+
+### B. Explore how to extend mappings from Value/Address Type => Structs
+
+If the struct is stored in a mapping within the main State struct, there is no need for gaps within the struct that the value leads to (because they are not contiguous with other values). Mapping values are considered to occupy only 32 bytes and the elements they contain are stored starting at a different storage slot that is computed using a Keccak-256 hash because [mapping have unpredictable size and cannot be stored “in between” the state variables preceding and following them](https://docs.soliditylang.org/en/v0.8.13/internals/layout_in_storage.html#mappings-and-dynamic-arrays).
