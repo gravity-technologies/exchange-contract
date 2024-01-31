@@ -22,10 +22,11 @@ As seen in the screenshot above, the three contracts are
 ### Upgrade Checklist
 
 ### Initialization and Reinitialization
-The initialization functions use a version number. Once a version number is used, it is consumed and cannot be
+The original `initialize` function cannot be called again, even after the contract is upgraded because this changes the state. If we have to reinitialize contracts, the initialization functions must use a version number. Once a version number is used, it is consumed and cannot be
 reused. This mechanism prevents re-execution of each "step" but allows the creation of new initialization steps in
 case an upgrade adds a module that needs to be initialized.
 
+```
 contract MyToken is ERC20Upgradeable {
      function initialize() initializer public {
          __ERC20_init("MyToken", "MTK");
@@ -37,10 +38,14 @@ contract MyToken is ERC20Upgradeable {
          __ERC20Permit_init("MyToken");
      }
  }
+```
 
 ### Use of enums in our contracts
 If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also safe if you can ensure that all contracts using the enum are redeployed altogether in case of modification. Our contracts use enums, so they must take care of the above.
 
+
+### Use of constants in our contracts
+Because the compiler does not reserve a storage slot for constants variables, and every occurrence is replaced by the respective constant expression. So it is [fine](https://ethereum.stackexchange.com/questions/150451/is-it-possible-to-change-a-constant-variable-value-when-using-upgradeable-patter) to declare and [add](https://github.com/OpenZeppelin/openzeppelin-sdk/pull/1036) constants.
 
 ### State Management
 State Management must be handled carefully when making upgrades and we dive deeper into the considerations [here](https://github.com/gravity-technologies/exchange-contract/blob/upgradable-docs/analysis/upgradable/state_management_upgradable_contracts.md).
