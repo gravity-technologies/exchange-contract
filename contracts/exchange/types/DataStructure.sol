@@ -93,6 +93,11 @@ struct State {
   mapping(ConfigID => bytes32) configs;
   mapping(ConfigID => ScheduledConfigEntry) scheduledConfig;
   mapping(ConfigID => ConfigTimelockRule[]) configTimelocks;
+    
+  // This empty reserved space is put in place to allow future versions to add new
+  // variables without shifting down storage in the inheritance chain.
+  // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+  uint256[49] private __gap;
 }
 
 struct Account {
@@ -173,6 +178,7 @@ struct ReplayState {
   mapping(bytes32 => mapping(uint256 => uint64)) sizeMatched;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   mapping(bytes32 => bool) executed;
+  uint256[49] private __gap;
 }
 
 struct PriceState {
@@ -193,6 +199,7 @@ struct PriceState {
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
   mapping(uint256 => uint64) settlement;
+  uint256[49] private __gap;
 }
 
 struct Session {
