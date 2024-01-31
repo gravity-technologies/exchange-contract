@@ -57,6 +57,14 @@ If the struct is stored in a mapping within the main State struct, there is no n
 
 Mapping from Enums to struct follow the same logic. However, we have to be careful when expanding Enums. If the enum field lies within one and only one contract, it is [safe for an upgrade](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2). It is also [safe](https://hackernoon.com/beware-the-solidity-enums-9v1qa31b2) if you can ensure that all contracts using the enum are redeployed altogether in case of modification. Our contracts use enums, so they must take care of the above.
 
-
 ### D. Expanding Structs
+As mentioned above, in Solidity's storage layout, the elements of structs are stored after each other. If the struct is used inside a state variable, then you should use gaps.
 
+### Expreiment 1: Expanding Struct without storage gaps
+![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/21519419-9bb8-4dba-a2bd-2096595d5353)
+
+### Expreiment 2: Expanding Struct with storage gaps
+![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/b705108c-c071-4d9f-af34-bf9dfb26fd7b)
+
+### E. Value Types
+Value types do not need to be expanded.
