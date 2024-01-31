@@ -1,5 +1,17 @@
 ## Writing GRVT Exchange as an Upgradable Contract
 
+### Table of Contents
+
+- [Overview](#overview)
+- [Deploying and Upgrading Contract](#deploying-and-upgrading-contract)
+- [Transparent Proxy Pattern](#transparent-proxy-pattern)
+- [Upgrade Checklist](#upgrade-checklist)
+  - [1. Initialization and Reinitialization](#1-initialization-and-reinitialization)
+  - [2. Use of enums in our contracts](#2-use-of-enums-in-our-contracts)
+  - [3. Use of constants in our contracts](#3-use-of-constants-in-our-contracts)
+  - [4. State Management](#4-state-management)
+- [Why we don’t use namespaced Storage Layout](#why-we-dont-use-namespaced-storage-layout)
+
 
 ### Overview
 GRVTExchange is the only contract that we deloy as a part of our exchange and it is designed to be an upgradable contract. We use the [transparent proxy pattern](https://blog.openzeppelin.com/the-transparent-proxy-pattern).
