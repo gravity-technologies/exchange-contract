@@ -44,6 +44,30 @@ Storage C;
 Storage D;
 Storage A;
 ```
+### C3 Linearization of GRVTExchange Contract
+GRVTExchange
+  1. TradeContract
+  2. TransferContract
+  3. SubAccountContract
+  4. AccountRecoveryContract
+  5. AccountContract
+  6. Initializable
+
+Contracts (1-5) are Base Contracts, which in turn is a RentrancyGuard Smart Contract
+
+```
+contract BaseContract is ReentrancyGuardUpgradeable
+```
+
+In terms of Storage Layout, only BaseContract and ReentrancyGuardUpgradeable have storage variables. So our layout would look like the following:
+
+1. Storage ReentrancyGuardUpgradeable
+2. Storage BaseContract
+3. [New Vars can be added here] in the base contract
+
+#### Exampke of adding a new var in the base contract
+![image](https://github.com/gravity-technologies/exchange-contract/assets/40881096/1b21aec5-9ab7-41bd-b620-5253efb8c323)
+
 
 
 ### GRVTExchange contract
