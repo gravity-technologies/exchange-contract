@@ -5,7 +5,7 @@ import "@matterlabs/hardhat-zksync-verify"
 import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
 // upgradable plugin
-// import "@matterlabs/hardhat-zksync-upgradable"
+import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 const config: HardhatUserConfig = {
