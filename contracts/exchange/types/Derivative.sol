@@ -17,6 +17,7 @@ struct PositionsMap {
   uint256[] keys;
   mapping(uint256 => Position) values;
   mapping(uint256 => uint) index;
+  uint256[49] __gap;
 }
 
 function set(PositionsMap storage map, uint256 key, Position storage pos) {
