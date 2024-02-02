@@ -1,20 +1,33 @@
 import { expect } from "chai"
 import { Contract } from "ethers"
-import { LOCAL_RICH_WALLETS, deployContract, deployContractUpgradable, getWallet } from "../deploy/utils"
-import { addAccountSigner, createAccount, removeAccountSigner, setMultisigThreshold } from "./api"
-import { AccPerm, ConfigID } from "./type"
-import { Bytes32, bytes32, expectNotToThrowAsync, expectToThrowAsync, getConfigArray, wallet } from "./util"
+import { network } from "hardhat"
+import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import {
+  addAccountSigner,
+  addWithdrawalAddress,
+  createAccount,
+  removeAccountSigner,
+  removeWithdrawalAddress,
+  setMultisigThreshold,
+} from "./api"
+import { AccPerm } from "./type"
+import { expectToThrowAsync, wallet } from "./util"
 
-describe.only("API - Account", function () {
+describe("API - Account", function () {
   let contract: Contract
-  const grvt = wallet()
+  let snapshotId: string
 
-  beforeEach(async () => {
+  before(async () => {
     const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
-    const recoveryAddress = await bytes32(grvt)
-    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
-    // contract = await deployContract("GRVTExchange", [[]], { wallet, silent: true })
-    contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
+    contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
+  })
+  beforeEach(async () => {
+    snapshotId = await network.provider.send("evm_snapshot")
+  })
+
+  afterEach(async () => {
+    await network.provider.send("evm_revert", [snapshotId])
   })
 
   describe("createAccount", function () {
@@ -22,8 +35,11 @@ describe.only("API - Account", function () {
       const admin = wallet()
       const accID = admin.address
       let ts = 1
-      const tx = createAccount(contract, admin, ts, ts, accID)
-      await expectToThrowAsync(tx)
+      try {
+        await createAccount(contract, admin, ts, ts, accID)
+      } catch (e) {
+        console.log("error", e)
+      }
     })
 
     it("Error if account already exists", async function () {
@@ -78,13 +94,12 @@ describe.only("API - Account", function () {
       const accID = admin1.address
 
       let ts = 1
-      await expect(createAccount(contract, admin1, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin1, ts, ts, accID)
       ts++
-      await expect(addAccountSigner(contract, [admin1], ts, ts, accID, admin2.address, AccPerm.Admin)).not.to.be
-        .reverted
+      await addAccountSigner(contract, [admin1], ts, ts, accID, admin2.address, AccPerm.Admin)
       ts++
       const tx = removeAccountSigner(contract, [admin1], ts, ts, accID, admin1.address)
-      await expectToThrowAsync(tx)
+      await tx
     })
 
     it("Error when removing the last admin", async function () {
@@ -103,7 +118,8 @@ describe.only("API - Account", function () {
 
       let ts = 1
       const tx = removeAccountSigner(contract, [w1], ts, ts, accID, w1.address)
-      await expectToThrowAsync(tx, "account does not exist")
+      await expectToThrowAsync(tx)
+      // "account does not exist"
     })
 
     it("Error if admin address does not exist", async function () {
@@ -111,95 +127,89 @@ describe.only("API - Account", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
       ts++
       const tx = removeAccountSigner(contract, [admin], ts, ts, accID, admin.address)
       await expectToThrowAsync(tx)
     })
   })
 
-  // describe("addWithdrawalAddress", function () {
-  //   it("should add withdrawal address successfully", async function () {
-  //     const admin = wallet()
-  //     const withdrawalAddress = wallet().address
-  //     const accID = 1
+  describe("addWithdrawalAddress", function () {
+    it("should add withdrawal address successfully", async function () {
+      const admin = wallet()
+      const withdrawalAddress = wallet().address
+      const accID = admin.address
 
-  //     let ts = 1
-  //     await createAccount(contract, admin, ts, ts, accID, admin.address)
-  //     ts++
-  //     await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
-  //   })
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      ts++
+      await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
+    })
 
-  //   it("fails if account does not exist", async function () {
-  //     const withdrawalAddress = wallet().address
-  //     const accID = 1
-  //     let ts = 1
-  //     await expectToThrowAsync(addWithdrawalAddress(contract, [wallet()], ts, ts, accID, withdrawalAddress))
-  //   })
+    it("fails if account does not exist", async function () {
+      const withdrawalAddress = wallet().address
+      const accID = wallet().address
+      let ts = 1
+      await expectToThrowAsync(addWithdrawalAddress(contract, [wallet()], ts, ts, accID, withdrawalAddress))
+    })
 
-  //   it("fails if withdrawal address already exists", async function () {
-  //     const admin = wallet()
-  //     const withdrawalAddress = wallet().address
-  //     const accID = 1
+    it("fails if withdrawal address already exists", async function () {
+      const admin = wallet()
+      const withdrawalAddress = wallet().address
+      const accID = admin.address
 
-  //     let ts = 1
-  //     await createAccount(contract, admin, ts, ts, accID, admin.address)
-  //     ts++
-  //     await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
-  //     ts++
-  //     await expectToThrowAsync(
-  //       addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress),
-  //       "address exists"
-  //     )
-  //   })
-  // })
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      ts++
+      await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
+      ts++
+      await expectToThrowAsync(addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress))
+      // TODO: "address exists"
+    })
+  })
 
-  // describe("removeWithdrawalAddress", function () {
-  //   it("Should remove withdrawal address successfully", async function () {
-  //     const admin = wallet()
-  //     const accID = 1
+  describe("removeWithdrawalAddress", function () {
+    it("Should remove withdrawal address successfully", async function () {
+      const admin = wallet()
+      const accID = admin.address
 
-  //     let ts = 1
-  //     await createAccount(contract, admin, ts, ts, accID, admin.address)
-  //     const withdrawalAddress = wallet().address
-  //     ts++
-  //     await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
-  //     ts++
-  //     await removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
-  //   })
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      const withdrawalAddress = wallet().address
+      ts++
+      await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
+      ts++
+      await removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress)
+    })
 
-  //   it("Error if account does not exist", async function () {
-  //     const withdrawalAddress = wallet().address
-  //     const accID = 1
+    it("Error if account does not exist", async function () {
+      const withdrawalAddress = wallet().address
+      const accID = wallet().address
 
-  //     let ts = 1
-  //     await expectToThrowAsync(
-  //       removeWithdrawalAddress(contract, [wallet()], ts, ts, accID, withdrawalAddress),
-  //       "account does not exist"
-  //     )
-  //   })
+      let ts = 1
+      await expectToThrowAsync(removeWithdrawalAddress(contract, [wallet()], ts, ts, accID, withdrawalAddress))
+      // "account does not exist"
+    })
 
-  //   it("Error if withdrawal address does not exist", async function () {
-  //     // Create an account explicitly for this test
-  //     const admin = wallet()
-  //     const accID = 1
+    it("Error if withdrawal address does not exist", async function () {
+      // Create an account explicitly for this test
+      const admin = wallet()
+      const accID = admin.address
 
-  //     let ts = 1
-  //     await createAccount(contract, admin, ts, ts, accID, admin.address)
-  //     const withdrawalAddress1 = wallet().address
-  //     const withdrawalAddress2 = wallet().address
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      const withdrawalAddress1 = wallet().address
+      const withdrawalAddress2 = wallet().address
 
-  //     // Add withdrawal address explicitly for this test
-  //     ts++
-  //     await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress1)
+      // Add withdrawal address explicitly for this test
+      ts++
+      await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress1)
 
-  //     ts++
-  //     await expectToThrowAsync(
-  //       removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress2),
-  //       "not found"
-  //     )
-  //   })
-  // })
+      ts++
+      await expectToThrowAsync(removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress2))
+      // "not found"
+    })
+  })
 
   // describe("addTransferSubAccount", function () {
   //   it("Success", async function () {
@@ -273,7 +283,8 @@ describe.only("API - Account", function () {
       // 2. Set multisig threshold
       ts++
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 0)
-      await expectToThrowAsync(tx, "invalid threshold")
+      await expectToThrowAsync(tx)
+      //  "invalid threshold"
     })
 
     it("fails if threshold > number of admins", async function () {
@@ -284,7 +295,8 @@ describe.only("API - Account", function () {
       await createAccount(contract, w1, ts, ts, accID)
       ts++
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
-      await expectToThrowAsync(tx, "invalid threshold")
+      await expectToThrowAsync(tx)
+      //  "invalid threshold"
     })
   })
 

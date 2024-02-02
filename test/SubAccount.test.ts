@@ -1,5 +1,5 @@
-import { expect } from "chai"
 import { Contract } from "ethers"
+import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
 import {
   MAX_GAS,
@@ -15,18 +15,24 @@ import {
   genSetSubAccountMarginTypePayloadSig,
   genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
-import { ConfigID, MarginType, SubPerm } from "./type"
-import { Bytes32, bytes32, expectToThrowAsync, getConfigArray, nonce, wallet } from "./util"
+import { MarginType, SubPerm } from "./type"
+import { expectToThrowAsync, nonce, wallet } from "./util"
 
 describe("API - SubAccount", function () {
   let contract: Contract
-  const grvt = wallet()
+  let snapshotId: string
 
-  beforeEach(async () => {
+  before(async () => {
     const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
-    const recoveryAddress = await bytes32(grvt)
-    const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, recoveryAddress]]))
-    contract = await deployContract("GRVTExchange", [config], { wallet, silent: true })
+    contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
+  })
+  beforeEach(async () => {
+    snapshotId = await network.provider.send("evm_snapshot")
+  })
+
+  afterEach(async () => {
+    await network.provider.send("evm_revert", [snapshotId])
   })
 
   describe("createSubAccount", function () {
@@ -35,11 +41,11 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
       const subID = 1
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
     })
 
     it("Error if account doesn't exists", async function () {
@@ -48,7 +54,7 @@ describe("API - SubAccount", function () {
 
       let ts = 1
       const subID = 1
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).to.be.reverted
+      await expectToThrowAsync(createSubAccount(contract, admin, ts, ts, accID, subID))
     })
 
     it("Error if subaccount already exists", async function () {
@@ -56,15 +62,14 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      const tx = createAccount(contract, admin, ts, ts, accID)
-      await expect(tx).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
       const subID = 1
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).to.be.reverted
+      await expectToThrowAsync(createSubAccount(contract, admin, ts, ts, accID, subID))
     })
   })
 
@@ -76,14 +81,14 @@ describe("API - SubAccount", function () {
       const subID = 1
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       ts++
-      await expect(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED)).not.to.be.reverted
+      await setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED)
     })
 
     it("signer with permission can switch margin type", async function () {
@@ -94,18 +99,17 @@ describe("API - SubAccount", function () {
       const alice = wallet()
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.ChangeMarginType)).not.to.be
-        .reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.ChangeMarginType)
 
       // Test
       ts++
-      await expect(setSubAccountMarginType(contract, alice, ts, ts, subID, MarginType.ISOLATED)).not.to.be.reverted
+      await setSubAccountMarginType(contract, alice, ts, ts, subID, MarginType.ISOLATED)
     })
 
     it("fails if user doesn't have permission", async function () {
@@ -116,14 +120,14 @@ describe("API - SubAccount", function () {
       const alice = wallet()
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       ts++
-      await expect(setSubAccountMarginType(contract, alice, ts, ts, subID, MarginType.ISOLATED)).to.be.reverted
+      await expectToThrowAsync(setSubAccountMarginType(contract, alice, ts, ts, subID, MarginType.ISOLATED))
     })
 
     // TODO
@@ -137,16 +141,16 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
       const subID = 1
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const signer = wallet()
       ts++
-      await expect(addSubSigner(contract, ts, ts, admin, subID, signer.address, SubPerm.Trade)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, signer.address, SubPerm.Trade)
     })
 
     it("fails if subaccount doesn't exists", async function () {
@@ -154,11 +158,11 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
       const subID = 1
-      await expect(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED)).to.be.reverted
+      await expectToThrowAsync(setSubAccountMarginType(contract, admin, ts, ts, subID, MarginType.ISOLATED))
     })
 
     it("fails if invalid signature", async function () {
@@ -166,7 +170,7 @@ describe("API - SubAccount", function () {
       const admin = wallet()
       const accID = admin.address
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
       const subID = 1
@@ -176,11 +180,11 @@ describe("API - SubAccount", function () {
       ts++
       const salt = nonce()
       const sig = genSetSubAccountMarginTypePayloadSig(admin, subID, MarginType.ISOLATED, salt)
-      await expect(
+      await expectToThrowAsync(
         contract.setSubAccountMarginType(ts, ts, subID, MarginType.PORTFOLIO_CROSS_MARGIN, salt, sig, {
           gasLimit: MAX_GAS,
         })
-      ).to.be.reverted
+      )
       // TODO "invalid signature"
     })
 
@@ -191,20 +195,20 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Add subaccount signer without any permission
       const alice = wallet()
       ts++
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.None)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.None)
 
       // Try to add another subaccount signer from
       const bob = wallet()
       ts++
-      await expect(addSubSigner(contract, ts, ts, alice, subID, bob.address, SubPerm.None)).to.be.reverted
+      await expectToThrowAsync(addSubSigner(contract, ts, ts, alice, subID, bob.address, SubPerm.None))
     })
 
     // This is invalid
@@ -214,19 +218,19 @@ describe("API - SubAccount", function () {
     //   const accID = admin.address
 
     //   let ts = 1
-    //   await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+    //   await createAccount(contract, admin, ts, ts, accID)
 
     //   ts++
     //   const subID = 1
-    //   await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+    //   await createSubAccount(contract, admin, ts, ts, accID, subID)
 
     //   // Test
     //   const signer = wallet().address
     //   ts++
-    //   await expect(addSubSigner(contract, ts, ts, admin, subID, signer, 1)).not.to.be.reverted
+    //   await addSubSigner(contract, ts, ts, admin, subID, signer, 1)
 
     //   ts++
-    //   await expect(addSubSigner(contract, ts, ts, admin, subID, signer, 1)).to.be.reverted
+    //   await expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, signer, 1))
     // })
   })
 
@@ -237,43 +241,38 @@ describe("API - SubAccount", function () {
       const subID = 1
       const accID = admin.address
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await expect(
-        addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
-      ).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
 
       ts++
       // Least privilege signer
       const carl = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, carl.address, SubPerm.Withdrawal)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, carl.address, SubPerm.Withdrawal)
 
       // Test
       ts++
       // account admin can change permission of any signer
-      await expect(setSubAccountSignerPermission(contract, admin, ts, ts, subID, carl.address, SubPerm.Deposit)).not.to
-        .be.reverted
+      await setSubAccountSignerPermission(contract, admin, ts, ts, subID, carl.address, SubPerm.Deposit)
 
       ts++
       // subaccount admin can change permission of any signer
-      await expect(setSubAccountSignerPermission(contract, alice, ts, ts, subID, carl.address, SubPerm.Admin)).not.to.be
-        .reverted
+      await setSubAccountSignerPermission(contract, alice, ts, ts, subID, carl.address, SubPerm.Admin)
 
       ts++
       // subaccount signer with update permission can change permission of any signer
-      await expect(setSubAccountSignerPermission(contract, bob, ts, ts, subID, carl.address, SubPerm.Trade)).not.to.be
-        .reverted
+      await setSubAccountSignerPermission(contract, bob, ts, ts, subID, carl.address, SubPerm.Trade)
     })
 
     it("fails if subaccount doesn't exist", async function () {
@@ -284,11 +283,12 @@ describe("API - SubAccount", function () {
 
       // Test
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(setSubAccountSignerPermission(contract, admin, ts, ts, subID, admin.address, SubPerm.Trade)).to.be
-        .reverted
+      await expectToThrowAsync(
+        setSubAccountSignerPermission(contract, admin, ts, ts, subID, admin.address, SubPerm.Trade)
+      )
     })
 
     it("fails if new permission is more privileged than current user's permission", async function () {
@@ -297,29 +297,29 @@ describe("API - SubAccount", function () {
       const subID = 1
       const accID = admin.address
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       const alice = wallet()
       ts++
-      await expect(
-        addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Trade | SubPerm.UpdateSignerPermission)
-      ).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Trade | SubPerm.UpdateSignerPermission)
 
       const bob = wallet()
       ts++
-      await expect(addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Withdrawal)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Withdrawal)
 
       // Test
       ts++
-      await expect(setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Admin)).to.be
-        .reverted
+      await expectToThrowAsync(
+        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Admin)
+      )
       // TODO "actor cannot grant permission"
 
-      await expect(setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)).to.be
-        .reverted
+      await expectToThrowAsync(
+        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)
+      )
       // TODO "actor cannot grant permission"
     })
 
@@ -353,25 +353,26 @@ describe("API - SubAccount", function () {
       const subID = 1
       const accID = admin.address
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Trade)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Trade)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Trade)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Trade)
 
       // Test
       ts++
-      await expect(setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)).to.be
-        .reverted
+      await expectToThrowAsync(
+        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)
+      )
       // TODO "actor cannot call function"
     })
   })
@@ -384,19 +385,19 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       // Test
       ts++
-      await expect(removeSubSigner(contract, admin, ts, ts, subID, alice.address)).not.to.be.reverted
+      await removeSubSigner(contract, admin, ts, ts, subID, alice.address)
     })
 
     it("subaccount admin can remove subaccount signer", async function () {
@@ -406,26 +407,24 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await expect(
-        addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
-      ).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
 
       // Test
       ts++
-      await expect(removeSubSigner(contract, alice, ts, ts, subID, bob.address)).not.to.be.reverted
+      await removeSubSigner(contract, alice, ts, ts, subID, bob.address)
     })
 
     it("user with removal permission can remove subaccount signer", async function () {
@@ -434,24 +433,24 @@ describe("API - SubAccount", function () {
       const subID = 1
       const accID = admin.address
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.RemoveSigner)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.RemoveSigner)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Deposit)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Deposit)
 
       // Test
       ts++
-      await expect(removeSubSigner(contract, alice, ts, ts, subID, bob.address)).not.to.be.reverted
+      await removeSubSigner(contract, alice, ts, ts, subID, bob.address)
     })
 
     it("fails if subaccount doesn't exist", async function () {
@@ -462,7 +461,7 @@ describe("API - SubAccount", function () {
       // SubAccount admin
       const alice = wallet()
       // Test
-      await expect(removeSubSigner(contract, admin, ts, ts, subID, alice.address)).to.be.reverted
+      await expectToThrowAsync(removeSubSigner(contract, admin, ts, ts, subID, alice.address))
       // TODO"subaccount does not exist"
     })
 
@@ -509,26 +508,24 @@ describe("API - SubAccount", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
       // SubAccount admin
       const alice = wallet()
-      await expect(addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await expect(
-        addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
-      ).not.to.be.reverted
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
 
       // Test
       ts++
-      await expect(removeSubSigner(contract, bob, ts, ts, subID, alice.address)).to.be.reverted
+      await expectToThrowAsync(removeSubSigner(contract, bob, ts, ts, subID, alice.address))
       // TODO "no permission"
     })
   })
