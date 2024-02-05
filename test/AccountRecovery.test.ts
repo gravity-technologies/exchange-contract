@@ -16,7 +16,7 @@ import { genAddAccountGuardianPayloadSig, genRemoveAccountGuardianPayloadSig } f
 import { AccPerm, AccountRecoveryType } from "./type"
 import { bytes32, nonce, wallet } from "./util"
 
-describe.only("API - AccountRecovery", function () {
+describe("API - AccountRecovery", function () {
   let contract: Contract
   let snapshotId: string
 
