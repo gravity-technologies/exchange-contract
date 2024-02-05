@@ -336,7 +336,8 @@ export async function addSessionKey(
   sessionKey: string,
   keyExpiry: number
 ) {
-  const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry)
+  const salt = nonce()
+  const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry, salt)
   const tx = await contract.addSessionKey(ts, txID, sessionKey, keyExpiry, sig, txRequestDefault())
   await tx.wait()
 }

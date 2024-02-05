@@ -305,12 +305,18 @@ export function genSetConfigSig(
 }
 
 // Session
-export function genAddSessionKeySig(wallet: Wallet, sessionKey: string, keyExpiry: number): Signature {
+export function genAddSessionKeySig(
+  wallet: Wallet,
+  sessionKey: string,
+  keyExpiry: number,
+  nonce: number = randomInt(22021991)
+): Signature {
   return sign(wallet, {
     ...Types.AddSessionKey,
     message: {
       sessionKey,
       keyExpiry,
+      nonce,
     },
   })
 }
