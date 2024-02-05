@@ -1,39 +1,51 @@
-// import { ethers } from "hardhat"
-// import { GRVTExchange } from "../typechain-types"
-// import { ConfigID } from "./type"
-// import { Bytes32, bytes32, getConfigArray, getTimestampNs, wallet } from "./util"
-// import { addSessionKey, removeSessionKey } from "./api"
+import { addSessionKey, removeSessionKey } from "./api"
+import { Contract } from "ethers"
+import { network } from "hardhat"
+import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { wallet, getTimestampNs } from "./util"
 
-// describe("API - Session Key", function () {
-//   let contract: Contract
-//   const grvt = wallet()
+describe.only("API - Session Key", function () {
+  let contract: Contract
+  let snapshotId: string
 
-//   beforeEach(async () => {
-//     const config = getConfigArray(new Map<number, Bytes32>([[ConfigID.ADMIN_RECOVERY_ADDRESS, bytes32(grvt)]]))
-//     contract = await ethers.deployContract("GRVTExchange", [config])
-//   })
+  before(async () => {
+    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+    contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
+  })
+  beforeEach(async () => {
+    snapshotId = await network.provider.send("evm_snapshot")
+  })
 
-//   describe("addSessionKey", () => {
-//     it("should add session key", async () => {
-//       const signer = wallet()
-//       let ts = 1
-//       await addSessionKey(contract, signer, ts, ts, wallet().address, getTimestampNs(1))
-//     })
-//   })
+  afterEach(async () => {
+    await network.provider.send("evm_revert", [snapshotId])
+  })
 
-//   describe("removeSessionKey", () => {
-//     it("should remove session key", async () => {
-//       const signer = wallet()
-//       let ts = 1
-//       await addSessionKey(contract, signer, ts, ts, wallet().address, Date.now())
-//       ts++
-//       await removeSessionKey(contract, signer, ts, ts)
-//     })
+  describe("addSessionKey", () => {
+    it("should add session key", async () => {
+      const signer = wallet()
+      let ts = 1
+      // Log relevant values for debugging
+      console.log("Timestamp (ts):", ts)
+      console.log("Wallet Address:", wallet().address)
+      console.log("Timestamp (getTimestampNs(1)):", getTimestampNs(1))
+      await addSessionKey(contract, signer, ts, ts, wallet().address, getTimestampNs(1))
+    })
+  })
 
-//     it("noop if remove non-existent session key", async () => {
-//       const signer = wallet()
-//       let ts = 1
-//       await removeSessionKey(contract, signer, ts, ts)
-//     })
-//   })
-// })
+  describe("removeSessionKey", () => {
+    it("should remove session key", async () => {
+      const signer = wallet()
+      let ts = 1
+      await addSessionKey(contract, signer, ts, ts, wallet().address, Date.now())
+      ts++
+      await removeSessionKey(contract, signer, ts, ts)
+    })
+
+    it("noop if remove non-existent session key", async () => {
+      const signer = wallet()
+      let ts = 1
+      await removeSessionKey(contract, signer, ts, ts)
+    })
+  })
+})

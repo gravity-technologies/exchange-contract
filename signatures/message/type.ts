@@ -325,7 +325,7 @@ export const AddSessionKey = {
     EIP712Domain,
     [PrimaryType.AddSessionKey]: [
       { name: "sessionKey", type: "address" },
-      { name: "keyExpiry", type: "uint64" },
+      { name: "keyExpiry", type: "int64" },
     ],
   },
 }
