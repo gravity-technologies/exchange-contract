@@ -16,14 +16,14 @@ import {
   genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
 import { MarginType, SubPerm } from "./type"
-import { expectToThrowAsync, nonce, wallet } from "./util"
+import { expectToThrowAsync, getDeployerWallet, nonce, wallet } from "./util"
 
 describe("API - SubAccount", function () {
   let contract: Contract
   let snapshotId: string
 
   before(async () => {
-    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+    const wallet = getDeployerWallet()
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
