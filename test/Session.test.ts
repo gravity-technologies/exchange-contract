@@ -4,7 +4,7 @@ import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
 import { wallet, getTimestampNs } from "./util"
 
-describe.only("API - Session Key", function () {
+describe("API - Session Key", function () {
   let contract: Contract
   let snapshotId: string
 
