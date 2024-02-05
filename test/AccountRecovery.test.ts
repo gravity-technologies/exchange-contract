@@ -16,7 +16,7 @@ import { genAddAccountGuardianPayloadSig, genRemoveAccountGuardianPayloadSig } f
 import { AccPerm, AccountRecoveryType } from "./type"
 import { nonce, wallet, expectToThrowAsync } from "./util"
 
-describe.only("API - AccountRecovery", function () {
+describe("API - AccountRecovery", function () {
   let contract: Contract
   let snapshotId: string
 
@@ -302,9 +302,11 @@ describe.only("API - AccountRecovery", function () {
       // Setup
       const oldAdmin = wallet()
       const newAdmin = wallet()
-      const accID = wallet().address
+      const accID = oldAdmin.address
       const subID = 1
       let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
       await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
       // Add guardian
       const guardian = wallet()
@@ -414,6 +416,8 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
       await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
       // Add 2 guardians, quorum should be 2 votes to be able to recover
       const guardian = wallet()
@@ -444,6 +448,8 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
       await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
       // Test
       const guardian = wallet()
