@@ -14,9 +14,9 @@ import {
 import { network } from "hardhat"
 import { genAddAccountGuardianPayloadSig, genRemoveAccountGuardianPayloadSig } from "./signature"
 import { AccPerm, AccountRecoveryType } from "./type"
-import { bytes32, nonce, wallet } from "./util"
+import { nonce, wallet, expectToThrowAsync } from "./util"
 
-describe("API - AccountRecovery", function () {
+describe.only("API - AccountRecovery", function () {
   let contract: Contract
   let snapshotId: string
 
@@ -64,7 +64,7 @@ describe("API - AccountRecovery", function () {
       await expect(addAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian2)).not.to.be.reverted
     })
 
-    it.skip("fails if signer is not an admin", async function () {
+    it("fails if signer is not an admin", async function () {
       // Setup
       const admin = wallet()
       const accID = wallet().address
@@ -77,9 +77,9 @@ describe("API - AccountRecovery", function () {
 
       // Test
       const guardian = wallet().address
+      const ineligibleSigner = wallet()
       ts++
-      await expect(addAccountGuardian(contract, [wallet()], ts, ts, accID, guardian)).to.be.reverted
-      // TODO "ineligible signer"
+      await expectToThrowAsync(addAccountGuardian(contract, [ineligibleSigner], ts, ts, accID, guardian))
     })
 
     it("fails if account does not exist", async function () {
@@ -88,8 +88,7 @@ describe("API - AccountRecovery", function () {
 
       // Test
       const guardian = wallet().address
-      await expect(addAccountGuardian(contract, [wallet()], ts, ts, accID, guardian)).to.be.reverted
-      // TODO "account does not exist"
+      await expectToThrowAsync(addAccountGuardian(contract, [wallet()], ts, ts, accID, guardian))
     })
 
     it("fails if invalid signature", async function () {
@@ -113,7 +112,7 @@ describe("API - AccountRecovery", function () {
       // TODO "invalid signature"
     })
 
-    it.skip("fails if quorum is not met", async function () {
+    it("fails if quorum is not met", async function () {
       // Setup
       const admin = wallet()
       const accID = wallet().address
@@ -135,8 +134,7 @@ describe("API - AccountRecovery", function () {
       await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
 
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).to.be.reverted
-      // TODO "failed quorum"
+      await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
     })
 
     it("fails if guardian already exists", async function () {
@@ -155,8 +153,7 @@ describe("API - AccountRecovery", function () {
       ts++
       await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).to.be.reverted
-      // TODO "address exists"
+      await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
     })
   })
 })
