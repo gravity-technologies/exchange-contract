@@ -308,7 +308,7 @@ export function genSetConfigSig(
 export function genAddSessionKeySig(
   wallet: Wallet,
   sessionKey: string,
-  keyExpiry: number,
+  keyExpiry: BigInt,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
@@ -319,11 +319,6 @@ export function genAddSessionKeySig(
       nonce,
     },
   })
-}
-
-export function genRemoveSessionKeySig(wallet: Wallet): Signature {
-  // just generate a random signature, as long as the signer is correct
-  return genAddSessionKeySig(wallet, "0x12345", 10000000)
 }
 
 // Trade

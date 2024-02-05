@@ -334,7 +334,7 @@ export async function addSessionKey(
   ts: number,
   txID: number,
   sessionKey: string,
-  keyExpiry: number
+  keyExpiry: BigInt
 ) {
   const salt = nonce()
   const sig = genAddSessionKeySig(txSigner, sessionKey, keyExpiry, salt)

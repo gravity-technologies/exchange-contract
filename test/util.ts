@@ -30,9 +30,9 @@ export function buf(s: string): Buffer {
   return Buffer.from(s.substring(2), "hex")
 }
 
-export function getTimestampNs(addDays: number = 10): number {
+export function getTimestampNs(addDays: number = 10): BigInt {
   const deltaInMs = addDays * 24 * 60 * 60 * 1000
-  return Math.floor((Date.now() + deltaInMs) * 1000)
+  return BigInt(Date.now() + deltaInMs) * 1_000_000n
 }
 
 export function wallet(pkHex?: string): Wallet {

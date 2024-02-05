@@ -26,9 +26,6 @@ describe("API - Session Key", function () {
       const signer = wallet()
       let ts = 1
       // Log relevant values for debugging
-      console.log("Timestamp (ts):", ts)
-      console.log("Wallet Address:", wallet().address)
-      console.log("Timestamp (getTimestampNs(1)):", getTimestampNs(1))
       await addSessionKey(contract, signer, ts, ts, wallet().address, getTimestampNs(1))
     })
   })
@@ -37,7 +34,7 @@ describe("API - Session Key", function () {
     it("should remove session key", async () => {
       const signer = wallet()
       let ts = 1
-      await addSessionKey(contract, signer, ts, ts, wallet().address, Date.now())
+      await addSessionKey(contract, signer, ts, ts, wallet().address, getTimestampNs(1))
       ts++
       await removeSessionKey(contract, signer, ts, ts)
     })
