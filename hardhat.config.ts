@@ -1,11 +1,13 @@
 import "@matterlabs/hardhat-zksync-node"
-import "@matterlabs/hardhat-zksync-deploy"
+// https://github.com/matter-labs/hardhat-zksync/issues/711
+// duplication occurs within matter labs monorepo setup so we need to import from the dist folder
+import "@matterlabs/hardhat-zksync-deploy/dist/deployer"
 import "@matterlabs/hardhat-zksync-solc"
 import "@matterlabs/hardhat-zksync-verify"
 import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
 // upgradable plugin
-// import "@matterlabs/hardhat-zksync-upgradable"
+import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 const config: HardhatUserConfig = {
