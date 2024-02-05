@@ -205,6 +205,28 @@ contract AccountContract is BaseContract {
     int64 timestamp,
     uint64 txID,
     address accountID,
+    address transferAccountID,
+    uint32 nonce,
+    Signature[] calldata sigs
+  ) external {
+    require(transferAccountID != address(0), "invalid transfer account");
+
+    _setSequence(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashAddTransferAccount(accountID, transferAccountID, nonce);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    // ------- End hashAddTransferAccount -------
+
+    acc.onboardedTransferAccounts[transferAccountID] = true;
+  }
+
+  function removeTransferAccount(
+    int64 timestamp,
+    uint64 txID,
+    address accountID,
+    address transferAccountID,
     uint32 nonce,
     Signature[] calldata sigs
   ) external {
@@ -212,36 +234,10 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddTransferAccount(accountID, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
-    // ------- End hashAddTransferAccount -------
-
-    acc.onboardedTransferAccounts[accountID] = true;
-  }
-
-  /// @notice Remove a account that this account can transfer to
-  /// This requires the multisig threshold to be met
-  ///
-  /// @param timestamp The timestamp of the transaction
-  /// @param txID The transaction ID
-  /// @param accID The account ID
-  /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the account signers with admin permissions
-  function removeTransferAccount(
-    int64 timestamp,
-    uint64 txID,
-    address accID,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accID);
-
-    // ---------- Signature Verificationhe signer -----------
-    bytes32 hash = hashRemoveTransferAccount(accID, nonce);
+    bytes32 hash = hashRemoveTransferAccount(accountID, transferAccountID, nonce);
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
     // ------- End of Signature Verification -------
 
-    acc.onboardedTransferAccounts[accID] = false;
+    acc.onboardedTransferAccounts[transferAccountID] = false;
   }
 }

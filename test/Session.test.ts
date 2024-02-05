@@ -1,8 +1,8 @@
-import { addSessionKey, removeSessionKey } from "./api"
 import { Contract } from "ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
-import { wallet, getTimestampNs } from "./util"
+import { addSessionKey, removeSessionKey } from "./api"
+import { getTimestampNs, wallet } from "./util"
 
 describe("API - Session Key", function () {
   let contract: Contract

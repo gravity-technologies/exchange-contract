@@ -64,7 +64,6 @@ abstract contract APIBase is BaseTest {
       subAccID,
       Currency.USDC,
       MarginType.PORTFOLIO_CROSS_MARGIN,
-      sigNonce,
       sig
     );
   }
@@ -148,6 +147,6 @@ abstract contract APIBase is BaseTest {
     uint32 sigNonce = random();
     bytes32 structHash = hashAddSubAccountSigner(subAccID, signer, permissions, sigNonce);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
-    grvtExchange.addSubAccountSigner(currentTimestapInt64, txNonce, subAccID, signer, permissions, sigNonce, sig);
+    grvtExchange.addSubAccountSigner(currentTimestapInt64, txNonce, subAccID, signer, permissions, sig);
   }
 }

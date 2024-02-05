@@ -57,7 +57,6 @@ export async function createSubAccount(
     subID,
     Currency.USDC,
     MarginType.PORTFOLIO_CROSS_MARGIN,
-    salt,
     sig,
     txRequestDefault()
   )
@@ -184,7 +183,7 @@ export async function setSubAccountMarginType(
 ) {
   const salt = nonce()
   const sig = genSetSubAccountMarginTypePayloadSig(txSigner, subID, marginType, salt)
-  const tx = await contract.setSubAccountMarginType(ts, txID, subID, marginType, salt, sig, txRequestDefault())
+  const tx = await contract.setSubAccountMarginType(ts, txID, subID, marginType, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -199,7 +198,7 @@ export async function addSubSigner(
 ) {
   const salt = nonce()
   const sig = genAddSubAccountSignerPayloadSig(txSigner, subID, newSigner, permission, salt)
-  const tx = await contract.addSubAccountSigner(ts, txID, subID, newSigner, permission, salt, sig, txRequestDefault())
+  const tx = await contract.addSubAccountSigner(ts, txID, subID, newSigner, permission, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -214,16 +213,7 @@ export async function setSubAccountSignerPermission(
 ) {
   const salt = nonce()
   const sig = genSetSubAccountSignerPermissionsPayloadSig(txSigner, subID, signer, permission, salt)
-  const tx = await contract.SetSubAccountSignerPermissions(
-    ts,
-    txID,
-    subID,
-    signer,
-    permission,
-    salt,
-    sig,
-    txRequestDefault()
-  )
+  const tx = await contract.setSubAccountSignerPermissions(ts, txID, subID, signer, permission, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -237,7 +227,7 @@ export async function removeSubSigner(
 ) {
   const salt = nonce()
   const sig = genRemoveSubAccountSignerPayloadSig(txSigner, subID, signer, salt)
-  const tx = await contract.removeSubAccountSigner(ts, txID, subID, signer, salt, sig, txRequestDefault())
+  const tx = await contract.removeSubAccountSigner(ts, txID, subID, signer, sig, txRequestDefault())
   await tx.wait()
 }
 

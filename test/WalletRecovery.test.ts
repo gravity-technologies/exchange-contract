@@ -1,10 +1,10 @@
-import { addRecoveryAddress, createAccount, removeRecoveryAddress, recoverAddress } from "./api"
 import { Contract } from "ethers"
 import { network } from "hardhat"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
-import { wallet } from "./util"
+import { deployContract } from "../deploy/utils"
+import { addRecoveryAddress, createAccount, recoverAddress, removeRecoveryAddress } from "./api"
+import { getDeployerWallet, wallet } from "./util"
 
-describe.only("API - Wallet Recovery", function () {
+describe("API - Wallet Recovery", function () {
   let contract: Contract
   let snapshotId: string
   const w1 = wallet()
@@ -14,7 +14,7 @@ describe.only("API - Wallet Recovery", function () {
   let ts: number
 
   before(async () => {
-    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+    const wallet = getDeployerWallet()
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })

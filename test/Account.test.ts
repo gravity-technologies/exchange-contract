@@ -1,14 +1,13 @@
 import { expect } from "chai"
 import { Contract } from "ethers"
 import { network } from "hardhat"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { deployContract } from "../deploy/utils"
 import {
   addAccountSigner,
   addWithdrawalAddress,
   createAccount,
   removeAccountSigner,
   removeWithdrawalAddress,
-  setMultisigThreshold,
 } from "./api"
 import { AccPerm } from "./type"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
