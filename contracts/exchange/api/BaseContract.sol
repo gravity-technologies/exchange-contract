@@ -51,7 +51,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     }
 
     // 2. Check that the signatures form a quorum
-    // require(numSigs >= quorum, "failed quorum");
+    require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
     require(!state.replay.executed[hash], "invalid transaction");
@@ -60,6 +60,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     int64 timestamp = state.timestamp;
     for (uint i = 0; i < numSigs; i++) {
       // TODO: require(addressExists(eligibleSigners, sigs[i].signer), "ineligible signer");
+      require(eligibleSigners[sigs[i].signer] > 0, "ineligible signer");
       _requireValidSig(timestamp, hash, sigs[i]);
     }
 
