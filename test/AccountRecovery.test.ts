@@ -5,6 +5,7 @@ import {
   MAX_GAS,
   addAccountGuardian,
   addAccountSigner,
+  addSubSigner,
   createAccount,
   createSubAccount,
   recoverAccountAdmin,
@@ -12,11 +13,15 @@ import {
   setMultisigThreshold,
 } from "./api"
 import { network } from "hardhat"
-import { genAddAccountGuardianPayloadSig, genRemoveAccountGuardianPayloadSig } from "./signature"
+import {
+  genAddAccountGuardianPayloadSig,
+  genRecoverAccountAdminPayloadSig,
+  genRemoveAccountGuardianPayloadSig,
+} from "./signature"
 import { AccPerm, AccountRecoveryType } from "./type"
 import { nonce, wallet, expectToThrowAsync } from "./util"
 
-describe.only("API - AccountRecovery", function () {
+describe("API - AccountRecovery", function () {
   let contract: Contract
   let snapshotId: string
 
@@ -40,28 +45,28 @@ describe.only("API - AccountRecovery", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
 
       // Test: 2 admins
       const guardian2 = wallet().address
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
-      await expect(addAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian2)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian2)
     })
 
     it("fails if signer is not an admin", async function () {
@@ -70,10 +75,10 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
@@ -97,19 +102,17 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
       const salt = nonce()
       const sig = genAddAccountGuardianPayloadSig(admin, accID, guardian, salt + 1)
-      await expect(contract.addAccountGuardian(ts, ts, accID, guardian, salt, [sig], { gasLimit: MAX_GAS })).to.be
-        .reverted
-      // TODO "invalid signature"
+      await expectToThrowAsync(contract.addAccountGuardian(ts, ts, accID, guardian, salt, [sig], { gasLimit: MAX_GAS }))
     })
 
     it("fails if quorum is not met", async function () {
@@ -118,20 +121,20 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
       await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
@@ -143,330 +146,379 @@ describe.only("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
       ts++
       await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
     })
   })
+
+  describe("removeAccountGuardian", function () {
+    it("admin can remove guardian successfully, quorum=1", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test: 1 admin
+      const guardian = wallet().address
+      ts++
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
+
+      ts++
+      await removeAccountGuardian(contract, [admin], ts, ts, accID, guardian)
+    })
+
+    it("admin can remove guardian successfully, quorum=2", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test
+      const guardian = wallet().address
+      ts++
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
+
+      const alice = wallet()
+      ts++
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
+
+      // Update quorum to 2
+      ts++
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
+
+      ts++
+      await removeAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian)
+    })
+
+    it("fails if signer is not an admin", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test
+      const guardian = wallet().address
+      ts++
+      await expectToThrowAsync(removeAccountGuardian(contract, [wallet()], ts, ts, accID, guardian))
+    })
+
+    it("fails if account does not exist", async function () {
+      const accID = wallet().address
+      let ts = 1
+
+      // Test
+      const guardian = wallet().address
+      await expectToThrowAsync(removeAccountGuardian(contract, [wallet()], ts, ts, accID, guardian))
+    })
+
+    it("fails if invalid signature", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test: 1 admin
+      const guardian = wallet().address
+      ts++
+      const salt = nonce()
+      const sig = genRemoveAccountGuardianPayloadSig(admin, accID, guardian, salt + 1)
+      await expectToThrowAsync(
+        contract.removeAccountGuardian(ts, ts, accID, guardian, salt, [sig], { gasLimit: MAX_GAS })
+      )
+    })
+
+    it("fails if quorum is not met", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test
+      const guardian = wallet().address
+      const alice = wallet()
+      ts++
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
+
+      // Update quorum to 2
+      ts++
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
+
+      ts++
+      await expectToThrowAsync(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian))
+      // failed quorum"
+    })
+
+    it("fails if guardian does not exists", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+
+      ts++
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
+
+      // Test: 1 admin
+      const guardian2 = wallet().address
+      ts++
+      await expectToThrowAsync(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian2))
+      // TODO "not found"
+    })
+  })
+
+  describe("recoverAccountAdmin", function () {
+    it("can recover using guardian accounts", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = oldAdmin.address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add guardian
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      await recoverAccountAdmin(
+        contract,
+        [guardian],
+        ts,
+        ts,
+        accID,
+        AccountRecoveryType.GUARDIAN,
+        oldAdmin.address,
+        newAdmin.address
+      )
+    })
+    // TODO: Fix me
+    it.skip("can recover using subaccount signers", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = oldAdmin.address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add signer
+      const signer = wallet()
+      ts++
+      addSubSigner(contract, ts, ts, oldAdmin, subID, signer.address, 1)
+      ts++
+      // await recoverAccountAdmin(
+      //   contract,
+      //   [signer],
+      //   ts,
+      //   ts,
+      //   accID,
+      //   AccountRecoveryType.SUB_ACCOUNT_SIGNERS,
+      //   oldAdmin.address,
+      //   newAdmin.address
+      // )
+    })
+    it("fails if invalid signature", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add guardian
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      const salt = nonce()
+      const sigs = [
+        genRecoverAccountAdminPayloadSig(
+          guardian,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt
+        ),
+      ]
+      await expectToThrowAsync(
+        contract.recoverAccountAdmin(
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt + 2,
+          sigs
+        ),
+        "invalid signature"
+      )
+    })
+    it("fails if account does not exist", async function () {
+      // Setup
+      const accID = wallet().address
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+
+      let ts = 1
+      // await createAccount(contract, oldAdmin, ts, ts, accID)
+
+      await expectToThrowAsync(
+        recoverAccountAdmin(
+          contract,
+          [wallet()],
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address
+        )
+      )
+      // TODO "account does not exist"
+    })
+    it("fails if quorum is not met", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add 2 guardians, quorum should be 2 votes to be able to recover
+      const guardian = wallet()
+      const guardian2 = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian2.address)
+      ts++
+      await expectToThrowAsync(
+        recoverAccountAdmin(
+          contract,
+          [guardian],
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address
+        ),
+        "failed quorum"
+      )
+    })
+    it("fails if signer is not guardian or subaccount signer", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Test
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      await expectToThrowAsync(
+        recoverAccountAdmin(
+          contract,
+          [wallet()],
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address
+        ),
+        "ineligible signer"
+      )
+    })
+    it("fails if invalid signature", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add guardian
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      const salt = nonce()
+      const sigs = [
+        genRecoverAccountAdminPayloadSig(
+          guardian,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt
+        ),
+      ]
+      await expectToThrowAsync(
+        contract.recoverAccountAdmin(
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt + 2,
+          sigs
+        ),
+        "invalid signature"
+      )
+    })
+  })
 })
-//   describe("removeAccountGuardian", function () {
-//     it("admin can remove guardian successfully, quorum=1", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test: 1 admin
-//       const guardian = wallet().address
-//       ts++
-//       await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
-
-//       ts++
-//       await expect(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
-//     })
-
-//     it("admin can remove guardian successfully, quorum=2", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test
-//       const guardian = wallet().address
-//       ts++
-//       await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
-
-//       const alice = wallet()
-//       ts++
-//       await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
-
-//       // Update quorum to 2
-//       ts++
-//       await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
-
-//       ts++
-//       await expect(removeAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian)).not.to.be.reverted
-//     })
-
-//     it("fails if signer is not an admin", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test
-//       const guardian = wallet().address
-//       ts++
-//       await expect(removeAccountGuardian(contract, [wallet()], ts, ts, accID, guardian)).to.be.reverted
-//       // TODO "ineligible signer"
-//     })
-
-//     it("fails if account does not exist", async function () {
-//       const accID = wallet().address
-//       let ts = 1
-
-//       // Test
-//       const guardian = wallet().address
-//       await expect(removeAccountGuardian(contract, [wallet()], ts, ts, accID, guardian)).to.be.reverted
-//       // TODO: "account does not exist"
-//     })
-
-//     it("fails if invalid signature", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test: 1 admin
-//       const guardian = wallet().address
-//       ts++
-//       const salt = nonce()
-//       const sig = genRemoveAccountGuardianPayloadSig(admin, accID, guardian, salt + 1)
-//       await expect(contract.removeAccountGuardian(ts, ts, accID, guardian, salt, [sig], { gasLimit: MAX_GAS })).to.be
-//         .reverted
-//       // TODO "invalid signature"
-//     })
-
-//     it("fails if quorum is not met", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test
-//       const guardian = wallet().address
-//       const alice = wallet()
-//       ts++
-//       await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
-
-//       // Update quorum to 2
-//       ts++
-//       await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
-
-//       ts++
-//       await expect(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian)).to.be.reverted
-//       // TODO "failed quorum"
-//     })
-
-//     it("fails if guardian does not exists", async function () {
-//       // Setup
-//       const admin = wallet()
-//       const accID = wallet().address
-//       const subID = 1
-//       let ts = 1
-//       await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
-
-//       ts++
-//       await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
-
-//       // Test: 1 admin
-//       const guardian2 = wallet().address
-//       ts++
-//       await expect(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian2)).to.be.reverted
-//       // TODO "not found"
-//     })
-//   })
-
-//   describe("recoverAccountAdmin", function () {
-//     //   it("can recover using guardian accounts", async function () {
-//     //     // Setup
-//     //     const oldAdmin = wallet()
-//     //     const newAdmin = wallet()
-//     //     const accID = wallet().address
-//     //     const subID = 1
-//     //     let ts = 1
-//     //     await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-//     //     // Add guardian
-//     //     const guardian = wallet()
-//     //     ts++
-//     //     await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-//     //     ts++
-//     //     await recoverAccountAdmin(
-//     //       contract,
-//     //       [guardian],
-//     //       ts,
-//     //       ts,
-//     //       accID,
-//     //       AccountRecoveryType.GUARDIAN,
-//     //       oldAdmin.address,
-//     //       newAdmin.address
-//     //     )
-//     //   })
-//     //   it("can recover using subaccount signers", async function () {
-//     //     // Setup
-//     //     const oldAdmin = wallet()
-//     //     const newAdmin = wallet()
-//     //     const accID = wallet().address
-//     //     const subID = 1
-//     //     let ts = 1
-//     //     await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-//     //     // Add signer
-//     //     const signer = wallet()
-//     //     ts++
-//     //     addSubSigner(contract, ts, ts, oldAdmin, subID, signer.address, 1)
-//     //     ts++
-//     //     await recoverAccountAdmin(
-//     //       contract,
-//     //       [signer],
-//     //       ts,
-//     //       ts,
-//     //       accID,
-//     //       AccountRecoveryType.SUB_ACCOUNT_SIGNERS,
-//     //       oldAdmin.address,
-//     //       newAdmin.address
-//     //     )
-//     //   })
-//     //   it("fails if invalid signature", async function () {
-//     //     // Setup
-//     //     const oldAdmin = wallet()
-//     //     const newAdmin = wallet()
-//     //     const accID = wallet().address
-//     //     const subID = 1
-//     //     let ts = 1
-//     //     await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-//     //     // Add guardian
-//     //     const guardian = wallet()
-//     //     ts++
-//     //     await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-//     //     ts++
-//     //     const salt = nonce()
-//     //     const sigs = [
-//     //       genRecoverAccountAdminPayloadSig(
-//     //         guardian,
-//     //         accID,
-//     //         AccountRecoveryType.GUARDIAN,
-//     //         oldAdmin.address,
-//     //         newAdmin.address,
-//     //         salt
-//     //       ),
-//     //     ]
-//     //     await expectToThrowAsync(
-//     //       contract.recoverAccountAdmin(
-//     //         ts,
-//     //         ts,
-//     //         accID,
-//     //         AccountRecoveryType.GUARDIAN,
-//     //         oldAdmin.address,
-//     //         newAdmin.address,
-//     //         salt + 2,
-//     //         sigs
-//     //       ),
-//     //       "invalid signature"
-//     //     )
-//     //   })
-//     it("fails if account does not exist", async function () {
-//       // Setup
-//       const accID = wallet().address
-//       const oldAdmin = wallet()
-//       const newAdmin = wallet()
-
-//       let ts = 1
-//       // await expect(createAccount(contract, oldAdmin, ts, ts, accID)).not.to.be.reverted
-
-//       await expect(
-//         recoverAccountAdmin(
-//           contract,
-//           [wallet()],
-//           ts,
-//           ts,
-//           accID,
-//           AccountRecoveryType.GUARDIAN,
-//           oldAdmin.address,
-//           newAdmin.address
-//         )
-//       ).to.be.reverted
-//       // TODO "account does not exist"
-//     })
-//     //   it("fails if quorum is not met", async function () {
-//     //     // Setup
-//     //     const oldAdmin = wallet()
-//     //     const newAdmin = wallet()
-//     //     const accID = wallet().address
-//     //     const subID = 1
-//     //     let ts = 1
-//     //     await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-//     //     // Add 2 guardians, quorum should be 2 votes to be able to recover
-//     //     const guardian = wallet()
-//     //     const guardian2 = wallet()
-//     //     ts++
-//     //     await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-//     //     ts++
-//     //     await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian2.address)
-//     //     ts++
-//     //     await expectToThrowAsync(
-//     //       recoverAccountAdmin(
-//     //         contract,
-//     //         [guardian],
-//     //         ts,
-//     //         ts,
-//     //         accID,
-//     //         AccountRecoveryType.GUARDIAN,
-//     //         oldAdmin.address,
-//     //         newAdmin.address
-//     //       ),
-//     //       "failed quorum"
-//     //     )
-//     //   })
-//     //   it("fails if signer is not guardian or subaccount signer", async function () {
-//     //     // Setup
-//     //     const oldAdmin = wallet()
-//     //     const newAdmin = wallet()
-//     //     const accID = wallet().address
-//     //     const subID = 1
-//     //     let ts = 1
-//     //     await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-//     //     // Test
-//     //     const guardian = wallet()
-//     //     ts++
-//     //     await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-//     //     ts++
-//     //     await expectToThrowAsync(
-//     //       recoverAccountAdmin(
-//     //         contract,
-//     //         [wallet()],
-//     //         ts,
-//     //         ts,
-//     //         accID,
-//     //         AccountRecoveryType.GUARDIAN,
-//     //         oldAdmin.address,
-//     //         newAdmin.address
-//     //       ),
-//     //       "ineligible signer"
-//     //     )
-//     //   })
-//   })
-// })
