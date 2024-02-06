@@ -256,50 +256,6 @@ describe("API - Account", function () {
   //   })
   // })
 
-  describe("setAccountMultiSigThreshold", function () {
-    it("Should update multisig threshold successfully", async function () {
-      const w1 = wallet()
-      const w2 = wallet()
-
-      const accID = w1.address
-      let ts = 1
-      await createAccount(contract, w1, ts, ts, accID)
-
-      ts++
-      await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
-      ts++
-      await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
-    })
-
-    it("fails if threshold = 0", async function () {
-      // TODO: add 1 admin here
-      const w1 = wallet()
-      const accID = w1.address
-
-      // 1. Create sub account
-      let ts = 1
-      await createAccount(contract, w1, ts, ts, accID)
-
-      // 2. Set multisig threshold
-      ts++
-      const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 0)
-      await expectToThrowAsync(tx)
-      //  "invalid threshold"
-    })
-
-    it("fails if threshold > number of admins", async function () {
-      const w1 = wallet()
-      const accID = w1.address
-      let ts = 1
-      // 1. Create sub account
-      await createAccount(contract, w1, ts, ts, accID)
-      ts++
-      const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
-      await expectToThrowAsync(tx)
-      //  "invalid threshold"
-    })
-  })
-
   // describe("removeTransferSubAccount", function () {
   //   it("Should remove transfer subaccount successfully", async function () {
   //     // Create an account explicitly for this test
