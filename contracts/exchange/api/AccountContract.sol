@@ -91,6 +91,7 @@ contract AccountContract is BaseContract {
     bool isAdmin = curPerm & AccountPermAdmin != 0;
     if (isAdmin) {
       require(acc.adminCount > 1, "require 1 admin");
+      require(acc.multiSigThreshold <= acc.adminCount - 1, "require threshold <= adminCount - 1");
       acc.adminCount--;
     }
     acc.signers[signer] = 0;
