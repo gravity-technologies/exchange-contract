@@ -34,7 +34,8 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return sub;
   }
 
-  // Verify that the signatures are from the list of eligible signers, and those signatures form a simple majority
+  // Verify that the signatures are from the list of eligible signers, signer of each signature has admin permissions
+  // and those signatures form a simple majority
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,
     uint quorum,
