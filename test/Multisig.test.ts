@@ -117,5 +117,20 @@ describe.only("API - Multisig", function () {
         await expectToThrowAsync(addWithdrawalAddress(contract, [w1, w2], ts, ts, accID, withdrawalAddress))
       })
     })
+
+    describe("addAccountSigner and remove account signer", function () {
+      it("adding signer needs to meet multisig threshold", async function () {
+        ts = 1
+        await createAccount(contract, w1, ts, ts, accID)
+        ts++
+        await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
+        ts++
+        await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+        ts++
+        await addAccountSigner(contract, [w1, w2], ts, ts, accID, w3.address, AccPerm.Admin)
+        ts++
+        await setMultisigThreshold(contract, [w3, w2], ts, ts, accID, 3)
+      })
+    })
   })
 })
