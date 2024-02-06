@@ -5,6 +5,7 @@ import {
   MAX_GAS,
   addAccountGuardian,
   addAccountSigner,
+  addSubSigner,
   createAccount,
   createSubAccount,
   recoverAccountAdmin,
@@ -12,7 +13,11 @@ import {
   setMultisigThreshold,
 } from "./api"
 import { network } from "hardhat"
-import { genAddAccountGuardianPayloadSig, genRemoveAccountGuardianPayloadSig } from "./signature"
+import {
+  genAddAccountGuardianPayloadSig,
+  genRecoverAccountAdminPayloadSig,
+  genRemoveAccountGuardianPayloadSig,
+} from "./signature"
 import { AccPerm, AccountRecoveryType } from "./type"
 import { nonce, wallet, expectToThrowAsync } from "./util"
 
@@ -324,68 +329,73 @@ describe("API - AccountRecovery", function () {
         newAdmin.address
       )
     })
-    // it("can recover using subaccount signers", async function () {
-    //   // Setup
-    //   const oldAdmin = wallet()
-    //   const newAdmin = wallet()
-    //   const accID = wallet().address
-    //   const subID = 1
-    //   let ts = 1
-    //   await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-    //   // Add signer
-    //   const signer = wallet()
-    //   ts++
-    //   addSubSigner(contract, ts, ts, oldAdmin, subID, signer.address, 1)
-    //   ts++
-    //   await recoverAccountAdmin(
-    //     contract,
-    //     [signer],
-    //     ts,
-    //     ts,
-    //     accID,
-    //     AccountRecoveryType.SUB_ACCOUNT_SIGNERS,
-    //     oldAdmin.address,
-    //     newAdmin.address
-    //   )
-    // })
-    // it("fails if invalid signature", async function () {
-    //   // Setup
-    //   const oldAdmin = wallet()
-    //   const newAdmin = wallet()
-    //   const accID = wallet().address
-    //   const subID = 1
-    //   let ts = 1
-    //   await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-    //   // Add guardian
-    //   const guardian = wallet()
-    //   ts++
-    //   await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-    //   ts++
-    //   const salt = nonce()
-    //   const sigs = [
-    //     genRecoverAccountAdminPayloadSig(
-    //       guardian,
-    //       accID,
-    //       AccountRecoveryType.GUARDIAN,
-    //       oldAdmin.address,
-    //       newAdmin.address,
-    //       salt
-    //     ),
-    //   ]
-    //   await expectToThrowAsync(
-    //     contract.recoverAccountAdmin(
-    //       ts,
-    //       ts,
-    //       accID,
-    //       AccountRecoveryType.GUARDIAN,
-    //       oldAdmin.address,
-    //       newAdmin.address,
-    //       salt + 2,
-    //       sigs
-    //     ),
-    //     "invalid signature"
-    //   )
-    // })
+    // TODO: Fix me
+    it.skip("can recover using subaccount signers", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = oldAdmin.address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add signer
+      const signer = wallet()
+      ts++
+      addSubSigner(contract, ts, ts, oldAdmin, subID, signer.address, 1)
+      ts++
+      // await recoverAccountAdmin(
+      //   contract,
+      //   [signer],
+      //   ts,
+      //   ts,
+      //   accID,
+      //   AccountRecoveryType.SUB_ACCOUNT_SIGNERS,
+      //   oldAdmin.address,
+      //   newAdmin.address
+      // )
+    })
+    it("fails if invalid signature", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add guardian
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      const salt = nonce()
+      const sigs = [
+        genRecoverAccountAdminPayloadSig(
+          guardian,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt
+        ),
+      ]
+      await expectToThrowAsync(
+        contract.recoverAccountAdmin(
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt + 2,
+          sigs
+        ),
+        "invalid signature"
+      )
+    })
     it("fails if account does not exist", async function () {
       // Setup
       const accID = wallet().address
@@ -466,45 +476,48 @@ describe("API - AccountRecovery", function () {
           AccountRecoveryType.GUARDIAN,
           oldAdmin.address,
           newAdmin.address
-        )
-        // "ineligible signer"it("fails if invalid signature", async function () {
-        //   // Setup
-        //   const oldAdmin = wallet()
-        //   const newAdmin = wallet()
-        //   const accID = wallet().address
-        //   const subID = 1
-        //   let ts = 1
-        //   await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
-        //   // Add guardian
-        //   const guardian = wallet()
-        //   ts++
-        //   await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
-        //   ts++
-        //   const salt = nonce()
-        //   const sigs = [
-        //     genRecoverAccountAdminPayloadSig(
-        //       guardian,
-        //       accID,
-        //       AccountRecoveryType.GUARDIAN,
-        //       oldAdmin.address,
-        //       newAdmin.address,
-        //       salt
-        //     ),
-        //   ]
-        //   await expectToThrowAsync(
-        //     contract.recoverAccountAdmin(
-        //       ts,
-        //       ts,
-        //       accID,
-        //       AccountRecoveryType.GUARDIAN,
-        //       oldAdmin.address,
-        //       newAdmin.address,
-        //       salt + 2,
-        //       sigs
-        //     ),
-        //     "invalid signature"
-        //   )
-        // })
+        ),
+        "ineligible signer"
+      )
+    })
+    it("fails if invalid signature", async function () {
+      // Setup
+      const oldAdmin = wallet()
+      const newAdmin = wallet()
+      const accID = wallet().address
+      const subID = 1
+      let ts = 1
+      await createAccount(contract, oldAdmin, ts, ts, accID)
+      ts++
+      await createSubAccount(contract, oldAdmin, ts, ts, accID, subID)
+      // Add guardian
+      const guardian = wallet()
+      ts++
+      await addAccountGuardian(contract, [oldAdmin], ts, ts, accID, guardian.address)
+      ts++
+      const salt = nonce()
+      const sigs = [
+        genRecoverAccountAdminPayloadSig(
+          guardian,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt
+        ),
+      ]
+      await expectToThrowAsync(
+        contract.recoverAccountAdmin(
+          ts,
+          ts,
+          accID,
+          AccountRecoveryType.GUARDIAN,
+          oldAdmin.address,
+          newAdmin.address,
+          salt + 2,
+          sigs
+        ),
+        "invalid signature"
       )
     })
   })
