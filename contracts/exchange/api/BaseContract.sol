@@ -59,8 +59,8 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
     for (uint i = 0; i < numSigs; i++) {
-      // TODO: require(addressExists(eligibleSigners, sigs[i].signer), "ineligible signer");
-      require(eligibleSigners[sigs[i].signer] > 0, "ineligible signer");
+      require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
+      // require(eligibleSigners[sigs[i].signer] > 0, "ineligible signer");
       _requireValidSig(timestamp, hash, sigs[i]);
     }
 
