@@ -64,6 +64,21 @@ describe.only("API - Multisig", function () {
       await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
     })
 
+    it("Should decrease multisig threshold successfully", async function () {
+      const w1 = wallet()
+      const w2 = wallet()
+
+      const accID = w1.address
+      let ts = 1
+      await createAccount(contract, w1, ts, ts, accID)
+      ts++
+      await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
+      ts++
+      await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+      ts++
+      await setMultisigThreshold(contract, [w1, w2], ts, ts, accID, 1)
+    })
+
     it("fails if threshold = 0", async function () {
       const w1 = wallet()
       const accID = w1.address
