@@ -45,28 +45,28 @@ describe("API - AccountRecovery", function () {
       const accID = admin.address
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
 
       // Test: 2 admins
       const guardian2 = wallet().address
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
-      await expect(addAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian2)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian2)
     })
 
     it("fails if signer is not an admin", async function () {
@@ -75,10 +75,10 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
@@ -102,10 +102,10 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
@@ -121,20 +121,20 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
       await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
@@ -146,15 +146,15 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
       ts++
       await expectToThrowAsync(addAccountGuardian(contract, [admin], ts, ts, accID, guardian))
     })
@@ -168,18 +168,18 @@ describe("API - AccountRecovery", function () {
       const subID = 1
 
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
 
       ts++
-      await expect(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await removeAccountGuardian(contract, [admin], ts, ts, accID, guardian)
     })
 
     it("admin can remove guardian successfully, quorum=2", async function () {
@@ -188,26 +188,26 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
       ts++
-      await expect(addAccountGuardian(contract, [admin], ts, ts, accID, guardian)).not.to.be.reverted
+      await addAccountGuardian(contract, [admin], ts, ts, accID, guardian)
 
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
-      await expect(removeAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian)).not.to.be.reverted
+      await removeAccountGuardian(contract, [admin, alice], ts, ts, accID, guardian)
     })
 
     it("fails if signer is not an admin", async function () {
@@ -216,10 +216,10 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
@@ -242,10 +242,10 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian = wallet().address
@@ -263,20 +263,20 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test
       const guardian = wallet().address
       const alice = wallet()
       ts++
-      await expect(addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)).not.to.be.reverted
+      await addAccountSigner(contract, [admin], ts, ts, accID, alice.address, AccPerm.Admin)
 
       // Update quorum to 2
       ts++
-      await expect(setMultisigThreshold(contract, [admin], ts, ts, accID, 2)).not.to.be.reverted
+      await setMultisigThreshold(contract, [admin], ts, ts, accID, 2)
 
       ts++
       await expectToThrowAsync(removeAccountGuardian(contract, [admin], ts, ts, accID, guardian))
@@ -289,10 +289,10 @@ describe("API - AccountRecovery", function () {
       const accID = wallet().address
       const subID = 1
       let ts = 1
-      await expect(createAccount(contract, admin, ts, ts, accID)).not.to.be.reverted
+      await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expect(createSubAccount(contract, admin, ts, ts, accID, subID)).not.to.be.reverted
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       // Test: 1 admin
       const guardian2 = wallet().address
@@ -403,7 +403,7 @@ describe("API - AccountRecovery", function () {
       const newAdmin = wallet()
 
       let ts = 1
-      // await expect(createAccount(contract, oldAdmin, ts, ts, accID)).not.to.be.reverted
+      // await createAccount(contract, oldAdmin, ts, ts, accID)
 
       await expectToThrowAsync(
         recoverAccountAdmin(
