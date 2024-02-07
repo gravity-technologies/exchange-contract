@@ -7,44 +7,6 @@ on:
   pull_request:
 
 jobs:
-  foundry:
-    strategy:
-      matrix:
-        module: 
-          - "./contracts"
-      fail-fast: true
-
-    name: Foundry project
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: none
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-
-      - name: Run Forge build
-        run: |
-          cd ${{ matrix.module }}
-          forge --version
-          forge build --sizes
-        id: build
-
-      - name: Run Forge format
-        run: |
-          cd ${{ matrix.module }}
-          forge fmt --check
-        id: formatter
-
-      - name: Run Forge tests
-        run: |
-          cd ${{ matrix.module }}
-          forge test -vvv
-        id: forge-test
-
   hardhat:
     strategy:
       matrix:
@@ -92,3 +54,9 @@ jobs:
           yarn prettier:check
           yarn test
         id: hardhat-test
+        
+      - name: Run Forge tests
+        run: |
+          cd ${{ matrix.module }}
+          forge test -vvv
+        id: forge-test
