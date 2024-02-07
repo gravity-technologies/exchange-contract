@@ -212,26 +212,26 @@ describe("API - SubAccount", function () {
     })
 
     // This is invalid
-    // it.only("fails if the signer is already a subaccount signer", async function () {
-    //   // Setup
-    //   const admin = wallet()
-    //   const accID = admin.address
+    it("fails if the signer is already a subaccount signer", async function () {
+      // Setup
+      const admin = wallet()
+      const accID = admin.address
 
-    //   let ts = 1
-    //   await createAccount(contract, admin, ts, ts, accID)
+      let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
 
-    //   ts++
-    //   const subID = 1
-    //   await createSubAccount(contract, admin, ts, ts, accID, subID)
+      ts++
+      const subID = 1
+      await createSubAccount(contract, admin, ts, ts, accID, subID)
 
-    //   // Test
-    //   const signer = wallet().address
-    //   ts++
-    //   await addSubSigner(contract, ts, ts, admin, subID, signer, 1)
+      // Test
+      const signer = wallet().address
+      ts++
+      await addSubSigner(contract, ts, ts, admin, subID, signer, 1)
 
-    //   ts++
-    //   await expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, signer, 1))
-    // })
+      ts++
+      await expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, signer, 1))
+    })
   })
 
   describe("SetSubAccountSignerPermissions", function () {
@@ -323,12 +323,15 @@ describe("API - SubAccount", function () {
       // TODO "actor cannot grant permission"
     })
 
-    it.skip("fails if invalid signature", async function () {
+    it("fails if invalid signature", async function () {
       // Setup
       const admin = wallet()
       const subID = 1
       const accID = admin.address
       let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      ts++
+
       await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
@@ -465,12 +468,14 @@ describe("API - SubAccount", function () {
       // TODO"subaccount does not exist"
     })
 
-    it.skip("fails if subaccount signer doesn't exist", async function () {
+    it("fails if subaccount signer doesn't exist", async function () {
       // Setup
       const admin = wallet()
       const subID = 1
       const accID = admin.address
       let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      ts++
       await createSubAccount(contract, admin, ts, ts, accID, subID)
       // SubAccount admin
       const alice = wallet()
@@ -479,12 +484,14 @@ describe("API - SubAccount", function () {
       await expectToThrowAsync(removeSubSigner(contract, admin, ts, ts, subID, alice.address), "signer not found")
     })
 
-    it.skip("fails if invalid signature", async function () {
+    it("fails if invalid signature", async function () {
       // Setup
       const admin = wallet()
       const subID = 1
       const accID = admin.address
       let ts = 1
+      await createAccount(contract, admin, ts, ts, accID)
+      ts++
       await createSubAccount(contract, admin, ts, ts, accID, subID)
       ts++
       // SubAccount admin
