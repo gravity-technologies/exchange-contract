@@ -6,7 +6,7 @@ import { addAccountSigner, removeAccountSigner, addWithdrawalAddress, createAcco
 import { AccPerm } from "./type"
 import { expectToThrowAsync, wallet } from "./util"
 
-describe.only("API - Multisig", function () {
+describe("API - Multisig", function () {
   let contract: Contract
   let snapshotId: string
   const w1 = wallet()
