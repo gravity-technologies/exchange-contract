@@ -47,8 +47,6 @@ describe("API - Multisig", function () {
     })
 
     it("fails if threshold = 0", async function () {
-      // 2. Set multisig threshold
-      ts++
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 0)
       await expectToThrowAsync(tx)
       //  "invalid threshold"
