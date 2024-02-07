@@ -2,32 +2,11 @@ import { expect } from "chai"
 import { Contract } from "ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
-import {
-  addAccountSigner,
-  addWithdrawalAddress,
-  createAccount,
-  removeAccountSigner,
-  removeWithdrawalAddress,
-  setMultisigThreshold,
-} from "./api"
+import { addAccountSigner, addWithdrawalAddress, createAccount, setMultisigThreshold } from "./api"
 import { AccPerm } from "./type"
 import { expectToThrowAsync, wallet } from "./util"
 
-// Acount
-
-// Signners
-// Add Acc Signer
-// Remove Acc Signer
-// Set Acc Signer Permissions
-
-// Withdrawal Address
-// Add Withdrawal Address
-// Remove Withdrawal Address
-
-// Transfer
-// External Transfer
-
-describe.only("API - Multisig", function () {
+describe("API - Multisig", function () {
   let contract: Contract
   let snapshotId: string
   const w1 = wallet()
@@ -51,10 +30,6 @@ describe.only("API - Multisig", function () {
   })
   describe("setAccountMultiSigThreshold", function () {
     it("Should increase multisig threshold successfully", async function () {
-      const w1 = wallet()
-      const w2 = wallet()
-
-      const accID = w1.address
       let ts = 1
       await createAccount(contract, w1, ts, ts, accID)
 
@@ -65,10 +40,6 @@ describe.only("API - Multisig", function () {
     })
 
     it("Should decrease multisig threshold successfully", async function () {
-      const w1 = wallet()
-      const w2 = wallet()
-
-      const accID = w1.address
       let ts = 1
       await createAccount(contract, w1, ts, ts, accID)
       ts++
@@ -80,9 +51,6 @@ describe.only("API - Multisig", function () {
     })
 
     it("fails if threshold = 0", async function () {
-      const w1 = wallet()
-      const accID = w1.address
-
       // 1. Create sub account
       let ts = 1
       await createAccount(contract, w1, ts, ts, accID)
@@ -95,8 +63,6 @@ describe.only("API - Multisig", function () {
     })
 
     it("fails if threshold > number of admins", async function () {
-      const w1 = wallet()
-      const accID = w1.address
       let ts = 1
       // 1. Create sub account
       await createAccount(contract, w1, ts, ts, accID)
