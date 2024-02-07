@@ -23,6 +23,9 @@ describe("API - Multisig", function () {
 
   beforeEach(async () => {
     snapshotId = await network.provider.send("evm_snapshot")
+    ts = 1
+    await createAccount(contract, w1, ts, ts, accID)
+    ts++
   })
 
   afterEach(async () => {
@@ -30,19 +33,12 @@ describe("API - Multisig", function () {
   })
   describe("setAccountMultiSigThreshold", function () {
     it("Should increase multisig threshold successfully", async function () {
-      let ts = 1
-      await createAccount(contract, w1, ts, ts, accID)
-
-      ts++
       await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
       ts++
       await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
     })
 
     it("Should decrease multisig threshold successfully", async function () {
-      let ts = 1
-      await createAccount(contract, w1, ts, ts, accID)
-      ts++
       await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
       ts++
       await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
@@ -51,10 +47,6 @@ describe("API - Multisig", function () {
     })
 
     it("fails if threshold = 0", async function () {
-      // 1. Create sub account
-      let ts = 1
-      await createAccount(contract, w1, ts, ts, accID)
-
       // 2. Set multisig threshold
       ts++
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 0)
@@ -63,10 +55,6 @@ describe("API - Multisig", function () {
     })
 
     it("fails if threshold > number of admins", async function () {
-      let ts = 1
-      // 1. Create sub account
-      await createAccount(contract, w1, ts, ts, accID)
-      ts++
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
       await expectToThrowAsync(tx)
       //  "invalid threshold"
@@ -76,9 +64,6 @@ describe("API - Multisig", function () {
   describe("multisig operations  based on set multisig threshold", function () {
     describe("addWithdrawalAddress", function () {
       it("should add withdrawal address if threshold is met", async function () {
-        ts = 1
-        await createAccount(contract, w1, ts, ts, accID)
-        ts++
         await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
         ts++
         await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
@@ -88,9 +73,6 @@ describe("API - Multisig", function () {
       })
 
       it("fails if threshold is not met", async function () {
-        ts = 1
-        await createAccount(contract, w1, ts, ts, accID)
-        ts++
         await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
         ts++
         await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
@@ -101,9 +83,6 @@ describe("API - Multisig", function () {
 
     describe("addAccountSigner and remove account signer", function () {
       it("adding signer needs to meet multisig threshold", async function () {
-        ts = 1
-        await createAccount(contract, w1, ts, ts, accID)
-        ts++
         await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
         ts++
         await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
