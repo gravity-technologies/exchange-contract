@@ -111,6 +111,17 @@ describe.only("API - Multisig", function () {
         ts++
         await removeAccountSigner(contract, [w1, w2], ts, ts, accID, w3.address)
       })
+
+      it("fails to remove signer if noOfAdmins < multisig threshold after removal", async function () {
+        await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
+        ts++
+        await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+        ts++
+        await expectToThrowAsync(
+          removeAccountSigner(contract, [w1, w2], ts, ts, accID, w2.address),
+          "require threshold <= adminCount - 1"
+        )
+      })
     })
   })
 })
