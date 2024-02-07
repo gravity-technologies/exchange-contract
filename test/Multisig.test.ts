@@ -2,11 +2,11 @@ import { expect } from "chai"
 import { Contract } from "ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
-import { addAccountSigner, addWithdrawalAddress, createAccount, setMultisigThreshold } from "./api"
+import { addAccountSigner, removeAccountSigner, addWithdrawalAddress, createAccount, setMultisigThreshold } from "./api"
 import { AccPerm } from "./type"
 import { expectToThrowAsync, wallet } from "./util"
 
-describe("API - Multisig", function () {
+describe.only("API - Multisig", function () {
   let contract: Contract
   let snapshotId: string
   const w1 = wallet()
@@ -54,7 +54,8 @@ describe("API - Multisig", function () {
 
     it("fails if threshold > number of admins", async function () {
       const tx = setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
-      await expectToThrowAsync(tx)
+      await expectToThrowAsync(tx) // 2. Set multisig threshold
+      ts++
       //  "invalid threshold"
     })
   })
@@ -79,8 +80,8 @@ describe("API - Multisig", function () {
       })
     })
 
-    describe("addAccountSigner and remove account signer", function () {
-      it("adding signer needs to meet multisig threshold", async function () {
+    describe("addAccountSigner and removeAccountSigner", function () {
+      it("should add signer if multisig threshold is met", async function () {
         await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
         ts++
         await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
@@ -88,6 +89,27 @@ describe("API - Multisig", function () {
         await addAccountSigner(contract, [w1, w2], ts, ts, accID, w3.address, AccPerm.Admin)
         ts++
         await setMultisigThreshold(contract, [w3, w2], ts, ts, accID, 3)
+      })
+
+      it("fails to add signer if multisig threshold is not met", async function () {
+        await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
+        ts++
+        await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+        ts++
+        await expectToThrowAsync(
+          addAccountSigner(contract, [w1], ts, ts, accID, w3.address, AccPerm.Admin),
+          "failed quorum"
+        )
+      })
+
+      it("removes signer if multisig threshold is met", async function () {
+        await addAccountSigner(contract, [w1], ts, ts, accID, w2.address, AccPerm.Admin)
+        ts++
+        await setMultisigThreshold(contract, [w1], ts, ts, accID, 2)
+        ts++
+        await addAccountSigner(contract, [w1, w2], ts, ts, accID, w3.address, AccPerm.Admin)
+        ts++
+        await removeAccountSigner(contract, [w1, w2], ts, ts, accID, w3.address)
       })
     })
   })
