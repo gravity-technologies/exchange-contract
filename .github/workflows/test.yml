@@ -9,6 +9,9 @@ on:
 jobs:
   hardhat:
     strategy:
+      matrix:
+          module: 
+            - "./contracts"
       fail-fast: true
 
     name: Hardhat project
@@ -16,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: none
+          submodules: recursive
 
       - name: Setup Node 20
         uses: actions/setup-node@v3
@@ -24,9 +27,21 @@ jobs:
           node-version: "20.x"
           cache: "yarn"
 
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+          submodules: recursive
+
       - name: Install Node dependencies
         run: |
           yarn install
+
+      - name: Run Forge tests
+        run: |
+          cd ${{ matrix.module }}
+          forge test -vvv
+        id: forge-test
 
       - name: Run Era Test Node Action
         uses: dutterbutter/era-test-node-action@latest
