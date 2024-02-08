@@ -34,7 +34,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return sub;
   }
 
-  // Verify that the signatures are from the list of eligible signers, and those signatures form a simple majority
+  // Verify that the signatures are from the list of eligible signers, signer of each signature has admin permissions and those signatures form a simple majority
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,
     uint quorum,
@@ -59,8 +59,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
     for (uint i = 0; i < numSigs; i++) {
-      // TODO: require(addressExists(eligibleSigners, sigs[i].signer), "ineligible signer");
-      require(eligibleSigners[sigs[i].signer] > 0, "ineligible signer");
+      require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
       _requireValidSig(timestamp, hash, sigs[i]);
     }
 

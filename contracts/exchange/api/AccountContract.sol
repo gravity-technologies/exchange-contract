@@ -68,6 +68,13 @@ contract AccountContract is BaseContract {
     if (curPerm & AccountPermAdmin == 0 && permissions & AccountPermAdmin != 0) {
       acc.adminCount++;
     }
+
+    if (curPerm & AccountPermAdmin != 0 && permissions & AccountPermAdmin == 0) {
+      require(acc.adminCount > 1, "require 1 admin");
+      require(acc.multiSigThreshold <= acc.adminCount - 1, "require threshold <= adminCount - 1");
+      acc.adminCount--;
+    }
+
     acc.signers[signer] = permissions;
   }
 
