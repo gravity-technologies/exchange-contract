@@ -6,7 +6,8 @@ import "../../../contracts/exchange/util/Address.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 
 contract AddressTest is Test {
-  address[] public addresses;
+  address[] public addAddressesFix;
+  address[] public removeAddressesFix;
   mapping(address => uint64) mockSigners;
   mapping(address => uint64) accountSigners;
   mapping(address => uint64) subAccountSigners;
@@ -25,11 +26,11 @@ contract AddressTest is Test {
   }
 
   function testAddAddress() public {
-    addAddress(addresses, address(0x123));
-    addAddress(addresses, address(0x456));
-    addAddress(addresses, address(0x789));
-    addAddress(addresses, address(0x999));
-    assert(addresses.length == 4);
+    addAddress(addAddressesFix, address(0x123));
+    addAddress(addAddressesFix, address(0x456));
+    addAddress(addAddressesFix, address(0x789));
+    addAddress(addAddressesFix, address(0x999));
+    assert(addAddressesFix.length == 4);
   }
 
   function testSignerHasPermMock() public {
@@ -61,5 +62,21 @@ contract AddressTest is Test {
     assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermRemoveSigner));
     assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermUpdateSignerPermission));
     assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermChangeMarginType));
+  }
+
+  function testRemoveAddress() public {
+    addAddress(removeAddressesFix, address(0x123));
+    addAddress(removeAddressesFix, address(0x456));
+    addAddress(removeAddressesFix, address(0x789));
+    addAddress(removeAddressesFix, address(0x999));
+    assert(removeAddressesFix.length == 4);
+    removeAddress(removeAddressesFix, address(0x123), false);
+    assert(removeAddressesFix.length == 3);
+    removeAddress(removeAddressesFix, address(0x789), false);
+    assert(removeAddressesFix.length == 2);
+    removeAddress(removeAddressesFix, address(0x456), false);
+    assert(removeAddressesFix.length == 1);
+    removeAddress(removeAddressesFix, address(0x999), false);
+    assert(removeAddressesFix.length == 0);
   }
 }
