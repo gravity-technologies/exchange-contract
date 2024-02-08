@@ -10,12 +10,21 @@ import "../Base.t.sol";
 
 contract AccountContractTest is Base_Test {
   function testCreateAccount() public {
-    int64 timestamp = 1;
+    uint256 expiryTimestamp = currentTimestamp + (3 days);
+    int64 currentTimestapInt64 = int64(int256(currentTimestamp));
+    int64 expiry = int64(int256(expiryTimestamp));
     uint32 txNonce = 1;
     uint32 sigNonce = random();
     address accountID = users.walletOne;
     bytes32 structHash = hashCreateAccount(accountID, sigNonce);
-    Signature memory sig = getUserSig(users.walletOne, 12, "", structHash, timestamp, txNonce);
-    grvtExchange.createAccount(timestamp, txNonce, accountID, sig);
+    Signature memory sig = getUserSig(
+      users.walletOne,
+      users.walletOnePrivateKey,
+      DOMAIN_HASH,
+      structHash,
+      expiry,
+      txNonce
+    );
+    grvtExchange.createAccount(currentTimestapInt64, txNonce, accountID, sig);
   }
 }

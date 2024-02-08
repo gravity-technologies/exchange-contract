@@ -10,4 +10,12 @@ struct Users {
   address payable walletFive;
   address payable walletSix;
   address payable walletSeven;
+  uint256 gravityPrivateKey;
+  uint256 walletOnePrivateKey;
+  uint256 walletTwoPrivateKey;
+  uint256 walletThreePrivateKey;
+  uint256 walletFourPrivateKey;
+  uint256 walletFivePrivateKey;
+  uint256 walletSixPrivateKey;
+  uint256 walletSevenPrivateKey;
 }

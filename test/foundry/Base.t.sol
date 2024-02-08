@@ -10,10 +10,16 @@ import {Users} from "./types/Types.sol";
 
 contract Base_Test is Test {
   /*//////////////////////////////////////////////////////////////
+                               CONSTANTS
+    //////////////////////////////////////////////////////////////*/
+  bytes32 constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
+
+  /*//////////////////////////////////////////////////////////////
                                VARIABLES
     //////////////////////////////////////////////////////////////*/
 
   Users internal users;
+  uint256 currentTimestamp = block.timestamp;
 
   /*//////////////////////////////////////////////////////////////
                              TEST CONTRACTS
@@ -30,13 +36,21 @@ contract Base_Test is Test {
     // Create users for testing.
     users = Users({
       gravity: createUser("gravity"),
+      gravityPrivateKey: uint256(keccak256(abi.encodePacked("gravity"))),
       walletOne: createUser("walletOne"),
+      walletOnePrivateKey: uint256(keccak256(abi.encodePacked("walletOne"))),
       walletTwo: createUser("walletTwo"),
+      walletTwoPrivateKey: uint256(keccak256(abi.encodePacked("walletTwo"))),
       walletThree: createUser("walletThree"),
+      walletThreePrivateKey: uint256(keccak256(abi.encodePacked("walletThree"))),
       walletFour: createUser("walletFour"),
+      walletFourPrivateKey: uint256(keccak256(abi.encodePacked("walletFour"))),
       walletFive: createUser("walletFive"),
+      walletFivePrivateKey: uint256(keccak256(abi.encodePacked("walletFive"))),
       walletSix: createUser("walletSix"),
-      walletSeven: createUser("walletSeven")
+      walletSixPrivateKey: uint256(keccak256(abi.encodePacked("walletSix"))),
+      walletSeven: createUser("walletSeven"),
+      walletSevenPrivateKey: uint256(keccak256(abi.encodePacked("walletSeven")))
     });
 
     // Make the deployer the default caller in all subsequent tests.
