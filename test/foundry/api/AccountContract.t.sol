@@ -13,7 +13,6 @@ contract AccountContractTest is Base_Test {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
-    uint32 txNonce = 1;
     uint32 sigNonce = random();
     address accountID = users.walletOne;
     bytes32 structHash = hashCreateAccount(accountID, sigNonce);
@@ -23,8 +22,9 @@ contract AccountContractTest is Base_Test {
       DOMAIN_HASH,
       structHash,
       expiry,
-      txNonce
+      sigNonce
     );
     grvtExchange.createAccount(currentTimestapInt64, txNonce, accountID, sig);
+    txNonce++;
   }
 }

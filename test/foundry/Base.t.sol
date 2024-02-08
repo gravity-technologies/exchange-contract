@@ -20,6 +20,7 @@ contract Base_Test is Test {
 
   Users internal users;
   uint256 currentTimestamp = block.timestamp;
+  uint32 txNonce = 1;
 
   /*//////////////////////////////////////////////////////////////
                              TEST CONTRACTS
