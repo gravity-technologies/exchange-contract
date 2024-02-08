@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
 import "forge-std/console.sol";
 import "../../contracts/exchange/GRVTExchange.sol";
+import "../../contracts/exchange/types/DataStructure.sol";
 import {Users} from "./types/Types.sol";
 
 contract Base_Test is Test {
@@ -59,5 +60,38 @@ contract Base_Test is Test {
     bytes32[] memory _initialConfig = new bytes32[](0);
     grvtExchange.initialize(_initialConfig);
     vm.label({account: address(grvtExchange), newLabel: "GRVTExchange"});
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                            HELPERS
+  //////////////////////////////////////////////////////////////*/
+
+  function getUserSig(
+    address signer,
+    uint256 privateKey,
+    bytes32 domainSeperator,
+    bytes32 structHash,
+    int64 expiry,
+    uint32 nonce
+  ) public returns (Signature memory sig) {
+    bytes32 digest = toTypedDataHash(domainSeperator, structHash);
+    (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, digest);
+    sig = Signature(signer, r, s, v, expiry, nonce);
+    return sig;
+  }
+
+  function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) public pure returns (bytes32) {
+    return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+  }
+
+  // generates pseudo random numbers we can use as payment IDs and for generating private keys
+  uint256 counter = 1;
+
+  function random() public returns (uint32) {
+    counter++;
+    // sha3 and now have been deprecated
+    uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, counter)));
+    // Truncate the result to uint32
+    return uint32(randomNumber);
   }
 }
