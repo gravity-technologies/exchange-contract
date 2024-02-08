@@ -1,7 +1,7 @@
 # Foundry
 cache/
 out/
-
+cache_forge/
 # JS
 node_modules/
 
