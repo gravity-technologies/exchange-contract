@@ -2,13 +2,16 @@
 
 ## Project Layout
 
+This project is based on Foundry(Ethereum) + Hardhat(Zksync). Foundry is used mostly for unit testing while hardhat is used for testing, scripting and deployments. We use the [hardhat-foundry](https://hardhat.org/hardhat-runner/plugins/nomicfoundation-hardhat-foundry) plugin to support both frameworks.
+
 - `/contracts`: Contains solidity smart contracts.
 - `/deploy`: Scripts for contract deployment and interaction.
-- `/test`: Test files.
+- `/test`: Test files. Files tested using foundry are under `test/foundry`
 - `hardhat.config.ts`: Configuration settings.
 
 ## Dependencies
 
+- `curl -L https://foundry.paradigm.xyz | bash` and `foundryup` to install foundry
 - `npm install -g surya`: Install [Consensys Surya](https://github.com/ConsenSys/surya?tab=readme-ov-file) for static analysis of code like drawing inheritance graph. (Optional)
 - Install [Era Test Node](https://docs.zksync.io/build/test-and-debug/era-test-node.html#understanding-the-in-memory-node). To test your installation, run `era_test_node run`.
 
@@ -17,7 +20,7 @@
 - `era_test_node run`: Run zkSync Era In-memory node locally (an alternative is to run `yarn hardhat node-zksync`).
 - `yarn compile`: Compiles contracts.
 - `yarn deploy:upgradable`: Deploys `GRVTExchange.sol` using the [transparent proxy pattern](https://blog.openzeppelin.com/the-transparent-proxy-pattern).
-- `yarn test`: Tests the contracts.
+- `yarn test`: Tests the contracts using both forge and harhat.
 
 ## Static Analysis
 
