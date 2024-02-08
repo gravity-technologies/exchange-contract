@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "../../../lib/forge-std/src/Test.sol";
+import "../../../lib/forge-std/src/Vm.sol";
 import "../../../contracts/exchange/util/Address.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 
@@ -78,5 +79,12 @@ contract AddressTest is Test {
     assert(removeAddressesFix.length == 1);
     removeAddress(removeAddressesFix, address(0x999), false);
     assert(removeAddressesFix.length == 0);
+    addAddress(removeAddressesFix, address(0x123));
+    vm.expectRevert("cannot remove last @");
+    removeAddress(removeAddressesFix, address(0x123), true);
+    assert(removeAddressesFix.length == 1);
+    vm.expectRevert("not found");
+    removeAddress(removeAddressesFix, address(0x999), false);
+    assert(removeAddressesFix.length == 1);
   }
 }
