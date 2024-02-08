@@ -19,7 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: none
+          submodules: recursive
+          exclude: exchange-contract
 
       - name: Setup Node 20
         uses: actions/setup-node@v3
@@ -36,6 +37,12 @@ jobs:
       - name: Install Node dependencies
         run: |
           yarn install
+
+      - name: Run Forge tests
+        run: |
+          cd ${{ matrix.module }}
+          forge test -vvv
+        id: forge-test
 
       - name: Run Era Test Node Action
         uses: dutterbutter/era-test-node-action@latest
@@ -57,8 +64,4 @@ jobs:
           yarn test
         id: hardhat-test
         
-      - name: Run Forge tests
-        run: |
-          cd ${{ matrix.module }}
-          forge test -vvv
-        id: forge-test
+      
