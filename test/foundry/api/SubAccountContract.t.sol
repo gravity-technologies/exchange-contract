@@ -12,10 +12,9 @@ import "./APIUtils.sol";
 contract SubAccountContractTest is APIHelpers {
   function testCreateAccount() public {
     createAccountHelper(users.walletOne, users.walletOnePrivateKey);
-    txNonce++;
+    progressToNextTxn();
     address accountID = users.walletOne;
     uint64 subAccID = uint64(random());
-    currentTimestamp += (3 days);
     createSubAccountHelper(users.walletOne, users.walletOnePrivateKey, accountID, subAccID);
   }
 }
