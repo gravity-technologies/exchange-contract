@@ -7,24 +7,24 @@ import "../../../contracts/exchange/api/signature/generated/AccountSig.sol";
 import "../../../contracts/exchange/api/AccountContract.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 import "../Base.t.sol";
+import "./APIUtils.sol";
 
-contract AccountContractTest is Base_Test {
+contract AccountContractTest is APIHelpers {
   function testCreateAccount() public {
-    uint256 expiryTimestamp = currentTimestamp + (3 days);
-    int64 currentTimestapInt64 = int64(int256(currentTimestamp));
-    int64 expiry = int64(int256(expiryTimestamp));
-    uint32 sigNonce = random();
-    address accountID = users.walletOne;
-    bytes32 structHash = hashCreateAccount(accountID, sigNonce);
-    Signature memory sig = getUserSig(
-      users.walletOne,
-      users.walletOnePrivateKey,
-      DOMAIN_HASH,
-      structHash,
-      expiry,
-      sigNonce
-    );
-    grvtExchange.createAccount(currentTimestapInt64, txNonce, accountID, sig);
+    createAccountHelper(users.walletOne, users.walletOnePrivateKey);
     txNonce++;
+  }
+
+  function testAddAccountSigner() public {
+    createAccountHelper(users.walletOne, users.walletOnePrivateKey);
+    progressToNextTxn();
+    address accountID = users.walletOne;
+    uint64 permissions = AccountPermInternalTransfer | AccountPermExternalTransfer | AccountPermWithdraw;
+    address[] memory signerWallets = new address[](1);
+    uint256[] memory signerPrivateKeys = new uint256[](1);
+    signerWallets[0] = address(users.walletOne);
+    signerPrivateKeys[0] = users.walletOnePrivateKey;
+    addAccountSignerHelper(signerWallets, signerPrivateKeys, accountID, permissions, users.walletTwo);
+    progressToNextTxn();
   }
 }

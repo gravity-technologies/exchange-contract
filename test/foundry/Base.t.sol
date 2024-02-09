@@ -81,6 +81,7 @@ contract Base_Test is Test {
                             HELPERS
   //////////////////////////////////////////////////////////////*/
 
+  // Generates a signature for a given user
   function getUserSig(
     address signer,
     uint256 privateKey,
@@ -97,6 +98,12 @@ contract Base_Test is Test {
 
   function toTypedDataHash(bytes32 domainSeparator, bytes32 structHash) public pure returns (bytes32) {
     return keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+  }
+
+  // Progresses the current timestamp and transaction nonce
+  function progressToNextTxn() public {
+    txNonce++;
+    currentTimestamp += (3 days);
   }
 
   // generates pseudo random numbers we can use as payment IDs and for generating private keys
