@@ -25,7 +25,8 @@ abstract contract APIHelpers is Base_Test {
     address[] memory wallets,
     uint256[] memory privateKeys,
     address accountID,
-    uint64 permissions
+    uint64 permissions,
+    address signer
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
@@ -33,20 +34,12 @@ abstract contract APIHelpers is Base_Test {
     uint32 sigNonce = random();
     Signature[] memory sigs = new Signature[](wallets.length);
     for (uint i = 0; i < wallets.length; i++) {
-      bytes32 structHash = hashAddAccountSigner(accountID, wallets[i], permissions, sigNonce);
+      bytes32 structHash = hashAddAccountSigner(accountID, signer, permissions, sigNonce);
       Signature memory sig = getUserSig(wallets[i], privateKeys[i], DOMAIN_HASH, structHash, expiry, sigNonce);
       sigs[i] = sig;
     }
 
-    grvtExchange.addAccountSigner(
-      currentTimestapInt64,
-      txNonce,
-      accountID,
-      wallets[wallets.length - 1],
-      permissions,
-      sigNonce,
-      sigs
-    );
+    grvtExchange.addAccountSigner(currentTimestapInt64, txNonce, accountID, signer, permissions, sigNonce, sigs);
   }
 
   function createSubAccountHelper(address wallet, uint256 privateKey, address accountID, uint64 subAccID) public {

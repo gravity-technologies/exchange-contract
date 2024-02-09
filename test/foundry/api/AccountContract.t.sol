@@ -14,4 +14,17 @@ contract AccountContractTest is APIHelpers {
     createAccountHelper(users.walletOne, users.walletOnePrivateKey);
     txNonce++;
   }
+
+  function testAddAccountSigner() public {
+    createAccountHelper(users.walletOne, users.walletOnePrivateKey);
+    progressToNextTxn();
+    address accountID = users.walletOne;
+    uint64 permissions = AccountPermInternalTransfer | AccountPermExternalTransfer | AccountPermWithdraw;
+    address[] memory signerWallets = new address[](1);
+    uint256[] memory signerPrivateKeys = new uint256[](1);
+    signerWallets[0] = address(users.walletOne);
+    signerPrivateKeys[0] = users.walletOnePrivateKey;
+    addAccountSignerHelper(signerWallets, signerPrivateKeys, accountID, permissions, users.walletTwo);
+    progressToNextTxn();
+  }
 }
