@@ -19,3 +19,20 @@ struct Users {
   uint256 walletSixPrivateKey;
   uint256 walletSevenPrivateKey;
 }
+
+struct Traders {
+  Trader traderOne;
+  Trader traderTwo;
+  Trader traderThree;
+  Trader traderFour;
+  Trader traderFive;
+  Trader traderSix;
+  Trader traderSeven;
+}
+
+struct Trader {
+  address payable signer;
+  uint256 privateKey;
+  address accID;
+  uint64 subAccID;
+}

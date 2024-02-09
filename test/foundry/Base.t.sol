@@ -8,7 +8,7 @@ import "../../contracts/exchange/GRVTExchange.sol";
 import "../../contracts/exchange/types/DataStructure.sol";
 import {Users} from "./types/Types.sol";
 
-contract Base_Test is Test {
+contract BaseTest is Test {
   /*//////////////////////////////////////////////////////////////
                                CONSTANTS
     //////////////////////////////////////////////////////////////*/

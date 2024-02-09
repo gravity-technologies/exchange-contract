@@ -7,9 +7,9 @@ import "../../../contracts/exchange/api/signature/generated/AccountSig.sol";
 import "../../../contracts/exchange/api/AccountContract.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 import "../Base.t.sol";
-import "./APIUtils.sol";
+import "./APIBase.t.sol";
 
-contract AccountContractTest is APIHelpers {
+contract AccountContractTest is APIBase {
   function testCreateAccount() public {
     createAccountHelper(users.walletOne, users.walletOnePrivateKey);
     txNonce++;
