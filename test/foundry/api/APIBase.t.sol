@@ -9,7 +9,7 @@ import "../../../contracts/exchange/api/AccountContract.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 import "../Base.t.sol";
 
-abstract contract APIHelpers is Base_Test {
+abstract contract APIBase is BaseTest {
   function createAccountHelper(address wallet, uint256 privateKey) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
