@@ -12,7 +12,7 @@ bytes32 constant _LEG_H = keccak256(
   "OrderLeg(uint128 derivative,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
 );
 
-function hashOrder(Order calldata o) pure returns (bytes32) {
+function hashOrder(Order memory o) pure returns (bytes32) {
   bytes memory legsEncoded;
   for (uint i = 0; i < o.legs.length; i++) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
   bytes memory encoded = abi.encode(
@@ -33,7 +33,7 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
 }
 
 /// @dev hash the order leg, but sort the limit price and ocoLimitPrice so that we can always use either 1 of the prices
-function hashOrderLeg(OrderLeg calldata l) pure returns (bytes32) {
+function hashOrderLeg(OrderLeg memory l) pure returns (bytes32) {
   if (l.limitPrice < l.ocoLimitPrice)
     return keccak256(abi.encode(_LEG_H, l.assetID, l.size, l.limitPrice, l.ocoLimitPrice, l.isBuyingAsset));
   return keccak256(abi.encode(_LEG_H, l.assetID, l.size, l.ocoLimitPrice, l.limitPrice, l.isBuyingAsset));
