@@ -11,34 +11,29 @@ import "../api/APIBase.t.sol";
 import "../Base.t.sol";
 import "../types/Types.sol";
 
-contract TradeBase is APIBase {
+abstract contract TradeBase is APIBase {
   /*//////////////////////////////////////////////////////////////
                                VARIABLES
     //////////////////////////////////////////////////////////////*/
   Traders internal traders;
 
-  function setUp() public override {
+  function setUp() public virtual override {
     super.setUp();
-    createTraders(users.walletOne, users.walletOnePrivateKey, uint64(random()));
-    createTraders(users.walletTwo, users.walletTwoPrivateKey, uint64(random()));
-    createTraders(users.walletThree, users.walletThreePrivateKey, uint64(random()));
-    createTraders(users.walletFour, users.walletFourPrivateKey, uint64(random()));
-    createTraders(users.walletFive, users.walletFivePrivateKey, uint64(random()));
-    createTraders(users.walletSix, users.walletSixPrivateKey, uint64(random()));
-    createTraders(users.walletSeven, users.walletSevenPrivateKey, uint64(random()));
+    traders.traderOne = createTraders(users.walletOne, users.walletOnePrivateKey, uint64(random()));
+    traders.traderTwo = createTraders(users.walletTwo, users.walletTwoPrivateKey, uint64(random()));
+    traders.traderThree = createTraders(users.walletThree, users.walletThreePrivateKey, uint64(random()));
+    traders.traderFour = createTraders(users.walletFour, users.walletFourPrivateKey, uint64(random()));
+    traders.traderFive = createTraders(users.walletFive, users.walletFivePrivateKey, uint64(random()));
+    traders.traderSix = createTraders(users.walletSix, users.walletSixPrivateKey, uint64(random()));
+    traders.traderSeven = createTraders(users.walletSeven, users.walletSevenPrivateKey, uint64(random()));
   }
 
-  function createTraders(address signer, uint256 privateKey, uint64 subAccID) public {
+  function createTraders(address signer, uint256 privateKey, uint64 subAccID) public returns (Trader memory) {
     createAccountHelper(signer, privateKey);
     address accID = signer;
     progressToNextTxn();
     createSubAccountHelper(signer, privateKey, accID, subAccID);
     progressToNextTxn();
-    traders.traderOne = Trader({
-      accID: accID,
-      subAccID: subAccID,
-      privateKey: users.walletOnePrivateKey,
-      signer: users.walletOne
-    });
+    return Trader({accID: accID, subAccID: subAccID, privateKey: users.walletOnePrivateKey, signer: users.walletOne});
   }
 }
