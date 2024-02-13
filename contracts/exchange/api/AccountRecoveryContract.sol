@@ -7,6 +7,25 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract AccountRecoveryContract is BaseContract {
+  function addRecoveryWallet(
+    int64 timestamp,
+    uint64 txID,
+    address accID,
+    address recoveryWallet,
+    uint32 nonce,
+    Signature[] calldata sigs
+  ) external {
+    _setSequence(timestamp, txID);
+    Account storage acc = _requireAccount(accID);
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashAddRecoveryWallet(accID, recoveryWallet, nonce);
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    // ------- End of Signature Verification -------
+
+    addAddress(acc.recoveryWallets, recoveryWallet);
+  }
+
   function addAccountGuardian(
     int64 timestamp,
     uint64 txID,

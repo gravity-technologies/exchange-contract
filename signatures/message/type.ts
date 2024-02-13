@@ -38,6 +38,10 @@ export const PrimaryType = keyMirror({
   RemoveAccountGuardian: 0,
   RecoverAccountAdmin: 0,
 
+  // Wallet Recovery
+  AddRecoveryAddress: 0,
+  RemoveRecoveryAddress: 0,
+
   // SubAccount
   AddSubAccountSigner: 0,
   RemoveSubAccountSigner: 0,
@@ -285,6 +289,35 @@ export const RecoverAccountAdmin = {
       { name: "recoveryType", type: "uint8" },
       { name: "oldAdmin", type: "address" },
       { name: "recoveryAdmin", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+// Wallet Recovery
+export const AddRecoveryAddress = {
+  primaryType: PrimaryType.AddRecoveryAddress,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.AddRecoveryAddress]: [
+      { name: "accountID", type: "address" },
+      { name: "walletAddress", type: "address" },
+      { name: "recoveryAddress", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+export const RemoveRecoveryAddress = {
+  primaryType: PrimaryType.RemoveRecoveryAddress,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.RemoveRecoveryAddress]: [
+      { name: "accountID", type: "address" },
+      { name: "walletAddress", type: "address" },
+      { name: "recoveryAddress", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
   },

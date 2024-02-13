@@ -4212,6 +4212,17 @@ signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
   integrity sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==
 
+signtypeddata-v5@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/signtypeddata-v5/-/signtypeddata-v5-5.0.1.tgz#0b04e0bb54ed55b13c5a3ffee4867f67abdcd3f0"
+  integrity sha512-0vSt2YRyKj7Ywmt9PiOE9Dsmo5n/hysO1gaP4VX1Qu6J9KalItIfq//47uVgmXDeNVzfbRBjou+awwUgC2a/uw==
+  dependencies:
+    ethereumjs-abi "^0.6.8"
+    ethereumjs-util "^6.2.1"
+    ethjs-util "^0.1.6"
+    tweetnacl "^1.0.3"
+    tweetnacl-util "^0.15.1"
+
 sinon-chai@^3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-3.7.0.tgz#cfb7dec1c50990ed18c153f1840721cf13139783"
