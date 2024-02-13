@@ -82,7 +82,7 @@ abstract contract APIBase is BaseTest {
     bool postOnly,
     bool reduceOnly,
     bool isPayingBaseCurrency,
-    OrderLeg[] legs,
+    OrderLeg[] memory legs,
     uint32 nonce
   ) public returns (Order memory, Signature memory) {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
