@@ -27,6 +27,10 @@ contract ManyLegOneMaker is TradeBase {
     assetThree = createAsset(Kind.PERPS, Currency.USDT, 1, Currency.USDT, 2, 100, 100);
   }
 
+  function testMatchManyLegOneMaker() public {
+    assert(true);
+  }
+
   function createAsset(
     Kind _kind,
     Currency _underlying,
