@@ -5,6 +5,8 @@ import "../../../lib/forge-std/src/Test.sol";
 import "../../../lib/forge-std/src/Vm.sol";
 import "../../../contracts/exchange/api/signature/generated/SubAccountSig.sol";
 import "../../../contracts/exchange/api/signature/generated/AccountSig.sol";
+import "../../../contracts/exchange/api/signature/generated/TradeSig.sol";
+import "../../../contracts/exchange/api/TradeContract.sol";
 import "../../../contracts/exchange/api/AccountContract.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 import "../Base.t.sol";
@@ -65,5 +67,44 @@ abstract contract APIBase is BaseTest {
       sigNonce,
       sig
     );
+  }
+
+  function createOrderHelper(
+    address wallet,
+    uint256 privateKey,
+    uint64 subAccountID,
+    bool isMarket,
+    TimeInForce timeInForce,
+    uint64 limitPrice,
+    uint64 ocoLimitPrice,
+    uint32 takerFeePercentageCap,
+    uint32 makerFeePercentageCap,
+    bool postOnly,
+    bool reduceOnly,
+    bool isPayingBaseCurrency,
+    OrderLeg[] legs,
+    uint32 nonce
+  ) public returns (Order memory, Signature memory) {
+    uint256 expiryTimestamp = currentTimestamp + (3 days);
+    int64 currentTimestapInt64 = int64(int256(currentTimestamp));
+    int64 expiry = int64(int256(expiryTimestamp));
+    uint32 sigNonce = random();
+    Order memory order = Order(
+      subAccountID,
+      isMarket,
+      timeInForce,
+      limitPrice,
+      ocoLimitPrice,
+      takerFeePercentageCap,
+      makerFeePercentageCap,
+      postOnly,
+      reduceOnly,
+      isPayingBaseCurrency,
+      legs,
+      sigNonce
+    );
+    bytes32 structHash = hashOrder(order);
+    Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
+    return (order, sig);
   }
 }
