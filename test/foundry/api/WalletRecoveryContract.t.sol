@@ -73,4 +73,23 @@ contract WalletRecoveryContractTest is APIBase {
     );
     progressToNextTxn();
   }
+
+  function testAddSubAccountSignerRecoveryAddress() public {
+    addRecoveryAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSignerRecoveryAddressOne,
+      subAccSigner
+    );
+    progressToNextTxn();
+    addRecoveryAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSignerRecoveryAddressTwo,
+      subAccSigner
+    );
+    progressToNextTxn();
+  }
 }

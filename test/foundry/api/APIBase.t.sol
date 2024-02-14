@@ -123,8 +123,7 @@ abstract contract APIBase is BaseTest {
     address accountID,
     address oldSigner,
     address recoverySigner,
-    address newSigner,
-    uint64 subAccID
+    address newSigner
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
