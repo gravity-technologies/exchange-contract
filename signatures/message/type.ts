@@ -33,11 +33,6 @@ export const PrimaryType = keyMirror({
   RemoveWithdrawalAddress: 0,
   SetAccountMultiSigThreshold: 0,
 
-  // Account Recovery
-  AddAccountGuardian: 0,
-  RemoveAccountGuardian: 0,
-  RecoverAccountAdmin: 0,
-
   // SubAccount
   AddSubAccountSigner: 0,
   RemoveSubAccountSigner: 0,
