@@ -23,6 +23,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
+    require(sig.signer == signer, "invalid signer");
     _preventReplay(hashAddRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
     // ------- End of Signature Verification -------
 
