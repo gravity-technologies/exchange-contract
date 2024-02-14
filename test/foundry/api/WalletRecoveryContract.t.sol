@@ -109,4 +109,41 @@ contract WalletRecoveryContractTest is APIBase {
     );
     progressToNextTxn();
   }
+
+  function testRemoveSubAccSignerRecoveryAddress() public {
+    addRecoveryAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSignerRecoveryAddressOne,
+      subAccSigner
+    );
+    progressToNextTxn();
+    removeRecoveryAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSigner,
+      subAccSignerRecoveryAddressOne
+    );
+    progressToNextTxn();
+  }
+
+  function testRecoverAddressAccSigner() public {
+    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressOne, accSigner);
+    progressToNextTxn();
+    recoverAddressHelper(
+      accSigner,
+      users.walletOnePrivateKey,
+      accountID,
+      accSigner,
+      accSignerRecoveryAddressOne,
+      users.walletSeven
+    );
+    progressToNextTxn();
+  }
+
+  /*//////////////////////////////////////////////////////////////
+                            HELPERS
+  //////////////////////////////////////////////////////////////*/
 }
