@@ -70,31 +70,23 @@ abstract contract APIBase is BaseTest {
   }
 
   function addRecoveryAddressHelper(
-    address signer,
+    address msgSigner,
     uint256 privateKey,
     address accountID,
     address recoveryAddress,
-    address recovereeAddress
+    address signer
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashAddRecoveryAddress(accountID, recovereeAddress, recoveryAddress, sigNonce);
-    Signature memory sig = getUserSig(signer, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
-    grvtExchange.addRecoveryAddress(
-      currentTimestapInt64,
-      txNonce,
-      accountID,
-      recovereeAddress,
-      recoveryAddress,
-      sigNonce,
-      sig
-    );
+    bytes32 structHash = hashAddRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
+    Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
+    grvtExchange.addRecoveryAddress(currentTimestapInt64, txNonce, accountID, signer, recoveryAddress, sigNonce, sig);
   }
 
   function removeRecoveryAddressHelper(
-    address wallet,
+    address msgSigner,
     uint256 privateKey,
     address accountID,
     address signer,
@@ -105,7 +97,7 @@ abstract contract APIBase is BaseTest {
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
     bytes32 structHash = hashRemoveRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
-    Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
+    Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.removeRecoveryAddress(
       currentTimestapInt64,
       txNonce,

@@ -42,9 +42,13 @@ contract WalletRecoveryContractTest is APIBase {
     subAccIDOne = uint64(random());
     createSubAccountHelper(accSigner, users.walletOnePrivateKey, accountID, subAccIDOne);
     progressToNextTxn();
+    addSubAccountSignerHelper(accSigner, users.walletOnePrivateKey, subAccIDOne, subAccSigner, SubAccountPermTrade);
+    progressToNextTxn();
 
     subAccIDTwo = uint64(random());
     createSubAccountHelper(accSigner, users.walletOnePrivateKey, accountID, subAccIDTwo);
+    progressToNextTxn();
+    addSubAccountSignerHelper(accSigner, users.walletOnePrivateKey, subAccIDTwo, subAccSigner, SubAccountPermTrade);
     progressToNextTxn();
   }
 
@@ -89,6 +93,19 @@ contract WalletRecoveryContractTest is APIBase {
       accountID,
       subAccSignerRecoveryAddressTwo,
       subAccSigner
+    );
+    progressToNextTxn();
+  }
+
+  function testRemoveAccSignerRecoveryAddress() public {
+    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressOne, accSigner);
+    progressToNextTxn();
+    removeRecoveryAddressHelper(
+      accSigner,
+      users.walletOnePrivateKey,
+      accountID,
+      accSigner,
+      accSignerRecoveryAddressOne
     );
     progressToNextTxn();
   }
