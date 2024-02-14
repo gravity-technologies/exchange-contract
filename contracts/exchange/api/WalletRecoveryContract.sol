@@ -12,7 +12,7 @@ contract WalletRecoveryContract is BaseContract {
     uint64 txID,
     address accID,
     address signer,
-    address recoveryWallet,
+    address recoveryAddress,
     uint32 nonce,
     Signature calldata sig
   ) external {
@@ -23,10 +23,10 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashAddRecoveryWallet(accID, signer, recoveryWallet, nonce), sig);
+    _preventReplay(hashAddRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
     // ------- End of Signature Verification -------
 
-    acc.recoveryAddresses[signer][recoveryWallet] = 1;
+    acc.recoveryAddresses[signer][recoveryAddress] = 1;
   }
 
   function removeRecoveryAddress(
@@ -34,7 +34,7 @@ contract WalletRecoveryContract is BaseContract {
     uint64 txID,
     address accID,
     address signer,
-    address recoveryWallet,
+    address recoveryAddress,
     uint32 nonce,
     Signature calldata sig
   ) external {
@@ -45,13 +45,13 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRemoveRecoveryWallet(accID, signer, recoveryWallet, nonce), sig);
+    _preventReplay(hashRemoveRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
     // ------- End of Signature Verification -------
 
-    delete acc.recoveryAddresses[signer][recoveryWallet];
+    delete acc.recoveryAddresses[signer][recoveryAddress];
   }
 
-  function recoverWallet(
+  function recoverAddress(
     int64 timestamp,
     uint64 txID,
     address accID,
@@ -65,7 +65,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRecoverWallet(accID, oldSigner, recoverySigner, newSigner, nonce), sig);
+    _preventReplay(hashRecoverAddress(accID, oldSigner, recoverySigner, newSigner, nonce), sig);
     // ------- End of Signature Verification -------
 
     require(acc.recoveryAddresses[oldSigner][recoverySigner] == 1, "invalid recovery signer");

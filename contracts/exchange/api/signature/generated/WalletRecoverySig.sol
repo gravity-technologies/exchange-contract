@@ -2,42 +2,42 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.20;
 
-bytes32 constant _ADD_RECOVERY_WALLET_H = keccak256(
-  "AddRecoveryWallet(address accountID,address signer,address recoverySigner,uint32 nonce)"
+bytes32 constant _ADD_RECOVERY_ADDRESS_H = keccak256(
+  "AddRecoveryAddress(address accountID,address signer,address recoverySigner,uint32 nonce)"
 );
 
-function hashAddRecoveryWallet(
+function hashAddRecoveryAddress(
   address accID,
   address signer,
   address recoverySigner,
   uint32 nonce
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_ADD_RECOVERY_WALLET_H, accID, signer, recoverySigner, nonce));
+  return keccak256(abi.encode(_ADD_RECOVERY_ADDRESS_H, accID, signer, recoverySigner, nonce));
 }
 
-bytes32 constant _DEL_RECOVERY_WALLET_H = keccak256(
-  "RemoveRecoveryWallet(address accountID,address signer,address recoverySigner,uint32 nonce)"
+bytes32 constant _DEL_RECOVERY_ADDRESS_H = keccak256(
+  "RemoveRecoveryAddress(address accountID,address signer,address recoverySigner,uint32 nonce)"
 );
 
-function hashRemoveRecoveryWallet(
+function hashRemoveRecoveryAddress(
   address accID,
   address signer,
   address recoverySigner,
   uint32 nonce
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_DEL_RECOVERY_WALLET_H, accID, signer, recoverySigner, nonce));
+  return keccak256(abi.encode(_DEL_RECOVERY_ADDRESS_H, accID, signer, recoverySigner, nonce));
 }
 
-bytes32 constant _RECOVER_WALLET_H = keccak256(
-  "RecoverWallet(address accountID,address oldSigner,address recoverySigner,address newSigner,uint32 nonce)"
+bytes32 constant _RECOVER_ADDRESS_H = keccak256(
+  "RecoverAddress(address accountID,address oldSigner,address recoverySigner,address newSigner,uint32 nonce)"
 );
 
-function hashRecoverWallet(
+function hashRecoverAddress(
   address accID,
   address oldSigner,
   address recoverySigner,
   address newSigner,
   uint32 nonce
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_RECOVER_WALLET_H, accID, oldSigner, recoverySigner, newSigner, nonce));
+  return keccak256(abi.encode(_RECOVER_ADDRESS_H, accID, oldSigner, recoverySigner, newSigner, nonce));
 }
