@@ -23,7 +23,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddRecoveryWallet(accID, signer, recoveryWallet, nonce);
+    _preventReplay(hashAddRecoveryWallet(accID, signer, recoveryWallet, nonce), sig);
     // ------- End of Signature Verification -------
 
     acc.recoveryAddresses[signer][recoveryWallet] = 1;
@@ -45,10 +45,10 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveRecoveryWallet(accID, signer, recoveryWallet, nonce);
+    _preventReplay(hashRemoveRecoveryWallet(accID, signer, recoveryWallet, nonce), sig);
     // ------- End of Signature Verification -------
 
-    acc.recoveryAddresses[signer][recoveryWallet] = 0;
+    delete acc.recoveryAddresses[signer][recoveryWallet];
   }
 
   function recoverWallet(
@@ -59,25 +59,22 @@ contract WalletRecoveryContract is BaseContract {
     address recoverySigner,
     address newSigner,
     uint32 nonce,
-    Signature[] calldata sigs
+    Signature calldata sig
   ) external {
-    // Check that
-    // - all signatures belong to admins
-    // - quorum
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRecoverWallet(accID, oldSigner, recoverySigner, newSigner, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    _preventReplay(hashRecoverWallet(accID, oldSigner, recoverySigner, newSigner, nonce), sig);
     // ------- End of Signature Verification -------
 
-    require(acc.recoveryAddresses[oldSigner][recovery] == 1, "invalid recovery signer");
-    acc.signers[newSigner] = 1;
+    require(acc.recoveryAddresses[oldSigner][recoverySigner] == 1, "invalid recovery signer");
+    acc.signers[newSigner] = acc.signers[oldSigner];
     delete acc.signers[oldSigner];
     for (uint256 i = 0; i < acc.subAccounts.length; i++) {
-      acc.subAccounts[i].signers[newSigner] = 1;
-      delete acc.subAccounts[i].signers[oldSigner];
+      SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
+      subAcc.signers[newSigner] = subAcc.signers[oldSigner];
+      delete subAcc.signers[oldSigner];
     }
   }
 }
