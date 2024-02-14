@@ -80,6 +80,7 @@ contract WalletRecoveryContract is BaseContract {
     delete acc.signers[oldSigner];
     for (uint256 i = 0; i < acc.subAccounts.length; i++) {
       SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
+      require(subAcc.signers[newSigner] == 0, "new signer already exists");
       subAcc.signers[newSigner] = subAcc.signers[oldSigner];
       delete subAcc.signers[oldSigner];
     }

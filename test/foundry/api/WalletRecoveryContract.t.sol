@@ -28,6 +28,9 @@ contract WalletRecoveryContractTest is APIBase {
   address internal subAccSignerRecoveryAddressTwo;
   uint256 internal subAccSignerRecoveryAddressTwoPrivateKey;
 
+  address internal newAddressOne;
+  address internal newAddressTwo;
+
   address internal accountID;
   uint64 internal subAccIDOne;
   uint64 internal subAccIDTwo;
@@ -35,66 +38,63 @@ contract WalletRecoveryContractTest is APIBase {
   function setUp() public override {
     super.setUp();
     accSigner = users.walletOne;
+    accSignerPrivateKey = users.walletOnePrivateKey;
     accSignerRecoveryAddressOne = users.walletTwo;
+    accSignerRecoveryAddressOnePrivateKey = users.walletTwoPrivateKey;
     accSignerRecoveryAddressTwo = users.walletThree;
+    accSignerRecoveryAddressTwoPrivateKey = users.walletThreePrivateKey;
 
     subAccSigner = users.walletFour;
+    subAccSignerPrivateKey = users.walletFourPrivateKey;
     subAccSignerRecoveryAddressOne = users.walletFive;
+    subAccSignerRecoveryAddressOnePrivateKey = users.walletFivePrivateKey;
     subAccSignerRecoveryAddressTwo = users.walletSix;
+    subAccSignerRecoveryAddressTwoPrivateKey = users.walletSixPrivateKey;
+
+    newAddressOne = users.walletSeven;
+    newAddressTwo = users.walletEight;
 
     accountID = accSigner;
-    createAccountHelper(accSigner, users.walletOnePrivateKey);
+    createAccountHelper(accSigner, accSignerPrivateKey);
     progressToNextTxn();
 
     subAccIDOne = uint64(random());
-    createSubAccountHelper(accSigner, users.walletOnePrivateKey, accountID, subAccIDOne);
+    createSubAccountHelper(accSigner, accSignerPrivateKey, accountID, subAccIDOne);
     progressToNextTxn();
-    addSubAccountSignerHelper(accSigner, users.walletOnePrivateKey, subAccIDOne, subAccSigner, SubAccountPermTrade);
+    addSubAccountSignerHelper(accSigner, accSignerPrivateKey, subAccIDOne, subAccSigner, SubAccountPermTrade);
     progressToNextTxn();
 
     subAccIDTwo = uint64(random());
-    createSubAccountHelper(accSigner, users.walletOnePrivateKey, accountID, subAccIDTwo);
+    createSubAccountHelper(accSigner, accSignerPrivateKey, accountID, subAccIDTwo);
     progressToNextTxn();
-    addSubAccountSignerHelper(accSigner, users.walletOnePrivateKey, subAccIDTwo, subAccSigner, SubAccountPermTrade);
+    addSubAccountSignerHelper(accSigner, accSignerPrivateKey, subAccIDTwo, subAccSigner, SubAccountPermTrade);
     progressToNextTxn();
   }
 
   function testAddRecoveryAddressAccSigner() public {
-    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
-    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressTwo);
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressTwo);
     progressToNextTxn();
     // adding the same address twice is no-op
-    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressTwo);
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressTwo);
     progressToNextTxn();
   }
 
   function testAddRecoveryAddressWithIncorrectWallet() public {
     vm.expectRevert("invalid signer");
-    addRecoveryAddressHelper(
-      subAccSigner,
-      users.walletFourPrivateKey,
-      accountID,
-      accSigner,
-      accSignerRecoveryAddressOne
-    );
+    addRecoveryAddressHelper(subAccSigner, subAccSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
   }
 
   function testRemoveRecoveryAddress() public {
-    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
-    removeRecoveryAddressHelper(
-      accSigner,
-      users.walletOnePrivateKey,
-      accountID,
-      accSigner,
-      accSignerRecoveryAddressOne
-    );
+    removeRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
     addRecoveryAddressHelper(
       subAccSigner,
-      users.walletFourPrivateKey,
+      subAccSignerPrivateKey,
       accountID,
       subAccSigner,
       subAccSignerRecoveryAddressOne
@@ -102,7 +102,7 @@ contract WalletRecoveryContractTest is APIBase {
     progressToNextTxn();
     removeRecoveryAddressHelper(
       subAccSigner,
-      users.walletFourPrivateKey,
+      subAccSignerPrivateKey,
       accountID,
       subAccSigner,
       subAccSignerRecoveryAddressOne
@@ -111,7 +111,7 @@ contract WalletRecoveryContractTest is APIBase {
   }
 
   function testRemoveRecoveryAddressWithIncorrectWallet() public {
-    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
     vm.expectRevert("invalid signer");
     removeRecoveryAddressHelper(
@@ -129,16 +129,16 @@ contract WalletRecoveryContractTest is APIBase {
     progressToNextTxn();
     recoverAddressHelper(
       accSignerRecoveryAddressOne,
-      users.walletTwoPrivateKey,
+      accSignerRecoveryAddressOnePrivateKey,
       accountID,
       accSigner,
       accSignerRecoveryAddressOne,
-      users.walletSeven
+      newAddressOne
     );
     progressToNextTxn();
     addRecoveryAddressHelper(
       subAccSigner,
-      users.walletFourPrivateKey,
+      subAccSignerPrivateKey,
       accountID,
       subAccSigner,
       subAccSignerRecoveryAddressOne
@@ -146,26 +146,48 @@ contract WalletRecoveryContractTest is APIBase {
     progressToNextTxn();
     recoverAddressHelper(
       subAccSignerRecoveryAddressOne,
-      users.walletFivePrivateKey,
+      subAccSignerRecoveryAddressOnePrivateKey,
       accountID,
       subAccSigner,
       subAccSignerRecoveryAddressOne,
-      users.walletEight
+      newAddressTwo
     );
   }
 
-  function testRecoverAddressWithIncorrectWallet() public {
+  function testRecoverAddressWithIncorrectRecoverySigner() public {
     addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
     vm.expectRevert("invalid signer");
     recoverAddressHelper(
       subAccSigner,
-      users.walletFourPrivateKey,
+      subAccSignerPrivateKey,
       accountID,
       accSigner,
       accSignerRecoveryAddressOne,
-      users.walletSeven
+      newAddressOne
     );
     progressToNextTxn();
+  }
+
+  function testRecoverWalletWithUsedAddress() public {
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
+    progressToNextTxn();
+    addRecoveryAddressHelper(
+      subAccSigner,
+      subAccSignerPrivateKey,
+      accountID,
+      subAccSigner,
+      accSignerRecoveryAddressTwo
+    );
+    progressToNextTxn();
+    vm.expectRevert("new signer already exists");
+    recoverAddressHelper(
+      accSignerRecoveryAddressOne,
+      accSignerRecoveryAddressOnePrivateKey,
+      accountID,
+      accSigner,
+      accSignerRecoveryAddressOne,
+      subAccSigner
+    );
   }
 }
