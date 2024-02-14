@@ -73,8 +73,8 @@ abstract contract APIBase is BaseTest {
     address msgSigner,
     uint256 privateKey,
     address accountID,
-    address recoveryAddress,
-    address signer
+    address signer,
+    address recoveryAddress
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));

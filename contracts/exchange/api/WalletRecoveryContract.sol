@@ -23,6 +23,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
+    // TODO: Add this check within _preventReplay
     require(sig.signer == signer, "invalid signer");
     _preventReplay(hashAddRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
     // ------- End of Signature Verification -------
@@ -46,6 +47,8 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
+    // TODO: Add this check within _preventReplay
+    require(sig.signer == signer, "invalid signer");
     _preventReplay(hashRemoveRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
     // ------- End of Signature Verification -------
 
@@ -64,8 +67,11 @@ contract WalletRecoveryContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
+    require(acc.signers[newSigner] == 0, "new signer already exists");
 
     // ---------- Signature Verification -----------
+    // TODO: Add this check within _preventReplay
+    require(sig.signer == recoverySigner, "invalid signer");
     _preventReplay(hashRecoverAddress(accID, oldSigner, recoverySigner, newSigner, nonce), sig);
     // ------- End of Signature Verification -------
 
