@@ -16,9 +16,6 @@ contract WalletRecoveryContract is BaseContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    // Check that
-    // - all signatures belong to admins
-    // - quorum
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
@@ -40,9 +37,6 @@ contract WalletRecoveryContract is BaseContract {
     uint32 nonce,
     Signature calldata sig
   ) external {
-    // Check that
-    // - all signatures belong to admins
-    // - quorum
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
