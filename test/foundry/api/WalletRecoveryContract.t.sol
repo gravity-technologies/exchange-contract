@@ -51,6 +51,8 @@ contract WalletRecoveryContractTest is APIBase {
   function testAddRecoveryAddressAccSigner() public {
     addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressOne, accSigner);
     progressToNextTxn();
+    addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressTwo, accSigner);
+    progressToNextTxn();
   }
 
   function testAddDuplicateRecoveryAddressAccSignerNoOp() public {

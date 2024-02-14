@@ -143,4 +143,20 @@ abstract contract APIBase is BaseTest {
       sig
     );
   }
+
+  function addSubAccountSignerHelper(
+    address wallet,
+    uint256 privateKey,
+    uint64 subAccID,
+    address signer,
+    uint64 permissions
+  ) public {
+    uint256 expiryTimestamp = currentTimestamp + (3 days);
+    int64 currentTimestapInt64 = int64(int256(currentTimestamp));
+    int64 expiry = int64(int256(expiryTimestamp));
+    uint32 sigNonce = random();
+    bytes32 structHash = hashAddSubAccountSigner(subAccID, signer, permissions, sigNonce);
+    Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
+    grvtExchange.addSubAccountSigner(currentTimestapInt64, txNonce, subAccID, signer, permissions, sigNonce, sig);
+  }
 }

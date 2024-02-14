@@ -96,7 +96,7 @@ contract SubAccountContract is BaseContract {
     uint64 txID,
     uint64 subID,
     address signer,
-    uint16 permissions,
+    uint64 permissions,
     uint32 nonce,
     Signature calldata sig
   ) external {
