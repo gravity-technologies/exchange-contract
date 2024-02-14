@@ -51,7 +51,9 @@ contract BaseTest is Test {
       walletSix: createUser("walletSix"),
       walletSixPrivateKey: uint256(keccak256(abi.encodePacked("walletSix"))),
       walletSeven: createUser("walletSeven"),
-      walletSevenPrivateKey: uint256(keccak256(abi.encodePacked("walletSeven")))
+      walletSevenPrivateKey: uint256(keccak256(abi.encodePacked("walletSeven"))),
+      walletEight: createUser("walletEight"),
+      walletEightPrivateKey: uint256(keccak256(abi.encodePacked("walletEight")))
     });
 
     // Make the deployer the default caller in all subsequent tests.

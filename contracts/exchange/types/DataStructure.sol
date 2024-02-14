@@ -113,6 +113,8 @@ struct Account {
   // Both retail and institutional accounts can rely on guardians for key recovery
   // Institutions have an additional option to rely on their sub account signers
   address[] guardians;
+  // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
+  mapping(address => mapping(address => uint256)) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
   mapping(address => bool) onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Accounts
