@@ -8,6 +8,7 @@ import "../../../contracts/exchange/api/SubAccountContract.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
 import "../Base.t.sol";
 import "./APIBase.t.sol";
+import {stdStorage, StdStorage} from "forge-std/Test.sol";
 
 contract WalletRecoveryContractTest is APIBase {
   /*//////////////////////////////////////////////////////////////
@@ -78,26 +79,7 @@ contract WalletRecoveryContractTest is APIBase {
     progressToNextTxn();
   }
 
-  function testAddSubAccountSignerRecoveryAddress() public {
-    addRecoveryAddressHelper(
-      subAccSigner,
-      users.walletFourPrivateKey,
-      accountID,
-      subAccSignerRecoveryAddressOne,
-      subAccSigner
-    );
-    progressToNextTxn();
-    addRecoveryAddressHelper(
-      subAccSigner,
-      users.walletFourPrivateKey,
-      accountID,
-      subAccSignerRecoveryAddressTwo,
-      subAccSigner
-    );
-    progressToNextTxn();
-  }
-
-  function testRemoveAccSignerRecoveryAddress() public {
+  function testRemoveRecoveryAddress() public {
     addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressOne, accSigner);
     progressToNextTxn();
     removeRecoveryAddressHelper(
@@ -108,9 +90,6 @@ contract WalletRecoveryContractTest is APIBase {
       accSignerRecoveryAddressOne
     );
     progressToNextTxn();
-  }
-
-  function testRemoveSubAccSignerRecoveryAddress() public {
     addRecoveryAddressHelper(
       subAccSigner,
       users.walletFourPrivateKey,
@@ -141,9 +120,22 @@ contract WalletRecoveryContractTest is APIBase {
       users.walletSeven
     );
     progressToNextTxn();
+    addRecoveryAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSignerRecoveryAddressOne,
+      subAccSigner
+    );
+    progressToNextTxn();
+    recoverAddressHelper(
+      subAccSigner,
+      users.walletFourPrivateKey,
+      accountID,
+      subAccSigner,
+      subAccSignerRecoveryAddressOne,
+      users.walletSeven
+    );
+    progressToNextTxn();
   }
-
-  /*//////////////////////////////////////////////////////////////
-                            HELPERS
-  //////////////////////////////////////////////////////////////*/
 }
