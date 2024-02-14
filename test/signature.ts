@@ -217,6 +217,62 @@ export function genRemoveSubAccountSignerPayloadSig(
     },
   })
 }
+// Wallet Recovery
+export function genAddRecoveryAddressPayloadSig(
+  wallet: Wallet,
+  accountID: string,
+  signer: string,
+  recoveryAddress: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.AddRecoveryAddress,
+    message: {
+      accountID,
+      signer,
+      recoveryAddress,
+      nonce,
+    },
+  })
+}
+
+export function genRemoveRecoveryAddressPayloadSig(
+  wallet: Wallet,
+  accountID: string,
+  signer: string,
+  recoveryAddress: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RemoveRecoveryAddress,
+    message: {
+      accountID,
+      signer,
+      recoveryAddress,
+      nonce,
+    },
+  })
+}
+
+export function genRecoverAddressPayloadSig(
+  wallet: Wallet,
+  accountID: string,
+  oldSigner: string,
+  recoverySigner: string,
+  newSigner: string,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.RecoverAddress,
+    message: {
+      accountID,
+      oldSigner,
+      recoverySigner,
+      newSigner,
+      nonce,
+    },
+  })
+}
 
 // Account Recovery
 export function genAddAccountGuardianPayloadSig(

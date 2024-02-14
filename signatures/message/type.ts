@@ -39,6 +39,11 @@ export const PrimaryType = keyMirror({
   SetSubAccountMarginType: 0,
   SetSubAccountSignerPermissions: 0,
 
+  // Wallet Recovery
+  AddRecoveryAddress: 0,
+  RemoveRecoveryAddress: 0,
+  RecoverAddress: 0,
+
   // Config
   ScheduleConfig: 0,
   SetConfig: 0,
@@ -238,6 +243,50 @@ export const RemoveSubAccountSigner = {
     [PrimaryType.RemoveSubAccountSigner]: [
       { name: "subAccountID", type: "uint64" },
       { name: "signer", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+// Wallet Recovery
+export const AddRecoveryAddress = {
+  primaryType: PrimaryType.AddRecoveryAddress,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.AddRecoveryAddress]: [
+      { name: "accountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "recoverySigner", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+export const RemoveRecoveryAddress = {
+  primaryType: PrimaryType.RemoveRecoveryAddress,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.RemoveRecoveryAddress]: [
+      { name: "accountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "recoverySigner", type: "address" },
+      { name: "nonce", type: "uint32" },
+    ],
+  },
+}
+
+export const RecoverAddress = {
+  primaryType: PrimaryType.RecoverAddress,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.RecoverAddress]: [
+      { name: "accountID", type: "address" },
+      { name: "oldSigner", type: "address" },
+      { name: "recoverySigner", type: "address" },
+      { name: "newSigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
   },

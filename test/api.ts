@@ -1,6 +1,9 @@
 import { BaseWallet, TransactionRequest } from "ethers"
 import { Contract } from "zksync-ethers"
 import {
+  genAddRecoveryAddressPayloadSig,
+  genRemoveRecoveryAddressPayloadSig,
+  genRecoverAddressPayloadSig,
   genAddAccountGuardianPayloadSig,
   genAddAccountAdminSig as genAddAccountSignerSig,
   genAddSessionKeySig,
@@ -241,60 +244,50 @@ export async function removeSubSigner(
   await tx.wait()
 }
 
-// Account Recovery
-export async function addAccountGuardian(
+// Wallet Recovery
+export async function addRecoveryAddress(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigner: BaseWallet,
   ts: number,
   txID: number,
   accID: string,
-  guardian: string
+  signer: string,
+  recoveryAddress: string
 ) {
   const salt = nonce()
-  const sigs = txSigners.map((txSigner) => genAddAccountGuardianPayloadSig(txSigner, accID, guardian, salt))
-  const tx = await contract.addAccountGuardian(ts, txID, accID, guardian, salt, sigs, txRequestDefault())
+  const sig = genAddRecoveryAddressPayloadSig(txSigner, accID, signer, recoveryAddress, salt)
+  const tx = await contract.addRecoveryAddress(ts, txID, recoveryAddress, salt, sig, txRequestDefault())
   await tx.wait()
 }
 
-export async function removeAccountGuardian(
+export async function removeRecoveryAddress(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigner: BaseWallet,
   ts: number,
   txID: number,
   accID: string,
-  signer: string
+  signer: string,
+  recoveryAddress: string
 ) {
   const salt = nonce()
-  const sigs = txSigners.map((txSigner) => genRemoveAccountGuardianPayloadSig(txSigner, accID, signer, salt))
-  const tx = await contract.removeAccountGuardian(ts, txID, accID, signer, salt, sigs, txRequestDefault())
+  const sig = genRemoveRecoveryAddressPayloadSig(txSigner, accID, signer, recoveryAddress, salt)
+  const tx = await contract.removeRecoveryAddress(ts, txID, recoveryAddress, salt, sig, txRequestDefault())
   await tx.wait()
 }
 
-export async function recoverAccountAdmin(
+export async function recoverAddress(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigner: BaseWallet,
   ts: number,
   txID: number,
-  accountID: string,
-  recoveryType: AccountRecoveryType,
-  oldAdmin: string,
-  recoveryAdmin: string
+  accID: string,
+  signer: string,
+  recoverySigner: string,
+  newSigner: string
 ) {
   const salt = nonce()
-  const sigs = txSigners.map((txSigner) =>
-    genRecoverAccountAdminPayloadSig(txSigner, accountID, recoveryType, oldAdmin, recoveryAdmin, salt)
-  )
-  const tx = await contract.recoverAccountAdmin(
-    ts,
-    txID,
-    accountID,
-    recoveryType,
-    oldAdmin,
-    recoveryAdmin,
-    salt,
-    sigs,
-    txRequestDefault()
-  )
+  const sig = genRecoverAddressPayloadSig(txSigner, accID, signer, recoverySigner, newSigner, salt)
+  const tx = await contract.recoverAddress(ts, txID, recoverySigner, salt, sig, txRequestDefault())
   await tx.wait()
 }
 
