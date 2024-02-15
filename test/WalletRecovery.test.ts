@@ -2,7 +2,7 @@ import { addRecoveryAddress, createAccount, removeRecoveryAddress, recoverAddres
 import { Contract } from "ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
-import { wallet, getTimestampNs } from "./util"
+import { wallet } from "./util"
 
 describe.only("API - Wallet Recovery", function () {
   let contract: Contract
@@ -30,7 +30,6 @@ describe.only("API - Wallet Recovery", function () {
   })
 
   it("should add recovery wallet", async () => {
-    const signer = wallet()
     await addRecoveryAddress(contract, w1, ts, ts, accID, w1.address, w2.address)
   })
 
@@ -43,6 +42,6 @@ describe.only("API - Wallet Recovery", function () {
   it("should recover wallet", async () => {
     await addRecoveryAddress(contract, w1, ts, ts, accID, w1.address, w2.address)
     ts++
-    await recoverAddress(contract, w1, ts, ts, accID, w1.address, w2.address, w3.address)
+    await recoverAddress(contract, w2, ts, ts, accID, w1.address, w2.address, w3.address)
   })
 })
