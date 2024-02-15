@@ -8,9 +8,10 @@ import "../util/Address.sol";
 
 contract AccountContract is BaseContract {
   /// @notice Create a new account
+  ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
-  /// @param accountID The account ID
+  /// @param accountID The ID the account will be tagged to
   /// @param sig The signature of the acting user
   function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
     _setSequence(timestamp, txID);
@@ -31,13 +32,14 @@ contract AccountContract is BaseContract {
   }
 
   /// @notice Set the multiSigThreshold for an account
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
-  /// @param multiSigThreshold The new multiSigThreshold
+  /// @param multiSigThreshold The multiSigThreshold that is set
   /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the acting users
+  /// @param sigs The signatures of the account signers with admin permissions
   function setAccountMultiSigThreshold(
     int64 timestamp,
     uint64 txID,
@@ -59,7 +61,8 @@ contract AccountContract is BaseContract {
     acc.multiSigThreshold = multiSigThreshold;
   }
 
-  /// @notice Add a signer to an account
+  /// @notice Add a signer to an account or change the permissions of an existing signer
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
@@ -67,7 +70,7 @@ contract AccountContract is BaseContract {
   /// @param signer The new signer
   /// @param permissions The permissions of the new signer
   /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the acting users
+  /// @param sigs The signatures of the account signers with admin permissions
   function addAccountSigner(
     int64 timestamp,
     uint64 txID,
@@ -101,13 +104,14 @@ contract AccountContract is BaseContract {
   }
 
   /// @notice Remove a signer from an account
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
   /// @param signer The signer to be removed
   /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the acting users
+  /// @param sigs The signatures of the account signers with admin permissions
   function removeAccountSigner(
     int64 timestamp,
     uint64 txID,
@@ -135,13 +139,14 @@ contract AccountContract is BaseContract {
   }
 
   /// @notice Add withdrawal address that the account can withdraw to
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
   /// @param withdrawalAddress The withdrawal address
   /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the acting users
+  /// @param sigs The signatures of the account signers with admin permissions
   function addWithdrawalAddress(
     int64 timestamp,
     uint64 txID,
@@ -162,13 +167,14 @@ contract AccountContract is BaseContract {
   }
 
   /// @notice Remove withdrawal address that the account can withdraw to
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
   /// @param withdrawalAddress The withdrawal address
   /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the acting users
+  /// @param sigs The signatures of the account signers with admin permissions
   function removeWithdrawalAddress(
     int64 timestamp,
     uint64 txID,
@@ -188,12 +194,11 @@ contract AccountContract is BaseContract {
     acc.onboardedWithdrawalAddresses[withdrawalAddress] = false;
   }
 
-  /// @notice Add a transfer account that this account can transfer to
+  /// @notice Add a account that this account can transfer to
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
-  /// @param signer The signer
   /// @param nonce The nonce of the transaction
   /// @param sigs The signatures of the acting users
   function addTransferAccount(
@@ -214,12 +219,14 @@ contract AccountContract is BaseContract {
     acc.onboardedTransferAccounts[accountID] = true;
   }
 
-  /// @notice Remove a transfer account for an account
+  /// @notice Remove a account that this account can transfer to
+  /// This requires the multisig threshold to be met
   ///
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
-  /// @param accID The account ID of the transfer account to add
-  /// @param signer The signer
+  /// @param accID The account ID
+  /// @param nonce The nonce of the transaction
+  /// @param sigs The signatures of the account signers with admin permissions
   function removeTransferAccount(
     int64 timestamp,
     uint64 txID,
