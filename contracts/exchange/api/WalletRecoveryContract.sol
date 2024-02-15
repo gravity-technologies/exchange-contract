@@ -7,8 +7,16 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract WalletRecoveryContract is BaseContract {
-  // addRecoveryAddress adds a recoveryAddress for a given signer for a given account
-  // The recoveryAddress can be used to change the signer from the signer to another signer from the account and subAccounts associated with the account
+  /// @notice Add a recovery address for a signer for a given signer for a given account
+  /// The recoveryAddress can be used to change the signer from the signer to another signer from the account and subAccounts associated with the account
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accID The account ID
+  /// @param signer The signer for which the recovery address is being added
+  /// @param recoveryAddress The recovery address that can be used to change the signer
+  /// @param nonce The nonce of the transaction
+  /// @param sig The signature of the acting user
   function addRecoveryAddress(
     int64 timestamp,
     uint64 txID,
@@ -30,7 +38,15 @@ contract WalletRecoveryContract is BaseContract {
     acc.recoveryAddresses[signer][recoveryAddress] = 1;
   }
 
-  // removeRecoveryAddress removes a recoveryAddress for a given signer for a given account
+  /// @notice Remove a recovery address for a signer for a given signer for a given account
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accID The account ID
+  /// @param signer The signer for which the recovery address is being removed
+  /// @param recoveryAddress The recovery address that is being removed
+  /// @param nonce The nonce of the transaction
+  /// @param sig The signature of the signer
   function removeRecoveryAddress(
     int64 timestamp,
     uint64 txID,
@@ -52,11 +68,18 @@ contract WalletRecoveryContract is BaseContract {
     delete acc.recoveryAddresses[signer][recoveryAddress];
   }
 
-  // recoverAddress replaces the oldSigner with the newSigner with the newSigner having the same permissions
-  // as the oldSigner in the account and all the subAccounts associated with the account.
-  // oldSigner is the existing signer that can have permissions in the account but needs to be replaced
-  // newSigner is the new signer that will replace the oldSigner
-  // recoverySigner is the signer that has to supply the signature to enable the recovery
+  /// @notice Recover the address of an account
+  /// Replaces the oldSigner with the newSigner with the newSigner having the same permissions
+  /// as the oldSigner in the account and all the subAccounts associated with the account.
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accID The account ID
+  /// @param oldSigner  existing signer that can have permissions in the account but needs to be replaced
+  /// @param recoverySigner signer that has to supply the signature to enable the recovery
+  /// @param newSigner new signer that will replace the oldSigner
+  /// @param nonce The nonce of the transaction
+  /// @param sig The signature of the recoverySigner
   function recoverAddress(
     int64 timestamp,
     uint64 txID,

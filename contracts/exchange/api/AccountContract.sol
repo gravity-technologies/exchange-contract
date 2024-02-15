@@ -220,7 +220,6 @@ contract AccountContract is BaseContract {
   /// @param txID The transaction ID
   /// @param accID The account ID of the transfer account to add
   /// @param signer The signer
-
   function removeTransferAccount(
     int64 timestamp,
     uint64 txID,
