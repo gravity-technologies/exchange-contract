@@ -292,48 +292,6 @@ export const RecoverAddress = {
   },
 }
 
-// Account Recovery
-export const AddAccountGuardian = {
-  primaryType: PrimaryType.AddAccountGuardian,
-  domain,
-  types: {
-    EIP712Domain,
-    [PrimaryType.AddAccountGuardian]: [
-      { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
-      { name: "nonce", type: "uint32" },
-    ],
-  },
-}
-
-export const RemoveAccountGuardian = {
-  primaryType: PrimaryType.RemoveAccountGuardian,
-  domain,
-  types: {
-    EIP712Domain,
-    [PrimaryType.RemoveAccountGuardian]: [
-      { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
-      { name: "nonce", type: "uint32" },
-    ],
-  },
-}
-
-export const RecoverAccountAdmin = {
-  primaryType: PrimaryType.RecoverAccountAdmin,
-  domain,
-  types: {
-    EIP712Domain,
-    [PrimaryType.RecoverAccountAdmin]: [
-      { name: "accountID", type: "address" },
-      { name: "recoveryType", type: "uint8" },
-      { name: "oldAdmin", type: "address" },
-      { name: "recoveryAdmin", type: "address" },
-      { name: "nonce", type: "uint32" },
-    ],
-  },
-}
-
 // Config
 export const ScheduleConfig = {
   primaryType: PrimaryType.ScheduleConfig,

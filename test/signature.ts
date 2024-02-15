@@ -222,7 +222,7 @@ export function genAddRecoveryAddressPayloadSig(
   wallet: Wallet,
   accountID: string,
   signer: string,
-  recoveryAddress: string,
+  recoverySigner: string,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
@@ -230,7 +230,7 @@ export function genAddRecoveryAddressPayloadSig(
     message: {
       accountID,
       signer,
-      recoveryAddress,
+      recoverySigner,
       nonce,
     },
   })
@@ -240,7 +240,7 @@ export function genRemoveRecoveryAddressPayloadSig(
   wallet: Wallet,
   accountID: string,
   signer: string,
-  recoveryAddress: string,
+  recoverySigner: string,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
@@ -248,7 +248,7 @@ export function genRemoveRecoveryAddressPayloadSig(
     message: {
       accountID,
       signer,
-      recoveryAddress,
+      recoverySigner,
       nonce,
     },
   })
@@ -269,59 +269,6 @@ export function genRecoverAddressPayloadSig(
       oldSigner,
       recoverySigner,
       newSigner,
-      nonce,
-    },
-  })
-}
-
-// Account Recovery
-export function genAddAccountGuardianPayloadSig(
-  wallet: Wallet,
-  accountID: string,
-  signer: string,
-  nonce: number = randomInt(22021991)
-): Signature {
-  return sign(wallet, {
-    ...Types.AddAccountGuardian,
-    message: {
-      accountID,
-      signer,
-      nonce,
-    },
-  })
-}
-
-export function genRemoveAccountGuardianPayloadSig(
-  wallet: Wallet,
-  accountID: string,
-  signer: string,
-  nonce: number = randomInt(22021991)
-): Signature {
-  return sign(wallet, {
-    ...Types.RemoveAccountGuardian,
-    message: {
-      accountID,
-      signer,
-      nonce,
-    },
-  })
-}
-
-export function genRecoverAccountAdminPayloadSig(
-  wallet: Wallet,
-  accountID: string,
-  recoveryType: number,
-  oldAdmin: string,
-  recoveryAdmin: string,
-  nonce: number = randomInt(22021991)
-): Signature {
-  return sign(wallet, {
-    ...Types.RecoverAccountAdmin,
-    message: {
-      accountID,
-      recoveryType,
-      oldAdmin,
-      recoveryAdmin,
       nonce,
     },
   })
