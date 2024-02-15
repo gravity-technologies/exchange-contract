@@ -1,20 +1,17 @@
-import { BaseWallet, TransactionRequest } from "ethers"
+import { Wallet } from "ethers"
 import { Contract } from "zksync-ethers"
 import {
-  genAddRecoveryAddressPayloadSig,
-  genRemoveRecoveryAddressPayloadSig,
-  genRecoverAddressPayloadSig,
-  genAddAccountGuardianPayloadSig,
   genAddAccountAdminSig as genAddAccountSignerSig,
+  genAddRecoveryAddressPayloadSig,
   genAddSessionKeySig,
   genAddSubAccountSignerPayloadSig,
   genAddWithdrawalAddressSig,
   genCreateAccountSig,
   genCreateSubAccountSig,
   genDepositSig,
-  genRecoverAccountAdminPayloadSig,
-  genRemoveAccountGuardianPayloadSig,
+  genRecoverAddressPayloadSig,
   genRemoveAccountSignerSig,
+  genRemoveRecoveryAddressPayloadSig,
   genRemoveSubAccountSignerPayloadSig,
   genRemoveWithdrawalAddressSig,
   genScheduleConfigSig,
@@ -24,19 +21,19 @@ import {
   genSetSubAccountSignerPermissionsPayloadSig,
   genWithdrawalSig,
 } from "./signature"
-import { AccountRecoveryType, Currency, MarginType } from "./type"
+import { Currency, MarginType } from "./type"
 import { Bytes32, nonce } from "./util"
 
 export const MAX_GAS = 2_000_000_000
 
-function txRequestDefault(): TransactionRequest {
+function txRequestDefault(): any {
   return {
     gasLimit: MAX_GAS,
   }
 }
 
 // Account
-export async function createAccount(contract: Contract, txSigner: BaseWallet, ts: number, txID: number, accID: string) {
+export async function createAccount(contract: Contract, txSigner: Wallet, ts: number, txID: number, accID: string) {
   const salt = nonce()
   const sig = genCreateAccountSig(txSigner, accID, salt)
   const tx = await contract.createAccount(ts, txID, accID, sig, txRequestDefault())
@@ -45,7 +42,7 @@ export async function createAccount(contract: Contract, txSigner: BaseWallet, ts
 
 export async function createSubAccount(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   accID: string,
@@ -69,7 +66,7 @@ export async function createSubAccount(
 
 export async function addAccountSigner(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigners: Wallet[],
   ts: number,
   txID: number,
   accID: string,
@@ -84,7 +81,7 @@ export async function addAccountSigner(
 
 export async function removeAccountSigner(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigners: Wallet[],
   ts: number,
   txID: number,
   accID: string,
@@ -98,7 +95,7 @@ export async function removeAccountSigner(
 
 export async function setMultisigThreshold(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigners: Wallet[],
   ts: number,
   txID: number,
   accID: string,
@@ -120,7 +117,7 @@ export async function setMultisigThreshold(
 
 export async function addWithdrawalAddress(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigners: Wallet[],
   ts: number,
   txID: number,
   accID: string,
@@ -134,7 +131,7 @@ export async function addWithdrawalAddress(
 
 export async function removeWithdrawalAddress(
   contract: Contract,
-  txSigners: BaseWallet[],
+  txSigners: Wallet[],
   ts: number,
   txID: number,
   accID: string,
@@ -148,7 +145,7 @@ export async function removeWithdrawalAddress(
 
 // export async function addTransferSubAccount(
 //   contract: Contract,
-//   txSigners: BaseWallet[],
+//   txSigners: Wallet[],
 //   ts: number,
 //   txID: number,
 //   accID: string,
@@ -163,7 +160,7 @@ export async function removeWithdrawalAddress(
 
 // export async function removeTransferSubAccount(
 //   contract: Contract,
-//   txSigners: BaseWallet[],
+//   txSigners: Wallet[],
 //   ts: number,
 //   txID: number,
 //   accID: string,
@@ -179,7 +176,7 @@ export async function removeWithdrawalAddress(
 // Sub Account
 export async function setSubAccountMarginType(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   subID: number,
@@ -195,7 +192,7 @@ export async function addSubSigner(
   contract: Contract,
   ts: number,
   txID: number,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   subID: number,
   newSigner: string,
   permission: number
@@ -208,7 +205,7 @@ export async function addSubSigner(
 
 export async function setSubAccountSignerPermission(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   subID: number,
@@ -232,7 +229,7 @@ export async function setSubAccountSignerPermission(
 
 export async function removeSubSigner(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   subID: number,
@@ -247,7 +244,7 @@ export async function removeSubSigner(
 // Wallet Recovery
 export async function addRecoveryAddress(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   accID: string,
@@ -263,7 +260,7 @@ export async function addRecoveryAddress(
 
 export async function removeRecoveryAddress(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   accID: string,
@@ -287,7 +284,7 @@ export async function removeRecoveryAddress(
 
 export async function recoverAddress(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   accID: string,
@@ -314,7 +311,7 @@ export async function recoverAddress(
 // Config
 export async function scheduleConfig(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   key: number,
@@ -328,7 +325,7 @@ export async function scheduleConfig(
 
 export async function setConfig(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   key: number,
@@ -343,7 +340,7 @@ export async function setConfig(
 // Session
 export async function addSessionKey(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   sessionKey: string,
@@ -355,7 +352,7 @@ export async function addSessionKey(
   await tx.wait()
 }
 
-export async function removeSessionKey(contract: Contract, txSigner: BaseWallet, ts: number, txID: number) {
+export async function removeSessionKey(contract: Contract, txSigner: Wallet, ts: number, txID: number) {
   const address = await txSigner.getAddress()
   const tx = await contract.removeSessionKey(ts, txID, address)
   await tx.wait()
@@ -366,7 +363,7 @@ export async function removeSessionKey(contract: Contract, txSigner: BaseWallet,
 
 export async function deposit(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   fromEthAddress: string,
@@ -381,7 +378,7 @@ export async function deposit(
 
 export async function withdraw(
   contract: Contract,
-  txSigner: BaseWallet,
+  txSigner: Wallet,
   ts: number,
   txID: number,
   fromSubAccount: string,
@@ -396,7 +393,7 @@ export async function withdraw(
 
 // export async function transfer(
 //   contract: Contract,
-//   txSigner: BaseWallet,
+//   txSigner: Wallet,
 //   ts: number,
 //   txID: number,
 //   fromSubAccount: string,

@@ -100,7 +100,7 @@ export interface Order extends OrderNoSignature {
 
 export interface Signature {
   signer: string
-  expiration: number // expiration timestamp in nano seconds
+  expiration: BigInt // expiration timestamp in nano seconds
   r: Buffer
   s: Buffer
   v: number

@@ -24,7 +24,6 @@ contract GRVTExchange is
 {
   function initialize(bytes32[] memory _initialConfig) public initializer {
     __ReentrancyGuard_init();
-    _setConfigTimelock();
     mapping(ConfigID => bytes32) storage configs = state.configs;
     for (uint i; i < _initialConfig.length; ++i) {
       configs[ConfigID(i)] = _initialConfig[i];

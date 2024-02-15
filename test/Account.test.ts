@@ -11,14 +11,14 @@ import {
   setMultisigThreshold,
 } from "./api"
 import { AccPerm } from "./type"
-import { expectToThrowAsync, wallet } from "./util"
+import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
 
 describe("API - Account", function () {
   let contract: Contract
   let snapshotId: string
 
   before(async () => {
-    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+    const wallet = getDeployerWallet()
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })

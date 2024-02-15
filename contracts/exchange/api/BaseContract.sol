@@ -95,4 +95,9 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     uint64 signerAuthz = sub.signers[signer];
     require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
   }
+
+  // Check if the caller has certain permissions on a subaccount
+  function getLastTxID() external view returns (uint64) {
+    return state.lastTxID;
+  }
 }

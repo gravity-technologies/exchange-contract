@@ -14,8 +14,7 @@ abstract contract TransferContract is BaseTradeContract {
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
-   * @param ethAddress Ethereum address of the depositor
-   * @param toSubID Sub account to deposit into
+   * @param accountID  account to deposit into
    * @param numTokens Number of tokens to deposit
    * @param nonce Nonce of the transaction
    * @param sig Signature of the transaction
@@ -23,24 +22,23 @@ abstract contract TransferContract is BaseTradeContract {
   function deposit(
     int64 timestamp,
     uint64 txID,
-    address ethAddress,
-    uint64 toSubID,
+    address accountID,
     uint64 numTokens,
     uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(toSubID);
+    Account storage account = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashDeposit(ethAddress, toSubID, numTokens, nonce), sig);
+    // _preventReplay(hashDeposit(ethAddress, toSubID, numTokens, nonce), sig);
     // ------- End of Signature Verification -------
 
-    _requirePermission(sub, sig.signer, SubAccountPermDeposit);
+    // _requirePermission(sub, sig.signer, SubAccountPermDeposit);
 
     // numTokens are upcasted from uint64 -> int128, which is safe
     // TODO
-    // sub.balanceE9 += int128(uint128(numTokens));
+    account.spotBalances[Currency.USDT] += uint128(numTokens);
   }
 
   /**
