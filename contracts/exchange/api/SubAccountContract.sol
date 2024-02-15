@@ -9,6 +9,15 @@ import "../util/Address.sol";
 contract SubAccountContract is BaseContract {
   int64 private constant _MAX_SESSION_DURATION_NANO = 1 days;
 
+  /// @notice Create a subaccount
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accountID The account ID
+  /// @param subAccountID The subaccount ID
+  /// @param quoteCurrency The quote currency of the subaccount
+  /// @param marginType The margin type of the subaccount
+  /// @param nonce The nonce of the transaction
+  /// @param sig The signature of the acting user
   function createSubAccount(
     int64 timestamp,
     uint64 txID,

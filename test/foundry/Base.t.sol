@@ -114,7 +114,7 @@ contract BaseTest is Test {
   function random() public returns (uint32) {
     counter++;
     // sha3 and now have been deprecated
-    uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, counter)));
+    uint256 randomNumber = uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, counter)));
     // Truncate the result to uint32
     return uint32(randomNumber);
   }
