@@ -39,6 +39,11 @@ export const PrimaryType = keyMirror({
   SetSubAccountMarginType: 0,
   SetSubAccountSignerPermissions: 0,
 
+  // Wallet Recovery
+  AddRecoveryAddress: 0,
+  RemoveRecoveryAddress: 0,
+  RecoverAddress: 0,
+
   // Config
   ScheduleConfig: 0,
   SetConfig: 0,
@@ -243,43 +248,45 @@ export const RemoveSubAccountSigner = {
   },
 }
 
-// Account Recovery
-export const AddAccountGuardian = {
-  primaryType: PrimaryType.AddAccountGuardian,
+// Wallet Recovery
+export const AddRecoveryAddress = {
+  primaryType: PrimaryType.AddRecoveryAddress,
   domain,
   types: {
     EIP712Domain,
-    [PrimaryType.AddAccountGuardian]: [
+    [PrimaryType.AddRecoveryAddress]: [
       { name: "accountID", type: "address" },
       { name: "signer", type: "address" },
+      { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
   },
 }
 
-export const RemoveAccountGuardian = {
-  primaryType: PrimaryType.RemoveAccountGuardian,
+export const RemoveRecoveryAddress = {
+  primaryType: PrimaryType.RemoveRecoveryAddress,
   domain,
   types: {
     EIP712Domain,
-    [PrimaryType.RemoveAccountGuardian]: [
+    [PrimaryType.RemoveRecoveryAddress]: [
       { name: "accountID", type: "address" },
       { name: "signer", type: "address" },
+      { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
   },
 }
 
-export const RecoverAccountAdmin = {
-  primaryType: PrimaryType.RecoverAccountAdmin,
+export const RecoverAddress = {
+  primaryType: PrimaryType.RecoverAddress,
   domain,
   types: {
     EIP712Domain,
-    [PrimaryType.RecoverAccountAdmin]: [
+    [PrimaryType.RecoverAddress]: [
       { name: "accountID", type: "address" },
-      { name: "recoveryType", type: "uint8" },
-      { name: "oldAdmin", type: "address" },
-      { name: "recoveryAdmin", type: "address" },
+      { name: "oldSigner", type: "address" },
+      { name: "recoverySigner", type: "address" },
+      { name: "newSigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
   },
