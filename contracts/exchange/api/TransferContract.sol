@@ -15,23 +15,23 @@ abstract contract TransferContract is BaseTradeContract {
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
    * @param accountID  account to deposit into
+   * @param currency Currency to deposit
    * @param numTokens Number of tokens to deposit
-   * @param nonce Nonce of the transaction
    * @param sig Signature of the transaction
    **/
   function deposit(
     int64 timestamp,
     uint64 txID,
     address accountID,
+    Currency currency,
     uint64 numTokens,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
     Account storage account = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    // _preventReplay(hashDeposit(ethAddress, toSubID, numTokens, nonce), sig);
+    // _preventReplay(hashDeposit(ethAddress, toSubID, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     // _requirePermission(sub, sig.signer, SubAccountPermDeposit);
@@ -47,26 +47,26 @@ abstract contract TransferContract is BaseTradeContract {
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
-   * @param fromSubID Sub account to withdraw from
+   * @param fromAccountID Sub account to withdraw from
    * @param toEthAddress Ethereum address of the withdrawer
+   * @param currency Currency to withdraw
    * @param numTokens Number of tokens to withdraw
-   * @param nonce Nonce of the transaction
    * @param sig Signature of the transaction
    **/
-  function withdrawal(
+  function withdraw(
     int64 timestamp,
     uint64 txID,
-    uint64 fromSubID,
+    address fromAccountID,
     address toEthAddress,
+    Currency currency,
     uint64 numTokens,
-    uint32 nonce,
     Signature calldata sig
   ) external nonReentrant {
     // _setSequence(timestamp, txID);
     // SubAccount storage sub = _requireSubAccount(fromSubID);
     // Account storage acc = _requireAccount(sub.accountID);
     // // ---------- Signature Verification -----------
-    // _preventReplay(hashWithdrawal(fromSubID, toEthAddress, numTokens, nonce), sig);
+    // _preventReplay(hashWithdrawal(fromSubID, toEthAddress, numTokens, sig.nonce), sig);
     // // ------- End of Signature Verification -------
     // // numTokens are upcasted from uint64 -> int128, which is safe
     // int128 numTokensInt128 = int128(uint128(numTokens));
@@ -91,8 +91,8 @@ abstract contract TransferContract is BaseTradeContract {
    * @param txID Transaction ID
    * @param fromSubID Sub account to transfer from
    * @param toSubID Sub account to transfer to
+   * @param currency Currency to transfer
    * @param numTokens Number of tokens to transfer
-   * @param nonce Nonce of the transaction
    * @param sig Signature of the transaction
    */
   function transfer(
@@ -102,8 +102,8 @@ abstract contract TransferContract is BaseTradeContract {
     uint64 fromSubID,
     address toAccount,
     uint64 toSubID,
+    Currency currency,
     uint64 numTokens,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     // _setSequence(timestamp, txID);

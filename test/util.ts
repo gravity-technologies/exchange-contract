@@ -2,8 +2,8 @@ import { expect } from "chai"
 import { randomInt } from "crypto"
 import { BytesLike, Wallet, utils } from "ethers"
 import { Wallet as ZkWallet } from "zksync-ethers"
-import { NumConfig } from "./type"
 import { LOCAL_RICH_WALLETS, getWallet } from "../deploy/utils"
+import { NumConfig } from "./type"
 
 export async function expectToThrowAsync(promise: Promise<any>, message?: string) {
   let error = null
