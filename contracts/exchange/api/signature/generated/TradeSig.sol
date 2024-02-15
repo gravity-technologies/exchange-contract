@@ -14,7 +14,7 @@ bytes32 constant _LEG_H = keccak256(
 
 function hashOrder(Order calldata o) pure returns (bytes32) {
   bytes memory legsEncoded;
-  for (uint i = 0; i < o.legs.length; i++) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
+  for (uint i; i < o.legs.length; ++i) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
   bytes memory encoded = abi.encode(
     _ORDER_H,
     o.subAccountID,

@@ -27,7 +27,7 @@ function _verifyOrder(SubAccount storage sub, Order calldata o, bool isMakerOrde
 
   // Validate reduceOnly during trade
   if (o.reduceOnly) {
-    for (uint i = 0; i < o.legs.length; i++) {
+    for (uint i; i < o.legs.length; ++i) {
       // if long -> selling
       // if shorts -> buying
       OrderLeg calldata leg = o.legs[i];
@@ -41,7 +41,7 @@ function _verifyOrder(SubAccount storage sub, Order calldata o, bool isMakerOrde
 
   // Validate legs are sorted by derivative ID
   OrderLeg[] calldata legs = o.legs;
-  for (uint i = 1; i < legs.length; i++) {
+  for (uint i = 1; i < legs.length; ++i) {
     require(legs[i - 1].assetID < legs[i].assetID, "legs not sorted");
   }
 }

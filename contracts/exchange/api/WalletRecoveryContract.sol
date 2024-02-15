@@ -82,7 +82,7 @@ contract WalletRecoveryContract is BaseContract {
     acc.signers[newSigner] = acc.signers[oldSigner];
     delete acc.signers[oldSigner];
     uint256 numSubAccs = acc.subAccounts.length;
-    for (uint256 i = 0; i < numSubAccs; i++) {
+    for (uint256 i; i < numSubAccs; ++i) {
       SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
       require(subAcc.signers[newSigner] == 0, "new signer already exists");
       // Add a new signer with the same permission as the old signer to the subAccount
