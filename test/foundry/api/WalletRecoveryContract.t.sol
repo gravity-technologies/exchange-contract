@@ -82,7 +82,7 @@ contract WalletRecoveryContractTest is APIBase {
   }
 
   function testAddRecoveryAddressWithIncorrectWallet() public {
-    vm.expectRevert("invalid signer");
+    vm.expectRevert("invalid signature");
     addRecoveryAddressHelper(subAccSigner, subAccSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
   }
@@ -113,7 +113,7 @@ contract WalletRecoveryContractTest is APIBase {
   function testRemoveRecoveryAddressWithIncorrectWallet() public {
     addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
     progressToNextTxn();
-    vm.expectRevert("invalid signer");
+    vm.expectRevert("invalid signature");
     removeRecoveryAddressHelper(
       subAccSigner,
       users.walletFourPrivateKey,
