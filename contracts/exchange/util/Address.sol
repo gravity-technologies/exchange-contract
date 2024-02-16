@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 function addressExists(address[] memory arr, address targetAddress) pure returns (bool) {
-  for (uint256 i = 0; i < arr.length; i++) {
+  for (uint256 i = 0; i < arr.length; ++i) {
     if (arr[i] == targetAddress) return true;
   }
   return false;
@@ -17,7 +17,7 @@ function addAddress(address[] storage arr, address targetAddress) {
 // If the element is not found, revert()
 // If preventRemovingLastElement = true, then the last element cannot be removed and the function will revert()
 function removeAddress(address[] storage arr, address addressToRemove, bool preventRemovingLastElement) {
-  for (uint256 i = 0; i < arr.length; i++) {
+  for (uint256 i; i < arr.length; ++i) {
     if (arr[i] != addressToRemove) continue;
     require(!preventRemovingLastElement || arr.length > 1, "cannot remove last @");
     // Move the last element to the position of the element to be removed

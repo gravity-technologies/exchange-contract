@@ -143,7 +143,7 @@ function generatePacketHashGetters(types, typeName, fields, packetHashGetters: A
         packetHashGetters.push(`
 function ${packetHashGetterName(field.type)} (${field.type} memory _input) pure returns (bytes32) {
   bytes memory encoded;
-  for (uint i = 0; i < _input.length; i++) {
+  for (uint i; i < _input.length; ++i) {
     encoded = abi.encodePacked(encoded, ${packetHashGetterName(basicType)}(_input[i]));
   }
   return keccak256(encoded);
@@ -213,7 +213,7 @@ function generateArrayPacketHashGetter(typeName, packetHashGetters) {
   packetHashGetters.push(`
   function ${packetHashGetterName(typeName)} (${typeName} memory _input) pure returns (bytes32) {
     bytes memory encoded;
-    for (uint i = 0; i < _input.length; i++) {
+    for (uint i; i < _input.length; ++i) {
       encoded = bytes.concat(
         encoded,
         ${packetHashGetterName(typeName.substr(0, typeName.length - 2))}(_input[i])

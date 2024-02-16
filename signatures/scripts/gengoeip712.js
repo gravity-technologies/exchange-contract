@@ -16,7 +16,7 @@ Object.values(Types).forEach((top) => {
     }
     let typStr = ""
     const definitions = top.types[typ]
-    for (let i = 0; i < definitions.length; i++) {
+    for (let i = 0; i < definitions.length; ++i) {
       const def = definitions[i]
       typStr += `      {Name: "${def.name}", Type: "${def.type}"},\n`
     }

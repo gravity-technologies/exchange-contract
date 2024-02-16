@@ -9,6 +9,14 @@ import "../util/Address.sol";
 contract SubAccountContract is BaseContract {
   int64 private constant _MAX_SESSION_DURATION_NANO = 1 days;
 
+  /// @notice Create a subaccount
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accountID The account ID
+  /// @param subAccountID The subaccount ID
+  /// @param quoteCurrency The quote currency of the subaccount
+  /// @param marginType The margin type of the subaccount
+  /// @param sig The signature of the acting user
   function createSubAccount(
     int64 timestamp,
     uint64 txID,
@@ -16,7 +24,6 @@ contract SubAccountContract is BaseContract {
     uint64 subAccountID,
     Currency quoteCurrency,
     MarginType marginType,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
@@ -32,7 +39,7 @@ contract SubAccountContract is BaseContract {
     require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, nonce);
+    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, sig.nonce);
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
@@ -54,14 +61,12 @@ contract SubAccountContract is BaseContract {
   /// @param txID The transaction ID
   /// @param subAccID The subaccount ID
   /// @param marginType The new margin type
-  /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
   function setSubAccountMarginType(
     int64 timestamp,
     uint64 txID,
     uint64 subAccID,
     MarginType marginType,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
@@ -75,7 +80,7 @@ contract SubAccountContract is BaseContract {
     _requirePermission(sub, sig.signer, SubAccountPermChangeMarginType);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetMarginType(subAccID, marginType, nonce), sig);
+    _preventReplay(hashSetMarginType(subAccID, marginType, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     sub.marginType = marginType;
@@ -89,15 +94,13 @@ contract SubAccountContract is BaseContract {
   /// @param subID The subaccount ID
   /// @param signer The signer to add
   /// @param permissions The permissions of the signer as a bitmask
-  /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
   function addSubAccountSigner(
     int64 timestamp,
     uint64 txID,
     uint64 subID,
     address signer,
-    uint16 permissions,
-    uint32 nonce,
+    uint64 permissions,
     Signature calldata sig
   ) external {
     // subaccount, account exist
@@ -111,7 +114,7 @@ contract SubAccountContract is BaseContract {
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAddSigner);
 
     // // ---------- Signature Verification -----------
-    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, nonce), sig);
+    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     sub.signers[signer] = permissions;
@@ -124,15 +127,13 @@ contract SubAccountContract is BaseContract {
   /// @param subID The subaccount ID
   /// @param signer The signer to change permissions for
   /// @param perms The new permissions of the signer as a bitmask
-  /// @param nonce The nonce of the transaction
   /// @param sig The signature of the acting user
-  function SetSubAccountSignerPermissions(
+  function setSubAccountSignerPermissions(
     int64 timestamp,
     uint64 txID,
     uint64 subID,
     address signer,
     uint64 perms,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
@@ -141,7 +142,7 @@ contract SubAccountContract is BaseContract {
     _requireUpsertSigner(acc, sub, sig.signer, perms, SubAccountPermUpdateSignerPermission);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetSignerPermissions(subID, signer, perms, nonce), sig);
+    _preventReplay(hashSetSignerPermissions(subID, signer, perms, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     // Update permission
@@ -154,14 +155,12 @@ contract SubAccountContract is BaseContract {
   /// @param txID The transaction ID
   /// @param subAccID The subaccount ID
   /// @param signer The signer to remove
-  /// @param nonce The nonce of transaction
   /// @param sig The signature of the acting user
   function removeSubAccountSigner(
     int64 timestamp,
     uint64 txID,
     uint64 subAccID,
     address signer,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
@@ -170,7 +169,7 @@ contract SubAccountContract is BaseContract {
     _requirePermission(sub, sig.signer, SubAccountPermRemoveSigner);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRemoveSigner(subAccID, signer, nonce), sig);
+    _preventReplay(hashRemoveSigner(subAccID, signer, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     // If we reach here, that means the user calling this API is an admin. Hence, even after we remove the last

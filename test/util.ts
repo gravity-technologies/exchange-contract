@@ -1,6 +1,8 @@
 import { expect } from "chai"
 import { randomInt } from "crypto"
 import { BytesLike, Wallet, utils } from "ethers"
+import { Wallet as ZkWallet } from "zksync-ethers"
+import { LOCAL_RICH_WALLETS, getWallet } from "../deploy/utils"
 import { NumConfig } from "./type"
 
 export async function expectToThrowAsync(promise: Promise<any>, message?: string) {
@@ -66,4 +68,8 @@ export function getConfigArray(configMap: CfgMap): Bytes32[] {
     res[key] = value
   }
   return res
+}
+
+export function getDeployerWallet(): ZkWallet {
+  return getWallet(LOCAL_RICH_WALLETS[0].privateKey)
 }

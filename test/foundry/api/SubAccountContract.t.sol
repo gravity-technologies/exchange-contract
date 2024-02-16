@@ -10,11 +10,28 @@ import "../Base.t.sol";
 import "./APIBase.t.sol";
 
 contract SubAccountContractTest is APIBase {
-  function testCreateAccount() public {
+  function testCreateSubAccount() public {
     createAccountHelper(users.walletOne, users.walletOnePrivateKey);
     progressToNextTxn();
     address accountID = users.walletOne;
     uint64 subAccID = uint64(random());
     createSubAccountHelper(users.walletOne, users.walletOnePrivateKey, accountID, subAccID);
+  }
+
+  function testAddSubAccountSigner() public {
+    createAccountHelper(users.walletOne, users.walletOnePrivateKey);
+    progressToNextTxn();
+    address accountID = users.walletOne;
+    uint64 subAccID = uint64(random());
+    createSubAccountHelper(users.walletOne, users.walletOnePrivateKey, accountID, subAccID);
+    progressToNextTxn();
+    addSubAccountSignerHelper(
+      users.walletOne,
+      users.walletOnePrivateKey,
+      subAccID,
+      users.walletTwo,
+      SubAccountPermTrade
+    );
+    progressToNextTxn();
   }
 }

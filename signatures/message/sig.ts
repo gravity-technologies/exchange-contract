@@ -172,48 +172,6 @@ export function GetRemoveSubAccountSigner(subAccountID: number, signer: string, 
   }
 }
 
-// Account Recovery
-export function GetAddAccountGuardian(accountID: string, signer: string, nonce: number) {
-  return {
-    ...Type.AddAccountGuardian,
-    message: {
-      accountID,
-      signer,
-      nonce,
-    },
-  }
-}
-
-export function GetRemoveAccountGuardian(accountID: string, signer: string, nonce: number) {
-  return {
-    ...Type.RemoveAccountGuardian,
-    message: {
-      accountID,
-      signer,
-      nonce,
-    },
-  }
-}
-
-export function GetRecoverAccountAdmin(
-  accountID: string,
-  recoveryType: number,
-  oldAdmin: string,
-  recoveryAdmin: string,
-  nonce: number
-) {
-  return {
-    ...Type.RecoverAccountAdmin,
-    message: {
-      accountID,
-      recoveryType,
-      oldAdmin,
-      recoveryAdmin,
-      nonce,
-    },
-  }
-}
-
 // Config
 export function GetScheduleConfig(key: number, value: string, nonce: number) {
   return {

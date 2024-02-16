@@ -44,8 +44,8 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     // FIXME: implement
     uint numSigs = sigs.length;
     // 1. Check that there are no duplicate signing key in the signatures
-    for (uint i = 0; i < numSigs; i++) {
-      for (uint j = i + 1; j < numSigs; j++) {
+    for (uint i; i < numSigs; ++i) {
+      for (uint j = i + 1; j < numSigs; ++j) {
         require(sigs[i].signer != sigs[j].signer, "duplicate signing key");
       }
     }
@@ -58,7 +58,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
-    for (uint i = 0; i < numSigs; i++) {
+    for (uint i; i < numSigs; ++i) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
       _requireValidSig(timestamp, hash, sigs[i]);
     }
@@ -94,5 +94,10 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return;
     uint64 signerAuthz = sub.signers[signer];
     require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
+  }
+
+  // Check if the caller has certain permissions on a subaccount
+  function getLastTxID() external view returns (uint64) {
+    return state.lastTxID;
   }
 }

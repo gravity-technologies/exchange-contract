@@ -108,11 +108,13 @@ struct Account {
   //   - https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html#layout-of-state-variables-in-storage
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint multiSigThreshold;
-  mapping(Currency => int128) spotBalances;
+  mapping(Currency => uint128) spotBalances;
   // Guardians who are authorized to participate in key recovery quorum
   // Both retail and institutional accounts can rely on guardians for key recovery
   // Institutions have an additional option to rely on their sub account signers
   address[] guardians;
+  // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
+  mapping(address => mapping(address => uint256)) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
   mapping(address => bool) onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Accounts

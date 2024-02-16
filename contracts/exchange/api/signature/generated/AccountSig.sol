@@ -49,17 +49,17 @@ function hashRemoveWithdrawalAddress(address accID, address withdrawal, uint32 n
 }
 
 bytes32 constant _ADD_TRANSFER_SUB_ACCOUNT_H = keccak256(
-  "AddTransferSubAccount(address accountID,address transferSubAccount,uint32 nonce)"
+  "AddTransferSubAccount(address accountID,address transferAccountID,uint32 nonce)"
 );
 
-function hashAddTransferAccount(address accID, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_ADD_TRANSFER_SUB_ACCOUNT_H, accID, nonce));
+function hashAddTransferAccount(address accID, address transferAccountID, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_ADD_TRANSFER_SUB_ACCOUNT_H, accID, transferAccountID, nonce));
 }
 
 bytes32 constant _DEL_TRANSFER_SUB_ACC_H = keccak256(
-  "RemoveTransferSubAccount(address accountID,address transferSubAccount,uint32 nonce)"
+  "RemoveTransferSubAccount(address accountID,address transferAccountID,uint32 nonce)"
 );
 
-function hashRemoveTransferAccount(address accID, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_DEL_TRANSFER_SUB_ACC_H, accID, nonce));
+function hashRemoveTransferAccount(address accID, address transferAccountID, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_DEL_TRANSFER_SUB_ACC_H, accID, transferAccountID, nonce));
 }

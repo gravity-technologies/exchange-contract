@@ -1,6 +1,6 @@
 import { Contract } from "ethers"
 import { network } from "hardhat"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { deployContract } from "../deploy/utils"
 import {
   MAX_GAS,
   addSubSigner,
@@ -16,14 +16,14 @@ import {
   genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
 import { MarginType, SubPerm } from "./type"
-import { expectToThrowAsync, nonce, wallet } from "./util"
+import { expectToThrowAsync, getDeployerWallet, nonce, wallet } from "./util"
 
 describe("API - SubAccount", function () {
   let contract: Contract
   let snapshotId: string
 
   before(async () => {
-    const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+    const wallet = getDeployerWallet()
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
@@ -345,7 +345,7 @@ describe("API - SubAccount", function () {
       const salt = nonce()
       const sig = genSetSubAccountSignerPermissionsPayloadSig(admin, subID, alice.address, SubPerm.Trade, salt)
       await expectToThrowAsync(
-        contract.SetSubAccountSignerPermissions(ts, ts, subID, alice.address, SubPerm.Deposit, salt, sig),
+        contract.setSubAccountSignerPermissions(ts, ts, subID, alice.address, SubPerm.Deposit, salt, sig),
         "invalid signature"
       )
     })
