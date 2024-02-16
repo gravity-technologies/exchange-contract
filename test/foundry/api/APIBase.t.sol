@@ -81,7 +81,7 @@ abstract contract APIBase is BaseTest {
     uint32 sigNonce = random();
     bytes32 structHash = hashAddRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
-    grvtExchange.addRecoveryAddress(currentTimestapInt64, txNonce, accountID, signer, recoveryAddress, sigNonce, sig);
+    grvtExchange.addRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
 
   function removeRecoveryAddressHelper(
@@ -97,15 +97,7 @@ abstract contract APIBase is BaseTest {
     uint32 sigNonce = random();
     bytes32 structHash = hashRemoveRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
-    grvtExchange.removeRecoveryAddress(
-      currentTimestapInt64,
-      txNonce,
-      accountID,
-      signer,
-      recoveryAddress,
-      sigNonce,
-      sig
-    );
+    grvtExchange.removeRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
 
   function recoverAddressHelper(

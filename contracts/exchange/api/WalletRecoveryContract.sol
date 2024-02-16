@@ -13,29 +13,23 @@ contract WalletRecoveryContract is BaseContract {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accID The account ID
-  /// @param signer The signer for which the recovery address is being added
   /// @param recoveryAddress The recovery address that can be used to change the signer
-  /// @param nonce The nonce of the transaction
-  /// @param sig The signature of the acting user
+  /// @param sig The signature of the signer for which the recovery address is being added
   function addRecoveryAddress(
     int64 timestamp,
     uint64 txID,
     address accID,
-    address signer,
     address recoveryAddress,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    // TODO: Add this check within _preventReplay
-    require(sig.signer == signer, "invalid signer");
-    _preventReplay(hashAddRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
+    _preventReplay(hashAddRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
-    acc.recoveryAddresses[signer][recoveryAddress] = 1;
+    acc.recoveryAddresses[sig.signer][recoveryAddress] = 1;
   }
 
   /// @notice Remove a recovery address for a signer for a given signer for a given account
@@ -43,29 +37,23 @@ contract WalletRecoveryContract is BaseContract {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accID The account ID
-  /// @param signer The signer for which the recovery address is being removed
   /// @param recoveryAddress The recovery address that is being removed
-  /// @param nonce The nonce of the transaction
-  /// @param sig The signature of the signer
+  /// @param sig The signature of the signer whose recovery address is being removed
   function removeRecoveryAddress(
     int64 timestamp,
     uint64 txID,
     address accID,
-    address signer,
     address recoveryAddress,
-    uint32 nonce,
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    // TODO: Add this check within _preventReplay
-    require(sig.signer == signer, "invalid signer");
-    _preventReplay(hashRemoveRecoveryAddress(accID, signer, recoveryAddress, nonce), sig);
+    _preventReplay(hashRemoveRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
-    delete acc.recoveryAddresses[signer][recoveryAddress];
+    delete acc.recoveryAddresses[sig.signer][recoveryAddress];
   }
 
   /// @notice Recover the address of an account

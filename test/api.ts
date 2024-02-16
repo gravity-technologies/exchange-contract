@@ -243,7 +243,7 @@ export async function addRecoveryAddress(
 ) {
   const salt = nonce()
   const sig = genAddRecoveryAddressPayloadSig(txSigner, accID, signer, recoveryAddress, salt)
-  const tx = await contract.addRecoveryAddress(ts, txID, accID, signer, recoveryAddress, salt, sig, txRequestDefault())
+  const tx = await contract.addRecoveryAddress(ts, txID, accID, recoveryAddress, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -258,16 +258,7 @@ export async function removeRecoveryAddress(
 ) {
   const salt = nonce()
   const sig = genRemoveRecoveryAddressPayloadSig(txSigner, accID, signer, recoveryAddress, salt)
-  const tx = await contract.removeRecoveryAddress(
-    ts,
-    txID,
-    accID,
-    signer,
-    recoveryAddress,
-    salt,
-    sig,
-    txRequestDefault()
-  )
+  const tx = await contract.removeRecoveryAddress(ts, txID, accID, recoveryAddress, sig, txRequestDefault())
   await tx.wait()
 }
 
