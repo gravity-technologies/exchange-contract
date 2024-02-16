@@ -122,16 +122,7 @@ abstract contract APIBase is BaseTest {
     uint32 sigNonce = random();
     bytes32 structHash = hashRecoverAddress(accountID, oldSigner, recoverySigner, newSigner, sigNonce);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
-    grvtExchange.recoverAddress(
-      currentTimestapInt64,
-      txNonce,
-      accountID,
-      oldSigner,
-      recoverySigner,
-      newSigner,
-      sigNonce,
-      sig
-    );
+    grvtExchange.recoverAddress(currentTimestapInt64, txNonce, accountID, oldSigner, newSigner, sig);
   }
 
   function addSubAccountSignerHelper(

@@ -283,17 +283,7 @@ export async function recoverAddress(
 ) {
   const salt = nonce()
   const sig = genRecoverAddressPayloadSig(txSigner, accID, signer, recoverySigner, newSigner, salt)
-  const tx = await contract.recoverAddress(
-    ts,
-    txID,
-    accID,
-    signer,
-    recoverySigner,
-    newSigner,
-    salt,
-    sig,
-    txRequestDefault()
-  )
+  const tx = await contract.recoverAddress(ts, txID, accID, signer, newSigner, sig, txRequestDefault())
   await tx.wait()
 }
 

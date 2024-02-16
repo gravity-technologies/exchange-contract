@@ -76,19 +76,15 @@ contract WalletRecoveryContract is BaseContract {
   /// @param txID The transaction ID
   /// @param accID The account ID
   /// @param oldSigner  existing signer that can have permissions in the account but needs to be replaced
-  /// @param recoverySigner signer that has to supply the signature to enable the recovery
   /// @param newSigner new signer that will replace the oldSigner
-  /// @param nonce The nonce of the transaction
-  /// @param sig The signature of the recoverySigner
+  /// @param recoverySignerSig The signature of the recoverySigner
   function recoverAddress(
     int64 timestamp,
     uint64 txID,
     address accID,
     address oldSigner,
-    address recoverySigner,
     address newSigner,
-    uint32 nonce,
-    Signature calldata sig
+    Signature calldata recoverySignerSig
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
@@ -96,11 +92,14 @@ contract WalletRecoveryContract is BaseContract {
 
     // ---------- Signature Verification -----------
     // TODO: Add this check within _preventReplay
-    require(sig.signer == recoverySigner, "invalid signer");
-    _preventReplay(hashRecoverAddress(accID, oldSigner, recoverySigner, newSigner, nonce), sig);
+    require(acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] != 0, "invalid signer");
+    _preventReplay(
+      hashRecoverAddress(accID, oldSigner, recoverySignerSig.signer, newSigner, recoverySignerSig.nonce),
+      recoverySignerSig
+    );
     // ------- End of Signature Verification -------
 
-    require(acc.recoveryAddresses[oldSigner][recoverySigner] == 1, "invalid recovery signer");
+    require(acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1, "invalid recovery signer");
     // Add a new signer with the same permission as the old signer to the account
     acc.signers[newSigner] = acc.signers[oldSigner];
     delete acc.signers[oldSigner];
