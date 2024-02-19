@@ -10,6 +10,7 @@ import {
   createAccount,
   removeAccountSigner,
   removeWithdrawalAddress,
+  txRequestDefault,
 } from "./api"
 import { AccPerm } from "./type"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
@@ -23,7 +24,7 @@ interface Step {
 
 interface Test {
   Name: string
-  steps: Step[]
+  Steps: Step[]
 }
 
 function parseTestsFromFile(filePath: string): Test[] {
@@ -66,7 +67,30 @@ describe.only("API - TestEngine", function () {
 
   for (const test of tests) {
     describe(test.Name, function () {
-      it("should pass", async function () {})
+      it("should pass", async function () {
+        if (test.Steps.length === 0) {
+          throw new Error("Test has no steps")
+        }
+        for (const step of test.Steps) {
+          processTransaction(contract, step.Tx, step.Ret, step.Expectations)
+        }
+      })
     })
   }
 })
+
+async function processTransaction(contract: Contract, tx: MsgTransactionDTO, ret: any, expectations: any) {
+  switch (tx.type.toString()) {
+    case TransactionType.createAccount.toString():
+      const txn = await contract.createAccount(
+        tx.traceID,
+        tx.txID,
+        tx.createAccount.Account,
+        tx.createAccount.Signature,
+        txRequestDefault()
+      )
+      await txn.wait()
+    default:
+      throw new Error("Unknown transaction type")
+  }
+}

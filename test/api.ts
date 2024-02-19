@@ -26,7 +26,7 @@ import { Bytes32, nonce } from "./util"
 
 export const MAX_GAS = 2_000_000_000
 
-function txRequestDefault(): any {
+export function txRequestDefault(): any {
   return {
     gasLimit: MAX_GAS,
   }
