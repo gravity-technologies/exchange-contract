@@ -47,12 +47,11 @@ describe.only("API - TestEngine", function () {
   const w1 = wallet()
   const accID = w1.address
   let ts: number
-  let tests: Test[]
+  let tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchange", [], { wallet: deployingWallet, silent: true, noVerify: true })
-    tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 
@@ -65,7 +64,9 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  describe("setAccountMultiSigThreshold", function () {
-    it("should pass", async function () {})
-  })
+  for (const test of tests) {
+    describe("setAccountMultiSigThreshold", function () {
+      it("should pass", async function () {})
+    })
+  }
 })
