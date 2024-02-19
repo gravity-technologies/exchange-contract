@@ -190,4 +190,17 @@ contract WalletRecoveryContractTest is APIBase {
       subAccSigner
     );
   }
+
+  function testRecoverWalletWithSigningAddress() public {
+    addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSigner, accSignerRecoveryAddressOne);
+    progressToNextTxn();
+    recoverAddressHelper(
+      accSignerRecoveryAddressOne,
+      accSignerRecoveryAddressOnePrivateKey,
+      accountID,
+      accSigner,
+      accSignerRecoveryAddressOne,
+      newAddressOne
+    );
+  }
 }
