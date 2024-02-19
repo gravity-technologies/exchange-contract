@@ -22,7 +22,7 @@ interface Step {
 }
 
 interface Test {
-  name: string
+  Name: string
   steps: Step[]
 }
 
@@ -65,7 +65,7 @@ describe.only("API - TestEngine", function () {
   })
 
   for (const test of tests) {
-    describe("setAccountMultiSigThreshold", function () {
+    describe(test.Name, function () {
       it("should pass", async function () {})
     })
   }
