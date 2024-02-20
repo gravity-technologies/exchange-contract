@@ -15,11 +15,17 @@ import {
 import { AccPerm } from "./type"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
 
+interface Expectation {
+  NumAccounts: number
+  Address: string
+  Signers: Record<string, string>
+}
+
 interface Step {
   Time: number
   Tx: MsgTransactionDTO
   Ret: any
-  Expectations: any
+  Expectations: Expectation[]
 }
 
 interface Test {
@@ -37,7 +43,6 @@ function parseTestsFromFile(filePath: string): Test[] {
 
     return tests
   } catch (err) {
-    console.error("Error parsing JSON file:", err)
     return []
   }
 }
@@ -72,16 +77,20 @@ describe.only("API - TestEngine", function () {
           throw new Error("Test has no steps")
         }
         for (const step of test.Steps) {
-          processTransaction(contract, step.Tx, step.Ret, step.Expectations)
+          processTransaction(contract, step.Tx)
+          checkExpectations(contract, step.Expectations)
         }
       })
     })
   }
 })
 
-async function processTransaction(contract: Contract, tx: MsgTransactionDTO, ret: any, expectations: any) {
+async function processTransaction(contract: Contract, tx: MsgTransactionDTO) {
+  console.log(tx.type.toString())
+  console.log(TransactionType.createAccount.toString())
   switch (tx.type.toString()) {
     case TransactionType.createAccount.toString():
+      console.log("here it is")
       const txn = await contract.createAccount(
         tx.traceID,
         tx.txID,
@@ -92,5 +101,14 @@ async function processTransaction(contract: Contract, tx: MsgTransactionDTO, ret
       await txn.wait()
     default:
       throw new Error("Unknown transaction type")
+  }
+}
+
+async function checkExpectations(contract: Contract, expectations: Expectation[]) {
+  for (const e of expectations) {
+    const [id, multisigThreshold, subAccounts, adminCount, signerCount]: [string, number, number[], number, number] =
+      await contract.getAccount(e.Address)
+    console.log("id", id)
+    expect(signerCount).to.equal(e.Signers.length)
   }
 }
