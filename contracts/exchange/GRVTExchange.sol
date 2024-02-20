@@ -8,7 +8,6 @@ import "./api/ConfigContract.sol";
 import "./api/SubAccountContract.sol";
 import "./api/TransferContract.sol";
 import "./api/TradeContract.sol";
-import "./api/StateGetter.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 // import "hardhat/console.sol";
@@ -21,8 +20,7 @@ contract GRVTExchange is
   WalletRecoveryContract,
   SubAccountContract,
   TransferContract,
-  TradeContract,
-  StateGetterContract
+  TradeContract
 {
   function initialize(bytes32[] memory _initialConfig) public initializer {
     __ReentrancyGuard_init();
