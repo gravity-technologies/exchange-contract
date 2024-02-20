@@ -26,6 +26,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
+    _requireSignerInAccount(acc, sig.signer);
     _preventReplay(hashAddRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
@@ -50,6 +51,7 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
+    _requireSignerInAccount(acc, sig.signer);
     _preventReplay(hashRemoveRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
