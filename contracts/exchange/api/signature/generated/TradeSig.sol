@@ -14,22 +14,26 @@ bytes32 constant _LEG_H = keccak256(
 
 function hashOrder(Order calldata o) pure returns (bytes32) {
   bytes memory legsEncoded;
-  for (uint i; i < o.legs.length; ++i) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
-  bytes memory encoded = abi.encode(
-    _ORDER_H,
-    o.subAccountID,
-    o.isMarket,
-    o.timeInForce,
-    o.limitPrice,
-    o.takerFeePercentageCap,
-    o.makerFeePercentageCap,
-    o.postOnly,
-    o.reduceOnly,
-    o.isPayingBaseCurrency,
-    keccak256(legsEncoded),
-    o.nonce
-  );
-  return keccak256(encoded);
+  uint numLegs = o.legs.length;
+  for (uint i; i < numLegs; ++i) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
+  return
+    keccak256(
+      abi.encode(
+        _ORDER_H,
+        o.subAccountID,
+        o.isMarket,
+        o.timeInForce,
+        o.limitPrice,
+        o.ocoLimitPrice,
+        o.takerFeePercentageCap,
+        o.makerFeePercentageCap,
+        o.postOnly,
+        o.reduceOnly,
+        o.isPayingBaseCurrency,
+        keccak256(legsEncoded),
+        o.nonce
+      )
+    );
 }
 
 /// @dev hash the order leg, but sort the limit price and ocoLimitPrice so that we can always use either 1 of the prices
