@@ -324,14 +324,14 @@ const TransferPayload = {
 }
 
 const OrderPayload = {
-  primaryType: Primary.Order,
+  primaryType: PrimaryType.Order,
   domain,
   types: {
     EIP712Domain,
-    [Primary.Order]: [
-      { name: "subAccountID", type: "address" },
+    [PrimaryType.Order]: [
+      { name: "subAccountID", type: "uint64" },
       { name: "isMarket", type: "bool" },
-      { name: "timeInForce", type: "uint8" },
+      { name: "timeInForce", type: "uint16" },
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "takerFeePercentageCap", type: "uint32" },
@@ -343,7 +343,7 @@ const OrderPayload = {
       { name: "nonce", type: "uint32" },
     ],
     OrderLeg: [
-      { name: "derivative", type: "uint128" },
+      { name: "assetID", type: "uint256" },
       { name: "contractSize", type: "uint64" },
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },

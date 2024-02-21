@@ -108,7 +108,7 @@ export interface Signature {
 }
 
 export interface OrderLeg {
-  derivative: string // uint128
+  assetID: string // uint256
   contractSize: number
   limitPrice: number
   ocoLimitPrice: number

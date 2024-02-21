@@ -1,4 +1,4 @@
-import "@nomicfoundation/hardhat-foundry"
+// import "@nomicfoundation/hardhat-foundry"
 import "@matterlabs/hardhat-zksync-node"
 // https://github.com/matter-labs/hardhat-zksync/issues/711
 // duplication occurs within matter labs monorepo setup so we need to import from the dist folder
