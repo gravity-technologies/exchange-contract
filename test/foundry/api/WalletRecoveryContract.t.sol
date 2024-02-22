@@ -114,7 +114,6 @@ contract WalletRecoveryContractTest is APIBase {
       accSignerRecoveryAddressOnePrivateKey,
       accountID,
       accSigner,
-      accSignerRecoveryAddressOne,
       newAddressOne
     );
     progressToNextTxn();
@@ -125,7 +124,6 @@ contract WalletRecoveryContractTest is APIBase {
       subAccSignerRecoveryAddressOnePrivateKey,
       accountID,
       subAccSigner,
-      subAccSignerRecoveryAddressOne,
       newAddressTwo
     );
   }
@@ -134,14 +132,7 @@ contract WalletRecoveryContractTest is APIBase {
     addRecoveryAddressHelper(accSigner, users.walletOnePrivateKey, accountID, accSignerRecoveryAddressOne);
     progressToNextTxn();
     vm.expectRevert("invalid signer");
-    recoverAddressHelper(
-      subAccSigner,
-      subAccSignerPrivateKey,
-      accountID,
-      accSigner,
-      accSignerRecoveryAddressOne,
-      newAddressOne
-    );
+    recoverAddressHelper(subAccSigner, subAccSignerPrivateKey, accountID, accSigner, newAddressOne);
     progressToNextTxn();
   }
 
@@ -156,7 +147,6 @@ contract WalletRecoveryContractTest is APIBase {
       accSignerRecoveryAddressOnePrivateKey,
       accountID,
       accSigner,
-      accSignerRecoveryAddressOne,
       subAccSigner
     );
   }
@@ -169,7 +159,6 @@ contract WalletRecoveryContractTest is APIBase {
       accSignerRecoveryAddressOnePrivateKey,
       accountID,
       accSigner,
-      accSignerRecoveryAddressOne,
       newAddressOne
     );
   }

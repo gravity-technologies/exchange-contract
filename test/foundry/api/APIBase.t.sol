@@ -103,14 +103,13 @@ abstract contract APIBase is BaseTest {
     uint256 privateKey,
     address accountID,
     address oldSigner,
-    address recoverySigner,
     address newSigner
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashRecoverAddress(accountID, oldSigner, recoverySigner, newSigner, sigNonce);
+    bytes32 structHash = hashRecoverAddress(accountID, oldSigner, newSigner, sigNonce);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.recoverAddress(currentTimestapInt64, txNonce, accountID, oldSigner, newSigner, sig);
   }

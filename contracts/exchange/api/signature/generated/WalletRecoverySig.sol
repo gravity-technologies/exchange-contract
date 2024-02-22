@@ -19,15 +19,9 @@ function hashRemoveRecoveryAddress(address accID, address recoverySigner, uint32
 }
 
 bytes32 constant _RECOVER_ADDRESS_H = keccak256(
-  "RecoverAddress(address accountID,address oldSigner,address recoverySigner,address newSigner,uint32 nonce)"
+  "RecoverAddress(address accountID,address oldSigner,address newSigner,uint32 nonce)"
 );
 
-function hashRecoverAddress(
-  address accID,
-  address oldSigner,
-  address recoverySigner,
-  address newSigner,
-  uint32 nonce
-) pure returns (bytes32) {
-  return keccak256(abi.encode(_RECOVER_ADDRESS_H, accID, oldSigner, recoverySigner, newSigner, nonce));
+function hashRecoverAddress(address accID, address oldSigner, address newSigner, uint32 nonce) pure returns (bytes32) {
+  return keccak256(abi.encode(_RECOVER_ADDRESS_H, accID, oldSigner, newSigner, nonce));
 }

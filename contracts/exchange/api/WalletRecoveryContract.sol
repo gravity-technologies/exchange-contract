@@ -87,10 +87,7 @@ contract WalletRecoveryContract is BaseContract {
         acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1,
       "invalid signer"
     );
-    _preventReplay(
-      hashRecoverAddress(accID, oldSigner, recoverySignerSig.signer, newSigner, recoverySignerSig.nonce),
-      recoverySignerSig
-    );
+    _preventReplay(hashRecoverAddress(accID, oldSigner, newSigner, recoverySignerSig.nonce), recoverySignerSig);
     // ------- End of Signature Verification -------
     // Add a new signer with the same permission as the old signer to the account
     acc.signers[newSigner] = acc.signers[oldSigner];
