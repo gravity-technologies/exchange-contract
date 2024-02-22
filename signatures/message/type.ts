@@ -58,6 +58,9 @@ export const PrimaryType = keyMirror({
 
   // Trade
   Order: 0,
+
+  // ZKSyncMystreyBoxDefiTask
+  ZKSynvMysteryBoxDefiTask: 0,
 })
 
 // -------------- Account --------------
@@ -403,6 +406,19 @@ export const Order = {
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "isBuyingContract", type: "bool" },
+    ],
+  },
+}
+
+export const ZKSynvMysteryBoxDefiTask = {
+  primaryType: PrimaryType.ZKSynvMysteryBoxDefiTask,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.ZKSynvMysteryBoxDefiTask]: [
+      { name: "signer", type: "address" },
+      { name: "message", type: "string" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }
