@@ -41,7 +41,7 @@ describe.only("API - Raw Transactions Prototype", function () {
       //         }
       //     }
 
-      const abi2 = abi?.find((x) => x?.name === "createAccount")
+      const abi2 = contract
 
       console.log(`abi`, abi)
 
