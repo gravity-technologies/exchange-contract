@@ -259,7 +259,6 @@ export const AddRecoveryAddress = {
     EIP712Domain,
     [PrimaryType.AddRecoveryAddress]: [
       { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
       { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
@@ -273,7 +272,6 @@ export const RemoveRecoveryAddress = {
     EIP712Domain,
     [PrimaryType.RemoveRecoveryAddress]: [
       { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
       { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
@@ -288,7 +286,6 @@ export const RecoverAddress = {
     [PrimaryType.RecoverAddress]: [
       { name: "accountID", type: "address" },
       { name: "oldSigner", type: "address" },
-      { name: "recoverySigner", type: "address" },
       { name: "newSigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
