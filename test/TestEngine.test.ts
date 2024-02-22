@@ -15,25 +15,36 @@ import {
 import { AccPerm } from "./type"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
 
-interface Expectation {
-  NumAccounts: number
-  Address: string
-  Signers: Record<string, string>
+// A Test is a sequence of test cases
+type Test = TestCase[]
+
+interface TestCase {
+  // Name of the test case
+  Name: string
+  // A test case is a sequence of test steps
+  Steps: TestStep[]
 }
 
-interface Step {
-  Time: number
+// A test step is a transaction to be executed and the expected result
+interface TestStep {
+  // The time at which the transaction is executed (if left blank, its value is the same as the previous test step)
+  Time: bigint // number is not int64, alternatively use string.
+
+  // The transaction to be executed in this test step
   Tx: MsgTransactionDTO
-  Ret: any
+
+  // The expected result of running the transaction
+  Ret: any // Is there a type more specific than any here?
+
+  // List of expectations to be executed after the transaction is executed
   Expectations: Expectation[]
 }
 
-interface Test {
-  Name: string
-  Steps: Step[]
+interface Expectation {
+  // Replace should/state with TS equivalents
 }
 
-function parseTestsFromFile(filePath: string): Test[] {
+function parseTestsFromFile(filePath: string): TestCase[] {
   try {
     // Read the JSON file
     const data = fs.readFileSync(filePath, "utf8")
@@ -41,7 +52,7 @@ function parseTestsFromFile(filePath: string): Test[] {
     // Parse the JSON data into an array of Test objects
 
     try {
-      const tests = JSON.parse(data) as Test[]
+      const tests = JSON.parse(data) as TestCase[]
       return tests
     } catch (error) {
       console.error("Failed to parse JSON:", error)
@@ -53,7 +64,7 @@ function parseTestsFromFile(filePath: string): Test[] {
   }
 }
 
-describe.only("API - TestEngine", function () {
+describe("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   const w1 = wallet()

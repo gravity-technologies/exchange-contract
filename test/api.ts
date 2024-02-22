@@ -1,4 +1,5 @@
-import { Wallet } from "ethers"
+import { Wallet, ethers } from "ethers"
+import { Provider, utils, types } from "zksync-ethers"
 import { Contract } from "zksync-ethers"
 import {
   genAddAccountAdminSig as genAddAccountSignerSig,
