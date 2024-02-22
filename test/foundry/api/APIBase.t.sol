@@ -72,14 +72,13 @@ abstract contract APIBase is BaseTest {
     address msgSigner,
     uint256 privateKey,
     address accountID,
-    address signer,
     address recoveryAddress
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashAddRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
+    bytes32 structHash = hashAddRecoveryAddress(accountID, recoveryAddress, sigNonce);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.addRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
@@ -88,14 +87,13 @@ abstract contract APIBase is BaseTest {
     address msgSigner,
     uint256 privateKey,
     address accountID,
-    address signer,
     address recoveryAddress
   ) public {
     uint256 expiryTimestamp = currentTimestamp + (3 days);
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashRemoveRecoveryAddress(accountID, signer, recoveryAddress, sigNonce);
+    bytes32 structHash = hashRemoveRecoveryAddress(accountID, recoveryAddress, sigNonce);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.removeRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
