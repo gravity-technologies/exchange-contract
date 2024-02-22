@@ -79,6 +79,12 @@ export type ScheduleConfigEntry = {
   value: string
 }
 
+export interface ZKSyncMysteryBoxDefiTaskSignature {
+  signer: string
+  nonce: number
+  message: string
+}
+
 export interface OrderNoSignature {
   subAccountID: string // The subaccount initiating the order
   isMarket: boolean // If the order is a market order
@@ -108,7 +114,7 @@ export interface Signature {
 }
 
 export interface OrderLeg {
-  derivative: string // uint128
+  assetID: string // uint256
   contractSize: number
   limitPrice: number
   ocoLimitPrice: number

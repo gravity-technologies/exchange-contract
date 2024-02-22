@@ -12,7 +12,7 @@
     "lint": "solhint -f table contracts/**/*.sol --ignore-path .solhintignore",
     "lint:quiet": "solhint -q contracts/**/*.sol",
     "compile": "hardhat compile",
-    "test": "hardhat test --network hardhat && forge test",
+    "test": "hardhat test --network hardhat",
     "test:hardhat": "rm -rf ./upgradable && hardhat test --network hardhat",
     "test:forge": "forge test",
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",

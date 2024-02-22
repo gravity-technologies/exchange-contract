@@ -2,7 +2,7 @@ import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
 import { randomInt } from "crypto"
 import { Wallet, utils } from "ethers"
 import * as Types from "../signatures/message/type"
-import { OrderNoSignature, Signature } from "./type"
+import { OrderNoSignature, ZKSyncMysteryBoxDefiTaskSignature, Signature } from "./type"
 import { buf, getTimestampNs } from "./util"
 
 export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
@@ -221,7 +221,6 @@ export function genRemoveSubAccountSignerPayloadSig(
 export function genAddRecoveryAddressPayloadSig(
   wallet: Wallet,
   accountID: string,
-  signer: string,
   recoverySigner: string,
   nonce: number = randomInt(22021991)
 ): Signature {
@@ -229,7 +228,6 @@ export function genAddRecoveryAddressPayloadSig(
     ...Types.AddRecoveryAddress,
     message: {
       accountID,
-      signer,
       recoverySigner,
       nonce,
     },
@@ -239,7 +237,6 @@ export function genAddRecoveryAddressPayloadSig(
 export function genRemoveRecoveryAddressPayloadSig(
   wallet: Wallet,
   accountID: string,
-  signer: string,
   recoverySigner: string,
   nonce: number = randomInt(22021991)
 ): Signature {
@@ -247,7 +244,6 @@ export function genRemoveRecoveryAddressPayloadSig(
     ...Types.RemoveRecoveryAddress,
     message: {
       accountID,
-      signer,
       recoverySigner,
       nonce,
     },
@@ -258,7 +254,6 @@ export function genRecoverAddressPayloadSig(
   wallet: Wallet,
   accountID: string,
   oldSigner: string,
-  recoverySigner: string,
   newSigner: string,
   nonce: number = randomInt(22021991)
 ): Signature {
@@ -267,7 +262,6 @@ export function genRecoverAddressPayloadSig(
     message: {
       accountID,
       oldSigner,
-      recoverySigner,
       newSigner,
       nonce,
     },
@@ -384,6 +378,14 @@ export function genTransferSig(
       numTokens,
       nonce,
     },
+  })
+}
+
+// ZKSyncMysteryBoxDefiTask
+export function genZKSyncMysteryBoxDefiTaskSig(wallet: Wallet, task: ZKSyncMysteryBoxDefiTaskSignature): Signature {
+  return sign(wallet, {
+    ...Types.ZKSynvMysteryBoxDefiTask,
+    message: task,
   })
 }
 

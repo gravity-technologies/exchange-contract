@@ -34,6 +34,25 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return sub;
   }
 
+  /// @notice Checks if a signer has a permissions in an account or associated subaccounts
+  /// @param acc The account
+  /// @param signer The signer's address
+  function _requireSignerInAccount(Account storage acc, address signer) internal {
+    if (acc.signers[signer] != 0) {
+      return;
+    }
+    bool isSubAccSigner = false;
+    uint256 numSubAccs = acc.subAccounts.length;
+    for (uint256 i; i < numSubAccs; ++i) {
+      SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
+      if (subAcc.signers[signer] != 0) {
+        isSubAccSigner = true;
+        break;
+      }
+    }
+    require(isSubAccSigner, "signer not tagged to account");
+  }
+
   // Verify that the signatures are from the list of eligible signers, signer of each signature has admin permissions and those signatures form a simple majority
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,

@@ -58,6 +58,9 @@ export const PrimaryType = keyMirror({
 
   // Trade
   Order: 0,
+
+  // ZKSyncMystreyBoxDefiTask
+  ZKSynvMysteryBoxDefiTask: 0,
 })
 
 // -------------- Account --------------
@@ -256,7 +259,6 @@ export const AddRecoveryAddress = {
     EIP712Domain,
     [PrimaryType.AddRecoveryAddress]: [
       { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
       { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
@@ -270,7 +272,6 @@ export const RemoveRecoveryAddress = {
     EIP712Domain,
     [PrimaryType.RemoveRecoveryAddress]: [
       { name: "accountID", type: "address" },
-      { name: "signer", type: "address" },
       { name: "recoverySigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
@@ -285,7 +286,6 @@ export const RecoverAddress = {
     [PrimaryType.RecoverAddress]: [
       { name: "accountID", type: "address" },
       { name: "oldSigner", type: "address" },
-      { name: "recoverySigner", type: "address" },
       { name: "newSigner", type: "address" },
       { name: "nonce", type: "uint32" },
     ],
@@ -386,7 +386,7 @@ export const Order = {
     [PrimaryType.Order]: [
       { name: "subAccountID", type: "uint64" },
       { name: "isMarket", type: "bool" },
-      { name: "timeInForce", type: "uint8" },
+      { name: "timeInForce", type: "uint16" },
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "takerFeePercentageCap", type: "uint32" },
@@ -398,11 +398,24 @@ export const Order = {
       { name: "nonce", type: "uint32" },
     ],
     OrderLeg: [
-      { name: "derivative", type: "uint128" },
+      { name: "assetID", type: "uint256" },
       { name: "contractSize", type: "uint64" },
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "isBuyingContract", type: "bool" },
+    ],
+  },
+}
+
+export const ZKSynvMysteryBoxDefiTask = {
+  primaryType: PrimaryType.ZKSynvMysteryBoxDefiTask,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.ZKSynvMysteryBoxDefiTask]: [
+      { name: "signer", type: "address" },
+      { name: "message", type: "string" },
+      { name: "nonce", type: "uint32" },
     ],
   },
 }

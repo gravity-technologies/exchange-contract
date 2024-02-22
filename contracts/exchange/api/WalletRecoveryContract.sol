@@ -26,7 +26,8 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashAddRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
+    _requireSignerInAccount(acc, sig.signer);
+    _preventReplay(hashAddRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     acc.recoveryAddresses[sig.signer][recoveryAddress] = 1;
@@ -50,7 +51,8 @@ contract WalletRecoveryContract is BaseContract {
     Account storage acc = _requireAccount(accID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRemoveRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
+    _requireSignerInAccount(acc, sig.signer);
+    _preventReplay(hashRemoveRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     delete acc.recoveryAddresses[sig.signer][recoveryAddress];
@@ -79,15 +81,14 @@ contract WalletRecoveryContract is BaseContract {
     require(acc.signers[newSigner] == 0, "new signer already exists");
 
     // ---------- Signature Verification -----------
-    // TODO: Add this check within _preventReplay
-    require(acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] != 0, "invalid signer");
-    _preventReplay(
-      hashRecoverAddress(accID, oldSigner, recoverySignerSig.signer, newSigner, recoverySignerSig.nonce),
-      recoverySignerSig
+    // The recoverySigner must be a signer of the account or a recovery signer for the oldSigner
+    require(
+      ((acc.signers[oldSigner] != 0 && recoverySignerSig.signer == oldSigner)) ||
+        acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1,
+      "invalid signer"
     );
+    _preventReplay(hashRecoverAddress(accID, oldSigner, newSigner, recoverySignerSig.nonce), recoverySignerSig);
     // ------- End of Signature Verification -------
-
-    require(acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1, "invalid recovery signer");
     // Add a new signer with the same permission as the old signer to the account
     acc.signers[newSigner] = acc.signers[oldSigner];
     delete acc.signers[oldSigner];

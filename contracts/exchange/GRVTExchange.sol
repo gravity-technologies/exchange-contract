@@ -30,8 +30,6 @@ contract GRVTExchange is
     }
   }
 
-  function contructor() public {}
-
   function bs() external pure returns (uint, uint) {
     // uint expiry = 30 days;
     // uint vol = 25e16;
