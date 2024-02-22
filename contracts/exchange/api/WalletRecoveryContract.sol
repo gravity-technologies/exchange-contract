@@ -27,7 +27,7 @@ contract WalletRecoveryContract is BaseContract {
 
     // ---------- Signature Verification -----------
     _requireSignerInAccount(acc, sig.signer);
-    _preventReplay(hashAddRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
+    _preventReplay(hashAddRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     acc.recoveryAddresses[sig.signer][recoveryAddress] = 1;
@@ -52,7 +52,7 @@ contract WalletRecoveryContract is BaseContract {
 
     // ---------- Signature Verification -----------
     _requireSignerInAccount(acc, sig.signer);
-    _preventReplay(hashRemoveRecoveryAddress(accID, sig.signer, recoveryAddress, sig.nonce), sig);
+    _preventReplay(hashRemoveRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     delete acc.recoveryAddresses[sig.signer][recoveryAddress];
@@ -87,10 +87,7 @@ contract WalletRecoveryContract is BaseContract {
         acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1,
       "invalid signer"
     );
-    _preventReplay(
-      hashRecoverAddress(accID, oldSigner, recoverySignerSig.signer, newSigner, recoverySignerSig.nonce),
-      recoverySignerSig
-    );
+    _preventReplay(hashRecoverAddress(accID, oldSigner, newSigner, recoverySignerSig.nonce), recoverySignerSig);
     // ------- End of Signature Verification -------
     // Add a new signer with the same permission as the old signer to the account
     acc.signers[newSigner] = acc.signers[oldSigner];
