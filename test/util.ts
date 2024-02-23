@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { randomInt } from "crypto"
-import { BytesLike, Wallet, utils } from "ethers"
-import { Wallet as ZkWallet } from "zksync-ethers"
+import { BytesLike, utils } from "ethers"
+import { Wallet } from "zksync-ethers"
 import { LOCAL_RICH_WALLETS, getWallet } from "../deploy/utils"
 import { NumConfig } from "./type"
 
@@ -70,6 +70,6 @@ export function getConfigArray(configMap: CfgMap): Bytes32[] {
   return res
 }
 
-export function getDeployerWallet(): ZkWallet {
+export function getDeployerWallet(): Wallet {
   return getWallet(LOCAL_RICH_WALLETS[0].privateKey)
 }
