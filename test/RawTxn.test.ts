@@ -14,7 +14,7 @@ import { genCreateAccountSig } from "./signature"
 describe.only("API - Raw Transactions Prototype", function () {
   let contract: Contract
   let snapshotId: string
-  var w1 = wallet()
+  var w1 = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
   let ts: number
 
   before(async () => {
@@ -49,12 +49,15 @@ describe.only("API - Raw Transactions Prototype", function () {
     var tx: ethers.providers.TransactionRequest = {
       type: utils.EIP712_TX_TYPE,
       to: contract.address,
-      gasLimit: 210000,
+      gasLimit: 2100000,
       data: data,
     }
     w1 = w1.connect(provider)
     // const txn = await w1.signTransaction(tx)
     // w1 = w1.connect(provider)
-    await w1.sendTransaction(tx)
+    const resp = await w1.sendTransaction(tx)
+    console.log("waiting")
+    await resp.wait()
+    console.log("waiting: over")
   }
 })
