@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { Contract } from "zksync-ethers"
 import { Wallet, Provider, utils } from "zksync-ethers"
-import { ethers } from "ethers"
+import { ethers, Wallet as W1 } from "ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getProvider, getWallet } from "../deploy/utils"
 import * as fs from "fs"
@@ -14,7 +14,7 @@ import { genCreateAccountSig } from "./signature"
 describe.only("API - Raw Transactions Prototype", function () {
   let contract: Contract
   let snapshotId: string
-  var w1 = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+  var w1 = new W1(LOCAL_RICH_WALLETS[0].privateKey)
   let ts: number
 
   before(async () => {
@@ -34,8 +34,6 @@ describe.only("API - Raw Transactions Prototype", function () {
 
   describe("Create Account Raw Transaction", function () {
     it("should pass", async function () {
-      const txData =
-        "0x86db00e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c0ffee254729296a45a3885639ac7e10f9d54979000000000000000000000000c0ffee254729296a45a3885639ac7e10f9d5497912345678901234567890123456789012345678901234567890123456789012341234567890123456789012345678901234567890123456789012345678901234000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
       // const data2 = ethers.utils.hexlify(txData)
       // var response = await processRawTransaction(contract, data2)
       var response = await processRawTransaction(contract, txData)
@@ -45,16 +43,15 @@ describe.only("API - Raw Transactions Prototype", function () {
 
   async function processRawTransaction(contract: Contract, data: string) {
     // var provider = contract.provider
+    console.log("contract.address:", contract.address)
     var provider = getProvider()
     var tx: ethers.providers.TransactionRequest = {
-      type: utils.EIP712_TX_TYPE,
+      // type: utils.EIP712_TX_TYPE,
       to: contract.address,
       gasLimit: 2100000,
       data: data,
     }
     w1 = w1.connect(provider)
-    // const txn = await w1.signTransaction(tx)
-    // w1 = w1.connect(provider)
     const resp = await w1.sendTransaction(tx)
     console.log("waiting")
     await resp.wait()
