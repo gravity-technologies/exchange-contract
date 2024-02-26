@@ -42,7 +42,6 @@ function parseTestsFromFile(filePath: string): TestCase[] {
     const data = fs.readFileSync(filePath, "utf8")
 
     // Parse the JSON data into an array of Test objects
-
     try {
       const tests = JSON.parse(data) as TestCase[]
       return tests
