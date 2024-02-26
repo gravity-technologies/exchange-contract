@@ -3,11 +3,12 @@ pragma solidity ^0.8.20;
 
 import {ConfigID} from "./types/DataStructure.sol";
 import "./api/AccountContract.sol";
-import "./api/WalletRecoveryContract.sol";
 import "./api/ConfigContract.sol";
+import "./api/OracleContract.sol";
 import "./api/SubAccountContract.sol";
-import "./api/TransferContract.sol";
 import "./api/TradeContract.sol";
+import "./api/TransferContract.sol";
+import "./api/WalletRecoveryContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 // import "hardhat/console.sol";
@@ -17,10 +18,11 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract GRVTExchange is
   Initializable,
   AccountContract,
-  WalletRecoveryContract,
+  OracleContract,
   SubAccountContract,
+  TradeContract,
   TransferContract,
-  TradeContract
+  WalletRecoveryContract
 {
   function initialize(bytes32[] memory _initialConfig) public initializer {
     __ReentrancyGuard_init();
@@ -28,19 +30,5 @@ contract GRVTExchange is
     for (uint i; i < _initialConfig.length; ++i) {
       configs[ConfigID(i)] = _initialConfig[i];
     }
-  }
-
-  function bs() external pure returns (uint, uint) {
-    // uint expiry = 30 days;
-    // uint vol = 25e16;
-    // uint spot = 100e18;
-    // uint strike = 105e18;
-    // int rate = 5e16;
-
-    // for (uint i; i < 1; ++i) {
-    //   BS.BlackScholesInputs memory input = BS.BlackScholesInputs(expiry, vol, spot, strike, rate);
-    //   (uint call, uint put) = BS.optionPrices(input);
-    // }
-    return (0, 0);
   }
 }
