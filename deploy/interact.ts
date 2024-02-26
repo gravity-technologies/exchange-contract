@@ -16,7 +16,7 @@ interface Signature {
 }
 
 // Address of the contract to interact with
-const CONTRACT_ADDRESS = "0x26b368C3Ed16313eBd6660b72d8e4439a697Cb0B"
+const CONTRACT_ADDRESS = "0x111C3E89Ce80e62EE88318C2804920D4c96f92bb"
 if (!CONTRACT_ADDRESS) throw "⛔️ Provide address of the contract to interact with!"
 
 // An example of a script to interact with the contract

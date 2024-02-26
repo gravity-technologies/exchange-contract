@@ -1,18 +1,10 @@
 import { expect } from "chai"
-import { Contract } from "ethers"
+import { Contract, ethers } from "ethers"
+import { Wallet } from "zksync-ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
 import * as fs from "fs"
-
-import {
-  addAccountSigner,
-  addWithdrawalAddress,
-  createAccount,
-  removeAccountSigner,
-  removeWithdrawalAddress,
-  txRequestDefault,
-} from "./api"
-import { AccPerm } from "./type"
+import { getProvider } from "../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
 
 // A Test is a sequence of test cases
@@ -20,18 +12,18 @@ type Test = TestCase[]
 
 interface TestCase {
   // Name of the test case
-  Name: string
+  name: string
   // A test case is a sequence of test steps
-  Steps: TestStep[]
+  steps: TestStep[]
 }
 
 // A test step is a transaction to be executed and the expected result
 interface TestStep {
   // The time at which the transaction is executed (if left blank, its value is the same as the previous test step)
-  Time: bigint // number is not int64, alternatively use string.
+  time: bigint // number is not int64, alternatively use string.
 
-  // The transaction to be executed in this test step
-  Tx: MsgTransactionDTO
+  // The function abi encoded transaction to be executed
+  tx_data: string
 
   // The expected result of running the transaction
   Ret: any // Is there a type more specific than any here?
@@ -64,13 +56,14 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
-describe("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
-  const w1 = wallet()
+  var w1 = getDeployerWallet()
   const accID = w1.address
   let ts: number
   let tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
+  console.log("tests:", tests.length)
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
@@ -87,45 +80,28 @@ describe("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  for (const test of tests) {
-    describe(test.Name, function () {
-      it("should pass", async function () {
-        if (test.Steps.length === 0) {
-          throw new Error("Test has no steps")
+  // for (var test of tests) {
+  var test = tests[0]
+  // const txData2 =
+  //   "0x86db00e10000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000036615cf349d7f6344891b1e7ca7c72883f5dc04900000000000000000000000036615cf349d7f6344891b1e7ca7c72883f5dc0493054d5cc36c9fb2e39677d6f7cd60f3a56f4a90dc1d0c8f1adc80b23028e5cde43f3c4b5e127bb8cb6cb1148ce6a274ebbd8515d7d36ad2af29fa2619a3859df000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000017ba7087c4f7e20000000000000000000000000000000000000000000000000000000000003707bc"
+  // test.steps[0].tx_data = txData2
+  describe(test.name, function () {
+    it("should pass", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        console.log("🚨", step.tx_data)
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
         }
-        for (const step of test.Steps) {
-          await processTransaction(contract, step.Tx)
-          await checkExpectations(contract, step.Expectations)
-        }
-      })
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        await resp.wait()
+      }
     })
-  }
-})
-
-async function processTransaction(contract: Contract, tx: MsgTransactionDTO) {
-  // switch (tx.type.toString()) {
-  // case TransactionType.createAccount.toString():
-  console.log(tx)
-  console.log(tx.createAccount.Account, tx.createAccount.Signature)
-  const txn = await contract.createAccount(
-    tx.traceID,
-    tx.txID,
-    tx.createAccount.Account,
-    tx.createAccount.Signature,
-    txRequestDefault()
-  )
-  await txn.wait()
-  console.log(txn.hash)
-  // default:
-  // throw new Error("Unknown transaction type")
+  })
   // }
-}
-
-async function checkExpectations(contract: Contract, expectations: Expectation[]) {
-  for (const e of expectations) {
-    // const [id, multisigThreshold, subAccounts, adminCount, signerCount]: [string, number, number[], number, number] =
-    //   await contract.getAccount(e.Address)
-    // console.log("id", id)
-    // expect(signerCount).to.equal(e.Signers.length)
-  }
-}
+})

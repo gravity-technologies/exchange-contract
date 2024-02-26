@@ -1,157 +1,430 @@
 [
-    {
-      "Name": "Create one Account",
-      "Steps": [
-        {
-          "time": "0",
-          "Tx": {
-            "traceID": "0",
-            "txID": "0",
-            "time": "0",
-            "type": "createAccount",
-            "createAccount": {
-              "Account": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signature": {
-                "signer": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-                "r": "0x7f0f7b593a781eaf8cba84edec6d483d08bd431b722c23cbcae643da23d65e3f",
-                "s": "0x3bc4dfe0292c912743ee95f08a2d34a96d022f8d929e82c55d634130c3ebe6d8",
-                "v": 28,
-                "expiration": "1234",
-                "nonce": 1234
-              }
+  {
+    "name": "Create one Account",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             }
-          },
-          "Ret": null,
-          "Expectations": [
-            { "NumAccounts": 1 },
-            {
-              "Address": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signers": { "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef": "2" }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "Name": "Create two Accounts",
-      "Steps": [
-        {
-          "time": "0",
-          "Tx": {
-            "traceID": "0",
-            "txID": "0",
-            "time": "0",
-            "type": "createAccount",
-            "createAccount": {
-              "Account": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signature": {
-                "signer": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-                "r": "0x7f0f7b593a781eaf8cba84edec6d483d08bd431b722c23cbcae643da23d65e3f",
-                "s": "0x3bc4dfe0292c912743ee95f08a2d34a96d022f8d929e82c55d634130c3ebe6d8",
-                "v": 28,
-                "expiration": "1234",
-                "nonce": 1234
-              }
-            }
-          },
-          "Ret": null,
-          "Expectations": [
-            { "NumAccounts": 1 },
-            {
-              "Address": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signers": { "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef": "2" }
-            }
-          ]
+          }
         },
-        {
-          "time": "0",
-          "Tx": {
-            "traceID": "0",
-            "txID": "0",
-            "time": "0",
-            "type": "createAccount",
-            "createAccount": {
-              "Account": "0xebe698c8b65f9611c7693cb0180c45668fa87368",
-              "Signature": {
-                "signer": "0xebe698c8b65f9611c7693cb0180c45668fa87368",
-                "r": "0x96143c1aed02ab2d4066792efe7ab855948b54cf1dfa4b9df5f79ae9305d8b2e",
-                "s": "0x039c60c0510efa3c4cc9ec5744b120f735a843b39090a1a947ad0454a8d79b29",
-                "v": 28,
-                "expiration": "1234",
-                "nonce": 1234
-              }
-            }
+        "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADliSKowst4KCpW9GMcUaAY/vHltAAAAAAAAAAAAAAAAOWJIqjCy3goKlb0YxxRoBj+8eW0AVGZ83ME3mZaaDEHoZrIgc9pzuGsQMVOqY00M/R8onVz207i5u4uYCueGhAzSg2qfS3iE562KQMPQm8JIx8XMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+        "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca27573db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "ex_account_signers": [
+          {
+            "num_accounts": 1
           },
-          "Ret": null,
-          "Expectations": [
-            { "NumAccounts": 2 },
-            {
-              "Address": "0xebe698c8b65f9611c7693cb0180c45668fa87368",
-              "Signers": { "0xebe698c8b65f9611c7693cb0180c45668fa87368": "2" }
+          {
+            "address": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signers": {
+              "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4": "2"
             }
-          ]
-        }
-      ]
-    },
-    {
-      "Name": "Create same Account twice",
-      "Steps": [
-        {
-          "time": "0",
-          "Tx": {
-            "traceID": "0",
-            "txID": "0",
-            "time": "0",
-            "type": "createAccount",
-            "createAccount": {
-              "Account": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signature": {
-                "signer": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-                "r": "0x7f0f7b593a781eaf8cba84edec6d483d08bd431b722c23cbcae643da23d65e3f",
-                "s": "0x3bc4dfe0292c912743ee95f08a2d34a96d022f8d929e82c55d634130c3ebe6d8",
-                "v": 28,
-                "expiration": "1234",
-                "nonce": 1234
-              }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (unsigned)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x00",
+              "s": "0x00",
+              "v": 0,
+              "expiration": "1234",
+              "nonce": 1234
             }
-          },
-          "Ret": null,
-          "Expectations": [
-            { "NumAccounts": 1 },
-            {
-              "Address": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signers": { "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef": "2" }
-            }
-          ]
+          }
         },
-        {
-          "time": "0",
-          "Tx": {
-            "traceID": "0",
-            "txID": "0",
-            "time": "0",
-            "type": "createAccount",
-            "createAccount": {
-              "Account": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signature": {
-                "signer": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-                "r": "0x7f0f7b593a781eaf8cba84edec6d483d08bd431b722c23cbcae643da23d65e3f",
-                "s": "0x3bc4dfe0292c912743ee95f08a2d34a96d022f8d929e82c55d634130c3ebe6d8",
-                "v": 28,
-                "expiration": "1234",
-                "nonce": 1234
-              }
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: invalid signature length or v value",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong account)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "3",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "3",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong signer)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "4",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "4",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong R)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "5",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "5",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47cc985",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong S)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "6",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "6",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f3e41",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong V)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "7",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "7",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 27,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create one Account (wrong nonce)",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "8",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "8",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1235
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "eip712 invalid signature: recovery failed",
+        "ex_account_signers": [
+          {
+            "num_accounts": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create two Accounts",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "9",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "9",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADliSKowst4KCpW9GMcUaAY/vHltAAAAAAAAAAAAAAAAOWJIqjCy3goKlb0YxxRoBj+8eW0AVGZ83ME3mZaaDEHoZrIgc9pzuGsQMVOqY00M/R8onVz207i5u4uYCueGhAzSg2qfS3iE562KQMPQm8JIx8XMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+        "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca27573db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "ex_account_signers": [
+          {
+            "num_accounts": 1
           },
-          "Ret": {},
-          "Expectations": [
-            { "NumAccounts": 1 },
-            {
-              "Address": "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef",
-              "Signers": { "0x4e0c3d0be2f5d1c29b77766a8b8043c84cb5b8ef": "2" }
+          {
+            "address": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signers": {
+              "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4": "2"
             }
-          ]
-        }
-      ]
-    }
-  ]
+          }
+        ]
+      },
+      {
+        "time": "1",
+        "tx_id": "9",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "9",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd",
+            "signature": {
+              "signer": "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd",
+              "r": "0x5d745ca451b9dfe3fd443e7eee859d74ad85a8bd34185a16405df28466565644",
+              "s": "0x577ae5e2a1c268079559b05e29d51ca6f1f8d8392f8963996c57d8e864f748b8",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAABtaIKW1x3aC4lLoYT0wBrWDBSp3QAAAAAAAAAAAAAAAG1ogpbXHdoLiUuhhPTAGtYMFKndXXRcpFG53+P9RD5+7oWddK2FqL00GFoWQF3yhGZWVkRXeuXiocJoB5VZsF4p1Rym8fjYOS+JY5lsV9joZPdIuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+        "tx_data": "0x86db00e1000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000006d688296d71dda0b894ba184f4c01ad60c14a9dd0000000000000000000000006d688296d71dda0b894ba184f4c01ad60c14a9dd5d745ca451b9dfe3fd443e7eee859d74ad85a8bd34185a16405df28466565644577ae5e2a1c268079559b05e29d51ca6f1f8d8392f8963996c57d8e864f748b8000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "ex_account_signers": [
+          {
+            "num_accounts": 2
+          },
+          {
+            "address": "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd",
+            "signers": {
+              "0x6d688296d71dda0b894ba184f4c01ad60c14a9dd": "2"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Create same Account twice",
+    "steps": [
+      {
+        "time": "1",
+        "tx_id": "10",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "10",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADliSKowst4KCpW9GMcUaAY/vHltAAAAAAAAAAAAAAAAOWJIqjCy3goKlb0YxxRoBj+8eW0AVGZ83ME3mZaaDEHoZrIgc9pzuGsQMVOqY00M/R8onVz207i5u4uYCueGhAzSg2qfS3iE562KQMPQm8JIx8XMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+        "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4000000000000000000000000e58922a8c2cb78282a56f4631c51a018fef1e5b4015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca27573db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "ex_account_signers": [
+          {
+            "num_accounts": 1
+          },
+          {
+            "address": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signers": {
+              "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4": "2"
+            }
+          }
+        ]
+      },
+      {
+        "time": "1",
+        "tx_id": "10",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "10",
+          "time": "1",
+          "type": "CREATE_ACCOUNT",
+          "create_account": {
+            "account": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signature": {
+              "signer": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+              "r": "0x015199f37304de665a683107a19ac881cf69cee1ac40c54ea98d3433f47ca275",
+              "s": "0x73db4ee2e6ee2e602b9e1a10334a0daa7d2de2139eb629030f426f09231f1731",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "account already exists",
+        "ex_account_signers": [
+          {
+            "num_accounts": 1
+          },
+          {
+            "address": "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4",
+            "signers": {
+              "0xe58922a8c2cb78282a56f4631c51a018fef1e5b4": "2"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
