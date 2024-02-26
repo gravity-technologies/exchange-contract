@@ -5,7 +5,6 @@ import "./BaseContract.sol";
 import "./signature/generated/AccountSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
-import "hardhat/console.sol";
 
 contract AccountContract is BaseContract {
   /// @notice Create a new account
@@ -15,7 +14,6 @@ contract AccountContract is BaseContract {
   /// @param accountID The ID the account will be tagged to
   /// @param sig The signature of the acting user
   function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
-    console.log("Hello from createAccount");
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
