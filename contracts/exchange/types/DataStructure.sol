@@ -89,10 +89,18 @@ struct State {
   int64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
-  // Config
-  mapping(ConfigID => bytes32) configs;
-  mapping(ConfigID => ScheduledConfigEntry) scheduledConfig;
-  mapping(ConfigID => ConfigTimelockRule[]) configTimelocks;
+  // Store the type, timelock rules and update schedules for each config
+  mapping(ConfigID => ConfigSetting) configSettings;
+  // Store the current value of all 1 dimensional config. 1D config is a simple key -> value mapping that doesn't 
+  // Eg: (AdminFeeSubAccountID) = 1357902468
+  //     (AdminRecoveryAddress) = 0xc0ffee254729296a45a3885639AC7E10F9d54979
+  mapping(ConfigID => ConfigValue) config1DValues;
+  // Store the current value of all 2 dimensional config.
+  // A 2D config needs to be referred by both (key, subKey)
+  // This is mainly to support risk configs for different underlying currency
+  // Eg: (PortfolioInitialMarginFactor, BTC) = 1.2
+  //     (PortfolioInitialMarginFactor, DOGE) = 1.5
+  mapping(ConfigID => mapping(uint64 => ConfigValue)) config2DValues;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -155,11 +163,10 @@ struct SubAccount {
 // Previous timelock entries will be overwritten.
 //
 // A SetConfig() call will remove the timelock entry from the state (for the config identifier).
-struct ScheduledConfigEntry {
+struct ConfigSchedule {
   // The timestamp at which the config will be unlocked
-  int lockEndTime;
-  // The value the config will be set to when it is unlocked
-  bytes32 value;
+  int64 lockEndTime;
+  uint256[49] __gap;
 }
 
 struct ConfigTimelockRule {
@@ -168,11 +175,11 @@ struct ConfigTimelockRule {
   // This only applies for Int Configs.
   // It expresses the maximum delta (in the positive direction) that the config value
   // can be changed by in order for this rule to apply
-  uint256 deltaPositive;
+  uint64 deltaPositive;
   // This only applies for Int Configs.
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
-  uint256 deltaNegative;
+  uint64 deltaNegative;
 }
 
 struct ReplayState {
@@ -192,7 +199,7 @@ struct PriceState {
   // Prior to any trade, funding must be applied
   // We centrally upload funding rates. On smart contract side, we simply apply a tiny minmax clamp
   // So that users are only minimally impacted if GRVT exhibits bad integrity
-  // USD is always expressed as a uint64 with 10 decimal points
+  // USD is always expressed as a uint64 with 9 decimal points
   // TODO: this uint128 represents the derivative
   mapping(Currency => uint64) fundingIndex;
   int64 fundingTime;
@@ -206,7 +213,7 @@ struct PriceState {
 struct Session {
   // The address of the user that create this session
   address user;
-  // The last timestamp that the signer can sign at
+  // The last timestamp in nanoseconds that the signer can sign at
   // We can apply a max one day expiry on session keys
   int64 expiry;
 }
@@ -215,9 +222,15 @@ struct Session {
 enum ConfigType {
   UNSPECIFIED,
   BOOL,
+  BOOL2D,
   ADDRESS,
+  ADDRESS2D,
   INT,
-  UINT
+  INT2D,
+  UINT,
+  UINT2D,
+  CENTIBEEP,
+  CENTIBEEP2D
 }
 
 // See https://docs.google.com/spreadsheets/d/1MEp2BMtBjkdfTn7WXc_egh5ucc1UK8v6ibNWUuzW6AI/edit#gid=0 for the most up to date list of configs
@@ -229,9 +242,7 @@ enum ConfigID {
   SM_FUTURES_VARIABLE_MARGIN,
   SM_OPTIONS_INITIAL_MARGIN_HIGH,
   SM_OPTIONS_INITIAL_MARGIN_LOW,
-  SM_OPTIONS_MAINTENANCE_MARGIN_HIGH,
-  SM_OPTIONS_MAINTENANCE_MARGIN_LOW,
-  SM_OPTIONS_VARIABLE_MARGIN,
+  SM_OPTIONS_MAINTENANCE_MARGIN,
   // PORTFOLIO MARGIN CONFIGS
   PM_SPOT_MOVE,
   PM_VOL_MOVE_UP,
@@ -241,10 +252,30 @@ enum ConfigID {
   PM_SHORT_TERM_VEGA_POWER,
   PM_LONG_TERM_VEGA_POWER,
   PM_INITIAL_MARGIN_FACTOR,
-  PM_NET_SHORT_OPTION_MINIMUM,
+  PM_FUTURES_CONTINGENCY_MARGIN,
+  PM_OPTIONS_CONTINGENCY_MARGIN,
   // ADMIN
   ADMIN_RECOVERY_ADDRESS,
-  FEE_SUB_ACCOUNT_ID // the sub account that collects fees
+  ORACLE_ADDRESS,
+  CONFIG_ADDRESS,
+  ADMIN_FEE_SUB_ACCOUNT_ID, // the sub account that collects fees
+  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
+}
+
+struct ConfigValue {
+  // true if the config is set, false otherwise
+  bool isSet;
+  // The value is stored as bytes32 to allow for different types of config
+  bytes32 val;
+}
+
+struct ConfigSetting {
+  // the type of the config. UNSPECIFIED if this config setting is not set
+  ConfigType typ;
+  // the timelock rules for this config
+  ConfigTimelockRule[] rules;
+  // the schedules where we can change this config. 
+  mapping(uint64 => ConfigSchedule) schedules;
 }
 
 // --------------- Trade --------------

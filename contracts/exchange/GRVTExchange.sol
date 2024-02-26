@@ -11,24 +11,17 @@ import "./api/TransferContract.sol";
 import "./api/WalletRecoveryContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-// import "hardhat/console.sol";
-
-// import {BlackScholes as BS} from "./blackscholes/BlackScholes.sol";
-
 contract GRVTExchange is
   Initializable,
   AccountContract,
+  ConfigContract,
   OracleContract,
   SubAccountContract,
   TradeContract,
   TransferContract,
   WalletRecoveryContract
 {
-  function initialize(bytes32[] memory _initialConfig) public initializer {
+  function initialize() public initializer {
     __ReentrancyGuard_init();
-    mapping(ConfigID => bytes32) storage configs = state.configs;
-    for (uint i; i < _initialConfig.length; ++i) {
-      configs[ConfigID(i)] = _initialConfig[i];
-    }
   }
 }
