@@ -80,28 +80,25 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  // for (var test of tests) {
-  var test = tests[0]
-  // const txData2 =
-  //   "0x86db00e10000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000036615cf349d7f6344891b1e7ca7c72883f5dc04900000000000000000000000036615cf349d7f6344891b1e7ca7c72883f5dc0493054d5cc36c9fb2e39677d6f7cd60f3a56f4a90dc1d0c8f1adc80b23028e5cde43f3c4b5e127bb8cb6cb1148ce6a274ebbd8515d7d36ad2af29fa2619a3859df000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000017ba7087c4f7e20000000000000000000000000000000000000000000000000000000000003707bc"
-  // test.steps[0].tx_data = txData2
-  describe(test.name, function () {
-    it("should pass", async function () {
-      if (test.steps.length === 0) {
-        throw new Error("Test has no steps")
-      }
-      for (const step of test.steps) {
-        console.log("🚨", step.tx_data)
-        var tx: ethers.providers.TransactionRequest = {
-          to: contract.address,
-          gasLimit: 2100000,
-          data: step.tx_data,
+  for (var test of tests) {
+    var test = tests[0]
+    describe(test.name, function () {
+      it("should pass", async function () {
+        if (test.steps.length === 0) {
+          throw new Error("Test has no steps")
         }
-        w1 = w1.connect(getProvider())
-        const resp = await w1.sendTransaction(tx)
-        await resp.wait()
-      }
+        for (const step of test.steps) {
+          console.log("🚨", step.tx_data)
+          var tx: ethers.providers.TransactionRequest = {
+            to: contract.address,
+            gasLimit: 2100000,
+            data: step.tx_data,
+          }
+          w1 = w1.connect(getProvider())
+          const resp = await w1.sendTransaction(tx)
+          await resp.wait()
+        }
+      })
     })
-  })
-  // }
+  }
 })
