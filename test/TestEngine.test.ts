@@ -26,14 +26,14 @@ interface TestStep {
   tx_data: string
 
   // The expected result of running the transaction
-  Ret: any // Is there a type more specific than any here?
+  ret: any // Is there a type more specific than any here?
 
   // List of expectations to be executed after the transaction is executed
-  Expectations: Expectation[]
+  expectations: Expectation[]
 }
 
 interface Expectation {
-  // Replace should/state with TS equivalents
+  // Add should states here
 }
 
 function parseTestsFromFile(filePath: string): TestCase[] {
@@ -81,14 +81,13 @@ describe.only("API - TestEngine", function () {
   })
 
   for (var test of tests) {
-    var test = tests[0]
+    // var test = tests[0]
     describe(test.name, function () {
-      it("should pass", async function () {
+      it("should not revert", async function () {
         if (test.steps.length === 0) {
           throw new Error("Test has no steps")
         }
         for (const step of test.steps) {
-          console.log("🚨", step.tx_data)
           var tx: ethers.providers.TransactionRequest = {
             to: contract.address,
             gasLimit: 2100000,
@@ -96,7 +95,11 @@ describe.only("API - TestEngine", function () {
           }
           w1 = w1.connect(getProvider())
           const resp = await w1.sendTransaction(tx)
-          await resp.wait()
+          if (step.ret !== null) {
+            await expectToThrowAsync(resp.wait())
+          } else {
+            await resp.wait()
+          }
         }
       })
     })
