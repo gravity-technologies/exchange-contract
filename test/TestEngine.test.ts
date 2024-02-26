@@ -56,14 +56,13 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
-describe.only("API - TestEngine", function () {
+describe("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()
   const accID = w1.address
   let ts: number
   let tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
-  console.log("tests:", tests.length)
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
