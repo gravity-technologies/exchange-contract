@@ -26,7 +26,7 @@ interface TestStep {
   tx_data: string
 
   // The expected result of running the transaction
-  ret: any // Is there a type more specific than any here?
+  ret: string
 
   // List of expectations to be executed after the transaction is executed
   expectations: Expectation[]
