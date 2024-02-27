@@ -37,7 +37,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   /// @notice Checks if a signer has a permissions in an account or associated subaccounts
   /// @param acc The account
   /// @param signer The signer's address
-  function _requireSignerInAccount(Account storage acc, address signer) internal {
+  function _requireSignerInAccount(Account storage acc, address signer) internal view {
     if (acc.signers[signer] != 0) {
       return;
     }

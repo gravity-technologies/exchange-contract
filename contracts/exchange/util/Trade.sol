@@ -46,8 +46,8 @@ function _verifyOrder(SubAccount storage sub, Order calldata o, bool isMakerOrde
   }
 }
 
-function getPosition(SubAccount storage sub, uint256 assetID) view returns (Position storage) {
-  Kind instrument = Kind(assetID & 0xF);
+function getPosition(SubAccount storage sub, bytes32 assetID) view returns (Position storage) {
+  Kind instrument = Kind(uint256(assetID) & 0xFF);
   require(instrument != Kind.UNSPECIFIED, "invalid assetID");
   if (instrument == Kind.CALL || instrument == Kind.PUT) return sub.options.values[assetID];
   if (instrument == Kind.PERPS) return sub.perps.values[assetID];

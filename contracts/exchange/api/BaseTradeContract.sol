@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "./BaseContract.sol";
 import "../types/DataStructure.sol";
+import "../util/Asset.sol";
 
 contract BaseTradeContract is BaseContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
@@ -36,9 +37,9 @@ contract BaseTradeContract is BaseContract {
 
   function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (int128) {
     int128 total;
-    uint256[] storage keys = positions.keys;
-    mapping(uint256 => Position) storage values = positions.values;
-    mapping(uint256 => uint64) storage assetPrices = state.prices.mark;
+    bytes32[] storage keys = positions.keys;
+    mapping(bytes32 => Position) storage values = positions.values;
+    mapping(bytes32 => uint64) storage assetPrices = state.prices.mark;
 
     uint count = keys.length;
     for (uint i; i < count; ++i) {
@@ -49,7 +50,7 @@ contract BaseTradeContract is BaseContract {
   }
 
   // TODO
-  function _getInterestRate(uint128 id) internal view returns (int64) {
+  function _getInterestRate(bytes32 id) internal view returns (int64) {
     return state.prices.interest[id];
   }
 
@@ -126,13 +127,20 @@ contract BaseTradeContract is BaseContract {
   // End of Funding and Settlement
   // ------------------------------------------------------
 
-  // FIXME: change when we finalize the asset ID encoding
-  function _parseAssetID(uint256 assetID) internal pure returns (Asset memory) {
-    Kind instr = Kind(assetID & 0xF);
-    Currency underlying = Currency.ETH;
-    Currency quote = Currency.USDC;
-    uint32 expiry = 0;
-    uint64 strike = 0;
-    return Asset(instr, underlying, _getCurrencyAssetID(underlying), quote, _getCurrencyAssetID(quote), expiry, strike);
+  /// @dev Parse the assetID into its components
+  /// LSB                                                                                           MSB
+  ///    ------------------------------------------------------------------------------------------
+  /// 0 | Kind (1B) | Underlying (1B) | Quote (1B) | Reserved (1B) | Expiration (8B) | Strike (8B)|
+  ///   ------------------------------------------------------------------------------------------
+  function _parseAssetID(bytes32 assetID) internal pure returns (Asset memory) {
+    uint id = uint256(assetID);
+    return
+      Asset(
+        Kind(id & 0xF),
+        Currency((id >> 8) & 0xFF),
+        Currency((id >> 16) & 0xFF),
+        uint64((id >> 32) & 0xFFFFFFFF),
+        uint64((id >> 64) & 0xFFFFFFFF)
+      );
   }
 }

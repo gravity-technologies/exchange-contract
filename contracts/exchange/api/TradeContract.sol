@@ -25,7 +25,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
     // TODO perp funding and settlement
 
     // TODO update position and spot balances
-    mapping(bytes32 => mapping(uint256 => uint64)) storage matchedSizes = state.replay.sizeMatched;
+    mapping(bytes32 => mapping(bytes32 => uint64)) storage matchedSizes = state.replay.sizeMatched;
     SubAccount storage taker = _requireSubAccount(trade.takerOrder.subAccountID);
     Order calldata takerOrder = trade.takerOrder;
     bytes32 takerHash = hashOrder(takerOrder);
@@ -68,7 +68,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
         // update taker and maker size
         matchedSizes[takerHash][leg.assetID] += uint64(curSz);
         matchedSizes[makerHash][leg.assetID] = totalSz;
-        AssetDTO memory asset = assetIDtoDTO(leg.assetID);
+        Asset memory asset = parseAssetID(leg.assetID);
         uint64 legQuoteDecimals = _getCurrencyDecimal(asset.quote);
         uint64 legUnderlyingDecimals = _getCurrencyDecimal(asset.underlying);
         uint64 legPrice = leg.limitPrice;
@@ -132,7 +132,7 @@ abstract contract TradeContract is ConfigContract, BaseTradeContract {
 
   function _depositFee(uint64 fee) private {}
 
-  function removePos(SubAccount storage sub, uint256 assetID) internal {
+  function removePos(SubAccount storage sub, bytes32 assetID) internal {
     Kind kind = assetGetKind(assetID);
     if (kind == Kind.PERPS) {
       remove(sub.perps, assetID);
