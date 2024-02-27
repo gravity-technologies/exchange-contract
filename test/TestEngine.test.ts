@@ -93,7 +93,7 @@ describe("API - TestEngine", function () {
           }
           w1 = w1.connect(getProvider())
           const resp = await w1.sendTransaction(tx)
-          if (step.ret !== null) {
+          if (step.ret != "") {
             await expectToThrowAsync(resp.wait())
           } else {
             await resp.wait()
