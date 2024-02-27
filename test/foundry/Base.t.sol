@@ -74,8 +74,8 @@ contract BaseTest is Test {
   /// @dev Deploys {GRVTExchange} contract
   function deployGRVTExchange() internal {
     grvtExchange = new GRVTExchange();
-    bytes32[] memory _initialConfig = new bytes32[](0);
-    grvtExchange.initialize(_initialConfig);
+    // We don't use this way in prod. When we use the openzeppelin plugin - this is called internally
+    grvtExchange.initialize();
     vm.label({account: address(grvtExchange), newLabel: "GRVTExchange"});
   }
 
