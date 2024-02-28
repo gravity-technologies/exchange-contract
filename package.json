@@ -13,7 +13,7 @@
     "lint:quiet": "solhint -q contracts/**/*.sol",
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "test:hardhat": "rm -rf ./upgradable && hardhat test --network hardhat",
+    "test:hardhat": "rm -rf ./upgradable && hardhat test",
     "test:forge": "forge test",
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",
     "prettier:sol": "prettier --write --plugin=prettier-plugin-solidity contracts/**/*.sol",
