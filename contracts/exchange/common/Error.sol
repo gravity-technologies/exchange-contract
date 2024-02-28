@@ -8,6 +8,7 @@ string constant ERR_INVALID_MATCHED_SIZE = "IMS";
 string constant ERR_MISSISNG_FEE_SUB_ACCOUNT = "MFEE";
 string constant ERR_FEE_CAP_EXCEEDED = "FCE";
 string constant ERR_OVERFLOW = "OF";
+string constant ERR_UNDERFLOW = "UF";
 string constant ERR_DIV_BY_ZERO = "DIVZ";
 string constant ERR_UNSAFE_CAST = "USC";
 string constant ERR_INSUFFICIENT_SPOT_BALANCE = "ISB";

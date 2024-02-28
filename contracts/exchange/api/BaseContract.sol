@@ -119,4 +119,16 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   function getLastTxID() external view returns (uint64) {
     return state.lastTxID;
   }
+
+  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
+    uint idx = uint(currency);
+
+    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
+
+    // USDT, USDC, USD
+    if (idx < 4) return 6;
+
+    // ETH, BTC
+    return 9;
+  }
 }

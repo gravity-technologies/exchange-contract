@@ -220,7 +220,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     if (kind == Kind.PERPS) {
       // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
       // to avoid mis-calculation of funding payment (leads to improper accounting of on-chain assets)
-      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetGetUnderlying(assetID)];
+      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetID];
     }
 
     return pos;
@@ -235,18 +235,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     } else if (kind == Kind.CALL || kind == Kind.PUT) {
       remove(sub.options, assetID);
     }
-  }
-
-  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
-    uint idx = uint(currency);
-
-    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
-
-    // USDT, USDC, USD
-    if (idx < 4) return 6;
-
-    // ETH, BTC
-    return 9;
   }
 
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {

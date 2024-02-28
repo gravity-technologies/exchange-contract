@@ -43,6 +43,11 @@ library BIMath {
     return c;
   }
 
+  function scale(BI memory a, uint256 d) internal pure returns (BI memory) {
+    if (a.dec > d) return BI(a.val, 10 ** (a.dec - d));
+    return BI(a.val, 10 ** (d - a.dec));
+  }
+
   function neg(BI memory a) internal pure returns (BI memory) {
     return BI(-a.val, a.dec);
   }
