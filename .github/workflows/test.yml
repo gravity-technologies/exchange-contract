@@ -37,12 +37,6 @@ jobs:
         run: |
           yarn install
 
-      - name: Run Forge tests
-        run: |
-          cd ${{ matrix.module }}
-          forge test -vvv
-        id: forge-test
-
       - name: Run Era Test Node Action
         uses: dutterbutter/era-test-node-action@latest
         with:
@@ -62,3 +56,9 @@ jobs:
           yarn prettier:check
           yarn test:hardhat
         id: hardhat-test
+
+      - name: Run Forge tests
+        run: |
+          cd ${{ matrix.module }}
+          forge test -vvv
+        id: forge-test
