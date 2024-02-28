@@ -91,7 +91,7 @@ struct State {
   uint64 lastTxID;
   // Store the type, timelock rules and update schedules for each config
   mapping(ConfigID => ConfigSetting) configSettings;
-  // Store the current value of all 1 dimensional config. 1D config is a simple key -> value mapping that doesn't 
+  // Store the current value of all 1 dimensional config. 1D config is a simple key -> value mapping that doesn't
   // Eg: (AdminFeeSubAccountID) = 1357902468
   //     (AdminRecoveryAddress) = 0xc0ffee254729296a45a3885639AC7E10F9d54979
   mapping(ConfigID => ConfigValue) config1DValues;
@@ -261,7 +261,10 @@ enum ConfigID {
   ORACLE_ADDRESS,
   CONFIG_ADDRESS,
   ADMIN_FEE_SUB_ACCOUNT_ID, // the sub account that collects fees
-  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
+  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID,
+  // Funding
+  FUNDING_RATE_HIGH,
+  FUNDING_RATE_LOW
 }
 
 struct ConfigValue {
@@ -276,7 +279,7 @@ struct ConfigSetting {
   ConfigType typ;
   // the timelock rules for this config
   ConfigTimelockRule[] rules;
-  // the schedules where we can change this config. 
+  // the schedules where we can change this config.
   mapping(uint64 => ConfigSchedule) schedules;
 }
 

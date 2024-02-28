@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import {ConfigID} from "./types/DataStructure.sol";
 import "./api/AccountContract.sol";
 import "./api/ConfigContract.sol";
 import "./api/OracleContract.sol";
@@ -23,5 +22,8 @@ contract GRVTExchange is
 {
   function initialize() public initializer {
     __ReentrancyGuard_init();
+
+    // Initialize the config default values and timelock rules
+    _setDefaultConfigSettings();
   }
 }
