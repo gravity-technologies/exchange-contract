@@ -22,9 +22,9 @@ contract ManyLegOneMaker is TradeBase {
 
   function setUp() public override {
     super.setUp();
-    assetOne = createAsset(Kind.PERPS, Currency.USDT, 1, Currency.USDT, 2, 100, 100);
-    assetTwo = createAsset(Kind.PERPS, Currency.USDT, 1, Currency.USDT, 2, 100, 100);
-    assetThree = createAsset(Kind.PERPS, Currency.USDT, 1, Currency.USDT, 2, 100, 100);
+    assetOne = createAsset(Kind.PERPS, Currency.USDT, Currency.USDT, 100, 100);
+    assetTwo = createAsset(Kind.PERPS, Currency.USDT, Currency.USDT, 100, 100);
+    assetThree = createAsset(Kind.PERPS, Currency.USDT, Currency.USDT, 100, 100);
   }
 
   function testMatchManyLegOneMaker() public {
@@ -34,18 +34,14 @@ contract ManyLegOneMaker is TradeBase {
   function createAsset(
     Kind _kind,
     Currency _underlying,
-    uint256 _underlyingAssetID,
     Currency _quote,
-    uint256 _quoteAssetID,
     uint32 _expiration,
     uint64 _strikePrice
   ) public pure returns (Asset memory) {
     Asset memory asset = Asset({
       kind: _kind,
       underlying: _underlying,
-      underlyingAssetID: _underlyingAssetID,
       quote: _quote,
-      quoteAssetID: _quoteAssetID,
       expiration: _expiration,
       strikePrice: _strikePrice
     });

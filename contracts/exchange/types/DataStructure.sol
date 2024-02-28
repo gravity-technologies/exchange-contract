@@ -115,7 +115,9 @@ struct Account {
   // See :
   //   - https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html#layout-of-state-variables-in-storage
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
-  uint multiSigThreshold;
+  uint64 multiSigThreshold;
+  uint64 adminCount;
+  uint64 signerCount;
   mapping(Currency => uint128) spotBalances;
   // Guardians who are authorized to participate in key recovery quorum
   // Both retail and institutional accounts can rely on guardians for key recovery
@@ -132,13 +134,14 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
-  uint256 adminCount;
-  uint256 signerCount;
+  uint256[49] __gap;
 }
 
 struct SubAccount {
   // The unique id of this subaccount, id > 0
   uint64 id;
+  uint64 adminCount;
+  uint64 signerCount;
   // The Account that this Sub Account belongs to
   address accountID;
   MarginType marginType;
@@ -153,10 +156,9 @@ struct SubAccount {
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
-  uint256 adminCount;
-  uint256 signerCount;
   // The timestamp that the sub account was last funded at
   int64 lastAppliedFundingTimestamp;
+  uint256[49] __gap;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
@@ -183,7 +185,7 @@ struct ConfigTimelockRule {
 }
 
 struct ReplayState {
-  mapping(bytes32 => mapping(uint256 => uint64)) sizeMatched;
+  mapping(bytes32 => mapping(bytes32 => uint64)) sizeMatched;
   // This mapping is used to prevent replay attack. Check if a certain signature has been executed before
   mapping(bytes32 => bool) executed;
   uint256[49] __gap;
@@ -192,8 +194,8 @@ struct ReplayState {
 struct PriceState {
   // Asset price is int64 because we need
   // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
-  mapping(uint256 => uint64) mark;
-  mapping(uint256 => int32) interest;
+  mapping(bytes32 => uint64) mark;
+  mapping(bytes32 => int32) interest;
   // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
 
   // Prior to any trade, funding must be applied
@@ -206,7 +208,7 @@ struct PriceState {
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
-  mapping(uint256 => uint64) settlement;
+  mapping(bytes32 => uint64) settlement;
   uint256[49] __gap;
 }
 
@@ -286,7 +288,7 @@ struct Trade {
 }
 
 struct AssetTradeContext {
-  uint256 assetID;
+  bytes32 assetID;
   uint64 markPrice;
   uint64 underlyingPrice;
   int32 riskFreeRate;
@@ -341,7 +343,7 @@ struct Order {
 }
 
 struct OrderLeg {
-  uint256 assetID;
+  bytes32 assetID;
   // The total number of derivative contracts to trade in this leg, expressed in derivative decimal units
   uint64 size;
   // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE
@@ -362,14 +364,4 @@ struct OrderMatch {
   uint64[] matchedSize;
   uint32 takerFeePercentageCharged;
   uint32 makerFeePercentageCharged;
-}
-
-struct Asset {
-  Kind kind;
-  Currency underlying;
-  uint256 underlyingAssetID;
-  Currency quote;
-  uint256 quoteAssetID;
-  uint32 expiration;
-  uint64 strikePrice;
 }

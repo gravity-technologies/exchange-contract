@@ -6,26 +6,26 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 
 struct PriceEntry {
-  uint256 assetID;
+  bytes32 assetID;
   uint64 price;
 }
 
 struct RateEntry {
-  uint256 assetID;
+  bytes32 assetID;
   int32 rate;
 }
 
 contract OracleContract is BaseContract {
   function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices) external {
     _setSequence(timestamp, txID);
-    mapping(uint256 => uint64) storage marks = state.prices.mark;
+    mapping(bytes32 => uint64) storage marks = state.prices.mark;
     uint len = prices.length;
     for (uint i; i < len; ++i) marks[prices[i].assetID] = prices[i].price;
   }
 
   function settlementPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices) external {
     _setSequence(timestamp, txID);
-    mapping(uint256 => uint64) storage settlements = state.prices.settlement;
+    mapping(bytes32 => uint64) storage settlements = state.prices.settlement;
     uint len = prices.length;
     for (uint i; i < len; ++i) settlements[prices[i].assetID] = prices[i].price;
   }
@@ -40,7 +40,7 @@ contract OracleContract is BaseContract {
 
   function interestRateTick(int64 timestamp, uint64 txID, RateEntry[] calldata rates) external {
     _setSequence(timestamp, txID);
-    mapping(uint256 => int32) storage interest = state.prices.interest;
+    mapping(bytes32 => int32) storage interest = state.prices.interest;
     uint len = rates.length;
     for (uint i; i < len; ++i) interest[rates[i].assetID] = rates[i].rate;
   }

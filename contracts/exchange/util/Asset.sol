@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../types/DataStructure.sol";
 
-struct AssetDTO {
+struct Asset {
   Kind kind;
   Currency underlying;
   Currency quote;
@@ -11,32 +11,49 @@ struct AssetDTO {
   uint64 strikePrice;
 }
 
-function assetIDtoDTO(uint256 assetID) pure returns (AssetDTO memory) {
-  // TODO
-  return AssetDTO({kind: Kind.PERPS, underlying: Currency.BTC, quote: Currency.USDT, expiration: 0, strikePrice: 0});
+/// @dev Parse the assetID into its components
+///
+/// LSB                                                                                           MSB
+///    ------------------------------------------------------------------------------------------
+/// 0 | Kind (1B) | Underlying (1B) | Quote (1B) | Reserved (1B) | Expiration (8B) | Strike (8B)|
+///   ------------------------------------------------------------------------------------------
+function parseAssetID(bytes32 assetID) pure returns (Asset memory) {
+  uint id = uint256(assetID);
+  return
+    Asset(
+      Kind(id & 0xFF),
+      Currency((id >> 8) & 0xFF), // Underlying
+      Currency((id >> 16) & 0xFF), // Quote
+      uint64((id >> 32) & 0xFFFFFFFF), // Expiration
+      uint64((id >> 64) & 0xFFFFFFFF) // Strike Price
+    );
 }
 
-function assetDTOToID(AssetDTO memory asset) pure returns (uint256) {
-  // TODO
-  return 0;
+function assetToID(Asset memory asset) pure returns (uint256) {
+  return
+    uint256(asset.kind) |
+    (uint256(asset.underlying) << 8) |
+    (uint256(asset.quote) << 16) |
+    (uint256(asset.expiration) << 32) |
+    (uint256(asset.strikePrice) << 64);
 }
 
-function assetGetUnderlying(uint256 assetID) pure returns (Currency) {
-  return Currency.BTC;
+function assetGetKind(bytes32 assetID) pure returns (Kind) {
+  return Kind(uint256(assetID) & 0xFF);
 }
 
-function assetGetQuote(uint256 assetID) pure returns (Currency) {
-  return Currency.BTC;
+function assetGetUnderlying(bytes32 assetID) pure returns (Currency) {
+  return Currency((uint256(assetID) >> 8) & 0xFF);
 }
 
-function assetGetKind(uint256 assetID) pure returns (Kind) {
-  return Kind.PERPS;
+function assetGetQuote(bytes32 assetID) pure returns (Currency) {
+  return Currency((uint256(assetID) >> 16) & 0xFF);
 }
 
-function assetGetStrikePrice(uint256 assetID) pure returns (uint64) {
-  return 0;
+function assetGetExpiration(bytes32 assetID) pure returns (uint64) {
+  return uint64((uint256(assetID) >> 32) & 0xFFFFFFFF);
 }
 
-function assetGetExpiration(uint256 assetID) pure returns (uint64) {
-  return 0;
+function assetGetStrikePrice(bytes32 assetID) pure returns (uint64) {
+  return uint64((uint256(assetID) >> 64) & 0xFFFFFFFF);
 }
