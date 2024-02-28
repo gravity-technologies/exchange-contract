@@ -46,13 +46,18 @@ import "../util/Address.sol";
 ///////////////////////////////////////////////////////////////////
 contract ConfigContract is BaseContract {
   // --------------- Constants ---------------
-  uint private constant CENTIBEEP = 1;
-  uint private constant BEEP = 100;
-  uint private constant PERCENT = 10000;
+  uint64 private constant ONE_CENTIBEEP = 1;
+  uint64 private constant ONE_BEEP = 100;
+  uint64 private constant ONE_PERCENT = 10000;
+  uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
+
+  function _intToConfig(int64 v) internal pure returns (bytes32) {
+    return bytes32(uint256(uint64(v)));
+  }
 
   function _configToInt(bytes32 v) internal pure returns (int64) {
     return int64(uint64((uint256(v))));
@@ -68,6 +73,10 @@ contract ConfigContract is BaseContract {
     return (int64(uint64((uint256(c.val)))), c.isSet);
   }
 
+  function _uintToConfig(uint64 v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
+  }
+
   function _configToUint(bytes32 v) internal pure returns (uint64) {
     return uint64((uint256(v)));
   }
@@ -80,6 +89,10 @@ contract ConfigContract is BaseContract {
   function _getUintConfig2D(ConfigID key, uint64 subKey) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     return (uint64(uint256(c.val)), c.isSet);
+  }
+
+  function _addressToConfig(address v) internal pure returns (bytes32) {
+    return bytes32(uint256(uint160(v)));
   }
 
   function _configToAddress(bytes32 v) internal pure returns (address) {
@@ -277,5 +290,196 @@ contract ConfigContract is BaseContract {
         if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
+  }
+
+  ///////////////////////////////////////////////////////////////////
+  /// Default Config Settings
+  ///////////////////////////////////////////////////////////////////
+  // The default config settings are hardcoded in the contract
+  // This should be called only once during the proxy contract deployment, in the initialize function
+  function _setDefaultConfigSettings() internal {
+    mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
+    // mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
+    mapping(ConfigID => mapping(uint64 => ConfigValue)) storage values2D = state.config2DValues;
+
+    // This is a special value that represents an empty value for a config
+    // bytes32 emptyValue = bytes32(uint256(0));
+
+    ///////////////////////////////////////////////////////////////////
+    /// Simple Margin
+    ///////////////////////////////////////////////////////////////////
+
+    // SM_FUTURES_INITIAL_MARGIN
+    ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    mapping(uint64 => ConfigValue) storage v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _uintToConfig(2 * ONE_PERCENT);
+    Rule[] storage rules = settings[id].rules;
+    rules.push(Rule(0, 0, 100 * ONE_HUNDRED_PERCENT));
+    rules.push(Rule(1 hours, 10 * ONE_BEEP, 0));
+    rules.push(Rule(4 hours, 1 * ONE_PERCENT, 0));
+    rules.push(Rule(1 days, 10 * ONE_PERCENT, 0));
+    rules.push(Rule(1 weeks, 1 * ONE_HUNDRED_PERCENT, 0));
+
+    // SM_FUTURES_MAINTENANCE_MARGIN
+    id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _uintToConfig(ONE_PERCENT);
+
+    // SM_FUTURES_VARIABLE_MARGIN
+    id = ConfigID.SM_FUTURES_VARIABLE_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _uintToConfig(50 * ONE_CENTIBEEP);
+    v2d[uint64(Currency.BTC)].isSet = true;
+    v2d[uint64(Currency.BTC)].val = _uintToConfig(50 * ONE_CENTIBEEP);
+    v2d[uint64(Currency.ETH)].isSet = true;
+    v2d[uint64(Currency.ETH)].val = _uintToConfig(4 * ONE_CENTIBEEP);
+
+    // SM_OPTIONS_INITIAL_MARGIN_HIGH
+    id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_HIGH;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _uintToConfig(15 * ONE_PERCENT);
+
+    // SM_OPTIONS_INITIAL_MARGIN_LOW
+    id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_LOW;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _uintToConfig(10 * ONE_PERCENT);
+
+    // SM_OPTIONS_MAINTENANCE_MARGIN
+    id = ConfigID.SM_OPTIONS_MAINTENANCE_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(750 * ONE_BEEP));
+
+    ///////////////////////////////////////////////////////////////////
+    /// Portfolio Margin
+    ///////////////////////////////////////////////////////////////////
+
+    // PM_SPOT_MOVE
+    id = ConfigID.PM_SPOT_MOVE;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(20 * ONE_PERCENT));
+
+    // PM_VOL_MOVE_DOWN
+    id = ConfigID.PM_VOL_MOVE_DOWN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(45 * ONE_PERCENT));
+
+    // PM_VOL_MOVE_UP
+    id = ConfigID.PM_VOL_MOVE_UP;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(45 * ONE_PERCENT));
+
+    // PM_SPOT_MOVE_EXTREME
+    id = ConfigID.PM_SPOT_MOVE_EXTREME;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(60 * ONE_PERCENT));
+
+    // PM_EXTREME_MOVE_DISCOUNT
+    id = ConfigID.PM_EXTREME_MOVE_DISCOUNT;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(33 * ONE_PERCENT));
+
+    // PM_SHORT_TERM_VEGA_POWER
+    id = ConfigID.PM_SHORT_TERM_VEGA_POWER;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(30 * ONE_PERCENT));
+
+    // PM_LONG_TERM_VEGA_POWER
+    id = ConfigID.PM_LONG_TERM_VEGA_POWER;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(13 * ONE_PERCENT));
+
+    // PM_INITIAL_MARGIN_FACTOR
+    id = ConfigID.PM_INITIAL_MARGIN_FACTOR;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(130 * ONE_PERCENT));
+
+    // PM_FUTURES_CONTINGENCY_MARGIN
+    id = ConfigID.PM_FUTURES_CONTINGENCY_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(60 * ONE_BEEP));
+
+    // PM_OPTIONS_CONTINGENCY_MARGIN
+    id = ConfigID.PM_OPTIONS_CONTINGENCY_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(ONE_PERCENT));
+
+    ///////////////////////////////////////////////////////////////////
+    /// ADMIN addresses. Commented out because they are empty for now
+    ///////////////////////////////////////////////////////////////////
+
+    // // ADMIN_RECOVERY_ADDRESS
+    // id = ConfigID.ADMIN_RECOVERY_ADDRESS;
+    // settings[id].typ = ConfigType.ADDRESS;
+    // values1D[id].val = emptyValue;
+
+    // // ORACLE_ADDRESS
+    // id = ConfigID.ORACLE_ADDRESS;
+    // settings[id].typ = ConfigType.ADDRESS;
+    // values1D[id].val = emptyValue;
+
+    // // CONFIG_ADDRESS
+    // id = ConfigID.CONFIG_ADDRESS;
+    // settings[id].typ = ConfigType.ADDRESS;
+    // values1D[id].val = emptyValue;
+
+    // // ADMIN_FEE_SUB_ACCOUNT_ID
+    // id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
+    // settings[id].typ = ConfigType.UINT;
+    // values1D[id].val = emptyValue;
+
+    // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
+    // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
+    // settings[id].typ = ConfigType.UINT;
+    // values1D[id].val = emptyValue;
+
+    ///////////////////////////////////////////////////////////////////
+    /// Funding rate settings
+    ///////////////////////////////////////////////////////////////////
+
+    // FUNDING_RATE_HIGH
+    id = ConfigID.FUNDING_RATE_HIGH;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(int64(5 * ONE_PERCENT));
+
+    // FUNDING_RATE_LOW
+    id = ConfigID.FUNDING_RATE_LOW;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[0].isSet = true;
+    v2d[0].val = _intToConfig(-5 * int64(ONE_PERCENT));
   }
 }
