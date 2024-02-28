@@ -5,59 +5,8 @@ import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 
-contract BaseTradeContract is BaseContract {
-  error InvalidTotalValue(uint64 subAccountID, int256 value);
-
-  /// @dev return the total value of a sub account with 18 decimal places
-  // function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (int128) {
-  //   uint256 currencyID = _getCurrencyAssetID(sub.quoteCurrency);
-  //   // upcasting price from int64 -> int128 is safe
-  //   int128 balanceUsd = sub.balanceE9 * int128(state.prices.mark[currencyID]);
-  //   return
-  //     balanceUsd +
-  //     _getPositionsUsdValue(sub.perps) +
-  //     _getPositionsUsdValue(sub.futures) +
-  //     _getPositionsUsdValue(sub.options);
-  // }
-
-  // FIXME: return the correct asset encoding of quote currency
-  function _getCurrencyAssetID(Currency c) internal pure returns (uint256) {
-    if (c == Currency.ETH) return 0x0;
-    if (c == Currency.BTC) return 0x0;
-    if (c == Currency.USDC) return 0x0;
-    if (c == Currency.USDT) return 0x0;
-    require(false, "invalid currency");
-    return 0;
-  }
-
-  // function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
-  //   int128 val = _getSubAccountUsdValue(sub);
-  //   if (val < 0) revert InvalidTotalValue(sub.id, val);
-  // }
-
-  function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (int128) {
-    int128 total;
-    bytes32[] storage keys = positions.keys;
-    mapping(bytes32 => Position) storage values = positions.values;
-    mapping(bytes32 => uint64) storage assetPrices = state.prices.mark;
-
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
-      Position storage pos = values[keys[i]];
-      total += int128(uint128(assetPrices[pos.id])) * int128(pos.balance);
-    }
-    return total;
-  }
-
-  // TODO
-  function _getInterestRate(bytes32 id) internal view returns (int64) {
-    return state.prices.interest[id];
-  }
-
-  // ------------------------------------------------------
-  // Funding and Settlement
-  // ------------------------------------------------------
-  function _fundAndSettle(SubAccount storage sub) internal {
+contract FundingAndSettlement is BaseContract {
+  function _fundAndSettle(int64 timestamp, SubAccount storage sub) internal {
     _fundPerp(sub);
     _settleOptionsOrFutures(sub, sub.options);
     _settleOptionsOrFutures(sub, sub.futures);
@@ -122,25 +71,4 @@ contract BaseTradeContract is BaseContract {
   //   int128 premiumCap = (size * prices[deriv.quoteAssetID] * SETTLEMENT_TRADE_PRICE_PCT) / 1e9;
   //   return underlyingCharge < premiumCap ? underlyingCharge : premiumCap;
   // }
-
-  // ------------------------------------------------------
-  // End of Funding and Settlement
-  // ------------------------------------------------------
-
-  /// @dev Parse the assetID into its components
-  /// LSB                                                                                           MSB
-  ///    ------------------------------------------------------------------------------------------
-  /// 0 | Kind (1B) | Underlying (1B) | Quote (1B) | Reserved (1B) | Expiration (8B) | Strike (8B)|
-  ///   ------------------------------------------------------------------------------------------
-  function _parseAssetID(bytes32 assetID) internal pure returns (Asset memory) {
-    uint id = uint256(assetID);
-    return
-      Asset(
-        Kind(id & 0xF),
-        Currency((id >> 8) & 0xFF),
-        Currency((id >> 16) & 0xFF),
-        uint64((id >> 32) & 0xFFFFFFFF),
-        uint64((id >> 64) & 0xFFFFFFFF)
-      );
-  }
 }

@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./Derivative.sol";
+import "../util/BIMath.sol";
 
 enum MarginType {
   UNSPECIFIED,
@@ -34,6 +35,7 @@ enum Kind {
 
 enum Currency {
   UNSPECIFIED,
+  USD,
   USDC,
   USDT,
   ETH,
@@ -85,10 +87,6 @@ struct State {
   ReplayState replay;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
-  // Latest Transaction time
-  int64 timestamp;
-  // Latest Transaction ID
-  uint64 lastTxID;
   // Store the type, timelock rules and update schedules for each config
   mapping(ConfigID => ConfigSetting) configSettings;
   // Store the current value of all 1 dimensional config. 1D config is a simple key -> value mapping that doesn't
@@ -101,6 +99,16 @@ struct State {
   // Eg: (PortfolioInitialMarginFactor, BTC) = 1.2
   //     (PortfolioInitialMarginFactor, DOGE) = 1.5
   mapping(ConfigID => mapping(bytes32 => ConfigValue)) config2DValues;
+  // Latest Transaction time
+  int64 timestamp;
+  // Latest Transaction ID
+  uint64 lastTxID;
+  // Used as a temporary storage to compute the current taker notionals (as an aggregate of the maker matched orders).
+  // This  will be cleared after each trade and will not incur storage cost on L1 due to state diff.
+  uint64 transientTakerNotionals;
+  // Used as a temporary storage to compute the current taker trade sizes per leg (as an aggregate of the maker matched orders).
+  // This mapping will be cleared after each trade and will not incur storage cost on L1 due to state diff.
+  mapping(bytes32 => uint64) transientTakerMatchedSizes;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -203,7 +211,7 @@ struct PriceState {
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 9 decimal points
   // TODO: this uint128 represents the derivative
-  mapping(Currency => uint64) fundingIndex;
+  mapping(Currency => int64) fundingIndex;
   int64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
@@ -214,7 +222,7 @@ struct PriceState {
 
 struct Session {
   // The address of the user that create this session
-  address user;
+  address subAccountSigner;
   // The last timestamp in nanoseconds that the signer can sign at
   // We can apply a max one day expiry on session keys
   int64 expiry;
@@ -286,8 +294,8 @@ struct ConfigSetting {
 // --------------- Trade --------------
 struct Trade {
   Order takerOrder;
-  OrderMatch[] makerOrders;
-  AssetTradeContext[] tradeContext;
+  MakerTradeMatch[] makerOrders;
+  int64[] feeCharged;
 }
 
 struct AssetTradeContext {
@@ -362,9 +370,8 @@ struct OrderLeg {
   bool isBuyingAsset;
 }
 
-struct OrderMatch {
+struct MakerTradeMatch {
   Order makerOrder;
   uint64[] matchedSize;
-  uint32 takerFeePercentageCharged;
-  uint32 makerFeePercentageCharged;
+  int64[] feeCharged;
 }
