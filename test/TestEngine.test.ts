@@ -67,14 +67,6 @@ describe("API - TestEngine", function () {
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 
-  // beforeEach(async () => {
-  //   snapshotId = await network.provider.send("evm_snapshot")
-  // })
-
-  // afterEach(async () => {
-  //   await network.provider.send("evm_revert", [snapshotId])
-  // })
-
   // TODO: Codegen calling describe and it for each test case
   // We do it this way because mocha + hardhat does not seem to support dynamic test cases
   var test = tests[0]
