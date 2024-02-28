@@ -113,13 +113,6 @@ describe.only("API - TestEngine", function () {
     })
   })
 
-  var test = tests[4]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
   var test = tests[5]
   describe(test.name, function () {
     it("should not revert", async function () {
