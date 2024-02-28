@@ -55,12 +55,10 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
-describe.only("API - TestEngine", function () {
+describe("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()
-  const accID = w1.address
-  let ts: number
   let tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
 
   before(async () => {
@@ -71,79 +69,102 @@ describe.only("API - TestEngine", function () {
 
   beforeEach(async () => {
     snapshotId = await network.provider.send("evm_snapshot")
-    ts = 1
   })
 
   afterEach(async () => {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
+  // TODO: Codegen calling describe and it for each test case
+  // We do it this way because mocha + hardhat does not seem to support dynamic test cases
   var test = tests[0]
   describe(test.name, function () {
     it("should not revert", async function () {
-      if (test.steps.length === 0) {
-        throw new Error("Test has no steps")
-      }
-      for (const step of test.steps) {
-        var tx: ethers.providers.TransactionRequest = {
-          to: contract.address,
-          gasLimit: 2100000,
-          data: step.tx_data,
-        }
-        w1 = w1.connect(getProvider())
-        const resp = await w1.sendTransaction(tx)
-        if (step.ret != "") {
-          await expectToThrowAsync(resp.wait())
-        } else {
-          await resp.wait()
-        }
-      }
+      w1 = await validateTest(test, contract, w1)
     })
   })
 
   var test = tests[1]
   describe(test.name, function () {
     it("should not revert", async function () {
-      if (test.steps.length === 0) {
-        throw new Error("Test has no steps")
-      }
-      for (const step of test.steps) {
-        var tx: ethers.providers.TransactionRequest = {
-          to: contract.address,
-          gasLimit: 2100000,
-          data: step.tx_data,
-        }
-        w1 = w1.connect(getProvider())
-        const resp = await w1.sendTransaction(tx)
-        if (step.ret != "") {
-          await expectToThrowAsync(resp.wait())
-        } else {
-          await resp.wait()
-        }
-      }
+      w1 = await validateTest(test, contract, w1)
     })
   })
 
   var test = tests[2]
   describe(test.name, function () {
     it("should not revert", async function () {
-      if (test.steps.length === 0) {
-        throw new Error("Test has no steps")
-      }
-      for (const step of test.steps) {
-        var tx: ethers.providers.TransactionRequest = {
-          to: contract.address,
-          gasLimit: 2100000,
-          data: step.tx_data,
-        }
-        w1 = w1.connect(getProvider())
-        const resp = await w1.sendTransaction(tx)
-        if (step.ret != "") {
-          await expectToThrowAsync(resp.wait())
-        } else {
-          await resp.wait()
-        }
-      }
+      w1 = await validateTest(test, contract, w1)
     })
   })
+
+  var test = tests[3]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[4]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[5]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[6]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[7]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[8]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  var test = tests[9]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      w1 = await validateTest(test, contract, w1)
+    })
+  })
+
+  async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
+    if (test.steps.length === 0) {
+      throw new Error("Test has no steps")
+    }
+    for (const step of test.steps) {
+      var tx: ethers.providers.TransactionRequest = {
+        to: contract.address,
+        gasLimit: 2100000,
+        data: step.tx_data,
+      }
+      w1 = w1.connect(getProvider())
+      const resp = await w1.sendTransaction(tx)
+      if (step.ret != "") {
+        await expectToThrowAsync(resp.wait())
+      } else {
+        await resp.wait()
+      }
+    }
+    return w1
+  }
 })
