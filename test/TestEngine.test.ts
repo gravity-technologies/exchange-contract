@@ -61,7 +61,7 @@ describe("API - TestEngine", function () {
   var w1 = getDeployerWallet()
   let tests = parseTestsFromFile(process.cwd() + "/test/tests/CreateAccount.json")
 
-  before(async () => {
+  beforeEach(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchange", [], { wallet: deployingWallet, silent: true, noVerify: true })
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
@@ -261,49 +261,49 @@ describe("API - TestEngine", function () {
     })
   })
 
-  // var test = tests[8]
-  // describe(test.name, function () {
-  //   it("should not revert", async function () {
-  //     if (test.steps.length === 0) {
-  //       throw new Error("Test has no steps")
-  //     }
-  //     for (const step of test.steps) {
-  //       var tx: ethers.providers.TransactionRequest = {
-  //         to: contract.address,
-  //         gasLimit: 2100000,
-  //         data: step.tx_data,
-  //       }
-  //       w1 = w1.connect(getProvider())
-  //       const resp = await w1.sendTransaction(tx)
-  //       if (step.ret != "") {
-  //         await expectToThrowAsync(resp.wait())
-  //       } else {
-  //         await resp.wait()
-  //       }
-  //     }
-  //   })
-  // })
+  var test = tests[8]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
+        }
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        if (step.ret != "") {
+          await expectToThrowAsync(resp.wait())
+        } else {
+          await resp.wait()
+        }
+      }
+    })
+  })
 
-  // var test = tests[9]
-  // describe(test.name, function () {
-  //   it("should not revert", async function () {
-  //     if (test.steps.length === 0) {
-  //       throw new Error("Test has no steps")
-  //     }
-  //     for (const step of test.steps) {
-  //       var tx: ethers.providers.TransactionRequest = {
-  //         to: contract.address,
-  //         gasLimit: 2100000,
-  //         data: step.tx_data,
-  //       }
-  //       w1 = w1.connect(getProvider())
-  //       const resp = await w1.sendTransaction(tx)
-  //       if (step.ret != "") {
-  //         await expectToThrowAsync(resp.wait())
-  //       } else {
-  //         await resp.wait()
-  //       }
-  //     }
-  //   })
-  // })
+  var test = tests[9]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
+        }
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        if (step.ret != "") {
+          await expectToThrowAsync(resp.wait())
+        } else {
+          await resp.wait()
+        }
+      }
+    })
+  })
 })
