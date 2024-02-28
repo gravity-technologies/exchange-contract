@@ -55,7 +55,7 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
-describe("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()
@@ -78,28 +78,72 @@ describe("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  for (var test of tests) {
-    // var test = tests[0]
-    describe(test.name, function () {
-      it("should not revert", async function () {
-        if (test.steps.length === 0) {
-          throw new Error("Test has no steps")
+  var test = tests[0]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
         }
-        for (const step of test.steps) {
-          var tx: ethers.providers.TransactionRequest = {
-            to: contract.address,
-            gasLimit: 2100000,
-            data: step.tx_data,
-          }
-          w1 = w1.connect(getProvider())
-          const resp = await w1.sendTransaction(tx)
-          if (step.ret != "") {
-            await expectToThrowAsync(resp.wait())
-          } else {
-            await resp.wait()
-          }
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        if (step.ret != "") {
+          await expectToThrowAsync(resp.wait())
+        } else {
+          await resp.wait()
         }
-      })
+      }
     })
-  }
+  })
+
+  var test = tests[1]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
+        }
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        if (step.ret != "") {
+          await expectToThrowAsync(resp.wait())
+        } else {
+          await resp.wait()
+        }
+      }
+    })
+  })
+
+  var test = tests[2]
+  describe(test.name, function () {
+    it("should not revert", async function () {
+      if (test.steps.length === 0) {
+        throw new Error("Test has no steps")
+      }
+      for (const step of test.steps) {
+        var tx: ethers.providers.TransactionRequest = {
+          to: contract.address,
+          gasLimit: 2100000,
+          data: step.tx_data,
+        }
+        w1 = w1.connect(getProvider())
+        const resp = await w1.sendTransaction(tx)
+        if (step.ret != "") {
+          await expectToThrowAsync(resp.wait())
+        } else {
+          await resp.wait()
+        }
+      }
+    })
+  })
 })
