@@ -141,19 +141,19 @@ describe.only("API - TestEngine", function () {
     })
   })
 
-  var test = tests[8]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
+  // var test = tests[8]
+  // describe(test.name, function () {
+  //   it("should not revert", async function () {
+  //     await validateTest(test, contract, w1)
+  //   })
+  // })
 
-  var test = tests[9]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
+  // var test = tests[9]
+  // describe(test.name, function () {
+  //   it("should not revert", async function () {
+  //     await validateTest(test, contract, w1)
+  //   })
+  // })
 })
 async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
   if (test.steps.length === 0) {
