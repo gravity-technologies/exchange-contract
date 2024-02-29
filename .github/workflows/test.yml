@@ -56,6 +56,12 @@ jobs:
           yarn prettier:check
           yarn test:hardhat
         id: hardhat-test
+      
+      - name: Upload era_test_node log
+        uses: actions/upload-artifact@v3
+        with:
+          name: era_test_node-log
+          path: era_test_node.log
 
       - name: Run Forge tests
         run: |
