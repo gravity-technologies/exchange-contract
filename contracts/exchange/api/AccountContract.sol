@@ -5,7 +5,6 @@ import "./BaseContract.sol";
 import "./signature/generated/AccountSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
-import "hardhat/console.sol";
 
 contract AccountContract is BaseContract {
   /// @notice Create a new account
@@ -15,7 +14,6 @@ contract AccountContract is BaseContract {
   /// @param accountID The ID the account will be tagged to
   /// @param sig The signature of the acting user
   function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
-    console.log("createAccount");
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
@@ -31,7 +29,6 @@ contract AccountContract is BaseContract {
     acc.adminCount = 1;
     acc.signerCount = 1;
     acc.signers[sig.signer] = AccountPermAdmin;
-    console.log("createAccountDone");
   }
 
   /// @notice Set the multiSigThreshold for an account
