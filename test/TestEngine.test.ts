@@ -61,7 +61,6 @@ describe.only("API - TestEngine", function () {
   var w1 = getDeployerWallet()
   const accID = w1.address
   let ts: number
-  let tests = parseTestsFromFile(process.cwd() + "/test/tests/TestCreateAccount.json")
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
@@ -78,76 +77,16 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  var test = tests[0]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
+  describe("add()", function () {
+    let tests = parseTestsFromFile(process.cwd() + "/test/tests/TestCreateAccount.json")
+    tests.forEach((test) => {
+      it(`correctly runs ` + test.name, async function () {
+        await validateTest(test, contract, w1)
+      })
     })
   })
-
-  var test = tests[1]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[2]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[3]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[4]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[5]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[6]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  var test = tests[7]
-  describe(test.name, function () {
-    it("should not revert", async function () {
-      await validateTest(test, contract, w1)
-    })
-  })
-
-  // var test = tests[8]
-  // describe(test.name, function () {
-  //   it("should not revert", async function () {
-  //     await validateTest(test, contract, w1)
-  //   })
-  // })
-
-  // var test = tests[9]
-  // describe(test.name, function () {
-  //   it("should not revert", async function () {
-  //     await validateTest(test, contract, w1)
-  //   })
-  // })
 })
+
 async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
   if (test.steps.length === 0) {
     throw new Error("Test has no steps")
