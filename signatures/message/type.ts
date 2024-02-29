@@ -300,6 +300,7 @@ export const ScheduleConfig = {
     EIP712Domain,
     [PrimaryType.ScheduleConfig]: [
       { name: "key", type: "uint8" },
+      { name: "subKey", type: "bytes32" },
       { name: "value", type: "bytes32" },
       { name: "nonce", type: "uint32" },
     ],
@@ -313,6 +314,7 @@ export const SetConfig = {
     EIP712Domain,
     [PrimaryType.SetConfig]: [
       { name: "key", type: "uint8" },
+      { name: "subKey", type: "bytes32" },
       { name: "value", type: "bytes32" },
       { name: "nonce", type: "uint32" },
     ],

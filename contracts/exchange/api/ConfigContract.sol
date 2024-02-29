@@ -68,7 +68,7 @@ contract ConfigContract is BaseContract {
     return (int64(uint64((uint256(c.val)))), c.isSet);
   }
 
-  function _getIntConfig2D(ConfigID key, uint64 subKey) internal view returns (int64, bool) {
+  function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     return (int64(uint64((uint256(c.val)))), c.isSet);
   }
@@ -86,7 +86,7 @@ contract ConfigContract is BaseContract {
     return (uint64(uint256(c.val)), c.isSet);
   }
 
-  function _getUintConfig2D(ConfigID key, uint64 subKey) internal view returns (uint64, bool) {
+  function _getUintConfig2D(ConfigID key, bytes32 subKey) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     return (uint64(uint256(c.val)), c.isSet);
   }
@@ -105,7 +105,7 @@ contract ConfigContract is BaseContract {
     return (address(uint160(uint256(c.val))), c.isSet);
   }
 
-  function _getAddressConfig2D(ConfigID key, uint64 subKey) internal view returns (address, bool) {
+  function _getAddressConfig2D(ConfigID key, bytes32 subKey) internal view returns (address, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     return (address(uint160(uint256(c.val))), c.isSet);
   }
@@ -121,14 +121,14 @@ contract ConfigContract is BaseContract {
   /// @param timestamp the new system timestamp
   /// @param txID the new system txID
   /// @param key the config key
-  /// @param subKey the config subKey, 0 for 1D config
+  /// @param subKey the config subKey, 0x0 for 1D config
   /// @param value the config value in bytes32
   /// @param sig the signature of the transaction
   function scheduleConfig(
     int64 timestamp,
     uint64 txID,
     ConfigID key,
-    uint64 subKey,
+    bytes32 subKey,
     bytes32 value,
     Signature calldata sig
   ) external {
@@ -164,7 +164,7 @@ contract ConfigContract is BaseContract {
     int64 timestamp,
     uint64 txID,
     ConfigID key,
-    uint64 subKey,
+    bytes32 subKey,
     bytes32 value,
     Signature calldata sig
   ) external {
@@ -189,7 +189,7 @@ contract ConfigContract is BaseContract {
 
     // 2D configs are always placed at odd indices in the enum. See ConfigID
     if (uint(typ) % 2 == 0) {
-      mapping(uint64 => ConfigValue) storage config = state.config2DValues[key];
+      mapping(bytes32 => ConfigValue) storage config = state.config2DValues[key];
       config[subKey].isSet = true;
       config[subKey].val = value;
     } else {
@@ -204,7 +204,7 @@ contract ConfigContract is BaseContract {
 
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
   /// Expect the timelocks duration should be in increasing order of delta change and timelock duration
-  function _getLockDuration(ConfigID key, uint64 subKey, bytes32 newVal) private view returns (int64) {
+  function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) private view returns (int64) {
     ConfigType typ = state.configSettings[key].typ;
     require(typ != ConfigType.UNSPECIFIED, "404");
 
@@ -300,7 +300,7 @@ contract ConfigContract is BaseContract {
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
     // mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
-    mapping(ConfigID => mapping(uint64 => ConfigValue)) storage values2D = state.config2DValues;
+    mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
     // This is a special value that represents an empty value for a config
     // bytes32 emptyValue = bytes32(uint256(0));
@@ -312,7 +312,7 @@ contract ConfigContract is BaseContract {
     // SM_FUTURES_INITIAL_MARGIN
     ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    mapping(uint64 => ConfigValue) storage v2d = values2D[id];
+    mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
     v2d[0].isSet = true;
     v2d[0].val = _uintToConfig(2 * ONE_PERCENT);
     Rule[] storage rules = settings[id].rules;
@@ -335,10 +335,10 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[0].isSet = true;
     v2d[0].val = _uintToConfig(50 * ONE_CENTIBEEP);
-    v2d[uint64(Currency.BTC)].isSet = true;
-    v2d[uint64(Currency.BTC)].val = _uintToConfig(50 * ONE_CENTIBEEP);
-    v2d[uint64(Currency.ETH)].isSet = true;
-    v2d[uint64(Currency.ETH)].val = _uintToConfig(4 * ONE_CENTIBEEP);
+    v2d[bytes32(uint256(Currency.BTC))].isSet = true;
+    v2d[bytes32(uint256(Currency.BTC))].val = _uintToConfig(50 * ONE_CENTIBEEP);
+    v2d[bytes32(uint256(Currency.ETH))].isSet = true;
+    v2d[bytes32(uint256(Currency.ETH))].val = _uintToConfig(4 * ONE_CENTIBEEP);
 
     // SM_OPTIONS_INITIAL_MARGIN_HIGH
     id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_HIGH;
