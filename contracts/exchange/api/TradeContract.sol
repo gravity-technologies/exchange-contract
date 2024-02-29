@@ -15,8 +15,6 @@ import "../util/Asset.sol";
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
-  uint constant priceDecimal = 9;
-
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
     _setSequence(timestamp, txID);
 
@@ -128,8 +126,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       totalFee += uint64(feePerLegs[i]);
     }
     BI[] memory tradeNotionals = new BI[](legsLen);
+    uint64 totalNotional;
     if (isMakerOrder) {
-      uint64 totalNotional;
       if (isWholeOrder) {
         totalNotional = order.limitPrice;
         // For whole orders, use the first entry of tradeNotionals to store the notional of the whole order. The rest of the entries are zero value, which will not affect calculation
@@ -153,6 +151,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       // This comparison is currently out of whack now. Should be fixed once we know the correct decimal places
       require(totalFee <= order.makerFeePercentageCap * totalNotional);
       state.transientTakerNotionals += totalNotional;
+    }
+
+    if (isMakerOrder) {
+      require(totalFee <= order.makerFeePercentageCap * totalNotional);
     } else {
       require(totalFee <= state.transientTakerNotionals * order.takerFeePercentageCap, ERR_FEE_CAP_EXCEEDED);
     }
@@ -173,11 +175,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64 totalFee
   ) internal {
     _fundAndSettle(timestamp, sub);
-
-    // Get fee sub account
-    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    require(ok, ERR_MISISNG_FEE_SUB_ACCOUNT);
-    SubAccount storage feeSubAccount = _requireSubAccount(feeSubID);
 
     Currency subQuote = sub.quoteCurrency;
     uint64 qDec = _getCurrencyDecimal(subQuote);
@@ -206,9 +203,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Step 4: Pay trading fees (if there's a fee account)
-    require(totalFee <= sub.spotBalances[subQuote], ERR_INSUFFICIENT_SPOT_BALANCE);
-    sub.spotBalances[subQuote] = spotBalance.sub(BI(int256(uint256(totalFee)), qDec)).toUint64(qDec);
-    feeSubAccount.spotBalances[subQuote] += uint64(totalFee);
+    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+    require(ok, ERR_MISSISNG_FEE_SUB_ACCOUNT);
+    if (ok) {
+      require(totalFee <= sub.spotBalances[subQuote], ERR_INSUFFICIENT_SPOT_BALANCE);
+      sub.spotBalances[subQuote] = spotBalance.sub(BI(int256(uint256(totalFee)), qDec)).toUint64(qDec);
+      _requireSubAccount(feeSubID).spotBalances[subQuote] += uint64(totalFee);
+    }
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {

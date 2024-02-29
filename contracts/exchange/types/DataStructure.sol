@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./Derivative.sol";
+import "./PositionMap.sol";
 import "../util/BIMath.sol";
 
 enum MarginType {
@@ -41,6 +41,8 @@ enum Currency {
   ETH,
   BTC
 }
+
+uint constant priceDecimal = 9;
 
 uint64 constant AccountPermAdmin = 1;
 uint64 constant AccountPermInternalTransfer = 1 << 1;

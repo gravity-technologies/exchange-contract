@@ -36,6 +36,7 @@ library BIMath {
   }
 
   function div(BI memory a, BI memory b) internal pure returns (BI memory) {
+    require(b.val != 0, ERR_DIV_BY_ZERO);
     BI memory c;
     c.val = ((a.val * int256(10) ** b.dec) / b.val);
     c.dec = b.dec;
