@@ -37,21 +37,19 @@ jobs:
         run: |
           yarn install
 
-      - name: Run Era Test Node
+      - name: Run Era Test Node Action
         uses: dutterbutter/era-test-node-action@latest
         with:
-          mode: "fork"
-          network: "mainnet"
-          forkAtHeight: "1855248"
-          showCalls: "user"
-          showStorageLogs: "read"
-          showVmDetails: "all"
-          showGasDetails: "all"
-          resolveHashes: "true"
-          log: "info"
-          logFilePath: "era_test_node.log"
-          target: "x86_64-unknown-linux-gnu"
-          releaseTag: "latest"
+          mode: 'run'
+          showCalls: 'user'
+          showStorageLogs: 'read'
+          showVmDetails: 'all'
+          showGasDetails: 'all'
+          resolveHashes: 'true'
+          log: 'info'
+          logFilePath: 'era_test_node.log'
+          target: 'x86_64-unknown-linux-gnu'
+          releaseTag: 'latest'
 
       - name: Run Hardhat tests
         run: |
