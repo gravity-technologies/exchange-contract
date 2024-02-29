@@ -173,22 +173,24 @@ export function GetRemoveSubAccountSigner(subAccountID: number, signer: string, 
 }
 
 // Config
-export function GetScheduleConfig(key: number, value: string, nonce: number) {
+export function GetScheduleConfig(key: number, subKey: string, value: string, nonce: number) {
   return {
     ...Type.ScheduleConfig,
     message: {
       key,
+      subKey,
       value,
       nonce,
     },
   }
 }
 
-export function GetSetConfig(key: number, value: string, nonce: number) {
+export function GetSetConfig(key: number, subKey: string, value: string, nonce: number) {
   return {
     ...Type.SetConfig,
     message: {
       key,
+      subKey,
       value,
       nonce,
     },

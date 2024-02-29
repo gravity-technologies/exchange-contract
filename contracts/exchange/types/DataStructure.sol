@@ -100,7 +100,7 @@ struct State {
   // This is mainly to support risk configs for different underlying currency
   // Eg: (PortfolioInitialMarginFactor, BTC) = 1.2
   //     (PortfolioInitialMarginFactor, DOGE) = 1.5
-  mapping(ConfigID => mapping(uint64 => ConfigValue)) config2DValues;
+  mapping(ConfigID => mapping(bytes32 => ConfigValue)) config2DValues;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -280,7 +280,7 @@ struct ConfigSetting {
   // the timelock rules for this config
   ConfigTimelockRule[] rules;
   // the schedules where we can change this config.
-  mapping(uint64 => ConfigSchedule) schedules;
+  mapping(bytes32 => ConfigSchedule) schedules;
 }
 
 // --------------- Trade --------------
