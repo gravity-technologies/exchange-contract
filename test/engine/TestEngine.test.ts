@@ -2,10 +2,10 @@ import { expect } from "chai"
 import { Contract, ethers } from "ethers"
 import { Wallet } from "zksync-ethers"
 import { network } from "hardhat"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import * as fs from "fs"
-import { getProvider } from "../deploy/utils"
-import { expectToThrowAsync, getDeployerWallet, wallet } from "./util"
+import { getProvider } from "../../deploy/utils"
+import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 
 // A Test is a sequence of test cases
 type Test = TestCase[]
@@ -54,11 +54,17 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
+function loadTestFilesFromDir(dir: string): string[] {
+  return fs.readdirSync(dir).map((file) => `${file}`)
+}
+
 // We skip these tests in CI since the era test node cannot run these tests
-describe.skip("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()
+  var files = loadTestFilesFromDir(process.cwd() + "/test/engine/testgen/")
+  console.log(files)
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
@@ -75,7 +81,7 @@ describe.skip("API - TestEngine", function () {
   })
 
   describe("add()", function () {
-    let tests = parseTestsFromFile(process.cwd() + "/test/tests/TestCreateAccount.json")
+    let tests = parseTestsFromFile(process.cwd() + "/test/engine/testgen/TestCreateAccount.json")
     tests.forEach((test) => {
       it(`correctly runs ` + test.name, async function () {
         await validateTest(test, contract, w1)
