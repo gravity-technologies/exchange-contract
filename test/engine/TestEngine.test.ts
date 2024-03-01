@@ -69,7 +69,6 @@ describe.only("API - TestEngine", function () {
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchange", [], { wallet: deployingWallet, silent: true, noVerify: true })
-    // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 
   beforeEach(async () => {
