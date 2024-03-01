@@ -64,7 +64,6 @@ describe.only("API - TestEngine", function () {
   let snapshotId: string
   var w1 = getDeployerWallet()
   var files = loadTestFilesFromDir(process.cwd() + "/test/engine/testgen/")
-  console.log(files)
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
