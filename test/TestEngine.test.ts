@@ -54,7 +54,8 @@ function parseTestsFromFile(filePath: string): TestCase[] {
   }
 }
 
-describe.only("API - TestEngine", function () {
+// We skip these tests in CI since the era test node cannot run these tests
+describe.skip("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()

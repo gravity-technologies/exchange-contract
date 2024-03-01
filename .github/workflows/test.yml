@@ -37,31 +37,25 @@ jobs:
         run: |
           yarn install
 
-      - name: Run Era Test Node Action
-        uses: dutterbutter/era-test-node-action@latest
-        with:
-          mode: 'run'
-          showCalls: 'user'
-          showStorageLogs: 'read'
-          showVmDetails: 'all'
-          showGasDetails: 'all'
-          resolveHashes: 'true'
-          log: 'info'
-          logFilePath: 'era_test_node.log'
-          target: 'x86_64-unknown-linux-gnu'
-          releaseTag: v0.1.0-alpha.15
+      # - name: Run Era Test Node Action
+      #   uses: dutterbutter/era-test-node-action@latest
+      #   with:
+      #     mode: 'run'
+      #     showCalls: 'user'
+      #     showStorageLogs: 'read'
+      #     showVmDetails: 'all'
+      #     showGasDetails: 'all'
+      #     resolveHashes: 'true'
+      #     log: 'info'
+      #     logFilePath: 'era_test_node.log'
+      #     target: 'x86_64-unknown-linux-gnu'
+      #     releaseTag: v0.1.0-alpha.15
 
       - name: Run Hardhat tests
         run: |
           yarn prettier:check
           yarn test:hardhat
         id: hardhat-test
-      
-      - name: Upload era_test_node log
-        uses: actions/upload-artifact@v3
-        with:
-          name: era_test_node-log
-          path: era_test_node.log
 
       - name: Run Forge tests
         run: |
