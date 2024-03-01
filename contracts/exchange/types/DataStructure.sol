@@ -117,7 +117,6 @@ struct Account {
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint64 multiSigThreshold;
   uint64 adminCount;
-  uint64 signerCount;
   mapping(Currency => uint128) spotBalances;
   // Guardians who are authorized to participate in key recovery quorum
   // Both retail and institutional accounts can rely on guardians for key recovery

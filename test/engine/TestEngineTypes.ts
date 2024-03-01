@@ -24,9 +24,17 @@ export interface TestStep {
   expectations: Expectation[]
 }
 
-export interface Expectation {
-  // Add should states here
+interface ExNumAccounts {
+  num_accounts: number
 }
+
+// Expects an account with the given address to be created, and have listed signers with the given permissions
+interface ExAccountSigners {
+  address: string
+  signers: { [address: string]: string }
+}
+
+type Expectation = ExNumAccounts | ExAccountSigners
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
   try {

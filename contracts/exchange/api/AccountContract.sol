@@ -27,7 +27,6 @@ contract AccountContract is BaseContract {
     acc.id = accountID;
     acc.multiSigThreshold = 1;
     acc.adminCount = 1;
-    acc.signerCount = 1;
     acc.signers[sig.signer] = AccountPermAdmin;
   }
 

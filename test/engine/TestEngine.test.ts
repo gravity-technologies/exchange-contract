@@ -5,12 +5,14 @@ import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/util
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
+import { expectAccountSigners, getAccount } from "./getters"
+import { expect } from "chai"
 
 const gasLimit = 2100000
 const testDir = "/test/engine/testgen/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe.skip("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
@@ -18,7 +20,7 @@ describe.skip("API - TestEngine", function () {
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
-    contract = await deployContract("GRVTExchange", [], { wallet: deployingWallet, silent: true, noVerify: true })
+    contract = await deployContract("GRVTExchangeTest", [], { wallet: deployingWallet, silent: true, noVerify: true })
   })
 
   beforeEach(async () => {
@@ -54,6 +56,15 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
+      console.log(step)
+      // for (let expectation of step.expectations) {
+      // console.log(expectation)
+      // if ("signers" in expectation) {
+      //   await expectAccountSigners(contract, expectation)
+      // }
+      // }
+
+      // await getAccount(contract, "0x84a0341467ab234c8c85feb55a6b86c9c09568a4")
     }
   }
   return
