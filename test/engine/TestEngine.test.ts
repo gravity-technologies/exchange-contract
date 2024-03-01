@@ -12,7 +12,7 @@ const gasLimit = 2100000
 const testDir = "/test/engine/testgen/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe.only("API - TestEngine", function () {
+describe.skip("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
@@ -62,8 +62,6 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
           await expectAccountSigners(contract, castedExp)
         }
       }
-
-      // await getAccount(contract, "0x84a0341467ab234c8c85feb55a6b86c9c09568a4")
     }
   }
   return
