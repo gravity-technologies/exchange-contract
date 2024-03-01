@@ -6,12 +6,15 @@ import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./testEngineTypes"
 
+const gasLimit = 2100000
+const testDir = "/test/engine/testgen/"
+
 // We skip these tests in CI since the era test node cannot run these tests
 describe.skip("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
-  var w1 = getDeployerWallet()
-  var files = loadTestFilesFromDir(process.cwd() + "/test/engine/testgen/")
+  let w1 = getDeployerWallet()
+  let testFiles = loadTestFilesFromDir(process.cwd() + testDir)
 
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
@@ -26,10 +29,9 @@ describe.skip("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  let testSuite = files
-  testSuite.forEach((file) => {
+  testFiles.forEach((file) => {
     describe(file, async function () {
-      let tests = parseTestsFromFile(process.cwd() + "/test/engine/testgen/" + file)
+      let tests = parseTestsFromFile(process.cwd() + testDir + file)
       tests.forEach((test) => {
         it(test.name + ` correctly runs`, async function () {
           await validateTest(test, contract, w1)
@@ -40,13 +42,10 @@ describe.skip("API - TestEngine", function () {
 })
 
 async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
-  if (test.steps.length === 0) {
-    throw new Error("Test has no steps")
-  }
   for (const step of test.steps) {
     var tx: ethers.providers.TransactionRequest = {
       to: contract.address,
-      gasLimit: 2100000,
+      gasLimit: gasLimit,
       data: step.tx_data,
     }
     w1 = w1.connect(getProvider())

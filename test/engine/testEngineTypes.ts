@@ -1,4 +1,4 @@
-import * as fs from "fs"
+import * as Fs from "fs"
 
 // A Test is a sequence of test cases
 export type Test = TestCase[]
@@ -31,7 +31,7 @@ export interface Expectation {
 export function parseTestsFromFile(filePath: string): TestCase[] {
   try {
     // Read the JSON file
-    const data = fs.readFileSync(filePath, "utf8")
+    const data = Fs.readFileSync(filePath, "utf8")
 
     // Parse the JSON data into an array of Test objects
     try {
@@ -48,5 +48,5 @@ export function parseTestsFromFile(filePath: string): TestCase[] {
 }
 
 export function loadTestFilesFromDir(dir: string): string[] {
-  return fs.readdirSync(dir).map((file) => `${file}`)
+  return Fs.readdirSync(dir).map((file) => `${file}`)
 }
