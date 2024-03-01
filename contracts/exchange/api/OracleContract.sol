@@ -32,9 +32,11 @@ contract OracleContract is BaseContract {
 
   function fundingPriceTick(int64 timestamp, uint64 txID, int64 fundingTime, PriceEntry[] calldata prices) external {
     _setSequence(timestamp, txID);
-    mapping(Currency => uint64) storage fundings = state.prices.fundingIndex;
+
+    // FIXME
+    mapping(Currency => int64) storage fundings = state.prices.fundingIndex;
     uint len = prices.length;
-    for (uint i; i < len; ++i) fundings[assetGetUnderlying(prices[i].assetID)] = prices[i].price;
+    for (uint i; i < len; ++i) fundings[assetGetUnderlying(prices[i].assetID)] = int64(prices[i].price);
     state.prices.fundingTime = fundingTime;
   }
 

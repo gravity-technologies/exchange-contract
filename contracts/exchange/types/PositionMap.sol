@@ -20,24 +20,26 @@ struct PositionsMap {
   uint256[49] __gap;
 }
 
-function set(PositionsMap storage map, bytes32 key, Position storage pos) {
-  if (map.values[key].id != 0) {
-    map.values[key] = pos;
-    map.index[key] = map.keys.length;
-    map.keys.push(key);
-  } else map.values[key] = pos;
+function getOrNew(PositionsMap storage map, bytes32 assetID) returns (Position storage) {
+  // If the position does not exists, set the id to the assetID to mark it's existence
+  if (map.values[assetID].id == 0) {
+    map.values[assetID].id = assetID;
+    map.index[assetID] = map.keys.length;
+    map.keys.push(assetID);
+  }
+  return map.values[assetID];
 }
 
-function remove(PositionsMap storage map, bytes32 key) {
-  if (map.values[key].id == 0) return;
+function remove(PositionsMap storage map, bytes32 assetID) {
+  if (map.values[assetID].id == 0) return;
 
-  delete map.values[key];
+  delete map.values[assetID];
 
-  uint index = map.index[key];
+  uint index = map.index[assetID];
   bytes32 lastKey = map.keys[map.keys.length - 1];
 
   map.index[lastKey] = index;
-  delete map.index[key];
+  delete map.index[assetID];
 
   map.keys[index] = lastKey;
   map.keys.pop();

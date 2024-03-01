@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./Derivative.sol";
+import "./PositionMap.sol";
+import "../util/BIMath.sol";
 
 enum MarginType {
   UNSPECIFIED,
@@ -34,11 +35,14 @@ enum Kind {
 
 enum Currency {
   UNSPECIFIED,
+  USD,
   USDC,
   USDT,
   ETH,
   BTC
 }
+
+uint constant priceDecimal = 9;
 
 uint64 constant AccountPermAdmin = 1;
 uint64 constant AccountPermInternalTransfer = 1 << 1;
@@ -85,10 +89,6 @@ struct State {
   ReplayState replay;
   // Oracle prices: Spot, Interest Rate, Volatility
   PriceState prices;
-  // Latest Transaction time
-  int64 timestamp;
-  // Latest Transaction ID
-  uint64 lastTxID;
   // Store the type, timelock rules and update schedules for each config
   mapping(ConfigID => ConfigSetting) configSettings;
   // Store the current value of all 1 dimensional config. 1D config is a simple key -> value mapping that doesn't
@@ -101,6 +101,10 @@ struct State {
   // Eg: (PortfolioInitialMarginFactor, BTC) = 1.2
   //     (PortfolioInitialMarginFactor, DOGE) = 1.5
   mapping(ConfigID => mapping(bytes32 => ConfigValue)) config2DValues;
+  // Latest Transaction time
+  int64 timestamp;
+  // Latest Transaction ID
+  uint64 lastTxID;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -203,7 +207,7 @@ struct PriceState {
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 9 decimal points
   // TODO: this uint128 represents the derivative
-  mapping(Currency => uint64) fundingIndex;
+  mapping(Currency => int64) fundingIndex;
   int64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
@@ -214,7 +218,7 @@ struct PriceState {
 
 struct Session {
   // The address of the user that create this session
-  address user;
+  address subAccountSigner;
   // The last timestamp in nanoseconds that the signer can sign at
   // We can apply a max one day expiry on session keys
   int64 expiry;
@@ -286,8 +290,8 @@ struct ConfigSetting {
 // --------------- Trade --------------
 struct Trade {
   Order takerOrder;
-  OrderMatch[] makerOrders;
-  AssetTradeContext[] tradeContext;
+  MakerTradeMatch[] makerOrders;
+  int64[] feeCharged;
 }
 
 struct AssetTradeContext {
@@ -314,11 +318,6 @@ struct Order {
   // Exchange only supports (GTT, IOC, FOK)
   // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
   TimeInForce timeInForce;
-  // ONLY APPLICABLE WHEN TimeInForce = AON / FOK AND IsMarket = FALSE
-  // The limit price of the full order, expressed in USD Price.
-  // This is the total amount of base currency to pay/receive for all legs.
-  uint64 limitPrice;
-  uint64 ocoLimitPrice;
   // The taker fee percentage cap signed by the order.
   // This is the maximum taker fee percentage the order sender is willing to pay for the order.
   uint32 takerFeePercentageCap;
@@ -337,9 +336,6 @@ struct Order {
   // If True, Order must reduce the position size, or be cancelled
   bool reduceOnly;
   /// @dev No logic in contract related to this field
-  bool isPayingBaseCurrency;
-  // The legs present in this order
-  // The legs must be sorted by Derivative: Instrument/Underlying/BaseCurrency/Expiration/StrikePrice
   OrderLeg[] legs;
   uint32 nonce;
   Signature signature;
@@ -362,9 +358,8 @@ struct OrderLeg {
   bool isBuyingAsset;
 }
 
-struct OrderMatch {
+struct MakerTradeMatch {
   Order makerOrder;
   uint64[] matchedSize;
-  uint32 takerFeePercentageCharged;
-  uint32 makerFeePercentageCharged;
+  int64[] feeCharged;
 }
