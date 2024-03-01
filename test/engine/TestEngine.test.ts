@@ -59,7 +59,7 @@ function loadTestFilesFromDir(dir: string): string[] {
 }
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe.only("API - TestEngine", function () {
+describe.skip("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   var w1 = getDeployerWallet()
