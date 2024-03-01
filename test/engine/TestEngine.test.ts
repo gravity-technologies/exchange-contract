@@ -1,62 +1,10 @@
-import { expect } from "chai"
 import { Contract, ethers } from "ethers"
 import { Wallet } from "zksync-ethers"
 import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
-import * as fs from "fs"
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
-
-// A Test is a sequence of test cases
-type Test = TestCase[]
-
-interface TestCase {
-  // Name of the test case
-  name: string
-  // A test case is a sequence of test steps
-  steps: TestStep[]
-}
-
-// A test step is a transaction to be executed and the expected result
-interface TestStep {
-  // The time at which the transaction is executed (if left blank, its value is the same as the previous test step)
-
-  // The function abi encoded transaction to be executed
-  tx_data: string
-
-  // The expected result of running the transaction
-  ret: string
-
-  // List of expectations to be executed after the transaction is executed
-  expectations: Expectation[]
-}
-
-interface Expectation {
-  // Add should states here
-}
-
-function parseTestsFromFile(filePath: string): TestCase[] {
-  try {
-    // Read the JSON file
-    const data = fs.readFileSync(filePath, "utf8")
-
-    // Parse the JSON data into an array of Test objects
-    try {
-      const tests = JSON.parse(data) as TestCase[]
-      return tests
-    } catch (error) {
-      console.error("Failed to parse JSON:", error)
-      return []
-    }
-  } catch (err) {
-    console.log(`Error reading file from disk: ${err}`)
-    return []
-  }
-}
-
-function loadTestFilesFromDir(dir: string): string[] {
-  return fs.readdirSync(dir).map((file) => `${file}`)
-}
+import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./testEngineTypes"
 
 // We skip these tests in CI since the era test node cannot run these tests
 describe.skip("API - TestEngine", function () {
