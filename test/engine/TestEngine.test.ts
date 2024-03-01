@@ -80,12 +80,12 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  describe("add()", function () {
-    let testSuites = files
-    testSuites.forEach((file) => {
+  let testSuite = files
+  testSuite.forEach((file) => {
+    describe(file, async function () {
       let tests = parseTestsFromFile(process.cwd() + "/test/engine/testgen/" + file)
       tests.forEach((test) => {
-        it(file + ` :correctly runs ` + test.name, async function () {
+        it(test.name + ` correctly runs`, async function () {
           await validateTest(test, contract, w1)
         })
       })
