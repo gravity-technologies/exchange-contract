@@ -24,12 +24,12 @@ export interface TestStep {
   expectations: Expectation[]
 }
 
-interface ExNumAccounts {
+export interface ExNumAccounts {
   num_accounts: number
 }
 
 // Expects an account with the given address to be created, and have listed signers with the given permissions
-interface ExAccountSigners {
+export interface ExAccountSigners {
   address: string
   signers: { [address: string]: string }
 }

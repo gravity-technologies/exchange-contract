@@ -4,7 +4,7 @@ import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
-import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
+import { ExAccountSigners, TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 import { expectAccountSigners, getAccount } from "./getters"
 import { expect } from "chai"
 
@@ -56,13 +56,12 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
-      console.log(step)
-      // for (let expectation of step.expectations) {
-      // console.log(expectation)
-      // if ("signers" in expectation) {
-      //   await expectAccountSigners(contract, expectation)
-      // }
-      // }
+      for (let expectation of step.expectations) {
+        let castedExp = expectation as ExAccountSigners
+        if (castedExp.address != undefined) {
+          await expectAccountSigners(contract, castedExp)
+        }
+      }
 
       // await getAccount(contract, "0x84a0341467ab234c8c85feb55a6b86c9c09568a4")
     }
