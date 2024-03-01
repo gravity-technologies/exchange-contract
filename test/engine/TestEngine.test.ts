@@ -4,7 +4,7 @@ import { network } from "hardhat"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
-import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./testEngineTypes"
+import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 
 const gasLimit = 2100000
 const testDir = "/test/engine/testgen/"
