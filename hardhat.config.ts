@@ -12,7 +12,7 @@ import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 const config: HardhatUserConfig = {
-  defaultNetwork: "inMemoryNode",
+  defaultNetwork: "grvtTestnet",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",

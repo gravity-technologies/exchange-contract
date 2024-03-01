@@ -18,75 +18,120 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
     _setSequence(timestamp, txID);
 
-    // Verify and execute the maker matches
-    MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
-    uint matchesLen = makerMatches.length;
-    for (uint i; i < matchesLen; ++i) {
-      MakerTradeMatch calldata makerMatch = makerMatches[i];
-      Order calldata makerOrder = makerMatch.makerOrder;
-      _verifyAndExecuteOrder(timestamp, makerOrder, makerMatch.matchedSize, true, makerMatch.feeCharged);
-    }
-
-    // Verify and execute the taker matches
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
-    uint legsLen = takerOrder.legs.length;
-    uint64[] memory takerMatchedSizes = new uint64[](legsLen);
-    for (uint i; i < legsLen; ++i) {
-      takerMatchedSizes[i] = state.transientTakerMatchedSizes[takerLegs[i].assetID];
+    uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
+    BI memory takerNotionals;
+    int64 takerSpotDelta;
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Maker order verification and execution
+    ///
+    /// We aggregate the notional values and matched sizes for taker in this
+    /// loop here since we need the before we can verify / execute the taker order
+    ///////////////////////////////////////////////////////////////////////////
+    MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
+    uint matchesLen = makerMatches.length;
+    uint64 totalMakersFee;
+    for (uint i; i < matchesLen; ++i) {
+      MakerTradeMatch calldata makerMatch = makerMatches[i];
+
+      // Compute maker notionals
+      int64 makerSpotDelta;
+      BI memory makerNotionals;
+      uint64[] calldata matchSizes = makerMatch.matchedSize;
+      Order calldata makerOrder = makerMatch.makerOrder;
+      uint makerLegsLen = makerOrder.legs.length;
+      for (uint legIdx; legIdx < makerLegsLen; ++legIdx) {
+        uint64 size = matchSizes[legIdx];
+        if (size == 0) {
+          continue;
+        }
+
+        OrderLeg calldata leg = makerOrder.legs[legIdx];
+        BI memory matchedSize = BI(int256(uint256(size)), _getCurrencyDecimal(assetGetUnderlying(leg.assetID)));
+        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), priceDecimal));
+        uint64 notionalU64 = notional.toUint64(priceDecimal);
+
+        // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
+        if (leg.isBuyingAsset) {
+          makerSpotDelta -= int64(notionalU64);
+          takerSpotDelta += int64(notionalU64);
+        } else {
+          makerSpotDelta += int64(notionalU64);
+          takerSpotDelta -= int64(notionalU64);
+        }
+        makerNotionals = makerNotionals.add(notional);
+        takerMatchedSizes[_findLegIndex(takerLegs, leg.assetID)] += size;
+      }
+
+      // Aggregate taker notional accross all makers
+      takerNotionals = takerNotionals.add(makerNotionals);
+      uint64 makerFee = _getTotalFee(makerMatch.feeCharged);
+      totalMakersFee += makerFee;
+      uint makerDecimals = _getCurrencyDecimal(_requireSubAccount(makerOrder.subAccountID).quoteCurrency);
+
+      _verifyAndExecuteOrder(
+        timestamp,
+        makerMatch.makerOrder,
+        makerMatch.matchedSize,
+        true,
+        makerSpotDelta,
+        makerNotionals,
+        makerFee
+      );
     }
-    _verifyAndExecuteOrder(timestamp, takerOrder, takerMatchedSizes, false, trade.feeCharged);
 
-    // Clean up transient data
-    delete state.transientTakerNotionals;
-    for (uint i; i < legsLen; ++i) {
-      delete state.transientTakerMatchedSizes[takerLegs[i].assetID];
+    ///////////////////////////////////////////////////////////////////
+    /// Taker order verification and execution
+    ///////////////////////////////////////////////////////////////////
+    uint64 takerFee = _getTotalFee(trade.feeCharged);
+    _verifyAndExecuteOrder(timestamp, takerOrder, takerMatchedSizes, false, takerSpotDelta, takerNotionals, takerFee);
+
+    // Deposit the trading fees, only once
+    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+    if (ok) {
+      Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
+      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
     }
-  }
-
-  function removePos(SubAccount storage sub, bytes32 assetID) internal {
-    Kind kind = assetGetKind(assetID);
-    if (kind == Kind.PERPS) {
-      remove(sub.perps, assetID);
-    } else if (kind == Kind.FUTURES) {
-      remove(sub.futures, assetID);
-    } else if (kind == Kind.CALL || kind == Kind.PUT) {
-      remove(sub.options, assetID);
-    }
-  }
-
-  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
-    uint idx = uint(currency);
-
-    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
-
-    // USDT, USDC, USD
-    if (idx < 4) return 6;
-
-    // ETH, BTC
-    return 9;
   }
 
   function _verifyAndExecuteOrder(
     int64 timestamp,
     Order calldata order,
-    uint64[] memory tradeSizes,
+    uint64[] memory matchSizes,
     bool isMakerOrder,
-    int64[] calldata feePerLegs
+    int64 spotDelta,
+    BI memory notional,
+    uint64 totalFee
+  ) internal {
+    SubAccount storage sub = _requireSubAccount(order.subAccountID);
+
+    _verifyOrderFull(timestamp, sub, order, matchSizes, isMakerOrder, notional, totalFee);
+
+    // Execute the order, ensuring sufficient balance pre and post trade
+    _requireValidSubAccountUsdValue(sub);
+    _executeOrder(timestamp, sub, order, matchSizes, spotDelta - int64(totalFee));
+    _requireValidSubAccountUsdValue(sub);
+  }
+
+  function _verifyOrderFull(
+    int64 timestamp,
+    SubAccount storage sub,
+    Order calldata order,
+    uint64[] memory matchSizes,
+    bool isMakerOrder,
+    BI memory notional,
+    uint64 totalFee
   ) internal {
     // Arrange from cheapest to most expensive verification
 
-    // Check that the sub account exists
-    SubAccount storage sub = _requireSubAccount(order.subAccountID);
-
-    // Check that the order is valid
-    _verifyOrder(sub, order, isMakerOrder);
-
     // Check that quote asset is the same as subaccount quote asset
     Currency subQuote = sub.quoteCurrency;
-    uint legsLen = order.legs.length;
+    OrderLeg[] calldata legs = order.legs;
+    uint legsLen = legs.length;
     for (uint i; i < legsLen; ++i) {
-      require(assetGetQuote(order.legs[i].assetID) == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
+      require(assetGetQuote(legs[i].assetID) == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
     }
 
     // Check that the signer has trade permission
@@ -96,94 +141,43 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(session.expiry >= timestamp, ERR_SESSION_EXPIRED);
       subAccountSigner = session.subAccountSigner;
     }
-    Account storage acc = _requireAccount(sub.accountID);
     _requirePermission(sub, subAccountSigner, SubAccountPermTrade);
 
-    // Verify the order signature
+    // Check the order signature
     bytes32 orderHash = hashOrder(order);
     _requireValidSig(timestamp, orderHash, order.signature);
 
     // Check that the order's total matched size after this trade does not exceed the order size
     mapping(bytes32 => uint64) storage sizeMatched = state.replay.sizeMatched[orderHash];
-    TimeInForce tif = order.timeInForce;
-    bool isWholeOrder = tif == TimeInForce.ALL_OR_NONE || tif == TimeInForce.FILL_OR_KILL;
+    bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
     for (uint i; i < legsLen; ++i) {
-      OrderLeg calldata leg = order.legs[i];
-      uint64 total = sizeMatched[leg.assetID] + tradeSizes[i];
-
-      if (isWholeOrder) {
-        require(total == leg.size, ERR_INVALID_MATCHED_SIZE);
-      } else {
-        require(total <= leg.size, ERR_INVALID_MATCHED_SIZE);
-      }
+      OrderLeg calldata leg = legs[i];
+      uint64 total = sizeMatched[leg.assetID] + matchSizes[i];
+      require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
       sizeMatched[leg.assetID] = total;
     }
 
-    // Check the fee charged percentage for this order is not greater than the signed fee percentage cap
-    // check if total Fee <= order.makerFeePercentageCap * notional
-    uint64 totalFee;
-    for (uint i; i < legsLen; ++i) {
-      totalFee += uint64(feePerLegs[i]);
-    }
-    BI[] memory tradeNotionals = new BI[](legsLen);
-    uint64 totalNotional;
-    if (isMakerOrder) {
-      if (isWholeOrder) {
-        totalNotional = order.limitPrice;
-        // For whole orders, use the first entry of tradeNotionals to store the notional of the whole order. The rest of the entries are zero value, which will not affect calculation
-        tradeNotionals[0] = BI(int256(uint256(order.limitPrice)), priceDecimal);
-      } else {
-        for (uint i; i < legsLen; ++i) {
-          OrderLeg calldata leg = order.legs[i];
-          BI memory tradeSize = BI(
-            int256(uint256(tradeSizes[i])),
-            _getCurrencyDecimal(assetGetUnderlying(leg.assetID))
-          );
-          BI memory limitPrice = BI(int256(uint256(leg.limitPrice)), priceDecimal);
-          BI memory notional = tradeSize.mul(limitPrice);
-          uint64 notionalU64 = notional.toUint64(priceDecimal);
-          totalNotional += notionalU64;
-          state.transientTakerMatchedSizes[leg.assetID] += tradeSizes[i];
-          tradeNotionals[i] = notional;
-        }
-      }
-      // FIXME what is the decimal places of fee cap
-      // This comparison is currently out of whack now. Should be fixed once we know the correct decimal places
-      require(totalFee <= order.makerFeePercentageCap * totalNotional);
-      state.transientTakerNotionals += totalNotional;
-    }
-
-    if (isMakerOrder) {
-      require(totalFee <= order.makerFeePercentageCap * totalNotional);
-    } else {
-      require(totalFee <= state.transientTakerNotionals * order.takerFeePercentageCap, ERR_FEE_CAP_EXCEEDED);
-    }
-
-    _requireValidSubAccountUsdValue(sub);
-
-    executeOrder(timestamp, sub, order, tradeSizes, tradeNotionals, totalFee);
-
-    _requireValidSubAccountUsdValue(sub);
+    // Check that the fee paid is within the cap
+    uint32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    require(totalFee <= feeCap * notional.toUint64(_getCurrencyDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
   }
 
-  function executeOrder(
+  function _executeOrder(
     int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
-    uint64[] memory tradeSizes,
-    BI[] memory tradeNotionals,
-    uint64 totalFee
+    uint64[] memory matchSizes,
+    int64 spotDelta
   ) internal {
     _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
     uint64 qDec = _getCurrencyDecimal(subQuote);
-    BI memory spotBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qDec);
 
     uint legsLen = order.legs.length;
-    for (uint legIdx; legIdx < legsLen; ++legIdx) {
-      if (tradeSizes[legIdx] == 0) continue;
-      OrderLeg calldata leg = order.legs[legIdx];
+    for (uint i; i < legsLen; ++i) {
+      if (matchSizes[i] == 0) continue;
+      OrderLeg calldata leg = order.legs[i];
 
       // Step 1: Retrieve position
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
@@ -191,25 +185,19 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       // Step 2: Update subaccount balances
       int64 oldBal = pos.balance;
       if (leg.isBuyingAsset) {
-        spotBalance = spotBalance.sub(tradeNotionals[legIdx]);
-        pos.balance += int64(tradeSizes[legIdx]);
+        pos.balance += int64(matchSizes[i]);
       } else {
-        spotBalance = spotBalance.add(tradeNotionals[legIdx]);
-        pos.balance -= int64(tradeSizes[legIdx]);
+        pos.balance -= int64(matchSizes[i]);
       }
 
       // Step 3: Remove position if empty
       if (pos.balance == 0) removePos(sub, leg.assetID);
     }
 
-    // Step 4: Pay trading fees (if there's a fee account)
-    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    require(ok, ERR_MISSISNG_FEE_SUB_ACCOUNT);
-    if (ok) {
-      require(totalFee <= sub.spotBalances[subQuote], ERR_INSUFFICIENT_SPOT_BALANCE);
-      sub.spotBalances[subQuote] = spotBalance.sub(BI(int256(uint256(totalFee)), qDec)).toUint64(qDec);
-      _requireSubAccount(feeSubID).spotBalances[subQuote] += uint64(totalFee);
-    }
+    // FIXME: Step 4: Update subaccount spot balance, deducting fees
+    int64 newSpotBalance = int64(sub.spotBalances[subQuote]) + spotDelta;
+    require(newSpotBalance >= 0, ERR_INSUFFICIENT_SPOT_BALANCE);
+    sub.spotBalances[subQuote] = uint64(newSpotBalance);
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
@@ -237,5 +225,41 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     return pos;
+  }
+
+  function removePos(SubAccount storage sub, bytes32 assetID) internal {
+    Kind kind = assetGetKind(assetID);
+    if (kind == Kind.PERPS) {
+      remove(sub.perps, assetID);
+    } else if (kind == Kind.FUTURES) {
+      remove(sub.futures, assetID);
+    } else if (kind == Kind.CALL || kind == Kind.PUT) {
+      remove(sub.options, assetID);
+    }
+  }
+
+  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
+    uint idx = uint(currency);
+
+    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
+
+    // USDT, USDC, USD
+    if (idx < 4) return 6;
+
+    // ETH, BTC
+    return 9;
+  }
+
+  function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {
+    uint64 totalFee;
+    uint len = feePerLegs.length;
+    for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
+    return totalFee;
+  }
+
+  function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
+    uint len = legs.length;
+    for (uint i; i < len; ++i) if (legs[i].assetID == assetID) return i;
+    revert(ERR_NOT_FOUND);
   }
 }

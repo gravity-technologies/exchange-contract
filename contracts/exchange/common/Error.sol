@@ -11,3 +11,4 @@ string constant ERR_OVERFLOW = "OF";
 string constant ERR_DIV_BY_ZERO = "DIVZ";
 string constant ERR_UNSAFE_CAST = "USC";
 string constant ERR_INSUFFICIENT_SPOT_BALANCE = "ISB";
+string constant ERR_NOT_FOUND = "404";

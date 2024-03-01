@@ -23,13 +23,10 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
         o.subAccountID,
         o.isMarket,
         o.timeInForce,
-        o.limitPrice,
-        o.ocoLimitPrice,
         o.takerFeePercentageCap,
         o.makerFeePercentageCap,
         o.postOnly,
         o.reduceOnly,
-        o.isPayingBaseCurrency,
         keccak256(legsEncoded),
         o.nonce
       )

@@ -105,12 +105,6 @@ struct State {
   int64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
-  // Used as a temporary storage to compute the current taker notionals (as an aggregate of the maker matched orders).
-  // This  will be cleared after each trade and will not incur storage cost on L1 due to state diff.
-  uint64 transientTakerNotionals;
-  // Used as a temporary storage to compute the current taker trade sizes per leg (as an aggregate of the maker matched orders).
-  // This mapping will be cleared after each trade and will not incur storage cost on L1 due to state diff.
-  mapping(bytes32 => uint64) transientTakerMatchedSizes;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -324,11 +318,6 @@ struct Order {
   // Exchange only supports (GTT, IOC, FOK)
   // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
   TimeInForce timeInForce;
-  // ONLY APPLICABLE WHEN TimeInForce = AON / FOK AND IsMarket = FALSE
-  // The limit price of the full order, expressed in USD Price.
-  // This is the total amount of base currency to pay/receive for all legs.
-  uint64 limitPrice;
-  uint64 ocoLimitPrice;
   // The taker fee percentage cap signed by the order.
   // This is the maximum taker fee percentage the order sender is willing to pay for the order.
   uint32 takerFeePercentageCap;
@@ -347,9 +336,6 @@ struct Order {
   // If True, Order must reduce the position size, or be cancelled
   bool reduceOnly;
   /// @dev No logic in contract related to this field
-  bool isPayingBaseCurrency;
-  // The legs present in this order
-  // The legs must be sorted by Derivative: Instrument/Underlying/BaseCurrency/Expiration/StrikePrice
   OrderLeg[] legs;
   uint32 nonce;
   Signature signature;
