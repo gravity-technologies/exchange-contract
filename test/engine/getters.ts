@@ -1,10 +1,12 @@
 import { Contract } from "ethers"
 import { ExAccountSigners } from "./TestEngineTypes"
+import { expect } from "chai"
 
-export function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
+export async function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
   for (var signer in expectations.signers) {
-    const permission = expectations.signers[signer]
-    let perm = contract.getSignerPermission(expectations.address, signer)
+    let expectedPermission = expectations.signers[signer]
+    let actualPermission = await contract.getSignerPermission(expectations.address, signer)
+    expect(2 ** actualPermission).to.equal(parseInt(expectedPermission, 10))
   }
 }
 
