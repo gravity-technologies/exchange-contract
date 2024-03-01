@@ -81,10 +81,13 @@ describe.only("API - TestEngine", function () {
   })
 
   describe("add()", function () {
-    let tests = parseTestsFromFile(process.cwd() + "/test/engine/testgen/TestCreateAccount.json")
-    tests.forEach((test) => {
-      it(`correctly runs ` + test.name, async function () {
-        await validateTest(test, contract, w1)
+    let testSuites = files
+    testSuites.forEach((file) => {
+      let tests = parseTestsFromFile(process.cwd() + "/test/engine/testgen/" + file)
+      tests.forEach((test) => {
+        it(file + ` :correctly runs ` + test.name, async function () {
+          await validateTest(test, contract, w1)
+        })
       })
     })
   })
