@@ -5,7 +5,7 @@ import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/util
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { ExAccountSigners, TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
-import { expectAccountSigners, getAccount } from "./getters"
+import { expectAccountSigners, getAccount } from "./Getters"
 import { expect } from "chai"
 
 const gasLimit = 2100000
