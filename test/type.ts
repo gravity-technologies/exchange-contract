@@ -89,13 +89,10 @@ export interface OrderNoSignature {
   subAccountID: string // The subaccount initiating the order
   isMarket: boolean // If the order is a market order
   timeInForce: TimeInForce // Four supported types of orders
-  limitPrice: number // ONLY APPLICABLE WHEN TimeInForce = AON / FOK AND IsMarket = FALSE
-  ocoLimitPrice: number
   takerFeePercentageCap: number // The taker fee percentage cap signed by the order
   makerFeePercentageCap: number // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
   postOnly: boolean // If True, Order must be a maker order
   reduceOnly: boolean // If True, Order must reduce the position size, or be cancelled
-  isPayingBaseCurrency: boolean
   legs: OrderLeg[] // The legs present in this order
   nonce: number
 }
