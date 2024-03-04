@@ -29,23 +29,23 @@ export enum AccountRecoveryType {
 
 export const AccPerm = {
   None: 0,
-  Admin: 1,
-  InternalTransfer: 1 << 1,
-  ExternalTransfer: 1 << 2,
-  Withdrawal: 1 << 3,
+  Admin: 1 << 1,
+  InternalTransfer: 1 << 2,
+  ExternalTransfer: 1 << 3,
+  Withdrawal: 1 << 4,
 }
 
 export const SubPerm = {
   None: 0,
-  Admin: 1,
-  Deposit: 1 << 1,
-  Withdrawal: 1 << 2,
-  Transfer: 1 << 3,
-  Trade: 1 << 4,
-  AddSigner: 1 << 5,
-  RemoveSigner: 1 << 6,
-  UpdateSignerPermission: 1 << 7,
-  ChangeMarginType: 1 << 8,
+  Admin: 1 << 1,
+  Deposit: 1 << 2,
+  Withdrawal: 1 << 3,
+  Transfer: 1 << 4,
+  Trade: 1 << 5,
+  AddSigner: 1 << 6,
+  RemoveSigner: 1 << 7,
+  UpdateSignerPermission: 1 << 8,
+  ChangeMarginType: 1 << 9,
 }
 
 export const ConfigID = {

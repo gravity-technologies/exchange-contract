@@ -6,7 +6,6 @@ import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { ExAccountSigners, TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 import { expectAccountSigners } from "./Getters"
-import { expect } from "chai"
 
 const gasLimit = 2100000
 const testDir = "/test/engine/testgen/"

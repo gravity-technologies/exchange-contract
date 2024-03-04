@@ -40,24 +40,24 @@ enum Currency {
   BTC
 }
 
-uint64 constant AccountPermAdmin = 1;
-uint64 constant AccountPermInternalTransfer = 1 << 1;
-uint64 constant AccountPermExternalTransfer = 1 << 2;
-uint64 constant AccountPermWithdraw = 1 << 3;
+uint64 constant AccountPermAdmin = 1 << 1;
+uint64 constant AccountPermInternalTransfer = 1 << 2;
+uint64 constant AccountPermExternalTransfer = 1 << 3;
+uint64 constant AccountPermWithdraw = 1 << 4;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
 // To check if user has a certain permission, just do a bitwise AND
 // ie: permission & mask > 0
-uint64 constant SubAccountPermAdmin = 1;
-uint64 constant SubAccountPermDeposit = 1 << 1;
-uint64 constant SubAccountPermWithdrawal = 1 << 2;
-uint64 constant SubAccountPermTransfer = 1 << 3;
-uint64 constant SubAccountPermTrade = 1 << 4;
-uint64 constant SubAccountPermAddSigner = 1 << 5;
-uint64 constant SubAccountPermRemoveSigner = 1 << 6;
-uint64 constant SubAccountPermUpdateSignerPermission = 1 << 7;
-uint64 constant SubAccountPermChangeMarginType = 1 << 8;
+uint64 constant SubAccountPermAdmin = 1 << 1;
+uint64 constant SubAccountPermDeposit = 1 << 2;
+uint64 constant SubAccountPermWithdrawal = 1 << 3;
+uint64 constant SubAccountPermTransfer = 1 << 4;
+uint64 constant SubAccountPermTrade = 1 << 5;
+uint64 constant SubAccountPermAddSigner = 1 << 6;
+uint64 constant SubAccountPermRemoveSigner = 1 << 7;
+uint64 constant SubAccountPermUpdateSignerPermission = 1 << 8;
+uint64 constant SubAccountPermChangeMarginType = 1 << 9;
 
 struct Signature {
   // The address of the signer

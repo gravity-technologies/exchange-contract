@@ -6,7 +6,7 @@ export async function expectAccountSigners(contract: Contract, expectations: ExA
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
     let actualPermission = await contract.getSignerPermission(expectations.address, signer)
-    expect(2 ** actualPermission).to.equal(parseInt(expectedPermission, 10))
+    expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
   }
 }
 
