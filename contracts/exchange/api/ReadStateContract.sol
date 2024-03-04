@@ -10,11 +10,12 @@ contract ReadStateContract is BaseContract {
     uint64 multiSigThreshold;
     uint64 adminCount;
     uint64[] subAccounts;
-    // mapping(Currency => uint128) spotBalances;
-    // mapping(address => mapping(address => uint256)) recoveryAddresses;
-    // mapping(address => bool) onboardedWithdrawalAddresses;
-    // mapping(address => bool) onboardedTransferAccounts;
-    // mapping(address => uint64) signers;
+    // Not returned fields since mapping is not supported in return type include:
+    // 1. spotBalances
+    // 2. recoveryAddresses
+    // 3. onboardedWithdrawalAddresses
+    // 4. onboardedTransferAccounts
+    // 5. signers
   }
 
   function getAccountResult(address _address) public view returns (AccountResult memory) {
@@ -25,12 +26,6 @@ contract ReadStateContract is BaseContract {
         multiSigThreshold: account.multiSigThreshold,
         adminCount: account.adminCount,
         subAccounts: account.subAccounts
-        // Not returned fields since mapping is not supported in return type include:
-        // 1. spotBalances
-        // 2. recoveryAddresses
-        // 3. onboardedWithdrawalAddresses
-        // 4. onboardedTransferAccounts
-        // 5. signers
       });
   }
 
