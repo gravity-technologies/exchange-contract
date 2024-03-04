@@ -22,3 +22,16 @@ export async function getAccount(
     adminCount: adminCount.toNumber(),
   }
 }
+
+export async function getAccountResult(
+  contract: Contract,
+  address: string
+): Promise<{ id: string; multisigThreshold: number; subAccounts: any[]; adminCount: number }> {
+  let [id, multisigThreshold, adminCount, subAccounts] = await contract.getAccountResult(address)
+  return {
+    id: id,
+    multisigThreshold: multisigThreshold.toNumber(),
+    subAccounts: subAccounts,
+    adminCount: adminCount.toNumber(),
+  }
+}
