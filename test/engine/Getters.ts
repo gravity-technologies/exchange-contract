@@ -10,19 +10,6 @@ export async function expectAccountSigners(contract: Contract, expectations: ExA
   }
 }
 
-export async function getAccount(
-  contract: Contract,
-  address: string
-): Promise<{ id: string; multisigThreshold: number; subAccounts: any[]; adminCount: number }> {
-  let { id, multisigThreshold, subAccounts, adminCount } = await contract.getAccount(address)
-  return {
-    id: id,
-    multisigThreshold: multisigThreshold.toNumber(),
-    subAccounts: subAccounts,
-    adminCount: adminCount.toNumber(),
-  }
-}
-
 export async function getAccountResult(
   contract: Contract,
   address: string

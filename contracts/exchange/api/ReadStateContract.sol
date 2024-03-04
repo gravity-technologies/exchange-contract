@@ -58,11 +58,4 @@ contract ReadStateContract is BaseContract {
     Account storage account = state.accounts[id];
     return account.signers[signer];
   }
-
-  function getAccount(
-    address _address
-  ) public view returns (address id, uint multisigThreshold, uint64[] memory subAccounts, uint256 adminCount) {
-    Account storage account = state.accounts[_address];
-    return (account.id, account.multiSigThreshold, account.subAccounts, account.adminCount);
-  }
 }

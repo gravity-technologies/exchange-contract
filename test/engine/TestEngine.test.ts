@@ -60,8 +60,6 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
         let castedExp = expectation as ExAccountSigners
         if (castedExp.address != undefined) {
           await expectAccountSigners(contract, castedExp)
-          console.log(await getAccount(contract, castedExp.address))
-          console.log(await getAccountResult(contract, castedExp.address))
         }
       }
     }
