@@ -7,7 +7,7 @@ import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { ExAccountSigners, TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 import { expectAccountSigners } from "./Getters"
 
-const gasLimit = 2100000
+const gasLimit = 2100000000
 const testDir = "/test/engine/testgen/"
 
 // We skip these tests in CI since the era test node cannot run these tests
