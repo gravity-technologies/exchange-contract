@@ -50,8 +50,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
         OrderLeg calldata leg = makerOrder.legs[legIdx];
         BI memory matchedSize = BI(int256(uint256(size)), _getCurrencyDecimal(assetGetUnderlying(leg.assetID)));
-        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), priceDecimal));
-        uint64 notionalU64 = notional.toUint64(priceDecimal);
+        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
+        uint64 notionalU64 = notional.toUint64(PRICE_DECIMALS);
 
         // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
         if (leg.isBuyingAsset) {
@@ -69,7 +69,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       takerNotionals = takerNotionals.add(makerNotionals);
       uint64 makerFee = _getTotalFee(makerMatch.feeCharged);
       totalMakersFee += makerFee;
-      uint makerDecimals = _getCurrencyDecimal(_requireSubAccount(makerOrder.subAccountID).quoteCurrency);
 
       _verifyAndExecuteOrder(
         timestamp,
@@ -111,7 +110,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, matchSizes, spotDelta - int64(totalFee));
+    _executeOrder(sub, order, matchSizes, spotDelta - int64(totalFee));
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -163,16 +162,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _executeOrder(
-    int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
     int64 spotDelta
   ) internal {
-    _fundAndSettle(timestamp, sub);
+    _fundAndSettle(sub);
 
     Currency subQuote = sub.quoteCurrency;
-    uint64 qDec = _getCurrencyDecimal(subQuote);
 
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ++i) {

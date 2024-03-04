@@ -45,7 +45,7 @@ enum Currency {
   BTC
 }
 
-uint constant priceDecimal = 9;
+uint constant PRICE_DECIMALS = 9;
 
 uint64 constant AccountPermAdmin = 1 << 1;
 uint64 constant AccountPermInternalTransfer = 1 << 2;

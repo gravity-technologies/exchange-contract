@@ -24,7 +24,7 @@ contract AssetHelperTest is Test {
         kind: Kind.UNSPECIFIED,
         underlying: Currency.UNSPECIFIED,
         quote: Currency.UNSPECIFIED,
-        expiration: uint64(0),
+        expiration: int64(0),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(uint(0x0000000000000000000000000000000000000000000000000000000000000000))
@@ -38,7 +38,7 @@ contract AssetHelperTest is Test {
         kind: Kind.PERPS,
         underlying: Currency.ETH,
         quote: Currency.USDC,
-        expiration: uint64(0),
+        expiration: int64(0),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(uint(0x0000000000000000000000000000000000000000000000000000000000020401))
@@ -52,7 +52,7 @@ contract AssetHelperTest is Test {
         kind: Kind.FUTURES,
         underlying: Currency.BTC,
         quote: Currency.USDT,
-        expiration: uint64(1697801813_000_000_000),
+        expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(0x0000000000000000000000000000000000000000178fcdc0eae1120000030502)
@@ -66,7 +66,7 @@ contract AssetHelperTest is Test {
         kind: Kind.CALL,
         underlying: Currency.ETH,
         quote: Currency.USDC,
-        expiration: uint64(1697801813_000_000_000),
+        expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(4123_000_000)
       }),
       expectedID: bytes32(0x00000000000000000000000000000000f5bffcc0178fcdc0eae1120000020403)
@@ -80,7 +80,7 @@ contract AssetHelperTest is Test {
         kind: Kind.PUT,
         quote: Currency.BTC,
         underlying: Currency.USDT,
-        expiration: uint64(1697801813_000_000_000),
+        expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(4123_000_000_000)
       }),
       expectedID: bytes32(0x000000000000000000000000000003bff5f34e00178fcdc0eae1120000050304)
@@ -94,7 +94,7 @@ contract AssetHelperTest is Test {
         kind: Kind.SPOT,
         underlying: Currency.USDC,
         quote: Currency.UNSPECIFIED,
-        expiration: uint64(0),
+        expiration: int64(0),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(0x0000000000000000000000000000000000000000000000000000000000000205)
@@ -108,7 +108,7 @@ contract AssetHelperTest is Test {
         kind: Kind.SETTLEMENT,
         underlying: Currency.ETH,
         quote: Currency.USD,
-        expiration: uint64(1697801813_000_000_000),
+        expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(0x0000000000000000000000000000000000000000178fcdc0eae1120000010406)
@@ -122,7 +122,7 @@ contract AssetHelperTest is Test {
         kind: Kind.RATE,
         underlying: Currency.ETH,
         quote: Currency.USD,
-        expiration: uint64(1697801813_000_000_000),
+        expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
       expectedID: bytes32(0x0000000000000000000000000000000000000000178fcdc0eae1120000010407)
