@@ -5,14 +5,14 @@ import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/util
 import { getProvider } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
 import { ExAccountSigners, TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
-import { expectAccountSigners, getAccount, getAccountResult } from "./Getters"
+import { expectAccountSigners } from "./Getters"
 import { expect } from "chai"
 
 const gasLimit = 2100000
 const testDir = "/test/engine/testgen/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe.only("API - TestEngine", function () {
+describe.skip("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
