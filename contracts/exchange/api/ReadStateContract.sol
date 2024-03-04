@@ -82,4 +82,20 @@ contract ReadStateContract is BaseContract {
   function isConfigScheduleAbsent(ConfigID id, bytes32 subKey) public view returns (bool) {
     return state.configSettings[id].schedules[subKey].lockEndTime == 0;
   }
+
+  function getFundingIndex(bytes32 assetID) public view returns (int64) {
+    return state.prices.fundingIndex[assetID];
+  }
+
+  function getFundingTime() public view returns (int64) {
+    return state.prices.fundingTime;
+  }
+
+  function getMarkPrice(bytes32 assetID) public view returns (uint64) {
+    return state.prices.mark[assetID];
+  }
+
+  function getInterestRate(bytes32 assetID) public view returns (int32) {
+    return state.prices.interest[assetID];
+  }
 }

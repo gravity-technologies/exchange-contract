@@ -59,6 +59,9 @@ export const PrimaryType = keyMirror({
   // Trade
   Order: 0,
 
+  // Oracle
+  Data: 0,
+
   // ZKSyncMystreyBoxDefiTask
   ZKSynvMysteryBoxDefiTask: 0,
 })
@@ -402,6 +405,23 @@ export const Order = {
       { name: "limitPrice", type: "uint64" },
       { name: "ocoLimitPrice", type: "uint64" },
       { name: "isBuyingContract", type: "bool" },
+    ],
+  },
+}
+
+// -------------- Oracle --------------
+export const OracleData = {
+  primaryType: PrimaryType.Data,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.Data]: [
+      { name: "values", type: "Values[]" },
+      { name: "timestamp", type: "int256" },
+    ],
+    Values: [
+      { name: "sid", type: "int256" },
+      { name: "v", type: "int256" },
     ],
   },
 }

@@ -1,3 +1,5 @@
+import { BigNumber, BigNumberish } from "ethers"
+
 export enum MarginType {
   UNSPECIFIED,
   ISOLATED,
@@ -130,4 +132,14 @@ export interface OrderMatch {
 export interface Trade {
   takerOrder: Order
   makerOrders: OrderMatch[]
+}
+
+export interface PriceEntrySig {
+  sid: BigNumberish
+  v: BigNumberish
+}
+
+export interface PriceEntry {
+  assetID: string
+  value: BigNumberish
 }

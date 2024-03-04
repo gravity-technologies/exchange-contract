@@ -73,6 +73,33 @@ export interface ExConfig2D {
   value: string
 }
 
+interface Asset {
+  kind: string
+  underlying: string
+  quote: string
+  strike_price?: string
+  expiration?: string
+}
+
+export interface ExFundingIndex {
+  asset_dto: Asset
+  funding_rate: string
+}
+
+export interface ExFundingTime {
+  funding_time: string
+}
+
+export interface ExMarkPrice {
+  asset_dto: Asset
+  mark_price: string
+}
+
+export interface ExInterestRate {
+  asset_dto: Asset
+  interest_rate: string
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -85,6 +112,10 @@ export interface Expectation {
     | ExConfig2D
     | ExConfigSchedule
     | ExConfigScheduleAbsent
+    | ExFundingIndex
+    | ExFundingTime
+    | ExMarkPrice
+    | ExInterestRate
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

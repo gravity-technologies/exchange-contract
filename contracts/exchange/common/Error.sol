@@ -13,3 +13,5 @@ string constant ERR_DIV_BY_ZERO = "DIVZ";
 string constant ERR_UNSAFE_CAST = "USC";
 string constant ERR_INSUFFICIENT_SPOT_BALANCE = "ISB";
 string constant ERR_NOT_FOUND = "404";
+string constant ERR_INVALID_PRICE_UPDATE = "BAD_PRICE_UPDATE";
+string constant ERR_FUNDING_RATE_ = "FUNDING_TOO_FAST";

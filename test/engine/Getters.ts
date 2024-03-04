@@ -7,11 +7,16 @@ import {
   ExConfig2D,
   ExConfigSchedule,
   ExConfigScheduleAbsent,
+  ExFundingIndex,
+  ExFundingTime,
+  ExInterestRate,
+  ExMarkPrice,
   ExNumAccounts,
   ExSessionKeys,
   Expectation,
 } from "./TestEngineTypes"
 import { expect } from "chai"
+import { toAssetID } from "./util"
 
 export function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
@@ -33,6 +38,14 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectConfigSchedule(contract, expectation.expect as ExConfigSchedule)
     case "ExConfigScheduleAbsent":
       return expectConfigScheduleAbsent(contract, expectation.expect as ExConfigScheduleAbsent)
+    case "ExFundingIndex":
+      return expectFundingIndex(contract, expectation.expect as ExFundingIndex)
+    case "ExMarkPrice":
+      return expectMarkPrice(contract, expectation.expect as ExMarkPrice)
+    case "ExInterestRate":
+      return expectInterestRate(contract, expectation.expect as ExInterestRate)
+    case "ExFundingTime":
+      return expectFundingTime(contract, expectation.expect as ExFundingTime)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -94,6 +107,49 @@ async function expectConfigSchedule(contract: Contract, expectations: ExConfigSc
 async function expectConfigScheduleAbsent(contract: Contract, expectations: ExConfigScheduleAbsent) {
   const isAbsent = await contract.isConfigScheduleAbsent(expectations.key)
   expect(isAbsent).to.be.true
+}
+
+async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
+  const assetID = toAssetID({
+    Kind: expectations.asset_dto.kind,
+    Underlying: expectations.asset_dto.underlying,
+    Quote: expectations.asset_dto.quote,
+    StrikePrice: BigInt(0),
+    Expiration: BigInt(0),
+  })
+  const fundingIndex = await contract.getFundingIndex(assetID)
+  expect(fundingIndex).to.equal(expectations.funding_rate)
+}
+
+async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
+  const fundingTime = await contract.getFundingTime()
+  expect(fundingTime).to.equal(Number(expectations.funding_time))
+}
+
+async function expectMarkPrice(contract: Contract, expectations: ExMarkPrice) {
+  const assetID = toAssetID({
+    Kind: expectations.asset_dto.kind,
+    Underlying: expectations.asset_dto.underlying,
+    Quote: expectations.asset_dto.quote,
+    StrikePrice: BigInt(expectations.asset_dto.strike_price ?? "0"),
+    Expiration: BigInt(expectations.asset_dto.expiration ?? "0"),
+  })
+  let expectMark = BigInt(expectations.mark_price ?? "0")
+  let markPrice = await contract.getMarkPrice(assetID)
+  expect(markPrice).to.equal(expectMark)
+}
+
+async function expectInterestRate(contract: Contract, expectations: ExInterestRate) {
+  const assetID = toAssetID({
+    Kind: expectations.asset_dto.kind,
+    Underlying: expectations.asset_dto.underlying,
+    Quote: expectations.asset_dto.quote,
+    StrikePrice: BigInt(expectations.asset_dto.strike_price ?? "0"),
+    Expiration: BigInt(expectations.asset_dto.expiration ?? "0"),
+  })
+  let expectInterest = BigInt(expectations.interest_rate ?? "0")
+  let interestRate = await contract.getInterestRate(assetID)
+  expect(interestRate).to.equal(expectInterest)
 }
 
 export async function getAccountResult(

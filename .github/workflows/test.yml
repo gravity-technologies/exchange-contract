@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -55,10 +55,10 @@ jobs:
         run: |
           yarn prettier:check
           yarn test:hardhat
-        id: hardhat-test
+        id: test-hardhat
 
       - name: Run Forge tests
         run: |
           cd ${{ matrix.module }}
-          forge test -vvv
+          yarn test:forge
         id: test-forge

@@ -1,4 +1,4 @@
-import { Wallet } from "ethers"
+import { BigNumber, Wallet } from "ethers"
 import { Contract } from "zksync-ethers"
 import {
   genAddAccountAdminSig as genAddAccountSignerSig,
@@ -9,6 +9,7 @@ import {
   genCreateAccountSig,
   genCreateSubAccountSig,
   genDepositSig,
+  genPriceTick,
   genRecoverAddressPayloadSig,
   genRemoveAccountSignerSig,
   genRemoveRecoveryAddressPayloadSig,
@@ -21,7 +22,7 @@ import {
   genSetSubAccountSignerPermissionsPayloadSig,
   genWithdrawalSig,
 } from "./signature"
-import { Currency, MarginType } from "./type"
+import { Currency, MarginType, PriceEntry, PriceEntrySig } from "./type"
 import { Bytes32, nonce } from "./util"
 
 export const MAX_GAS = 2_000_000_000
@@ -344,6 +345,31 @@ export async function withdraw(
   const sig = genWithdrawalSig(txSigner, fromSubAccount, toEthAddress, numTokens, salt)
   const tx = await contract.withdrawal(ts, txID, fromSubAccount, toEthAddress, numTokens, salt, sig, txRequestDefault())
   await tx.wait()
+}
+
+export async function markPriceTick(
+  contract: Contract,
+  txSigner: Wallet,
+  ts: number,
+  txID: number,
+  values: PriceEntry[],
+  timestamp: BigInt
+) {
+  const salt = nonce()
+  const sig = genPriceTick(txSigner, priceEntryToPriceEntrySig(values), timestamp, salt)
+  sig.expiration = timestamp
+
+  const tx = await contract.markPriceTick(ts, txID, values, sig, txRequestDefault())
+  await tx.wait()
+}
+
+function priceEntryToPriceEntrySig(entries: PriceEntry[]): PriceEntrySig[] {
+  return entries.map((e) => {
+    return {
+      sid: BigNumber.from(e.assetID),
+      v: e.value,
+    }
+  })
 }
 
 // export async function transfer(
