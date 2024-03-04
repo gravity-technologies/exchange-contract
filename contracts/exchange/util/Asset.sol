@@ -63,3 +63,9 @@ bytes32 constant quoteMask = bytes32(~(uint(0xFF) << 16));
 function assetSetQuote(bytes32 assetID, Currency quote) pure returns (bytes32) {
   return (assetID & quoteMask) | (bytes32(uint(quote)) << 16);
 }
+
+uint constant quoteMask = ~(uint(0xFF) << 16);
+
+function assetSetQuote(bytes32 assetID, Currency quote) pure returns (bytes32) {
+  return bytes32((uint(assetID) & quoteMask) | (uint(quote) << 16));
+}
