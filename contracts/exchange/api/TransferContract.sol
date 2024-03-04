@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./BaseTradeContract.sol";
-import "./BaseContract.sol";
+import "./FundingAndSettlement.sol";
 import "./signature/generated/TransferSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
-abstract contract TransferContract is BaseTradeContract {
+abstract contract TransferContract is FundingAndSettlement {
   /**
    * @notice Deposit collateral into a sub account
    * TODO: To review after bridging approach is confirmed

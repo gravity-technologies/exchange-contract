@@ -234,7 +234,7 @@ contract SubAccountContract is BaseContract {
   /// @param signer The address of the signer
   function removeSessionKey(int64 timestamp, uint64 txID, address signer) external {
     _setSequence(timestamp, txID);
-    state.sessions[signer].user = address(0);
+    delete state.sessions[signer];
   }
 
   function _min(int64 a, int64 b) private pure returns (int64) {
