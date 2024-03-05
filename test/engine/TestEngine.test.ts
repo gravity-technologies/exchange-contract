@@ -12,7 +12,7 @@ const gasLimit = 2100000000
 const testDir = "/test/engine/testgen/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe.skip("API - TestEngine", function () {
+describe("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
