@@ -27,13 +27,20 @@
         "ret": "",
         "expectations": [
           {
-            "num_accounts": 1
+            "expect": {
+              "num_accounts": 1
+            },
+            "name": "ExNumAccounts"
           },
           {
-            "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
-            "signers": {
-              "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
-            }
+            "expect": {
+              "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
+              "signers": {
+                "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
+              },
+              "multi_sig_threshold": 1
+            },
+            "name": "ExAccountSigners"
           }
         ]
       }
@@ -67,7 +74,10 @@
         "ret": "eip712 invalid signature: invalid signature length or v value",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -101,7 +111,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -135,7 +148,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -169,7 +185,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -203,7 +222,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -237,7 +259,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -271,7 +296,10 @@
         "ret": "eip712 invalid signature: recovery failed",
         "expectations": [
           {
-            "num_accounts": 0
+            "expect": {
+              "num_accounts": 0
+            },
+            "name": "ExNumAccounts"
           }
         ]
       }
@@ -305,13 +333,20 @@
         "ret": "",
         "expectations": [
           {
-            "num_accounts": 1
+            "expect": {
+              "num_accounts": 1
+            },
+            "name": "ExNumAccounts"
           },
           {
-            "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
-            "signers": {
-              "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
-            }
+            "expect": {
+              "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
+              "signers": {
+                "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
+              },
+              "multi_sig_threshold": 1
+            },
+            "name": "ExAccountSigners"
           }
         ]
       },
@@ -340,13 +375,20 @@
         "ret": "",
         "expectations": [
           {
-            "num_accounts": 2
+            "expect": {
+              "num_accounts": 2
+            },
+            "name": "ExNumAccounts"
           },
           {
-            "address": "0xbfdc9e0f796d6ab818840e0ad182f78e5af383df",
-            "signers": {
-              "0xbfdc9e0f796d6ab818840e0ad182f78e5af383df": "2"
-            }
+            "expect": {
+              "address": "0xbfdc9e0f796d6ab818840e0ad182f78e5af383df",
+              "signers": {
+                "0xbfdc9e0f796d6ab818840e0ad182f78e5af383df": "2"
+              },
+              "multi_sig_threshold": 1
+            },
+            "name": "ExAccountSigners"
           }
         ]
       }
@@ -380,13 +422,20 @@
         "ret": "",
         "expectations": [
           {
-            "num_accounts": 1
+            "expect": {
+              "num_accounts": 1
+            },
+            "name": "ExNumAccounts"
           },
           {
-            "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
-            "signers": {
-              "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
-            }
+            "expect": {
+              "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
+              "signers": {
+                "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
+              },
+              "multi_sig_threshold": 1
+            },
+            "name": "ExAccountSigners"
           }
         ]
       },
@@ -415,13 +464,20 @@
         "ret": "account already exists",
         "expectations": [
           {
-            "num_accounts": 1
+            "expect": {
+              "num_accounts": 1
+            },
+            "name": "ExNumAccounts"
           },
           {
-            "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
-            "signers": {
-              "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
-            }
+            "expect": {
+              "address": "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
+              "signers": {
+                "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98": "2"
+              },
+              "multi_sig_threshold": 1
+            },
+            "name": "ExAccountSigners"
           }
         ]
       }
