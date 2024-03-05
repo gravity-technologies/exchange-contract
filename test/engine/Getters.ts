@@ -14,8 +14,11 @@ export function validateExpectation(contract: Contract, expectation: Expectation
 async function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
+    let expectedMultisigThreshold = expectations.multi_sig_threshold
     let actualPermission = await contract.getSignerPermission(expectations.address, signer)
+    let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
+    expect(actualMultisigThreshold).to.equal(expectedMultisigThreshold)
   }
 }
 
