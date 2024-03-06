@@ -32,9 +32,13 @@ export interface ExNumAccounts {
 export interface ExAccountSigners {
   address: string
   signers: { [address: string]: string }
+  multi_sig_threshold: number
 }
 
-type Expectation = ExNumAccounts | ExAccountSigners
+export interface Expectation {
+  name: string
+  expect: ExNumAccounts | ExAccountSigners
+}
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
   try {

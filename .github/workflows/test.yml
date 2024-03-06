@@ -61,4 +61,4 @@ jobs:
         run: |
           cd ${{ matrix.module }}
           forge test -vvv
-        id: forge-test
+        id: yarn test:forge
