@@ -9,7 +9,7 @@ import { validateExpectation } from "./Getters"
 import { expect } from "chai"
 
 const gasLimit = 2100000000
-const testDir = "/test/engine/testgen/"
+const testDir = "/test/engine/testfixtures/"
 
 // We skip these tests in CI since the era test node cannot run these tests
 describe("API - TestEngine", function () {

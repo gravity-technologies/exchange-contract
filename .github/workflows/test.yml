@@ -54,7 +54,7 @@ jobs:
       - name: Run Hardhat tests
         run: |
           yarn prettier:check
-          yarn test:hardhat
+          yarn test:ci
         id: hardhat-test
 
       - name: Run Forge tests
