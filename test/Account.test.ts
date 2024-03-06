@@ -121,15 +121,16 @@ describe("API - Account", function () {
       // "account does not exist"
     })
 
-    it("Error if admin address does not exist", async function () {
+    it("no-op if admin address does not exist", async function () {
       const admin = wallet()
+      const notAddedWallet = wallet()
       const accID = admin.address
 
       let ts = 1
       await createAccount(contract, admin, ts, ts, accID)
       ts++
-      const tx = removeAccountSigner(contract, [admin], ts, ts, accID, admin.address)
-      await expectToThrowAsync(tx)
+      const tx = removeAccountSigner(contract, [admin], ts, ts, accID, notAddedWallet.address)
+      await tx
     })
   })
 
