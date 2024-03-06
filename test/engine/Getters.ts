@@ -7,7 +7,7 @@ export function validateExpectation(contract: Contract, expectation: Expectation
     case "ExAccountSigners":
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
     default:
-      console.log(`Unknown expectation: ${expectation.name}`)
+      console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
 }
 
