@@ -54,11 +54,11 @@ jobs:
       - name: Run Hardhat tests
         run: |
           yarn prettier:check
-          yarn test:ci
+          yarn test:hardhat
         id: hardhat-test
 
       - name: Run Forge tests
         run: |
           cd ${{ matrix.module }}
           forge test -vvv
-        id: forge-test
+        id: yarn test:forge
