@@ -1,11 +1,13 @@
 import { Contract } from "ethers"
-import { ExAccountSigners, Expectation } from "./TestEngineTypes"
+import { ExAccountSigners, ExSessionKeys, Expectation } from "./TestEngineTypes"
 import { expect } from "chai"
 
 export function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
     case "ExAccountSigners":
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
+    case "ExSessionKeys":
+      return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -19,6 +21,16 @@ async function expectAccountSigners(contract: Contract, expectations: ExAccountS
     let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
     expect(actualMultisigThreshold).to.equal(expectedMultisigThreshold)
+  }
+}
+
+async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
+  for (var signer in expectations.signers) {
+    let expectedSessionKey = expectations.signers[signer]
+    let [actualSessionKey, authorizationExpiry] = await contract.getSessionKey(signer)
+    expect(actualSessionKey).to.equal(expectedSessionKey)
+    expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
+    expect(expectations.signers[signer]).to.not.be.empty
   }
 }
 

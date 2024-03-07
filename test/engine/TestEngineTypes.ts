@@ -41,7 +41,7 @@ export interface ExSessionKeys {
 
 export interface Expectation {
   name: string
-  expect: ExNumAccounts | ExAccountSigners
+  expect: ExNumAccounts | ExAccountSigners | ExSessionKeys
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
