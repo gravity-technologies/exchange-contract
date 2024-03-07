@@ -35,9 +35,13 @@ export interface ExAccountSigners {
   multi_sig_threshold: number
 }
 
+export interface ExSessionKeys {
+  signers: { [address: string]: string }
+}
+
 export interface Expectation {
   name: string
-  expect: ExNumAccounts | ExAccountSigners
+  expect: ExNumAccounts | ExAccountSigners | ExSessionKeys
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
