@@ -153,7 +153,7 @@ describe("API - Account", function () {
       await expectToThrowAsync(addWithdrawalAddress(contract, [wallet()], ts, ts, accID, withdrawalAddress))
     })
 
-    it.only("no-op if withdrawal address already exists", async function () {
+    it("no-op if withdrawal address already exists", async function () {
       const admin = wallet()
       const withdrawalAddress = wallet().address
       const accID = admin.address
