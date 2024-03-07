@@ -35,6 +35,10 @@ export interface ExAccountSigners {
   multi_sig_threshold: number
 }
 
+export interface ExSessionKeys {
+  signers: { [address: string]: string }
+}
+
 export interface Expectation {
   name: string
   expect: ExNumAccounts | ExAccountSigners
