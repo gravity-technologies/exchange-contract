@@ -53,16 +53,10 @@ contract AddressTest is Test {
 
   function testSignerHasPermSubAccount() public {
     address signerAddress = address(0x123);
-    accountSigners[signerAddress] = SubAccountPermDeposit | SubAccountPermWithdrawal | SubAccountPermTrade;
-    assert(signerHasPerm(accountSigners, signerAddress, SubAccountPermDeposit));
-    assert(signerHasPerm(accountSigners, signerAddress, SubAccountPermWithdrawal));
+    accountSigners[signerAddress] = SubAccountPermTransfer | SubAccountPermTrade;
+    assert(signerHasPerm(accountSigners, signerAddress, SubAccountPermTransfer));
     assert(signerHasPerm(accountSigners, signerAddress, SubAccountPermTrade));
     assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermAdmin));
-    assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermTransfer));
-    assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermAddSigner));
-    assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermRemoveSigner));
-    assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermUpdateSignerPermission));
-    assert(!signerHasPerm(accountSigners, signerAddress, SubAccountPermChangeMarginType));
   }
 
   function testRemoveAddress() public {
