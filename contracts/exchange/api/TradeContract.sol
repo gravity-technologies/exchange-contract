@@ -140,7 +140,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(session.expiry >= timestamp, ERR_SESSION_EXPIRED);
       subAccountSigner = session.subAccountSigner;
     }
-    _requirePermission(sub, subAccountSigner, SubAccountPermTrade);
+    _requireSubAccountPermission(sub, subAccountSigner, SubAccountPermTrade);
 
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
