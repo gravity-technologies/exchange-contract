@@ -105,7 +105,7 @@ describe("API - SubAccount", function () {
       await createSubAccount(contract, admin, ts, ts, accID, subID)
 
       ts++
-      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.ChangeMarginType)
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       // Test
       ts++
@@ -235,7 +235,7 @@ describe("API - SubAccount", function () {
   })
 
   describe("SetSubAccountSignerPermissions", function () {
-    it("acc-admin/sub-account-admin/signer-with-permission can change permission of subaccount signer", async function () {
+    it("acc-admin/sub-account-admin can change permission of subaccount signer", async function () {
       // Setup
       const admin = wallet()
       const subID = 1
@@ -254,17 +254,17 @@ describe("API - SubAccount", function () {
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Admin | SubPerm.Trade)
 
       ts++
       // Least privilege signer
       const carl = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, carl.address, SubPerm.Withdrawal)
+      await addSubSigner(contract, ts, ts, admin, subID, carl.address, SubPerm.None)
 
       // Test
       ts++
       // account admin can change permission of any signer
-      await setSubAccountSignerPermission(contract, admin, ts, ts, subID, carl.address, SubPerm.Deposit)
+      await setSubAccountSignerPermission(contract, admin, ts, ts, subID, carl.address, SubPerm.Trade)
 
       ts++
       // subaccount admin can change permission of any signer
@@ -289,38 +289,6 @@ describe("API - SubAccount", function () {
       await expectToThrowAsync(
         setSubAccountSignerPermission(contract, admin, ts, ts, subID, admin.address, SubPerm.Trade)
       )
-    })
-
-    it("fails if new permission is more privileged than current user's permission", async function () {
-      // Setup
-      const admin = wallet()
-      const subID = 1
-      const accID = admin.address
-      let ts = 1
-      await createAccount(contract, admin, ts, ts, accID)
-
-      ts++
-      await createSubAccount(contract, admin, ts, ts, accID, subID)
-
-      const alice = wallet()
-      ts++
-      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Trade | SubPerm.UpdateSignerPermission)
-
-      const bob = wallet()
-      ts++
-      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Withdrawal)
-
-      // Test
-      ts++
-      await expectToThrowAsync(
-        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Admin)
-      )
-      // TODO "actor cannot grant permission"
-
-      await expectToThrowAsync(
-        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)
-      )
-      // TODO "actor cannot grant permission"
     })
 
     it("fails if invalid signature", async function () {
@@ -423,14 +391,14 @@ describe("API - SubAccount", function () {
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Trade)
 
       // Test
       ts++
       await removeSubSigner(contract, alice, ts, ts, subID, bob.address)
     })
 
-    it("user with removal permission can remove subaccount signer", async function () {
+    it("user with admin permission can remove subaccount signer", async function () {
       // Setup
       const admin = wallet()
       const subID = 1
@@ -444,12 +412,12 @@ describe("API - SubAccount", function () {
       ts++
       // SubAccount admin
       const alice = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.RemoveSigner)
+      await addSubSigner(contract, ts, ts, admin, subID, alice.address, SubPerm.Admin)
 
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Deposit)
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Trade)
 
       // Test
       ts++
