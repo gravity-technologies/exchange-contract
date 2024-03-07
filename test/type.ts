@@ -38,14 +38,8 @@ export const AccPerm = {
 export const SubPerm = {
   None: 0,
   Admin: 1 << 1,
-  Deposit: 1 << 2,
-  Withdrawal: 1 << 3,
-  Transfer: 1 << 4,
-  Trade: 1 << 5,
-  AddSigner: 1 << 6,
-  RemoveSigner: 1 << 7,
-  UpdateSignerPermission: 1 << 8,
-  ChangeMarginType: 1 << 9,
+  Transfer: 1 << 2,
+  Trade: 1 << 3,
 }
 
 export const ConfigID = {

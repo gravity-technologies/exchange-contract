@@ -54,14 +54,8 @@ uint64 constant AccountPermWithdraw = 1 << 4;
 // To check if user has a certain permission, just do a bitwise AND
 // ie: permission & mask > 0
 uint64 constant SubAccountPermAdmin = 1 << 1;
-uint64 constant SubAccountPermDeposit = 1 << 2;
-uint64 constant SubAccountPermWithdrawal = 1 << 3;
-uint64 constant SubAccountPermTransfer = 1 << 4;
-uint64 constant SubAccountPermTrade = 1 << 5;
-uint64 constant SubAccountPermAddSigner = 1 << 6;
-uint64 constant SubAccountPermRemoveSigner = 1 << 7;
-uint64 constant SubAccountPermUpdateSignerPermission = 1 << 8;
-uint64 constant SubAccountPermChangeMarginType = 1 << 9;
+uint64 constant SubAccountPermTransfer = 1 << 2;
+uint64 constant SubAccountPermTrade = 1 << 3;
 
 struct Signature {
   // The address of the signer
