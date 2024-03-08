@@ -1,6 +1,7 @@
 import { Contract } from "ethers"
 import {
   ExAccountSigners,
+  ExAccountWithdrawalAddresses,
   ExConfig1D,
   ExConfig2D,
   ExConfigSchedule,
@@ -16,6 +17,8 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
     case "ExSessionKeys":
       return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
+    case "ExAccountWithdrawalAddresses":
+      return expectWithdrawalAddresses(contract, expectation.expect as ExAccountWithdrawalAddresses)
     case "ExConfig2D":
       return expectConfig2D(contract, expectation.expect as ExConfig2D)
     case "ExConfig":
@@ -47,6 +50,16 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
     expect(actualSessionKey).to.equal(expectedSessionKey)
     expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
     expect(expectations.signers[signer]).to.not.be.empty
+  }
+}
+
+async function expectWithdrawalAddresses(contract: Contract, expectations: ExAccountWithdrawalAddresses) {
+  for (let i = 0; i < expectations.withdrawal_addresses.length; i++) {
+    let isWithdrawalAddress = await contract.isOnboardedWithdrawalAddress(
+      expectations.address,
+      expectations.withdrawal_addresses[i]
+    )
+    expect(isWithdrawalAddress).to.equal(true)
   }
 }
 

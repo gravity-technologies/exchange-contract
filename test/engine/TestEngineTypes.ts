@@ -39,6 +39,11 @@ export interface ExSessionKeys {
   signers: { [address: string]: string }
 }
 
+export interface ExAccountWithdrawalAddresses {
+  address: string
+  withdrawal_addresses: string[]
+}
+
 export interface ExConfigSchedule {
   key: string
   sub_key: string
@@ -67,6 +72,7 @@ export interface Expectation {
   expect:
     | ExNumAccounts
     | ExAccountSigners
+    | ExAccountWithdrawalAddresses
     | ExSessionKeys
     | ExConfig1D
     | ExConfig2D
