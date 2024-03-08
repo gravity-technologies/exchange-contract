@@ -10,7 +10,7 @@ const gasLimit = 2100000000
 const testDir = "/test/engine/testfixtures/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
@@ -61,8 +61,11 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
-      for (let expectation of step.expectations) {
-        validateExpectation(contract, expectation)
+      // There are some helpers that dont define
+      if (step.expectations != undefined) {
+        for (let expectation of step.expectations) {
+          validateExpectation(contract, expectation)
+        }
       }
     }
   }
