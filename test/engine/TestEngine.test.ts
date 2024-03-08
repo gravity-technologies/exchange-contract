@@ -21,6 +21,7 @@ describe("API - TestEngine", function () {
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchangeTest", [], { wallet: deployingWallet, silent: true, noVerify: true })
+    await contract.initialize()
   })
 
   beforeEach(async () => {
