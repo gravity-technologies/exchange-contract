@@ -1,5 +1,5 @@
 import { Contract } from "ethers"
-import { ExAccountSigners, ExSessionKeys, Expectation } from "./TestEngineTypes"
+import { ExAccountSigners, ExAccountWithdrawalAddresses, ExSessionKeys, Expectation } from "./TestEngineTypes"
 import { expect } from "chai"
 
 export function validateExpectation(contract: Contract, expectation: Expectation) {
@@ -8,6 +8,8 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
     case "ExSessionKeys":
       return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
+    case "ExWithdrawalAddresses":
+      return expectWithdrawalAddresses(contract, expectation.expect as ExAccountSigners)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -31,6 +33,16 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
     expect(actualSessionKey).to.equal(expectedSessionKey)
     expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
     expect(expectations.signers[signer]).to.not.be.empty
+  }
+}
+
+async function expectWithdrawalAddresses(contract: Contract, expectations: ExAccountWithdrawalAddresses) {
+  for (let i = 0; i < expectations.withdrawal_addresses.length; i++) {
+    let isWithdrawalAddress = await contract.isOnboardedWithdrawalAddress(
+      expectations.address,
+      expectations.withdrawal_addresses[i]
+    )
+    expect(isWithdrawalAddress).to.equal(true)
   }
 }
 
