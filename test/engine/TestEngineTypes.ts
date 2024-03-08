@@ -26,6 +26,7 @@ export interface TestStep {
 
 export interface ExNumAccounts {
   num_accounts: number
+  account_ids: string[]
 }
 
 // Expects an account with the given address to be created, and have listed signers with the given permissions

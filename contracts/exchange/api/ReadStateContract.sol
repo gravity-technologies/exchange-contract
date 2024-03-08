@@ -29,6 +29,15 @@ contract ReadStateContract is BaseContract {
       });
   }
 
+  function isAllAccountExists(address[] calldata accountIDs) public view returns (bool) {
+    for (uint256 i = 0; i < accountIDs.length; i++) {
+      if (state.accounts[accountIDs[i]].id == address(0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   function getAccountSpotBalance(address _address, Currency currency) public view returns (uint128) {
     Account storage account = state.accounts[_address];
     return account.spotBalances[currency];

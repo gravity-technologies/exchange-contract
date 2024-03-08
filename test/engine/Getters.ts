@@ -6,6 +6,7 @@ import {
   ExConfig2D,
   ExConfigSchedule,
   ExConfigScheduleAbsent,
+  ExNumAccounts,
   ExSessionKeys,
   Expectation,
 } from "./TestEngineTypes"
@@ -15,6 +16,8 @@ export function validateExpectation(contract: Contract, expectation: Expectation
   switch (expectation.name) {
     case "ExAccountSigners":
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
+    case "ExNumAccounts":
+      return expectNumAccounts(contract, expectation.expect as ExNumAccounts)
     case "ExSessionKeys":
       return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
     case "ExAccountWithdrawalAddresses":
@@ -30,6 +33,11 @@ export function validateExpectation(contract: Contract, expectation: Expectation
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
+}
+
+async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts) {
+  const exists = await contract.accountExists(expectations.account_ids)
+  expect(exists).to.be.true
 }
 
 async function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
