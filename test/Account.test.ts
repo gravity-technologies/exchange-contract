@@ -190,7 +190,7 @@ describe("API - Account", function () {
       // "account does not exist"
     })
 
-    it("Error if withdrawal address does not exist", async function () {
+    it("No-op if withdrawal address does not exist", async function () {
       // Create an account explicitly for this test
       const admin = wallet()
       const accID = admin.address
@@ -205,8 +205,7 @@ describe("API - Account", function () {
       await addWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress1)
 
       ts++
-      await expectToThrowAsync(removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress2))
-      // "not found"
+      await removeWithdrawalAddress(contract, [admin], ts, ts, accID, withdrawalAddress2)
     })
   })
 
