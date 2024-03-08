@@ -1,12 +1,10 @@
 import { Contract, ethers } from "ethers"
-import { Wallet } from "zksync-ethers"
 import { network } from "hardhat"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
-import { getProvider } from "../../deploy/utils"
-import { expectToThrowAsync, getDeployerWallet, wallet } from "../util"
-import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
+import { Wallet } from "zksync-ethers"
+import { LOCAL_RICH_WALLETS, deployContract, getProvider, getWallet } from "../../deploy/utils"
+import { expectToThrowAsync, getDeployerWallet } from "../util"
 import { validateExpectation } from "./Getters"
-import { expect } from "chai"
+import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 
 const gasLimit = 2100000000
 const testDir = "/test/engine/testfixtures/"
@@ -32,20 +30,26 @@ describe("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  testFiles.forEach((file) => {
-    describe(file, async function () {
-      let tests = parseTestsFromFile(process.cwd() + testDir + file)
-      tests.forEach((test) => {
-        it(test.name + ` correctly runs`, async function () {
-          await validateTest(test, contract, w1)
+  // const filters = ["TestConfigChain.json"]
+  // const testNames = ["Expect set timelock with schedule success (if lock duration is met)"]
+  testFiles
+    // .filter((t) => filters.includes(t))
+    .forEach((file) => {
+      describe(file, async function () {
+        let tests = parseTestsFromFile(process.cwd() + testDir + file)
+        // tests = tests.filter((t) => testNames.includes(t.name))
+        tests.slice().forEach((test) => {
+          it(test.name + ` correctly runs`, async function () {
+            await validateTest(test, contract, w1)
+          })
         })
       })
     })
-  })
 })
 
 async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
-  for (const step of test.steps) {
+  const steps = test.steps ?? []
+  for (const step of steps) {
     var tx: ethers.providers.TransactionRequest = {
       to: contract.address,
       gasLimit: gasLimit,

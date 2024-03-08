@@ -39,9 +39,39 @@ export interface ExSessionKeys {
   signers: { [address: string]: string }
 }
 
+export interface ExConfigSchedule {
+  key: string
+  sub_key: string
+  value: string
+  lock_end: string
+}
+
+export interface ExConfigScheduleAbsent {
+  key: string
+  sub_key: string
+}
+
+export interface ExConfig1D {
+  key: string
+  value: string
+}
+
+export interface ExConfig2D {
+  key: string
+  sub_key: string
+  value: string
+}
+
 export interface Expectation {
   name: string
-  expect: ExNumAccounts | ExAccountSigners | ExSessionKeys
+  expect:
+    | ExNumAccounts
+    | ExAccountSigners
+    | ExSessionKeys
+    | ExConfig1D
+    | ExConfig2D
+    | ExConfigSchedule
+    | ExConfigScheduleAbsent
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
