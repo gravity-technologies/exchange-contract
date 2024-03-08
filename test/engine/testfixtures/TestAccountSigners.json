@@ -28,7 +28,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -116,7 +117,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -294,7 +296,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -467,7 +470,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 0
+              "num_accounts": 0,
+              "account_ids": null
             },
             "name": "ExNumAccounts"
           }
@@ -476,7 +480,7 @@
     ]
   },
   {
-    "name": "addAccountSigner: no-op is admin already exists",
+    "name": "addAccountSigner: no-op if admin already exists",
     "steps": [
       {
         "time": "1",
@@ -504,7 +508,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -633,7 +638,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -760,7 +766,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },
@@ -929,7 +936,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 0
+              "num_accounts": 0,
+              "account_ids": null
             },
             "name": "ExNumAccounts"
           }
@@ -966,7 +974,8 @@
         "expectations": [
           {
             "expect": {
-              "num_accounts": 1
+              "num_accounts": 1,
+              "account_ids": ["0xc473cf43209af80db499f8021811c880ead4a572"]
             },
             "name": "ExNumAccounts"
           },

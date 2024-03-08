@@ -183,7 +183,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
 
       // Step 2: Update subaccount balances
-      int64 oldBal = pos.balance;
       if (leg.isBuyingAsset) {
         pos.balance += int64(matchSizes[i]);
       } else {
