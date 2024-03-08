@@ -320,7 +320,6 @@ contract ConfigContract is BaseContract {
   // This should be called only once during the proxy contract deployment, in the initialize function
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
-    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
     // This is a special value that represents an empty value for a config
