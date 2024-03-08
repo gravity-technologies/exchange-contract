@@ -57,4 +57,20 @@ contract ReadStateContract is BaseContract {
   function getSessionKey(address signer) public view returns (address, int64) {
     return (state.sessions[signer].subAccountSigner, state.sessions[signer].expiry);
   }
+
+  function getConfig2D(ConfigID id, bytes32 subKey) public view returns (bytes32) {
+    return state.config2DValues[id][subKey].val;
+  }
+
+  function getConfig1D(ConfigID id) public view returns (bytes32) {
+    return state.config1DValues[id].val;
+  }
+
+  function getConfigSchedule(ConfigID id, bytes32 subKey) public view returns (int64) {
+    return state.configSettings[id].schedules[subKey].lockEndTime;
+  }
+
+  function isConfigScheduleAbsent(ConfigID id, bytes32 subKey) public view returns (bool) {
+    return state.configSettings[id].schedules[subKey].lockEndTime == 0;
+  }
 }

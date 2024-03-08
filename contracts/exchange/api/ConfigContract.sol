@@ -50,6 +50,8 @@ contract ConfigContract is BaseContract {
   uint64 private constant ONE_BEEP = 100;
   uint64 private constant ONE_PERCENT = 10000;
   uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
+  bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
+  bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -89,6 +91,22 @@ contract ConfigContract is BaseContract {
   function _getUintConfig2D(ConfigID key, bytes32 subKey) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     return (uint64(uint256(c.val)), c.isSet);
+  }
+
+  function _boolToConfig(bool v) internal pure returns (bytes32) {
+    return v ? TRUE_BYTES32 : FALSE_BYTES32;
+  }
+
+  function _configToBool(bytes32 v) internal pure returns (bool) {
+    return v == TRUE_BYTES32;
+  }
+
+  function _getBoolConfig(ConfigID key) internal view returns (bool) {
+    return state.config1DValues[key].val == TRUE_BYTES32;
+  }
+
+  function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
+    return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
 
   function _addressToConfig(address v) internal pure returns (bytes32) {
@@ -134,18 +152,18 @@ contract ConfigContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
 
-    // // ---------- Signature Verification -----------
-    // require(sig.signer == _getAddressConfig(ConfigID.ADMIN_RECOVERY_ADDRESS), "unauthorized");
+    // ---------- Signature Verification -----------
+    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
+
     _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce), sig);
-    // // ------- End of Signature Verification -------
+    // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
     require(setting.typ != ConfigType.UNSPECIFIED, "404");
     // For 1D config settings, subKey must be 0
     // For 2D config, there's no such restriction
-    // ie: NOT (uint256(setting.typ) % 2 == 1 && subKey == 0).
-    // We expanded the condition to make it more efficient (2 comparisons instead of 3)
-    require(uint256(setting.typ) % 2 == 0 || subKey != 0, "invalid subKey");
+    bool is2DConfig = uint256(setting.typ) % 2 == 0;
+    require(is2DConfig || subKey == 0, "invalid subKey");
 
     ConfigSchedule storage sched = setting.schedules[subKey];
     sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
@@ -169,26 +187,29 @@ contract ConfigContract is BaseContract {
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
+
+    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
+
     // ---------- Signature Verification -----------
-    // (address adminRecoveryAddr, ) = _getAddressConfig(ConfigID.ADMIN_RECOVERY_ADDRESS);
-    // require(sig.signer == adminRecoveryAddr, "unauthorized");
     _preventReplay(hashSetConfig(key, subKey, value, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
     ConfigType typ = setting.typ;
-    require(typ != ConfigType.UNSPECIFIED, "404");
+    require(typ != ConfigType.UNSPECIFIED, "config not found 404");
 
     // For 1D config settings, subKey must be 0
     // For 2D config, there's no such restriction
-    // ie: NOT (uint256(setting.typ) % 2 == 1 && subKey == 0).
-    // We expanded the condition to make it more efficient (2 comparisons instead of 3)
-    require(uint256(setting.typ) % 2 != 0 || subKey != 0, "invalid 1D subKey");
-    int64 lockEndTime = setting.schedules[subKey].lockEndTime;
-    require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
+    bool is2DConfig = uint256(typ) % 2 == 0;
+    require(is2DConfig || subKey == 0, "invalid 1D subKey");
 
+    int64 lockDuration = _getLockDuration(key, subKey, value);
+    if (lockDuration > 0) {
+      int64 lockEndTime = setting.schedules[subKey].lockEndTime;
+      require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
+    }
     // 2D configs are always placed at odd indices in the enum. See ConfigID
-    if (uint(typ) % 2 == 0) {
+    if (is2DConfig) {
       mapping(bytes32 => ConfigValue) storage config = state.config2DValues[key];
       config[subKey].isSet = true;
       config[subKey].val = value;
@@ -299,7 +320,7 @@ contract ConfigContract is BaseContract {
   // This should be called only once during the proxy contract deployment, in the initialize function
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
-    // mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
+    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
     // This is a special value that represents an empty value for a config
@@ -438,31 +459,51 @@ contract ConfigContract is BaseContract {
     ///////////////////////////////////////////////////////////////////
     /// ADMIN addresses. Commented out because they are empty for now
     ///////////////////////////////////////////////////////////////////
+    DefaultAddress memory defaultAddresses = _getDefaultAddresses();
 
-    // // ADMIN_RECOVERY_ADDRESS
-    // id = ConfigID.ADMIN_RECOVERY_ADDRESS;
-    // settings[id].typ = ConfigType.ADDRESS;
-    // values1D[id].val = emptyValue;
+    // ADMIN_RECOVERY_ADDRESS
+    bytes32 addr;
 
-    // // ORACLE_ADDRESS
-    // id = ConfigID.ORACLE_ADDRESS;
-    // settings[id].typ = ConfigType.ADDRESS;
-    // values1D[id].val = emptyValue;
+    id = ConfigID.ADMIN_RECOVERY_ADDRESS;
+    settings[id].typ = ConfigType.BOOL2D;
+    addr = _addressToConfig(defaultAddresses.Recovery);
+    v2d = values2D[id];
+    v2d[addr].isSet = true;
+    v2d[addr].val = TRUE_BYTES32;
 
-    // // CONFIG_ADDRESS
-    // id = ConfigID.CONFIG_ADDRESS;
-    // settings[id].typ = ConfigType.ADDRESS;
-    // values1D[id].val = emptyValue;
+    // ORACLE_ADDRESS
+    id = ConfigID.ORACLE_ADDRESS;
+    settings[id].typ = ConfigType.BOOL2D;
+    addr = _addressToConfig(defaultAddresses.Oracle);
+    v2d = values2D[id];
+    v2d[addr].isSet = true;
+    v2d[addr].val = TRUE_BYTES32;
+
+    // CONFIG_ADDRESS
+    id = ConfigID.CONFIG_ADDRESS;
+    settings[id].typ = ConfigType.BOOL2D;
+    addr = _addressToConfig(defaultAddresses.Config);
+    v2d = values2D[id];
+    v2d[addr].isSet = true;
+    v2d[addr].val = TRUE_BYTES32;
+
+    // MARKET_DATA_ADDRESS
+    id = ConfigID.MARKET_DATA_ADDRESS;
+    settings[id].typ = ConfigType.BOOL2D;
+    addr = _addressToConfig(defaultAddresses.MarketData);
+    v2d = values2D[id];
+    v2d[addr].isSet = true;
+    v2d[addr].val = TRUE_BYTES32;
 
     // // ADMIN_FEE_SUB_ACCOUNT_ID
     // id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = emptyValue;
+    // values1D[id].val = 0;
 
     // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
     // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
     // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = emptyValue;
+    // values1D[id].val = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -481,5 +522,23 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[0].isSet = true;
     v2d[0].val = _intToConfig(-5 * int64(ONE_PERCENT));
+  }
+
+  struct DefaultAddress {
+    address Config;
+    address Oracle;
+    address MarketData;
+    address Recovery;
+  }
+
+  function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
+    // This is for dev environment
+    return
+      DefaultAddress({
+        Config: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
+        Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
+        MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
+        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae
+      });
   }
 }
