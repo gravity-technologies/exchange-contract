@@ -1,5 +1,6 @@
 import { Contract } from "ethers"
 import {
+  ExAccountMultiSigThreshold,
   ExAccountSigners,
   ExAccountWithdrawalAddresses,
   ExConfig1D,
@@ -20,6 +21,8 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectNumAccounts(contract, expectation.expect as ExNumAccounts)
     case "ExSessionKeys":
       return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
+    case "ExAccountMultiSigThreshold":
+      return expectAccountMultisigThreshold(contract, expectation.expect as ExAccountMultiSigThreshold)
     case "ExAccountWithdrawalAddresses":
       return expectWithdrawalAddresses(contract, expectation.expect as ExAccountWithdrawalAddresses)
     case "ExConfig2D":
@@ -43,12 +46,14 @@ async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts
 async function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
-    let expectedMultisigThreshold = expectations.multi_sig_threshold
     let actualPermission = await contract.getSignerPermission(expectations.address, signer)
-    let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
-    expect(actualMultisigThreshold).to.equal(expectedMultisigThreshold)
   }
+}
+
+async function expectAccountMultisigThreshold(contract: Contract, expectations: ExAccountMultiSigThreshold) {
+  let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
+  expect(actualMultisigThreshold).to.equal(expectations.multi_sig_threshold)
 }
 
 async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
