@@ -202,21 +202,6 @@ export async function addSubSigner(
   await tx.wait()
 }
 
-export async function setSubAccountSignerPermission(
-  contract: Contract,
-  txSigner: Wallet,
-  ts: number,
-  txID: number,
-  subID: number,
-  signer: string,
-  permission: number
-) {
-  const salt = nonce()
-  const sig = genSetSubAccountSignerPermissionsPayloadSig(txSigner, subID, signer, permission, salt)
-  const tx = await contract.setSubAccountSignerPermissions(ts, txID, subID, signer, permission, sig, txRequestDefault())
-  await tx.wait()
-}
-
 export async function removeSubSigner(
   contract: Contract,
   txSigner: Wallet,

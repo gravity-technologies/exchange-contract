@@ -120,35 +120,6 @@ contract SubAccountContract is BaseContract {
     sub.signers[signer] = permissions;
   }
 
-  /// @notice Change the permissions of a subaccount signer
-  ///
-  /// @param timestamp The timestamp of the transaction
-  /// @param txID The transaction ID
-  /// @param subID The subaccount ID
-  /// @param signer The signer to change permissions for
-  /// @param perms The new permissions of the signer as a bitmask
-  /// @param sig The signature of the acting user
-  function setSubAccountSignerPermissions(
-    int64 timestamp,
-    uint64 txID,
-    uint64 subID,
-    address signer,
-    uint64 perms,
-    Signature calldata sig
-  ) external {
-    _setSequence(timestamp, txID);
-    SubAccount storage sub = _requireSubAccount(subID);
-    Account storage acc = _requireAccount(sub.accountID);
-    _requireUpsertSigner(acc, sub, sig.signer, perms, SubAccountPermAdmin);
-
-    // ---------- Signature Verification -----------
-    _preventReplay(hashSetSignerPermissions(subID, signer, perms, sig.nonce), sig);
-    // ------- End of Signature Verification -------
-
-    // Update permission
-    sub.signers[signer] = perms;
-  }
-
   /// @notice Remove a signer from a subaccount
   ///
   /// @param timestamp The timestamp of the transaction

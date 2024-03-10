@@ -1,19 +1,11 @@
 import { Contract } from "ethers"
 import { network } from "hardhat"
 import { deployContract } from "../deploy/utils"
+import { MAX_GAS, addSubSigner, createAccount, createSubAccount, removeSubSigner, setSubAccountMarginType } from "./api"
 import {
-  MAX_GAS,
-  addSubSigner,
-  createAccount,
-  createSubAccount,
-  removeSubSigner,
-  setSubAccountMarginType,
-  setSubAccountSignerPermission,
-} from "./api"
-import {
+  genAddSubAccountSignerPayloadSig,
   genRemoveSubAccountSignerPayloadSig,
   genSetSubAccountMarginTypePayloadSig,
-  genSetSubAccountSignerPermissionsPayloadSig,
 } from "./signature"
 import { MarginType, SubPerm } from "./type"
 import { expectToThrowAsync, getDeployerWallet, nonce, wallet } from "./util"
@@ -264,15 +256,15 @@ describe("API - SubAccount", function () {
       // Test
       ts++
       // account admin can change permission of any signer
-      await setSubAccountSignerPermission(contract, admin, ts, ts, subID, carl.address, SubPerm.Trade)
+      await addSubSigner(contract, ts, ts, admin, subID, carl.address, SubPerm.Trade)
 
       ts++
       // subaccount admin can change permission of any signer
-      await setSubAccountSignerPermission(contract, alice, ts, ts, subID, carl.address, SubPerm.Admin)
+      await addSubSigner(contract, ts, ts, alice, subID, carl.address, SubPerm.Admin)
 
       ts++
       // subaccount signer with update permission can change permission of any signer
-      await setSubAccountSignerPermission(contract, bob, ts, ts, subID, carl.address, SubPerm.Trade)
+      await addSubSigner(contract, ts, ts, bob, subID, carl.address, SubPerm.Trade)
     })
 
     it("fails if subaccount doesn't exist", async function () {
@@ -286,9 +278,7 @@ describe("API - SubAccount", function () {
       await createAccount(contract, admin, ts, ts, accID)
 
       ts++
-      await expectToThrowAsync(
-        setSubAccountSignerPermission(contract, admin, ts, ts, subID, admin.address, SubPerm.Trade)
-      )
+      await expectToThrowAsync(addSubSigner(contract, ts, ts, admin, subID, admin.address, SubPerm.Trade))
     })
 
     it("fails if invalid signature", async function () {
@@ -311,9 +301,9 @@ describe("API - SubAccount", function () {
       ts++
       // account admin can change permission of any signer
       const salt = nonce()
-      const sig = genSetSubAccountSignerPermissionsPayloadSig(admin, subID, alice.address, SubPerm.Trade, salt)
+      const sig = genAddSubAccountSignerPayloadSig(admin, subID, alice.address, SubPerm.Trade, salt)
       await expectToThrowAsync(
-        contract.setSubAccountSignerPermissions(ts, ts, subID, alice.address, SubPerm.Deposit, salt, sig),
+        contract.addSubAccountSigner(ts, ts, subID, alice.address, SubPerm.Trade, salt, sig),
         "invalid signature"
       )
     })
@@ -341,9 +331,7 @@ describe("API - SubAccount", function () {
 
       // Test
       ts++
-      await expectToThrowAsync(
-        setSubAccountSignerPermission(contract, alice, ts, ts, subID, bob.address, SubPerm.Deposit)
-      )
+      await expectToThrowAsync(addSubSigner(contract, ts, ts, alice, subID, bob.address, SubPerm.Trade))
       // TODO "actor cannot call function"
     })
   })
@@ -496,7 +484,7 @@ describe("API - SubAccount", function () {
       ts++
       // SubAccount signer with update permission
       const bob = wallet()
-      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.UpdateSignerPermission | SubPerm.Trade)
+      await addSubSigner(contract, ts, ts, admin, subID, bob.address, SubPerm.Trade)
 
       // Test
       ts++

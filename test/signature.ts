@@ -184,24 +184,6 @@ export function genAddSubAccountSignerPayloadSig(
   })
 }
 
-export function genSetSubAccountSignerPermissionsPayloadSig(
-  wallet: Wallet,
-  subAccountID: number,
-  signer: string,
-  permissions: number,
-  nonce: number = randomInt(22021991)
-): Signature {
-  return sign(wallet, {
-    ...Types.SetSubAccountSignerPermissions,
-    message: {
-      subAccountID,
-      signer,
-      permissions,
-      nonce,
-    },
-  })
-}
-
 export function genRemoveSubAccountSignerPayloadSig(
   wallet: Wallet,
   subAccountID: number,
