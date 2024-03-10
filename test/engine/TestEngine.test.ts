@@ -61,8 +61,11 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
-      for (let expectation of step.expectations) {
-        validateExpectation(contract, expectation)
+      // There are some helpers that dont define
+      if (step.expectations != undefined) {
+        for (let expectation of step.expectations) {
+          validateExpectation(contract, expectation)
+        }
       }
     }
   }

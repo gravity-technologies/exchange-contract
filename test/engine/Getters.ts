@@ -1,6 +1,8 @@
 import { Contract } from "ethers"
 import {
+  ExAccountMultiSigThreshold,
   ExAccountSigners,
+  ExAccountWithdrawalAddresses,
   ExConfig1D,
   ExConfig2D,
   ExConfigSchedule,
@@ -19,6 +21,10 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectNumAccounts(contract, expectation.expect as ExNumAccounts)
     case "ExSessionKeys":
       return expectSessionKeys(contract, expectation.expect as ExSessionKeys)
+    case "ExAccountMultiSigThreshold":
+      return expectAccountMultisigThreshold(contract, expectation.expect as ExAccountMultiSigThreshold)
+    case "ExAccountWithdrawalAddresses":
+      return expectWithdrawalAddresses(contract, expectation.expect as ExAccountWithdrawalAddresses)
     case "ExConfig2D":
       return expectConfig2D(contract, expectation.expect as ExConfig2D)
     case "ExConfig":
@@ -40,12 +46,14 @@ async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts
 async function expectAccountSigners(contract: Contract, expectations: ExAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
-    let expectedMultisigThreshold = expectations.multi_sig_threshold
     let actualPermission = await contract.getSignerPermission(expectations.address, signer)
-    let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
-    expect(actualMultisigThreshold).to.equal(expectedMultisigThreshold)
   }
+}
+
+async function expectAccountMultisigThreshold(contract: Contract, expectations: ExAccountMultiSigThreshold) {
+  let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
+  expect(actualMultisigThreshold).to.equal(expectations.multi_sig_threshold)
 }
 
 async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
@@ -55,6 +63,16 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
     expect(actualSessionKey).to.equal(expectedSessionKey)
     expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
     expect(expectations.signers[signer]).to.not.be.empty
+  }
+}
+
+async function expectWithdrawalAddresses(contract: Contract, expectations: ExAccountWithdrawalAddresses) {
+  for (let i = 0; i < expectations.withdrawal_addresses.length; i++) {
+    let isWithdrawalAddress = await contract.isOnboardedWithdrawalAddress(
+      expectations.address,
+      expectations.withdrawal_addresses[i]
+    )
+    expect(isWithdrawalAddress).to.equal(true)
   }
 }
 

@@ -33,11 +33,21 @@ export interface ExNumAccounts {
 export interface ExAccountSigners {
   address: string
   signers: { [address: string]: string }
+}
+
+// Expects an account with the given address to have the given multi-sig threshold
+export interface ExAccountMultiSigThreshold {
+  address: string
   multi_sig_threshold: number
 }
 
 export interface ExSessionKeys {
   signers: { [address: string]: string }
+}
+
+export interface ExAccountWithdrawalAddresses {
+  address: string
+  withdrawal_addresses: string[]
 }
 
 export interface ExConfigSchedule {
@@ -68,6 +78,8 @@ export interface Expectation {
   expect:
     | ExNumAccounts
     | ExAccountSigners
+    | ExAccountMultiSigThreshold
+    | ExAccountWithdrawalAddresses
     | ExSessionKeys
     | ExConfig1D
     | ExConfig2D
