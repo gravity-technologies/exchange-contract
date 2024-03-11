@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "../types/DataStructure.sol";
-import "./BaseContract.sol";
+import "./TradeContract.sol";
+import "../util/BIMath.sol";
 
-contract ReadStateContract is BaseContract {
+contract ReadStateContract is TradeContract {
+  using BIMath for BI;
+
   struct AccountResult {
     address id;
     uint64 multiSigThreshold;
@@ -55,7 +57,7 @@ contract ReadStateContract is BaseContract {
     return true;
   }
 
-  function getAccountSpotBalance(address _address, Currency currency) public view returns (uint128) {
+  function getAccountSpotBalance(address _address, Currency currency) public view returns (int64) {
     Account storage account = state.accounts[_address];
     return account.spotBalances[currency];
   }
@@ -114,11 +116,6 @@ contract ReadStateContract is BaseContract {
       });
   }
 
-  function getSubAccountSpotBalance(uint64 _id, Currency currency) public view returns (uint64) {
-    SubAccount storage subAccount = state.subAccounts[_id];
-    return subAccount.spotBalances[currency];
-  }
-
   function getSubAccSignerPermission(uint64 _id, address signer) public view returns (uint64) {
     SubAccount storage subAccount = state.subAccounts[_id];
     return subAccount.signers[signer];
@@ -132,11 +129,32 @@ contract ReadStateContract is BaseContract {
     return state.prices.fundingTime;
   }
 
-  function getMarkPrice(bytes32 assetID) public view returns (uint64) {
-    return state.prices.mark[assetID];
+  function getMarkPrice(bytes32 assetID) public view returns (uint64, bool) {
+    return _getMarkPrice9Decimals(assetID);
   }
 
   function getInterestRate(bytes32 assetID) public view returns (int32) {
     return state.prices.interest[assetID];
+  }
+
+  function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    uint64 quoteDecimals = _getCurrencyDecimal(sub.quoteCurrency);
+    return _getSubAccountUsdValue(sub).toInt64(quoteDecimals);
+  }
+
+  function getSubAccountPosition(
+    uint64 subAccountID,
+    bytes32 assetID
+  ) public view returns (int64 balance, int64 lastAppliedFundingIndex) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
+    Position storage pos = posmap.values[assetID];
+    return (pos.balance, pos.lastAppliedFundingIndex);
+  }
+
+  function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.spotBalances[currency];
   }
 }

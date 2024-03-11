@@ -120,7 +120,7 @@ struct Account {
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint64 multiSigThreshold;
   uint64 adminCount;
-  mapping(Currency => uint128) spotBalances;
+  mapping(Currency => int64) spotBalances;
   // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
   mapping(address => mapping(address => uint256)) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
@@ -146,7 +146,7 @@ struct SubAccount {
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
   // The total amount of base currency that the sub account possesses
-  mapping(Currency => uint64) spotBalances;
+  mapping(Currency => int64) spotBalances;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;

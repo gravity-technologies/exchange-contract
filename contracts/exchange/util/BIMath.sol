@@ -48,14 +48,6 @@ library BIMath {
     return BI(a.val / int256(10 ** (d - a.dec)), d);
   }
 
-  function neg(BI memory a) internal pure returns (BI memory) {
-    return BI(-a.val, a.dec);
-  }
-
-  function abs(BI memory a) internal pure returns (BI memory) {
-    return BI(a.val < 0 ? -a.val : a.val, a.dec);
-  }
-
   function cmp(BI memory a, BI memory b) internal pure returns (int256) {
     if (a.dec == b.dec) {
       return a.val - b.val;
@@ -76,7 +68,7 @@ library BIMath {
 
   function toInt64(BI memory a, uint decimals) internal pure returns (int64) {
     int256 res = toInt256(a, decimals);
-    require(res >= type(int64).min && res <= type(int64).max, ERR_OVERFLOW);
+    // require(res >= type(int64).min && res <= type(int64).max, ERR_OVERFLOW);
     return int64(res);
   }
 

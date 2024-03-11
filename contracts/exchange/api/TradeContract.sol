@@ -33,6 +33,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
     uint64 totalMakersFee;
+
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
@@ -91,14 +92,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (ok) {
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
-      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
+      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += int64(totalMakersFee + takerFee);
     }
   }
 
   function _verifyAndExecuteOrder(
     int64 timestamp,
     Order calldata order,
-    uint64[] memory matchSizes,
+    uint64[] memory tradeSizes,
     bool isMakerOrder,
     int64 spotDelta,
     BI memory notional,
@@ -106,11 +107,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
 
-    _verifyOrderFull(timestamp, sub, order, matchSizes, isMakerOrder, notional, totalFee);
+    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, notional, totalFee);
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(sub, order, matchSizes, spotDelta - int64(totalFee));
+    _executeOrder(sub, order, tradeSizes, spotDelta - int64(totalFee));
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -118,7 +119,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
-    uint64[] memory matchSizes,
+    uint64[] memory tradeSizes,
     bool isMakerOrder,
     BI memory notional,
     uint64 totalFee
@@ -145,15 +146,17 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
     _requireValidSig(timestamp, orderHash, order.signature);
+    OrderLeg calldata leg0 = order.legs[0];
 
     // Check that the order's total matched size after this trade does not exceed the order size
-    mapping(bytes32 => uint64) storage sizeMatched = state.replay.sizeMatched[orderHash];
+    mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
+
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
-      uint64 total = sizeMatched[leg.assetID] + matchSizes[i];
+      uint64 total = executedSize[leg.assetID] + tradeSizes[i];
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
-      sizeMatched[leg.assetID] = total;
+      executedSize[leg.assetID] = total;
     }
 
     // Check that the fee paid is within the cap
@@ -191,9 +194,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // FIXME: Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = int64(sub.spotBalances[subQuote]) + spotDelta;
-    require(newSpotBalance >= 0, ERR_INSUFFICIENT_SPOT_BALANCE);
-    sub.spotBalances[subQuote] = uint64(newSpotBalance);
+    int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta;
+    sub.spotBalances[subQuote] = newSpotBalance;
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
@@ -234,11 +236,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
   }
 
+  // FIXME: Our BE disables charging fees for now. To enable back afterwards
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {
-    uint64 totalFee;
-    uint len = feePerLegs.length;
-    for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
-    return totalFee;
+    return 0;
+    // uint64 totalFee;
+    // uint len = feePerLegs.length;
+    // for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
+    // return totalFee;
   }
 
   function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
