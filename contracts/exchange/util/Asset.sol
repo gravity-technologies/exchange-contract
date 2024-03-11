@@ -57,3 +57,9 @@ function assetGetExpiration(bytes32 assetID) pure returns (int64) {
 function assetGetStrikePrice(bytes32 assetID) pure returns (uint64) {
   return uint64(uint(assetID >> 96));
 }
+
+bytes32 constant quoteMask = bytes32(~(uint(0xFF) << 16));
+
+function assetSetQuote(bytes32 assetID, Currency quote) pure returns (bytes32) {
+  return (assetID & quoteMask) | (bytes32(uint(quote)) << 16);
+}

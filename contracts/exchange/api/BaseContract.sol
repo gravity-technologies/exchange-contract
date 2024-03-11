@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
+import "../util/Asset.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
@@ -130,5 +131,52 @@ contract BaseContract is ReentrancyGuardUpgradeable {
 
     // ETH, BTC
     return 9;
+  }
+
+  // Price utils
+  function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+    Kind kind = assetGetKind(assetID);
+
+    // If spot, process separately
+    if (kind == Kind.SPOT) {
+      return _getQuoteMarkPrice9Decimals(assetGetUnderlying(assetID));
+    }
+
+    Currency quote = assetGetQuote(assetID);
+    // Only derivatives remaining
+    (uint64 underlyingPrice, bool found) = _getUnderlyingMarkPrice9Decimals(assetID);
+    if (!found) {
+      return (0, false);
+    }
+
+    // If getting price in USD, we can simply scale and return
+    if (quote == Currency.USD) {
+      return (underlyingPrice, true);
+    }
+
+    // Otherwise, we have to convert to USDT/USDC price
+    (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
+    if (!quoteFound) {
+      return (0, false);
+    }
+
+    return (underlyingPrice / quotePrice, true);
+  }
+
+  function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+    uint64 price = state.prices.mark[assetSetQuote(assetID, Currency.USD)];
+    return (price, price != 0);
+  }
+
+  function _getQuoteMarkPrice9Decimals(Currency currency) internal view returns (uint64, bool) {
+    uint64 price = state.prices.mark[_getSpotAssetID(currency)];
+    return (price, price != 0);
+  }
+
+  function _getSpotAssetID(Currency currency) internal pure returns (bytes32) {
+    return
+      assetToID(
+        Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+      );
   }
 }
