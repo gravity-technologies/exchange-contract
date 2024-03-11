@@ -30,7 +30,10 @@ enum Kind {
   PERPS,
   FUTURES,
   CALL,
-  PUT
+  PUT,
+  SPOT,
+  SETTLEMENT,
+  RATE
 }
 
 enum Currency {
