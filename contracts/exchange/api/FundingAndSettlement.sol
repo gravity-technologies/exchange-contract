@@ -52,30 +52,28 @@ contract FundingAndSettlement is BaseContract {
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
+  // TEMPORARY COMMENTED OUT - TO FIX SETTLEMENT LOGIC IN NEXT PR
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
-    uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
-    BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
-
-    bytes32[] storage positionMapKeys = positions.keys;
-    mapping(bytes32 => Position) storage positionValues = positions.values;
-    uint positionLen = positionMapKeys.length;
-    int64 stateTimestamp = state.timestamp;
-
-    for (uint i; i < positionLen; ++i) {
-      bytes32 assetID = positionMapKeys[i];
-      (uint64 settlePrice, bool found) = _getAssetSettlementPrice(stateTimestamp, assetID);
-      if (!found) {
-        continue;
-      }
-      remove(positions, assetID);
-      if (settlePrice == 0) {
-        continue;
-      }
-      BI memory posBalance = BI(positionValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
-      newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
-    }
-
-    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
+    // uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
+    // BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
+    // bytes32[] storage positionMapKeys = positions.keys;
+    // mapping(bytes32 => Position) storage positionValues = positions.values;
+    // uint positionLen = positionMapKeys.length;
+    // int64 stateTimestamp = state.timestamp;
+    // for (uint i; i < positionLen; ++i) {
+    //   bytes32 assetID = positionMapKeys[i];
+    //   (uint64 settlePrice, bool found) = _getAssetSettlementPrice(stateTimestamp, assetID);
+    //   if (!found) {
+    //     continue;
+    //   }
+    //   remove(positions, assetID);
+    //   if (settlePrice == 0) {
+    //     continue;
+    //   }
+    //   BI memory posBalance = BI(positionValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+    //   newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
+    // }
+    // sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
   function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {

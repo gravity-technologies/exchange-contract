@@ -1,4 +1,5 @@
-import { BigNumber, Contract, utils } from "ethers"
+import { expect } from "chai"
+import { BigNumber, Contract } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -13,16 +14,15 @@ import {
   ExMarkPrice,
   ExNumAccounts,
   ExSessionKeys,
-  ExSubAccountSigners,
   ExSubAccountMarginType,
-  Expectation,
-  ExSubAccountValue,
   ExSubAccountPosition,
+  ExSubAccountSigners,
   ExSubAccountSpot,
+  ExSubAccountValue,
+  Expectation,
 } from "./TestEngineTypes"
-import { expect } from "chai"
-import { hex32, toAssetID } from "./util"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
+import { hex32, toAssetID } from "./util"
 
 export async function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
@@ -210,14 +210,17 @@ async function expectSubAccountValue(contract: Contract, expectations: ExSubAcco
 }
 
 async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
-  const [balance, lastAppliedFundingIndex] = await contract.getSubAccountPosition(
+  const expectedPos = expectations.position
+  const [found, balance, lastAppliedFundingIndex] = await contract.getSubAccountPosition(
     BigInt(expectations.sub_account_id),
     toAssetID(expectations.asset)
   )
-  const expected = expectations.position
-  expect(BigInt(balance)).to.equal(BigInt(expected.balance))
-  console.log("Compare POS", expected.balance.toString(), balance.toString())
-  expect(BigInt(lastAppliedFundingIndex)).to.equal(BigInt(expected.last_applied_funding_index))
+  if (expectedPos == null) {
+    expect(found).to.be.false
+  } else {
+    expect(BigInt(balance)).to.equal(BigInt(expectedPos.balance ?? "0"))
+    expect(BigInt(lastAppliedFundingIndex)).to.equal(BigInt(expectedPos.last_applied_funding_index))
+  }
 }
 
 async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccountSpot) {

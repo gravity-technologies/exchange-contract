@@ -146,11 +146,11 @@ contract ReadStateContract is TradeContract {
   function getSubAccountPosition(
     uint64 subAccountID,
     bytes32 assetID
-  ) public view returns (int64 balance, int64 lastAppliedFundingIndex) {
+  ) public view returns (bool found, int64 balance, int64 lastAppliedFundingIndex) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
     Position storage pos = posmap.values[assetID];
-    return (pos.balance, pos.lastAppliedFundingIndex);
+    return (pos.id != 0x0, pos.balance, pos.lastAppliedFundingIndex);
   }
 
   function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {

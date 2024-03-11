@@ -12,23 +12,25 @@ contract RiskCheck is BaseContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
-    BI memory val = _getSubAccountUsdValue(sub);
-    require(val.val >= 0, "invalid total value");
+    require(_getSubAccountUsdValue(sub).val >= 0, "invalid total value");
   }
 
+  /// @dev Get the total value of a sub account in quote currency decimal
   function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (BI memory) {
     bytes32 spotID = _getSpotAssetID(sub.quoteCurrency);
     (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
     require(found, ERR_NOT_FOUND);
-    BI memory spotUsd = BI(int(sub.spotBalances[sub.quoteCurrency]), _getCurrencyDecimal(sub.quoteCurrency)).mul(
+    BI memory derivVal = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
+      _getPositionsUsdValue(sub.options)
+    );
+    uint qDec = _getCurrencyDecimal(sub.quoteCurrency);
+    BI memory spotVal = BI(int(sub.spotBalances[sub.quoteCurrency]), qDec).mul(
       BI(int(uint(markPrice)), PRICE_DECIMALS)
     );
-    return
-      spotUsd.add(_getPositionsUsdValue(sub.perps)).add(_getPositionsUsdValue(sub.futures)).add(
-        _getPositionsUsdValue(sub.options)
-      );
+    return spotVal.add(derivVal);
   }
 
+  /// @dev Get the total value of a position collections
   function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (BI memory) {
     BI memory total;
     bytes32[] storage keys = positions.keys;
@@ -39,10 +41,10 @@ contract RiskCheck is BaseContract {
       Position storage pos = values[keys[i]];
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
       require(found, ERR_NOT_FOUND);
-      uint64 underlyingDecimals = _getCurrencyDecimal(assetGetUnderlying(pos.id));
-      BI memory balance = BI(int256(pos.balance), underlyingDecimals);
+      uint64 uDec = _getCurrencyDecimal(assetGetUnderlying(pos.id));
+      BI memory balance = BI(int256(pos.balance), uDec);
       BI memory markPriceBI = BI(int(uint(markPrice)), PRICE_DECIMALS);
-      total = total.add(markPriceBI).mul(balance);
+      total = total.add(markPriceBI.mul(balance));
     }
     return total;
   }

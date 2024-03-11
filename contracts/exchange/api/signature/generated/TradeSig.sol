@@ -5,7 +5,7 @@ pragma solidity ^0.8.20;
 import "../../../types/DataStructure.sol";
 
 bytes32 constant _ORDER_H = keccak256(
-  "Order(uint64 subAccountID,bool isMarket,uint16 timeInForce,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,OrderLeg[] legs,uint32 nonce)OrderLeg(uint256 assetID,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
+  "Order(uint64 subAccountID,bool isMarket,uint8 timeInForce,uint32 takerFeePercentageCap,uint32 makerFeePercentageCap,bool postOnly,bool reduceOnly,OrderLeg[] legs,uint32 nonce)OrderLeg(uint256 assetID,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
 );
 
 bytes32 constant _LEG_H = keccak256(
@@ -16,6 +16,7 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
   bytes memory legsEncoded;
   uint numLegs = o.legs.length;
   for (uint i; i < numLegs; ++i) legsEncoded = abi.encodePacked(legsEncoded, hashOrderLeg(o.legs[i]));
+
   return
     keccak256(
       abi.encode(
@@ -28,7 +29,7 @@ function hashOrder(Order calldata o) pure returns (bytes32) {
         o.postOnly,
         o.reduceOnly,
         keccak256(legsEncoded),
-        o.nonce
+        o.signature.nonce
       )
     );
 }

@@ -13,6 +13,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   // eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
   // precomputed value for keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVTEx")), keccak256(bytes("0")), 0, address(0)));
   bytes32 private constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
+  bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
@@ -107,7 +108,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   }
 
   function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal pure {
-    bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, hash));
+    bytes32 digest = keccak256(abi.encodePacked(PREFIXED_DOMAIN_HASH, hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
