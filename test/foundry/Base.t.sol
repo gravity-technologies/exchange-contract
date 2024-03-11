@@ -91,7 +91,7 @@ contract BaseTest is Test {
     bytes32 structHash,
     int64 expiry,
     uint32 nonce
-  ) public returns (Signature memory sig) {
+  ) public pure returns (Signature memory sig) {
     bytes32 digest = toTypedDataHash(domainSeperator, structHash);
     (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, digest);
     sig = Signature(signer, r, s, v, expiry, nonce);

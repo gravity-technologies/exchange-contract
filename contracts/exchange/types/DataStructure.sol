@@ -45,7 +45,7 @@ enum Currency {
   BTC
 }
 
-uint constant priceDecimal = 9;
+uint constant PRICE_DECIMALS = 9;
 
 uint64 constant AccountPermAdmin = 1 << 1;
 uint64 constant AccountPermInternalTransfer = 1 << 2;
@@ -198,8 +198,7 @@ struct PriceState {
   // We centrally upload funding rates. On smart contract side, we simply apply a tiny minmax clamp
   // So that users are only minimally impacted if GRVT exhibits bad integrity
   // USD is always expressed as a uint64 with 9 decimal points
-  // TODO: this uint128 represents the derivative
-  mapping(Currency => int64) fundingIndex;
+  mapping(bytes32 => int64) fundingIndex;
   int64 fundingTime;
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
@@ -359,4 +358,9 @@ struct MakerTradeMatch {
   Order makerOrder;
   uint64[] matchedSize;
   int64[] feeCharged;
+}
+
+struct PriceEntry {
+  bytes32 assetID;
+  int256 value;
 }

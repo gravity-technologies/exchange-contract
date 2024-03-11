@@ -1,74 +1,154 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./BaseContract.sol";
 import "../types/DataStructure.sol";
+import "../types/PositionMap.sol";
 import "../util/Asset.sol";
+import "../util/BIMath.sol";
+import "../common/Error.sol";
+import "./BaseContract.sol";
+
+// import "forge-std/console.sol";
 
 contract FundingAndSettlement is BaseContract {
-  function _fundAndSettle(int64 timestamp, SubAccount storage sub) internal {
+  using BIMath for BI;
+
+  function _fundAndSettle(SubAccount storage sub) internal {
     _fundPerp(sub);
-    _settleOptionsOrFutures(sub, sub.options);
     _settleOptionsOrFutures(sub, sub.futures);
+    _settleOptionsOrFutures(sub, sub.options);
   }
 
   function _fundPerp(SubAccount storage sub) internal {
-    // uint256[] storage keys = sub.perps.keys;
-    // mapping(uint256 => Position) storage values = sub.perps.values;
-    // uint count = keys.length;
-    // int128 balanceDelta;
-    // for (uint i; i < count; ++i) {
-    //   Position storage perp = values[keys[i]];
-    //   // Upcasting from uint64 -> int128 is safe
-    //   int128 currentPrice = state.prices.mark[perp.id];
-    //   // Upcasting from uint64 -> int128 is safe
-    //   int128 lastPrice = int128(uint128(perp.lastAppliedFundingIndex));
-    //   balanceDelta += (currentPrice - lastPrice) * perp.balance;
-    // }
-    // sub.balanceE9 += balanceDelta;
+    // Skip Funding, since it has already been applied
+    if (sub.lastAppliedFundingTimestamp == state.prices.fundingTime) {
+      return;
+    }
+
+    Currency quoteCurrency = sub.quoteCurrency;
+    mapping(bytes32 => int64) storage fundingIndex = state.prices.fundingIndex;
+    uint64 qdec = _getCurrencyDecimal(quoteCurrency);
+    PositionsMap storage perps = sub.perps;
+    BI memory fundingPayment;
+
+    bytes32[] storage keys = perps.keys;
+    int64 fundingTime = state.prices.fundingTime;
+    int64 newSpotBalance = int64(sub.spotBalances[quoteCurrency]);
+    uint len = keys.length;
+    for (uint i; i < len; ++i) {
+      bytes32 assetID = keys[i];
+      int64 latestFundingIndex = fundingIndex[assetID];
+      Position storage perp = perps.values[assetID];
+      int256 fundingIndexChange = int256(latestFundingIndex - perp.lastAppliedFundingIndex);
+      if (fundingIndexChange == 0) {
+        continue;
+      }
+      // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
+      BI memory perpBalance = BI(perp.balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+      fundingPayment = fundingPayment.add(BI(fundingIndexChange, PRICE_DECIMALS)).mul(perpBalance).scale(qdec);
+      perp.lastAppliedFundingIndex = latestFundingIndex;
+      newSpotBalance += fundingPayment.toInt64(qdec);
+    }
+    require(newSpotBalance >= 0, ERR_UNDERFLOW);
+    sub.spotBalances[quoteCurrency] = uint64(newSpotBalance);
+    sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
-    // uint256[] storage keys = positions.keys;
-    // mapping(uint256 => Position) storage values = positions.values;
-    // uint count = keys.length;
-    // uint256[] memory expiredOptionIDs = new uint256[](count);
-    // uint expiredCount = 0;
-    // mapping(uint256 => uint64) storage settlePrice = state.prices.settled;
-    // // Update the balance after settling option/future
-    // // Use balanceDelta to avoid updating state directly, which is gas expensive
-    // int128 balanceDelta = 0;
-    // for (uint i; i < count; ++i) {
-    //   uint256 assetID = keys[i];
-    //   Asset memory deriv = _parseAssetID(assetID);
-    //   if (uint64(deriv.expiration) <= state.timestamp) {
-    //     expiredOptionIDs[expiredCount++] = keys[i];
-    //     int128 priceDelta = int128(uint128(settlePrice[assetID]));
-    //     bool isOption = deriv.instrument == Kind.CALL || deriv.instrument == Kind.PUT;
-    //     int128 fee = 0;
-    //     if (isOption) {
-    //       priceDelta -= int128(uint128(deriv.strikePrice));
-    //       Position storage pos = values[assetID];
-    //       bool nonDaily = deriv.expiration > pos.createdAt + 1 days;
-    //       // Charge a settlement fee for non-daily option
-    //       // if (nonDaily) fee = _getSettlementFee(deriv, pos.balance);
-    //     }
-    //     balanceDelta += priceDelta * values[assetID].balance - fee;
-    //   }
-    // }
-    // // Remove the expired derivative
-    // for (uint i; i < expiredCount; ++i) {
-    //   remove(positions, expiredOptionIDs[expiredOptionIDs[i]]);
-    // }
-    // // Update total balance
-    // sub.balanceE9 += balanceDelta;
+    uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
+    BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
+
+    bytes32[] storage positionMapKeys = positions.keys;
+    mapping(bytes32 => Position) storage positionValues = positions.values;
+    uint positionLen = positionMapKeys.length;
+    int64 stateTimestamp = state.timestamp;
+
+    for (uint i; i < positionLen; ++i) {
+      bytes32 assetID = positionMapKeys[i];
+      (uint64 settlePrice, bool found) = _getAssetSettlementPrice(stateTimestamp, assetID);
+      if (!found) {
+        continue;
+      }
+      remove(positions, assetID);
+      if (settlePrice == 0) {
+        continue;
+      }
+      BI memory posBalance = BI(positionValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+      newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
+    }
+
+    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toUint64(qdec);
   }
 
-  // settlement_fee = min(underlying_charge, premium_cap)
-  // function _getSettlementFee(Asset memory deriv, int64 size) internal view returns (int128) {
-  //   mapping(uint256 => int64) storage prices = state.prices.mark;
-  //   int128 underlyingCharge = (size * prices[deriv.underlyingAssetID] * SETTLEMENT_UNDERLYING_CHARGE_PCT) / 1e9;
-  //   int128 premiumCap = (size * prices[deriv.quoteAssetID] * SETTLEMENT_TRADE_PRICE_PCT) / 1e9;
-  //   return underlyingCharge < premiumCap ? underlyingCharge : premiumCap;
-  // }
+  function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {
+    if (assetGetExpiration(assetID) <= timestamp) {
+      return (0, true);
+    }
+    uint64 storedPrice = state.prices.settlement[assetID];
+    if (storedPrice != 0) {
+      return (storedPrice, true);
+    }
+
+    (uint64 settlementPrice, bool found) = _getSettlementPrice9Decimals(assetID);
+    state.prices.settlement[assetID] = settlementPrice;
+    return (settlementPrice, found);
+  }
+
+  function _getSettlementPrice9Decimals(bytes32 assetID) private view returns (uint64, bool) {
+    Kind kind = assetGetKind(assetID);
+    Asset memory asset = parseAssetID(assetID);
+    (uint64 futPrice, bool found) = _getFutureSettlementPrice9Decimals(asset.underlying, asset.quote, asset.expiration);
+
+    if (kind == Kind.FUTURES) {
+      return (futPrice, found);
+    } else if (kind == Kind.CALL) {
+      int64 callPrice = BI(int256(uint256(futPrice)), PRICE_DECIMALS)
+        .sub(BI(int256(uint256(asset.strikePrice)), _getCurrencyDecimal(asset.quote)))
+        .toInt64(PRICE_DECIMALS);
+      if (callPrice < 0) {
+        return (0, true);
+      }
+      return (uint64(callPrice), true);
+    } else if (kind == Kind.PUT) {
+      int64 putPrice = BI(int256(uint256(asset.strikePrice)), _getCurrencyDecimal(asset.quote))
+        .sub(BI(int256(uint256(futPrice)), PRICE_DECIMALS))
+        .toInt64(PRICE_DECIMALS);
+      if (putPrice < 0) {
+        return (0, true);
+      }
+      return (uint64(putPrice), true);
+    }
+
+    // Should never reach here
+    revert(ERR_NOT_FOUND);
+  }
+
+  function _getFutureSettlementPrice9Decimals(
+    Currency underlying,
+    Currency quote,
+    int64 expiry
+  ) private view returns (uint64, bool) {
+    (uint64 underlyingPrice, bool underlyingFound) = _getCurrencySettlementPrice9Decimals(underlying, expiry);
+    if (!underlyingFound) {
+      return (0, false);
+    }
+    (uint64 quotePrice, bool quoteFound) = _getCurrencySettlementPrice9Decimals(quote, expiry);
+    if (!quoteFound) {
+      return (0, false);
+    }
+    require(quotePrice != 0, ERR_DIV_BY_ZERO);
+    return (uint64(underlyingPrice / quotePrice), true);
+  }
+
+  function _getCurrencySettlementPrice9Decimals(Currency currency, int64 expiry) private view returns (uint64, bool) {
+    Asset memory asset = Asset({
+      kind: Kind.SETTLEMENT,
+      underlying: currency,
+      quote: currency,
+      expiration: expiry,
+      strikePrice: 0
+    });
+    uint64 price = state.prices.settlement[assetToID(asset)];
+    return (price, price != 0);
+  }
 }
