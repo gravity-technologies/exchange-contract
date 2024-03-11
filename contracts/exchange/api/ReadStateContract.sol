@@ -18,6 +18,23 @@ contract ReadStateContract is BaseContract {
     // 5. signers
   }
 
+  struct SubAccountResult {
+    uint64 id;
+    uint64 adminCount;
+    uint64 signerCount;
+    address accountID;
+    MarginType marginType;
+    Currency quoteCurrency;
+    int64 lastAppliedFundingTimestamp;
+    // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
+    // 1. spotBalances
+    // 2. PositionsMap options;
+    // 3. PositionsMap futures;
+    // 4. PositionsMap perps;
+    // 5. mapping(bytes => uint256) positionIndex;
+    // 6. signers;
+  }
+
   function getAccountResult(address _address) public view returns (AccountResult memory) {
     Account storage account = state.accounts[_address];
     return
@@ -81,5 +98,29 @@ contract ReadStateContract is BaseContract {
 
   function isConfigScheduleAbsent(ConfigID id, bytes32 subKey) public view returns (bool) {
     return state.configSettings[id].schedules[subKey].lockEndTime == 0;
+  }
+
+  function getSubAccountResult(uint64 _id) public view returns (SubAccountResult memory) {
+    SubAccount storage subAccount = state.subAccounts[_id];
+    return
+      SubAccountResult({
+        id: subAccount.id,
+        adminCount: subAccount.adminCount,
+        signerCount: subAccount.signerCount,
+        accountID: subAccount.accountID,
+        marginType: subAccount.marginType,
+        quoteCurrency: subAccount.quoteCurrency,
+        lastAppliedFundingTimestamp: subAccount.lastAppliedFundingTimestamp
+      });
+  }
+
+  function getSubAccountSpotBalance(uint64 _id, Currency currency) public view returns (uint64) {
+    SubAccount storage subAccount = state.subAccounts[_id];
+    return subAccount.spotBalances[currency];
+  }
+
+  function getSubAccSignerPermission(uint64 _id, address signer) public view returns (uint64) {
+    SubAccount storage subAccount = state.subAccounts[_id];
+    return subAccount.signers[signer];
   }
 }

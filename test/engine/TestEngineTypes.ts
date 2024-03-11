@@ -41,6 +41,18 @@ export interface ExAccountMultiSigThreshold {
   multi_sig_threshold: number
 }
 
+// Expects a sub-account with signers with the given permissions
+export interface ExSubAccountSigners {
+  sub_account_id: string
+  signers: { [address: string]: string }
+}
+
+// Expects a sub-account with the given margin type
+export interface ExSubAccountMarginType {
+  sub_account_id: string
+  margin_type: string
+}
+
 export interface ExSessionKeys {
   signers: { [address: string]: string }
 }
@@ -85,6 +97,8 @@ export interface Expectation {
     | ExConfig2D
     | ExConfigSchedule
     | ExConfigScheduleAbsent
+    | ExSubAccountSigners
+    | ExSubAccountMarginType
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

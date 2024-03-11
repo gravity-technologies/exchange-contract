@@ -28,7 +28,10 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "num_accounts": 1,
+                     "account_ids": [
+                        "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+                     ]
                   },
                   "name": "ExNumAccounts"
                },
@@ -74,7 +77,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -111,7 +115,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -148,7 +153,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -185,7 +191,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -222,7 +229,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -259,7 +267,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -296,7 +305,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -333,7 +343,10 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "num_accounts": 1,
+                     "account_ids": [
+                        "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+                     ]
                   },
                   "name": "ExNumAccounts"
                },
@@ -374,7 +387,11 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 2
+                     "num_accounts": 2,
+                     "account_ids": [
+                        "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98",
+                        "0xbfdc9e0f796d6ab818840e0ad182f78e5af383df"
+                     ]
                   },
                   "name": "ExNumAccounts"
                },
@@ -420,7 +437,10 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "num_accounts": 1,
+                     "account_ids": [
+                        "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+                     ]
                   },
                   "name": "ExNumAccounts"
                },
@@ -461,7 +481,10 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "num_accounts": 1,
+                     "account_ids": [
+                        "0xd7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+                     ]
                   },
                   "name": "ExNumAccounts"
                },
