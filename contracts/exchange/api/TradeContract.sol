@@ -50,8 +50,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
         OrderLeg calldata leg = makerOrder.legs[legIdx];
         BI memory matchedSize = BI(int256(uint256(size)), _getCurrencyDecimal(assetGetUnderlying(leg.assetID)));
-        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), priceDecimal));
-        uint64 notionalU64 = notional.toUint64(priceDecimal);
+        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
+        uint64 notionalU64 = notional.toUint64(PRICE_DECIMALS);
 
         // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
         if (leg.isBuyingAsset) {
@@ -69,7 +69,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       takerNotionals = takerNotionals.add(makerNotionals);
       uint64 makerFee = _getTotalFee(makerMatch.feeCharged);
       totalMakersFee += makerFee;
-      uint makerDecimals = _getCurrencyDecimal(_requireSubAccount(makerOrder.subAccountID).quoteCurrency);
 
       _verifyAndExecuteOrder(
         timestamp,
@@ -111,7 +110,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, matchSizes, spotDelta - int64(totalFee));
+    _executeOrder(sub, order, matchSizes, spotDelta - int64(totalFee));
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -141,7 +140,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(session.expiry >= timestamp, ERR_SESSION_EXPIRED);
       subAccountSigner = session.subAccountSigner;
     }
-    _requirePermission(sub, subAccountSigner, SubAccountPermTrade);
+    _requireSubAccountPermission(sub, subAccountSigner, SubAccountPermTrade);
 
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
@@ -163,16 +162,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _executeOrder(
-    int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
     int64 spotDelta
   ) internal {
-    _fundAndSettle(timestamp, sub);
+    _fundAndSettle(sub);
 
     Currency subQuote = sub.quoteCurrency;
-    uint64 qDec = _getCurrencyDecimal(subQuote);
 
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -220,7 +217,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     if (kind == Kind.PERPS) {
       // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
       // to avoid mis-calculation of funding payment (leads to improper accounting of on-chain assets)
-      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetGetUnderlying(assetID)];
+      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetID];
     }
 
     return pos;
@@ -235,18 +232,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     } else if (kind == Kind.CALL || kind == Kind.PUT) {
       remove(sub.options, assetID);
     }
-  }
-
-  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
-    uint idx = uint(currency);
-
-    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
-
-    // USDT, USDC, USD
-    if (idx < 4) return 6;
-
-    // ETH, BTC
-    return 9;
   }
 
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {

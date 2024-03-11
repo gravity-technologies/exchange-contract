@@ -4,48 +4,42 @@ pragma solidity ^0.8.20;
 import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
+import "../util/BIMath.sol";
 
 contract RiskCheck is BaseContract {
+  using BIMath for BI;
+
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
-  /// @dev return the total value of a sub account with 18 decimal places
-  function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (int128) {
-    bytes32 currencyID = _getCurrencyAssetID(sub.quoteCurrency);
-    // upcasting price from int64 -> int128 is safe
-    int128 balanceUsd = int128(uint128(sub.spotBalances[sub.quoteCurrency])) *
-      int128(uint128(state.prices.mark[currencyID]));
-    return
-      balanceUsd +
-      _getPositionsUsdValue(sub.perps) +
-      _getPositionsUsdValue(sub.futures) +
-      _getPositionsUsdValue(sub.options);
-  }
-
-  // FIXME: return the correct asset encoding of quote currency
-  function _getCurrencyAssetID(Currency c) internal pure returns (bytes32) {
-    if (c == Currency.ETH) return 0x0;
-    if (c == Currency.BTC) return 0x0;
-    if (c == Currency.USDC) return 0x0;
-    if (c == Currency.USDT) return 0x0;
-    require(false, "invalid currency");
-    return 0;
-  }
-
   function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
-    int128 val = _getSubAccountUsdValue(sub);
-    if (val < 0) revert InvalidTotalValue(sub.id, val);
+    BI memory val = _getSubAccountUsdValue(sub);
+    if (val.val < 0) revert InvalidTotalValue(sub.id, val.toInt256(_getCurrencyDecimal(sub.quoteCurrency)));
   }
 
-  function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (int128) {
-    int128 total;
+  function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (BI memory) {
+    bytes32 spotID = _getSpotAssetID(sub.quoteCurrency);
+    (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
+    require(found, ERR_NOT_FOUND);
+    BI memory balanceUsd = BI(int(uint(sub.spotBalances[sub.quoteCurrency])), _getCurrencyDecimal(sub.quoteCurrency))
+      .mul(BI(int(uint(markPrice)), PRICE_DECIMALS));
+    return
+      balanceUsd.add(_getPositionsUsdValue(sub.perps)).add(_getPositionsUsdValue(sub.futures)).add(
+        _getPositionsUsdValue(sub.options)
+      );
+  }
+
+  function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (BI memory) {
+    BI memory total;
     bytes32[] storage keys = positions.keys;
     mapping(bytes32 => Position) storage values = positions.values;
-    mapping(bytes32 => uint64) storage assetPrices = state.prices.mark;
 
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      total += int128(uint128(assetPrices[pos.id])) * int128(pos.balance);
+      (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
+      require(found, ERR_NOT_FOUND);
+      uint64 underlyingDecimals = _getCurrencyDecimal(assetGetUnderlying(pos.id));
+      total = total.add(BI(int(uint(markPrice)), PRICE_DECIMALS)).mul(BI(int256(pos.balance), underlyingDecimals));
     }
     return total;
   }

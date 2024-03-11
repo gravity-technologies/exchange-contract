@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
+import "../util/Asset.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
@@ -102,21 +103,89 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   // Verify that a signature is valid. Caller need to prevent replay attack
   function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
     require(sig.expiration > 0 && sig.expiration >= timestamp, "expired");
+    _requireValidNoExipry(hash, sig);
+  }
+
+  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal pure {
     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
 
-  // Check if the caller has certain permissions on a subaccount
-  function _requirePermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
+  // Check if the signer has certain permissions on a subaccount
+  function _requireSubAccountPermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
     Account storage acc = _requireAccount(sub.accountID);
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return;
     uint64 signerAuthz = sub.signers[signer];
     require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
   }
 
+  // Check if the signer has certain permissions on an account
+  function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
+    require(account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0, "no permission");
+  }
+
   // Check if the caller has certain permissions on a subaccount
   function getLastTxID() external view returns (uint64) {
     return state.lastTxID;
+  }
+
+  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
+    uint idx = uint(currency);
+
+    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
+
+    // USDT, USDC, USD
+    if (idx < 4) return 6;
+
+    // ETH, BTC
+    return 9;
+  }
+
+  // Price utils
+  function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+    Kind kind = assetGetKind(assetID);
+
+    // If spot, process separately
+    if (kind == Kind.SPOT) {
+      return _getQuoteMarkPrice9Decimals(assetGetUnderlying(assetID));
+    }
+
+    Currency quote = assetGetQuote(assetID);
+    // Only derivatives remaining
+    (uint64 underlyingPrice, bool found) = _getUnderlyingMarkPrice9Decimals(assetID);
+    if (!found) {
+      return (0, false);
+    }
+
+    // If getting price in USD, we can simply scale and return
+    if (quote == Currency.USD) {
+      return (underlyingPrice, true);
+    }
+
+    // Otherwise, we have to convert to USDT/USDC price
+    (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
+    if (!quoteFound) {
+      return (0, false);
+    }
+
+    return (underlyingPrice / quotePrice, true);
+  }
+
+  function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+    uint64 price = state.prices.mark[assetSetQuote(assetID, Currency.USD)];
+    return (price, price != 0);
+  }
+
+  function _getQuoteMarkPrice9Decimals(Currency currency) internal view returns (uint64, bool) {
+    uint64 price = state.prices.mark[_getSpotAssetID(currency)];
+    return (price, price != 0);
+  }
+
+  function _getSpotAssetID(Currency currency) internal pure returns (bytes32) {
+    return
+      assetToID(
+        Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+      );
   }
 }

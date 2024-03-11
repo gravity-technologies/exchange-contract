@@ -30,14 +30,14 @@ describe("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  // const filters = ["TestConfigChain.json"]
-  // const testNames = ["Expect set timelock with schedule success (if lock duration is met)"]
+  // const filters = ["TestInterestRate.json"]
+  // const testNames = ["Interest (Valid - Signed 1ns before received)"]
   testFiles
     // .filter((t) => filters.includes(t))
     .forEach((file) => {
       describe(file, async function () {
         let tests = parseTestsFromFile(process.cwd() + testDir + file)
-        // tests = tests.filter((t) => testNames.includes(t.name))
+        // tests = tests.filter((t) => testNames.length > 0 && testNames.includes(t.name))
         tests.slice().forEach((test) => {
           it(test.name + ` correctly runs`, async function () {
             await validateTest(test, contract, w1)
@@ -61,12 +61,8 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
-      // There are some helpers that dont define
-      if (step.expectations != undefined) {
-        for (let expectation of step.expectations) {
-          validateExpectation(contract, expectation)
-        }
-      }
+      const expectations = step.expectations ?? []
+      expectations.forEach((exp) => validateExpectation(contract, exp))
     }
   }
   return

@@ -123,4 +123,20 @@ contract ReadStateContract is BaseContract {
     SubAccount storage subAccount = state.subAccounts[_id];
     return subAccount.signers[signer];
   }
+
+  function getFundingIndex(bytes32 assetID) public view returns (int64) {
+    return state.prices.fundingIndex[assetID];
+  }
+
+  function getFundingTime() public view returns (int64) {
+    return state.prices.fundingTime;
+  }
+
+  function getMarkPrice(bytes32 assetID) public view returns (uint64) {
+    return state.prices.mark[assetID];
+  }
+
+  function getInterestRate(bytes32 assetID) public view returns (int32) {
+    return state.prices.interest[assetID];
+  }
 }

@@ -2,7 +2,7 @@ import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
 import { randomInt } from "crypto"
 import { Wallet, utils } from "ethers"
 import * as Types from "../signatures/message/type"
-import { OrderNoSignature, ZKSyncMysteryBoxDefiTaskSignature, Signature } from "./type"
+import { OrderNoSignature, ZKSyncMysteryBoxDefiTaskSignature, Signature, PriceEntry, PriceEntrySig } from "./type"
 import { buf, getTimestampNs } from "./util"
 
 export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
@@ -358,6 +358,22 @@ export function genTransferSig(
       fromSubaccount,
       toSubaccount,
       numTokens,
+      nonce,
+    },
+  })
+}
+
+export function genPriceTick(
+  wallet: Wallet,
+  values: PriceEntrySig[],
+  timestamp: BigInt,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.OracleData,
+    message: {
+      values,
+      timestamp,
       nonce,
     },
   })

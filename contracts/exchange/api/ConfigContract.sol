@@ -52,6 +52,8 @@ contract ConfigContract is BaseContract {
   uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
   bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
+  // The default fallback value which is a zero value array
+  bytes32 private constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -71,8 +73,8 @@ contract ConfigContract is BaseContract {
   }
 
   function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
-    ConfigValue storage c = state.config2DValues[key][subKey];
-    return (int64(uint64((uint256(c.val)))), c.isSet);
+    (uint64 val, bool isSet) = _getUintConfig2D(key, subKey);
+    return (int64(val), isSet);
   }
 
   function _uintToConfig(uint64 v) internal pure returns (bytes32) {
@@ -90,6 +92,9 @@ contract ConfigContract is BaseContract {
 
   function _getUintConfig2D(ConfigID key, bytes32 subKey) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
     return (uint64(uint256(c.val)), c.isSet);
   }
 
@@ -125,6 +130,9 @@ contract ConfigContract is BaseContract {
 
   function _getAddressConfig2D(ConfigID key, bytes32 subKey) internal view returns (address, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
     return (address(uint160(uint256(c.val))), c.isSet);
   }
 
@@ -333,8 +341,8 @@ contract ConfigContract is BaseContract {
     ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _uintToConfig(2 * ONE_PERCENT);
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(2 * ONE_PERCENT);
     Rule[] storage rules = settings[id].rules;
     rules.push(Rule(0, 0, 100 * ONE_HUNDRED_PERCENT));
     rules.push(Rule(1 hours, 10 * ONE_BEEP, 0));
@@ -346,15 +354,15 @@ contract ConfigContract is BaseContract {
     id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _uintToConfig(ONE_PERCENT);
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(ONE_PERCENT);
 
     // SM_FUTURES_VARIABLE_MARGIN
     id = ConfigID.SM_FUTURES_VARIABLE_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _uintToConfig(50 * ONE_CENTIBEEP);
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(50 * ONE_CENTIBEEP);
     v2d[bytes32(uint256(Currency.BTC))].isSet = true;
     v2d[bytes32(uint256(Currency.BTC))].val = _uintToConfig(50 * ONE_CENTIBEEP);
     v2d[bytes32(uint256(Currency.ETH))].isSet = true;
@@ -364,22 +372,22 @@ contract ConfigContract is BaseContract {
     id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_HIGH;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _uintToConfig(15 * ONE_PERCENT);
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(15 * ONE_PERCENT);
 
     // SM_OPTIONS_INITIAL_MARGIN_LOW
     id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_LOW;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _uintToConfig(10 * ONE_PERCENT);
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(10 * ONE_PERCENT);
 
     // SM_OPTIONS_MAINTENANCE_MARGIN
     id = ConfigID.SM_OPTIONS_MAINTENANCE_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(750 * ONE_BEEP));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(750 * ONE_BEEP));
 
     ///////////////////////////////////////////////////////////////////
     /// Portfolio Margin
@@ -389,71 +397,71 @@ contract ConfigContract is BaseContract {
     id = ConfigID.PM_SPOT_MOVE;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(20 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(20 * ONE_PERCENT));
 
     // PM_VOL_MOVE_DOWN
     id = ConfigID.PM_VOL_MOVE_DOWN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(45 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(45 * ONE_PERCENT));
 
     // PM_VOL_MOVE_UP
     id = ConfigID.PM_VOL_MOVE_UP;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(45 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(45 * ONE_PERCENT));
 
     // PM_SPOT_MOVE_EXTREME
     id = ConfigID.PM_SPOT_MOVE_EXTREME;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(60 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(60 * ONE_PERCENT));
 
     // PM_EXTREME_MOVE_DISCOUNT
     id = ConfigID.PM_EXTREME_MOVE_DISCOUNT;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(33 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(33 * ONE_PERCENT));
 
     // PM_SHORT_TERM_VEGA_POWER
     id = ConfigID.PM_SHORT_TERM_VEGA_POWER;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(30 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(30 * ONE_PERCENT));
 
     // PM_LONG_TERM_VEGA_POWER
     id = ConfigID.PM_LONG_TERM_VEGA_POWER;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(13 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(13 * ONE_PERCENT));
 
     // PM_INITIAL_MARGIN_FACTOR
     id = ConfigID.PM_INITIAL_MARGIN_FACTOR;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(130 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(130 * ONE_PERCENT));
 
     // PM_FUTURES_CONTINGENCY_MARGIN
     id = ConfigID.PM_FUTURES_CONTINGENCY_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(60 * ONE_BEEP));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(60 * ONE_BEEP));
 
     // PM_OPTIONS_CONTINGENCY_MARGIN
     id = ConfigID.PM_OPTIONS_CONTINGENCY_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(ONE_PERCENT));
 
     ///////////////////////////////////////////////////////////////////
     /// ADMIN addresses. Commented out because they are empty for now
@@ -512,15 +520,15 @@ contract ConfigContract is BaseContract {
     id = ConfigID.FUNDING_RATE_HIGH;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(int64(5 * ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(5 * ONE_PERCENT));
 
     // FUNDING_RATE_LOW
     id = ConfigID.FUNDING_RATE_LOW;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
-    v2d[0].isSet = true;
-    v2d[0].val = _intToConfig(-5 * int64(ONE_PERCENT));
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(-5 * int64(ONE_PERCENT));
   }
 
   struct DefaultAddress {
