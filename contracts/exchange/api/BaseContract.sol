@@ -103,6 +103,10 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   // Verify that a signature is valid. Caller need to prevent replay attack
   function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
     require(sig.expiration > 0 && sig.expiration >= timestamp, "expired");
+    _requireValidNoExipry(hash, sig);
+  }
+
+  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal pure {
     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", DOMAIN_HASH, hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
