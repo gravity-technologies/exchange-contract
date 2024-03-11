@@ -28,12 +28,6 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
-                  },
-                  "name": "ExNumAccounts"
-               },
-               {
-                  "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
                      "signers": {
                         "0xc473cf43209af80db499f8021811c880ead4a572": "2"
@@ -86,7 +80,7 @@
       ]
    },
    {
-      "name": "addAccountSigner: add two account signers with admin permissions, increase multisig threshold and add a third signer",
+      "name": "addAccountSigner: add account signer with admin permissions (Wrong S)",
       "steps": [
          {
             "time": "1",
@@ -114,10 +108,276 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
                   },
-                  "name": "ExNumAccounts"
-               },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "2",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "2",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x4ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db7",
+                        "s": "0x1527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f667d6d",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlck/2t7gulmvxUMBOFvtLLyNeMASbLLrtN7cHZI0lZB23FSfxjC41H6okwzbvKtpaHAckpRnAXD02sitUUY9mfW0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed53000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a5724ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db71527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f667d6d000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "addAccountSigner: add account signer with admin permissions (Wrong R)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "2",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "2",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x4ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d256444c7",
+                        "s": "0x1527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlck/2t7gulmvxUMBOFvtLLyNeMASbLLrtN7cHZI0lZETHFSfxjC41H6okwzbvKtpaHAckpRnAXD02sitUUY9mVl0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed53000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a5724ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d256444c71527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "addAccountSigner: add account signer with admin permissions (Wrong V)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "2",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "2",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x4ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db7",
+                        "s": "0x1527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d",
+                        "v": 28,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlck/2t7gulmvxUMBOFvtLLyNeMASbLLrtN7cHZI0lZB23FSfxjC41H6okwzbvKtpaHAckpRnAXD02sitUUY9mVl0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed53000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a5724ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db71527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "addAccountSigner: add account signer with admin permissions (Wrong nonce)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "2",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "2",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x4ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db7",
+                        "s": "0x1527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 1235
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlck/2t7gulmvxUMBOFvtLLyNeMASbLLrtN7cHZI0lZB23FSfxjC41H6okwzbvKtpaHAckpRnAXD02sitUUY9mVl0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNM=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed53000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000004d300000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a5724ff6b7b82e966bf150c04e16fb4b2f235e30049b2cbaed37b707648d25641db71527f18c2e351faa24c336ef2ada5a1c0724a519c05c3d36b22b54518f66565d000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d3",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "addAccountSigner: add two account signers with admin permissions, increase multisig threshold and add a third signer",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
                {
                   "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
@@ -288,12 +548,6 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
-                  },
-                  "name": "ExNumAccounts"
-               },
-               {
-                  "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
                      "signers": {
                         "0xc473cf43209af80db499f8021811c880ead4a572": "2"
@@ -457,7 +711,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -492,12 +747,6 @@
             "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
             "ret": "",
             "expectations": [
-               {
-                  "expect": {
-                     "num_accounts": 1
-                  },
-                  "name": "ExNumAccounts"
-               },
                {
                   "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
@@ -620,12 +869,6 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
-                  },
-                  "name": "ExNumAccounts"
-               },
-               {
-                  "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
                      "signers": {
                         "0xc473cf43209af80db499f8021811c880ead4a572": "2"
@@ -716,7 +959,7 @@
       ]
    },
    {
-      "name": "removeAccountSigner: error when removing last admin",
+      "name": "removeAccountSigner: add account signer with admin permissions (Wrong S)",
       "steps": [
          {
             "time": "1",
@@ -744,10 +987,384 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 1
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
                   },
-                  "name": "ExNumAccounts"
-               },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "1",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "1",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d",
+                        "s": "0x640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 12345
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlckKRI6rASBIRr28+2Md/mZDMgboaGPSCvBz8ol84pZRNZAwQXgWcxEcpzDjrRUXOPhslcu8O7oeLH9iY65B4uIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDk=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a5720000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000303900000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d20000000000000000000000000000000000000000000000000000000000003039",
+            "ret": ""
+         },
+         {
+            "time": "2",
+            "tx_id": "3",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "3",
+               "time": "2",
+               "type": "REMOVE_ACCOUNT_SIGNER",
+               "remove_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f",
+                        "s": "0x64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e82d0",
+                        "v": 28,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "WVQBNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAxHPPQyCa+A20mfgCGBHIgOrUpXJhXd9sRfE+OBwRQ0Hwt8yZRVKrYj5esA5yirhaOYjEj2TkwRDAZnIavUcFFDj5Q87syoFoyaXqAAu/fmg0joLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATS",
+            "tx_data": "0x5954013500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed5300000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e82d0000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "removeAccountSigner: add account signer with admin permissions (Wrong R)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "1",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "1",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d",
+                        "s": "0x640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 12345
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlckKRI6rASBIRr28+2Md/mZDMgboaGPSCvBz8ol84pZRNZAwQXgWcxEcpzDjrRUXOPhslcu8O7oeLH9iY65B4uIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDk=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a5720000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000303900000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d20000000000000000000000000000000000000000000000000000000000003039",
+            "ret": ""
+         },
+         {
+            "time": "2",
+            "tx_id": "3",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "3",
+               "time": "2",
+               "type": "REMOVE_ACCOUNT_SIGNER",
+               "remove_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988eb9f",
+                        "s": "0x64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0",
+                        "v": 28,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "WVQBNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAxHPPQyCa+A20mfgCGBHIgOrUpXJhXd9sRfE+OBwRQ0Hwt8yZRVKrYj5esA5yirhaOYjrn2TkwRDAZnIavUcFFDj5Q87syoFoyaXqAAu/fmg0jlvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATS",
+            "tx_data": "0x5954013500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed5300000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988eb9f64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "removeAccountSigner: add account signer with admin permissions (Wrong V)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "1",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "1",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d",
+                        "s": "0x640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 12345
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlckKRI6rASBIRr28+2Md/mZDMgboaGPSCvBz8ol84pZRNZAwQXgWcxEcpzDjrRUXOPhslcu8O7oeLH9iY65B4uIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDk=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a5720000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000303900000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d20000000000000000000000000000000000000000000000000000000000003039",
+            "ret": ""
+         },
+         {
+            "time": "2",
+            "tx_id": "3",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "3",
+               "time": "2",
+               "type": "REMOVE_ACCOUNT_SIGNER",
+               "remove_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f",
+                        "s": "0x64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 1234
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "WVQBNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAxHPPQyCa+A20mfgCGBHIgOrUpXJhXd9sRfE+OBwRQ0Hwt8yZRVKrYj5esA5yirhaOYjEj2TkwRDAZnIavUcFFDj5Q87syoFoyaXqAAu/fmg0jlvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATS",
+            "tx_data": "0x5954013500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed5300000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "removeAccountSigner: add account signer with admin permissions (Wrong nonce)",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "signers": {
+                        "0xc473cf43209af80db499f8021811c880ead4a572": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "1",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "1",
+               "type": "ADD_ACCOUNT_SIGNER",
+               "add_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "permissions": "2",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d",
+                        "s": "0x640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880",
+                        "v": 27,
+                        "expiration": "1234",
+                        "nonce": 12345
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "tS4FawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwOQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlckKRI6rASBIRr28+2Md/mZDMgboaGPSCvBz8ol84pZRNZAwQXgWcxEcpzDjrRUXOPhslcu8O7oeLH9iY65B4uIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDk=",
+            "tx_data": "0xb52e056b00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a5720000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000303900000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572429123aac0481211af6f3ed8c77f9990cc81ba1a18f482bc1cfca25f38a5944d640c105e059cc44729cc38eb4545ce3e1b2572ef0eee878b1fd898eb9078b880000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d20000000000000000000000000000000000000000000000000000000000003039",
+            "ret": ""
+         },
+         {
+            "time": "2",
+            "tx_id": "3",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "3",
+               "time": "2",
+               "type": "REMOVE_ACCOUNT_SIGNER",
+               "remove_account_signer": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signer": "0xb9e12d2f06e92c83c0b1f97a866b510d0651ed53",
+                  "signatures": [
+                     {
+                        "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                        "r": "0x615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f",
+                        "s": "0x64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0",
+                        "v": 28,
+                        "expiration": "1234",
+                        "nonce": 1235
+                     }
+                  ]
+               }
+            },
+            "tx_abi": "WVQBNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAALnhLS8G6SyDwLH5eoZrUQ0GUe1TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAxHPPQyCa+A20mfgCGBHIgOrUpXJhXd9sRfE+OBwRQ0Hwt8yZRVKrYj5esA5yirhaOYjEj2TkwRDAZnIavUcFFDj5Q87syoFoyaXqAAu/fmg0jlvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATT",
+            "tx_data": "0x5954013500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000b9e12d2f06e92c83c0b1f97a866b510d0651ed5300000000000000000000000000000000000000000000000000000000000004d300000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572615ddf6c45f13e381c114341f0b7cc994552ab623e5eb00e728ab85a3988c48f64e4c110c066721abd47051438f943ceecca8168c9a5ea000bbf7e68348e5bc0000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d3",
+            "ret": "eip712 invalid signature: recovery failed"
+         }
+      ]
+   },
+   {
+      "name": "removeAccountSigner: error when removing last admin",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0xc473cf43209af80db499f8021811c880ead4a572",
+                  "signature": {
+                     "signer": "0xc473cf43209af80db499f8021811c880ead4a572",
+                     "r": "0xd82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e",
+                     "s": "0x621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADEc89DIJr4DbSZ+AIYEciA6tSlcgAAAAAAAAAAAAAAAMRzz0MgmvgNtJn4AhgRyIDq1KVy2CzSHhLQVfQBSDVB817ErH8xESTmk3nUIUpgd4QYHG5iHLNX9BYXJuvJ6TEMkUo2lL7BA5+w9l6yfEuK17JmnwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
                {
                   "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",
@@ -909,7 +1526,8 @@
             "expectations": [
                {
                   "expect": {
-                     "num_accounts": 0
+                     "num_accounts": 0,
+                     "account_ids": null
                   },
                   "name": "ExNumAccounts"
                }
@@ -944,12 +1562,6 @@
             "tx_data": "0x86db00e100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000c473cf43209af80db499f8021811c880ead4a572000000000000000000000000c473cf43209af80db499f8021811c880ead4a572d82cd21e12d055f401483541f35ec4ac7f311124e69379d4214a607784181c6e621cb357f4161726ebc9e9310c914a3694bec1039fb0f65eb27c4b8ad7b2669f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
             "ret": "",
             "expectations": [
-               {
-                  "expect": {
-                     "num_accounts": 1
-                  },
-                  "name": "ExNumAccounts"
-               },
                {
                   "expect": {
                      "address": "0xc473cf43209af80db499f8021811c880ead4a572",

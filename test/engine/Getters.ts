@@ -13,6 +13,8 @@ import {
   ExMarkPrice,
   ExNumAccounts,
   ExSessionKeys,
+  ExSubAccountSigners,
+  ExSubAccountMarginType,
   Expectation,
 } from "./TestEngineTypes"
 import { expect } from "chai"
@@ -38,6 +40,10 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectConfigSchedule(contract, expectation.expect as ExConfigSchedule)
     case "ExConfigScheduleAbsent":
       return expectConfigScheduleAbsent(contract, expectation.expect as ExConfigScheduleAbsent)
+    case "ExSubAccountSigners":
+      return expectSubAccountSigners(contract, expectation.expect as ExSubAccountSigners)
+    case "ExSubAccountMarginType":
+      return expectSubAccountMarginType(contract, expectation.expect as ExSubAccountMarginType)
     case "ExFundingIndex":
       return expectFundingIndex(contract, expectation.expect as ExFundingIndex)
     case "ExMarkPrice":
@@ -109,6 +115,19 @@ async function expectConfigScheduleAbsent(contract: Contract, expectations: ExCo
   expect(isAbsent).to.be.true
 }
 
+async function expectSubAccountSigners(contract: Contract, expectations: ExSubAccountSigners) {
+  for (var signer in expectations.signers) {
+    let expectedPermission = expectations.signers[signer]
+    let actualPermission = await contract.getSignerPermission(expectations.sub_account_id, signer)
+    expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
+  }
+}
+
+async function expectSubAccountMarginType(contract: Contract, expectations: ExSubAccountMarginType) {
+  let res = await getSubAccountResult(contract, expectations.sub_account_id)
+  expect(res.marginType).to.equal(parseInt(expectations.margin_type, 10))
+}
+
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
   const assetID = toAssetID({
     Kind: expectations.asset_dto.kind,
@@ -162,5 +181,30 @@ export async function getAccountResult(
     multisigThreshold: multisigThreshold.toNumber(),
     subAccounts: subAccounts,
     adminCount: adminCount.toNumber(),
+  }
+}
+
+export async function getSubAccountResult(
+  contract: Contract,
+  subAccountId: string
+): Promise<{
+  id: number
+  adminCount: number
+  signerCount: number
+  accountID: string
+  marginType: number
+  quoteCurrency: number
+  lastAppliedFundingTimestamp: number
+}> {
+  let [id, adminCount, signerCount, accountID, marginType, quoteCurrency, lastAppliedFundingTimestamp] =
+    await contract.getSubAccountResult(subAccountId)
+  return {
+    id: id.toNumber(),
+    adminCount: signerCount.toNumber(),
+    signerCount: adminCount,
+    accountID: accountID,
+    marginType: marginType.toNumber(),
+    quoteCurrency: quoteCurrency.toNumber(),
+    lastAppliedFundingTimestamp: lastAppliedFundingTimestamp.toNumber(),
   }
 }
