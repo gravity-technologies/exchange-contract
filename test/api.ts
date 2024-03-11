@@ -19,7 +19,6 @@ import {
   genSetAccountMultiSigThresholdSig,
   genSetConfigSig,
   genSetSubAccountMarginTypePayloadSig,
-  genSetSubAccountSignerPermissionsPayloadSig,
   genWithdrawalSig,
 } from "./signature"
 import { Currency, MarginType, PriceEntry, PriceEntrySig } from "./type"

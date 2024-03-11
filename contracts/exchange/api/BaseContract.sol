@@ -112,12 +112,17 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
 
-  // Check if the caller has certain permissions on a subaccount
-  function _requirePermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
+  // Check if the signer has certain permissions on a subaccount
+  function _requireSubAccountPermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
     Account storage acc = _requireAccount(sub.accountID);
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return;
     uint64 signerAuthz = sub.signers[signer];
     require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
+  }
+
+  // Check if the signer has certain permissions on an account
+  function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
+    require(account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0, "no permission");
   }
 
   // Check if the caller has certain permissions on a subaccount
