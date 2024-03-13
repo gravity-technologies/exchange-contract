@@ -1,4 +1,4 @@
-import { Contract, utils } from "ethers"
+import { BigNumber, Contract, utils } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -68,7 +68,7 @@ export async function validateExpectation(contract: Contract, expectation: Expec
 }
 
 async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts) {
-  const exists = await contract.accountExists(expectations.account_ids)
+  const exists = await contract.isAllAccountExists(expectations.account_ids)
   expect(exists).to.be.true
 }
 
@@ -86,12 +86,15 @@ async function expectAccountMultisigThreshold(contract: Contract, expectations: 
 }
 
 async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
-  for (var signer in expectations.signers) {
-    let expectedSessionKey = expectations.signers[signer]
-    let [actualSessionKey, authorizationExpiry] = await contract.getSessionKey(signer)
-    expect(actualSessionKey).to.equal(expectedSessionKey)
-    expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
-    expect(expectations.signers[signer]).to.not.be.empty
+  for (var sessionKey in expectations.signers) {
+    expect(expectations.signers[sessionKey]).to.not.be.empty
+    let [actualSubAccSigner, actualAuthorizationExpiry] = await contract.getSessionValue(
+      expectations.signers[sessionKey].session_key
+    )
+    expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
+    const expectedAuthExpiry = BigNumber.from(expectations.signers[sessionKey].authorization_expiry).toNumber()
+    const actualAuthExpiry = BigNumber.from(actualAuthorizationExpiry).toNumber()
+    expect(actualAuthExpiry).to.equal(expectedAuthExpiry)
   }
 }
 
@@ -128,7 +131,7 @@ async function expectConfigScheduleAbsent(contract: Contract, expectations: ExCo
 async function expectSubAccountSigners(contract: Contract, expectations: ExSubAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
-    let actualPermission = await contract.getSignerPermission(BigInt(expectations.sub_account_id), signer)
+    let actualPermission = await contract.getSubAccSignerPermission(BigInt(expectations.sub_account_id), signer)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
   }
 }
@@ -195,8 +198,8 @@ export async function getSubAccountResult(
     adminCount: signerCount.toNumber(),
     signerCount: adminCount,
     accountID: accountID,
-    marginType: marginType.toNumber(),
-    quoteCurrency: quoteCurrency.toNumber(),
+    marginType: marginType,
+    quoteCurrency: quoteCurrency,
     lastAppliedFundingTimestamp: lastAppliedFundingTimestamp.toNumber(),
   }
 }

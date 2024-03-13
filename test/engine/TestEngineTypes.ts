@@ -56,8 +56,14 @@ export interface ExSubAccountMarginType {
   margin_type: string
 }
 
+export interface SessionValue {
+  main_signing_key: string
+  session_key: string
+  authorization_expiry: string
+}
+
 export interface ExSessionKeys {
-  signers: { [address: string]: string }
+  signers: { [address: string]: SessionValue }
 }
 
 export interface ExAccountWithdrawalAddresses {

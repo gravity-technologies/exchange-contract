@@ -30,7 +30,16 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  const filters = ["TestMarkPrice.json"]
+  const filters = [
+    "TestAccountSigners.json",
+    "TestAccountMultisig.json",
+    "TestSessionKey.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
+    "TestSessionKey.json",
+    "TestCreateAccount.json",
+    "TestSubAccount.json",
+  ]
   const testNames: string[] = []
   // const testNames = ["Perp (Valid - Signed at time of received)"]
   testFiles
