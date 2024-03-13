@@ -30,11 +30,18 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  const filters = ["TestMarkPrice.json"]
+  const filters = [
+    "TestAccountSigners.json",
+    "TestAccountMultisig.json",
+    "TestSessionKey.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
+    "TestSessionKey.json",
+  ]
   const testNames: string[] = []
   // const testNames = ["Perp (Valid - Signed at time of received)"]
   testFiles
-    .filter((t) => filters.includes(t))
+    // .filter((t) => filters.includes(t))
     .forEach((file) => {
       describe(file, async function () {
         let tests = parseTestsFromFile(process.cwd() + testDir + file)

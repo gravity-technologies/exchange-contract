@@ -82,8 +82,8 @@ contract ReadStateContract is TradeContract {
     return account.signers[signer];
   }
 
-  function getSessionKey(address signer) public view returns (address, int64) {
-    return (state.sessions[signer].subAccountSigner, state.sessions[signer].expiry);
+  function getSessionValue(address sessionKey) public view returns (address, int64) {
+    return (state.sessions[sessionKey].subAccountSigner, state.sessions[sessionKey].expiry);
   }
 
   function getConfig2D(ConfigID id, bytes32 subKey) public view returns (bytes32) {

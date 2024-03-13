@@ -1,4 +1,4 @@
-import { Contract, utils } from "ethers"
+import { BigNumber, Contract, utils } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -86,12 +86,15 @@ async function expectAccountMultisigThreshold(contract: Contract, expectations: 
 }
 
 async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
-  for (var signer in expectations.signers) {
-    let expectedSessionKey = expectations.signers[signer]
-    let [actualSessionKey, authorizationExpiry] = await contract.getSessionKey(signer)
-    expect(actualSessionKey).to.equal(expectedSessionKey)
-    expect(authorizationExpiry).to.equal(parseInt(expectations.signers[signer], 10))
-    expect(expectations.signers[signer]).to.not.be.empty
+  for (var sessionKey in expectations.signers) {
+    expect(expectations.signers[sessionKey]).to.not.be.empty
+    let [actualSubAccSigner, actualAuthorizationExpiry] = await contract.getSessionValue(
+      expectations.signers[sessionKey].session_key
+    )
+    expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
+    const expectedAuthExpiry = BigNumber.from(expectations.signers[sessionKey].authorization_expiry).toNumber()
+    const actualAuthExpiry = BigNumber.from(actualAuthorizationExpiry).toNumber()
+    expect(actualAuthExpiry).to.equal(expectedAuthExpiry)
   }
 }
 
