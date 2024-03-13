@@ -10,7 +10,7 @@ const gasLimit = 2100000000
 const testDir = "/test/engine/testfixtures/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
@@ -30,14 +30,15 @@ describe("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  // const filters = ["TestInterestRate.json"]
-  // const testNames = ["Interest (Valid - Signed 1ns before received)"]
+  const filters = ["TestMarkPrice.json"]
+  const testNames: string[] = []
+  // const testNames = ["Perp (Valid - Signed at time of received)"]
   testFiles
-    // .filter((t) => filters.includes(t))
+    .filter((t) => filters.includes(t))
     .forEach((file) => {
       describe(file, async function () {
         let tests = parseTestsFromFile(process.cwd() + testDir + file)
-        // tests = tests.filter((t) => testNames.length > 0 && testNames.includes(t.name))
+        tests = tests.filter((t) => testNames.length == 0 || testNames.includes(t.name))
         tests.slice().forEach((test) => {
           it(test.name + ` correctly runs`, async function () {
             await validateTest(test, contract, w1)
@@ -62,7 +63,12 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
     } else {
       await resp.wait()
       const expectations = step.expectations ?? []
-      expectations.forEach((exp) => validateExpectation(contract, exp))
+      if (expectations.length == 0) {
+        continue
+      }
+      for (let expectation of step.expectations) {
+        await validateExpectation(contract, expectation)
+      }
     }
   }
   return

@@ -14,6 +14,9 @@ export interface TestCase {
 export interface TestStep {
   // The time at which the transaction is executed (if left blank, its value is the same as the previous test step)
 
+  // The txID of the transaction to be executed
+  tx_id: string
+
   // The function abi encoded transaction to be executed
   tx_data: string
 
@@ -85,7 +88,7 @@ export interface ExConfig2D {
   value: string
 }
 
-interface Asset {
+export interface Asset {
   kind: string
   underlying: string
   quote: string
@@ -112,6 +115,30 @@ export interface ExInterestRate {
   interest_rate: string
 }
 
+// Trade
+export interface ExSubAccountValue {
+  sub_account_id: string
+  value: string
+}
+
+export interface Position {
+  asset: Asset
+  balance: string
+  last_applied_funding_index: string
+}
+
+export interface ExSubAccountPosition {
+  sub_account_id: string
+  asset: Asset
+  position: Position
+}
+
+export interface ExSubAccountSpot {
+  sub_account_id: string
+  currency: string
+  balance: string
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -130,6 +157,9 @@ export interface Expectation {
     | ExFundingTime
     | ExMarkPrice
     | ExInterestRate
+    | ExSubAccountValue
+    | ExSubAccountPosition
+    | ExSubAccountSpot
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

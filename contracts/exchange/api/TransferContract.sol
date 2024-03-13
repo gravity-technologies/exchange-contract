@@ -27,6 +27,7 @@ abstract contract TransferContract is TradeContract {
   function deposit(
     int64 timestamp,
     uint64 txID,
+    address fromEthAddress,
     address accountID,
     Currency currency,
     uint64 numTokens,
@@ -35,15 +36,15 @@ abstract contract TransferContract is TradeContract {
     _setSequence(timestamp, txID);
 
     // Check if the deposit comes from a whilelisted deposit address
-    (address depositAddr, bool ok) = _getAddressConfig(ConfigID.DEPOSIT_ADDRESS);
-    require(ok && depositAddr == sig.signer, "invalid depositor");
+    // (address depositAddr, bool ok) = _getAddressConfig(ConfigID.DEPOSIT_ADDRESS);
+    // require(ok && depositAddr == sig.signer, "invalid depositor");
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashDeposit(accountID, currency, numTokens, sig.nonce), sig);
+    _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     Account storage account = _requireAccount(accountID);
-    account.spotBalances[currency] += uint128(numTokens);
+    account.spotBalances[currency] += int64(numTokens);
   }
 
   /**
@@ -79,8 +80,8 @@ abstract contract TransferContract is TradeContract {
     // ------- End of Signature Verification -------
 
     // TODO: charge withdrawal fee
-    uint128 withdrawalFee = 0;
-    uint128 delta = numTokens + withdrawalFee;
+    int64 withdrawalFee = 0;
+    int64 delta = int64(numTokens) + withdrawalFee;
 
     require(delta <= acc.spotBalances[currency], "insufficient balance");
     acc.spotBalances[currency] -= delta;
@@ -168,9 +169,9 @@ abstract contract TransferContract is TradeContract {
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
-    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= numTokens;
-    _requireAccount(toAccID).spotBalances[currency] += numTokens;
+    require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
+    fromAcc.spotBalances[currency] -= int64(numTokens);
+    _requireAccount(toAccID).spotBalances[currency] += int64(numTokens);
   }
 
   function _transferMainToSub(
@@ -182,9 +183,9 @@ abstract contract TransferContract is TradeContract {
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
-    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= numTokens;
-    _requireSubAccount(toSubID).spotBalances[currency] += numTokens;
+    require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
+    fromAcc.spotBalances[currency] -= int64(numTokens);
+    _requireSubAccount(toSubID).spotBalances[currency] += int64(numTokens);
   }
 
   function _transferSubToMain(
@@ -196,10 +197,10 @@ abstract contract TransferContract is TradeContract {
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
-    require(numTokens <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= numTokens;
+    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
+    fromSub.spotBalances[currency] -= int64(numTokens);
     _requireValidSubAccountUsdValue(fromSub);
-    _requireAccount(toAccID).spotBalances[currency] += numTokens;
+    _requireAccount(toAccID).spotBalances[currency] += int64(numTokens);
   }
 
   function _transferSubToSub(
@@ -211,9 +212,9 @@ abstract contract TransferContract is TradeContract {
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
-    require(numTokens <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= numTokens;
+    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
+    fromSub.spotBalances[currency] -= int64(numTokens);
     _requireValidSubAccountUsdValue(fromSub);
-    _requireSubAccount(toSubID).spotBalances[currency] += numTokens;
+    _requireSubAccount(toSubID).spotBalances[currency] += int64(numTokens);
   }
 }

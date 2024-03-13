@@ -13,17 +13,18 @@ contract RiskCheck is BaseContract {
 
   function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
     BI memory val = _getSubAccountUsdValue(sub);
-    if (val.val < 0) revert InvalidTotalValue(sub.id, val.toInt256(_getCurrencyDecimal(sub.quoteCurrency)));
+    require(val.val >= 0, "invalid total value");
   }
 
   function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (BI memory) {
     bytes32 spotID = _getSpotAssetID(sub.quoteCurrency);
     (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
     require(found, ERR_NOT_FOUND);
-    BI memory balanceUsd = BI(int(uint(sub.spotBalances[sub.quoteCurrency])), _getCurrencyDecimal(sub.quoteCurrency))
-      .mul(BI(int(uint(markPrice)), PRICE_DECIMALS));
+    BI memory spotUsd = BI(int(sub.spotBalances[sub.quoteCurrency]), _getCurrencyDecimal(sub.quoteCurrency)).mul(
+      BI(int(uint(markPrice)), PRICE_DECIMALS)
+    );
     return
-      balanceUsd.add(_getPositionsUsdValue(sub.perps)).add(_getPositionsUsdValue(sub.futures)).add(
+      spotUsd.add(_getPositionsUsdValue(sub.perps)).add(_getPositionsUsdValue(sub.futures)).add(
         _getPositionsUsdValue(sub.options)
       );
   }
@@ -39,7 +40,9 @@ contract RiskCheck is BaseContract {
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
       require(found, ERR_NOT_FOUND);
       uint64 underlyingDecimals = _getCurrencyDecimal(assetGetUnderlying(pos.id));
-      total = total.add(BI(int(uint(markPrice)), PRICE_DECIMALS)).mul(BI(int256(pos.balance), underlyingDecimals));
+      BI memory balance = BI(int256(pos.balance), underlyingDecimals);
+      BI memory markPriceBI = BI(int(uint(markPrice)), PRICE_DECIMALS);
+      total = total.add(markPriceBI).mul(balance);
     }
     return total;
   }

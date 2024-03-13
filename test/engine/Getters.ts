@@ -1,4 +1,4 @@
-import { Contract } from "ethers"
+import { Contract, utils } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -16,11 +16,15 @@ import {
   ExSubAccountSigners,
   ExSubAccountMarginType,
   Expectation,
+  ExSubAccountValue,
+  ExSubAccountPosition,
+  ExSubAccountSpot,
 } from "./TestEngineTypes"
 import { expect } from "chai"
-import { toAssetID } from "./util"
+import { hex32, toAssetID } from "./util"
+import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
 
-export function validateExpectation(contract: Contract, expectation: Expectation) {
+export async function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
     case "ExAccountSigners":
       return expectAccountSigners(contract, expectation.expect as ExAccountSigners)
@@ -52,6 +56,12 @@ export function validateExpectation(contract: Contract, expectation: Expectation
       return expectInterestRate(contract, expectation.expect as ExInterestRate)
     case "ExFundingTime":
       return expectFundingTime(contract, expectation.expect as ExFundingTime)
+    case "ExSubAccountValue":
+      return expectSubAccountValue(contract, expectation.expect as ExSubAccountValue)
+    case "ExSubAccountPosition":
+      return expectSubAccountPosition(contract, expectation.expect as ExSubAccountPosition)
+    case "ExSubAccountSpot":
+      return expectSubAccountSpot(contract, expectation.expect as ExSubAccountSpot)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -96,17 +106,17 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 }
 
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
-  const val = await contract.getConfig2D(expectations.key, expectations.sub_key)
-  expect(val).to.equal(expectations.value)
+  const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
+  expect(hex32(val)).to.equal(hex32(expectations.value))
 }
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
-  const val = await contract.getConfig1D(expectations.key)
-  expect(val).to.equal(expectations.value)
+  const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
+  expect(hex32(val)).to.equal(hex32(expectations.value))
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
-  const lockEndTime = await contract.getConfig1D(expectations.key)
+  const lockEndTime = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
   expect(lockEndTime).to.equal(Number(expectations.value))
 }
 
@@ -118,7 +128,7 @@ async function expectConfigScheduleAbsent(contract: Contract, expectations: ExCo
 async function expectSubAccountSigners(contract: Contract, expectations: ExSubAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
-    let actualPermission = await contract.getSignerPermission(expectations.sub_account_id, signer)
+    let actualPermission = await contract.getSignerPermission(BigInt(expectations.sub_account_id), signer)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
   }
 }
@@ -129,15 +139,9 @@ async function expectSubAccountMarginType(contract: Contract, expectations: ExSu
 }
 
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
-  const assetID = toAssetID({
-    Kind: expectations.asset_dto.kind,
-    Underlying: expectations.asset_dto.underlying,
-    Quote: expectations.asset_dto.quote,
-    StrikePrice: BigInt(0),
-    Expiration: BigInt(0),
-  })
+  const assetID = toAssetID(expectations.asset_dto)
   const fundingIndex = await contract.getFundingIndex(assetID)
-  expect(fundingIndex).to.equal(expectations.funding_rate)
+  expect(BigInt(fundingIndex)).to.equal(BigInt(expectations.funding_rate ?? "0"))
 }
 
 async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
@@ -146,26 +150,14 @@ async function expectFundingTime(contract: Contract, expectations: ExFundingTime
 }
 
 async function expectMarkPrice(contract: Contract, expectations: ExMarkPrice) {
-  const assetID = toAssetID({
-    Kind: expectations.asset_dto.kind,
-    Underlying: expectations.asset_dto.underlying,
-    Quote: expectations.asset_dto.quote,
-    StrikePrice: BigInt(expectations.asset_dto.strike_price ?? "0"),
-    Expiration: BigInt(expectations.asset_dto.expiration ?? "0"),
-  })
+  const assetID = toAssetID(expectations.asset_dto)
   let expectMark = BigInt(expectations.mark_price ?? "0")
-  let markPrice = await contract.getMarkPrice(assetID)
-  expect(markPrice).to.equal(expectMark)
+  let [markPrice, found] = await contract.getMarkPrice(assetID)
+  expect(BigInt(markPrice)).to.equal(expectMark)
 }
 
 async function expectInterestRate(contract: Contract, expectations: ExInterestRate) {
-  const assetID = toAssetID({
-    Kind: expectations.asset_dto.kind,
-    Underlying: expectations.asset_dto.underlying,
-    Quote: expectations.asset_dto.quote,
-    StrikePrice: BigInt(expectations.asset_dto.strike_price ?? "0"),
-    Expiration: BigInt(expectations.asset_dto.expiration ?? "0"),
-  })
+  const assetID = toAssetID(expectations.asset_dto)
   let expectInterest = BigInt(expectations.interest_rate ?? "0")
   let interestRate = await contract.getInterestRate(assetID)
   expect(interestRate).to.equal(expectInterest)
@@ -197,7 +189,7 @@ export async function getSubAccountResult(
   lastAppliedFundingTimestamp: number
 }> {
   let [id, adminCount, signerCount, accountID, marginType, quoteCurrency, lastAppliedFundingTimestamp] =
-    await contract.getSubAccountResult(subAccountId)
+    await contract.getSubAccountResult(BigInt(subAccountId))
   return {
     id: id.toNumber(),
     adminCount: signerCount.toNumber(),
@@ -207,4 +199,28 @@ export async function getSubAccountResult(
     quoteCurrency: quoteCurrency.toNumber(),
     lastAppliedFundingTimestamp: lastAppliedFundingTimestamp.toNumber(),
   }
+}
+
+async function expectSubAccountValue(contract: Contract, expectations: ExSubAccountValue) {
+  const value = await contract.getSubAccountValue(BigInt(expectations.sub_account_id))
+  expect(BigInt(value)).to.equal(BigInt(expectations.value))
+}
+
+async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
+  const [balance, lastAppliedFundingIndex] = await contract.getSubAccountPosition(
+    BigInt(expectations.sub_account_id),
+    toAssetID(expectations.asset)
+  )
+  const expected = expectations.position
+  expect(BigInt(balance)).to.equal(BigInt(expected.balance))
+  console.log("Compare POS", expected.balance.toString(), balance.toString())
+  expect(BigInt(lastAppliedFundingIndex)).to.equal(BigInt(expected.last_applied_funding_index))
+}
+
+async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccountSpot) {
+  const balance = await contract.getSubAccountSpotBalance(
+    BigInt(expectations.sub_account_id),
+    CurrencyToEnum[expectations.currency]
+  )
+  expect(BigInt(balance)).to.equal(BigInt(expectations.balance))
 }

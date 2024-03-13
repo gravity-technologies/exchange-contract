@@ -8,8 +8,6 @@ import "../util/BIMath.sol";
 import "../common/Error.sol";
 import "./BaseContract.sol";
 
-// import "forge-std/console.sol";
-
 contract FundingAndSettlement is BaseContract {
   using BIMath for BI;
 
@@ -50,7 +48,7 @@ contract FundingAndSettlement is BaseContract {
       newSpotBalance += fundingPayment.toInt64(qdec);
     }
     require(newSpotBalance >= 0, ERR_UNDERFLOW);
-    sub.spotBalances[quoteCurrency] = uint64(newSpotBalance);
+    sub.spotBalances[quoteCurrency] = newSpotBalance;
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
@@ -77,7 +75,7 @@ contract FundingAndSettlement is BaseContract {
       newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
     }
 
-    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toUint64(qdec);
+    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
   function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {

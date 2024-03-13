@@ -169,7 +169,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return (0, false);
     }
 
-    return (underlyingPrice / quotePrice, true);
+    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
   }
 
   function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
