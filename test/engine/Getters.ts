@@ -131,7 +131,7 @@ async function expectConfigScheduleAbsent(contract: Contract, expectations: ExCo
 async function expectSubAccountSigners(contract: Contract, expectations: ExSubAccountSigners) {
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
-    let actualPermission = await contract.getSignerPermission(BigInt(expectations.sub_account_id), signer)
+    let actualPermission = await contract.getSubAccSignerPermission(BigInt(expectations.sub_account_id), signer)
     expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
   }
 }
@@ -198,8 +198,8 @@ export async function getSubAccountResult(
     adminCount: signerCount.toNumber(),
     signerCount: adminCount,
     accountID: accountID,
-    marginType: marginType.toNumber(),
-    quoteCurrency: quoteCurrency.toNumber(),
+    marginType: marginType,
+    quoteCurrency: quoteCurrency,
     lastAppliedFundingTimestamp: lastAppliedFundingTimestamp.toNumber(),
   }
 }
