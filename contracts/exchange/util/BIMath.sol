@@ -8,6 +8,7 @@ struct BI {
   uint256 dec;
 }
 
+// TODO: add division test
 library BIMath {
   function add(BI memory a, BI memory b) internal pure returns (BI memory) {
     BI memory c;
@@ -29,23 +30,19 @@ library BIMath {
   }
 
   function mul(BI memory a, BI memory b) internal pure returns (BI memory) {
-    BI memory c;
-    c.val = a.val * b.val;
-    c.dec = a.dec + b.dec;
+    BI memory c = BI(a.val * b.val, a.dec + b.dec);
     return c;
   }
 
   function div(BI memory a, BI memory b) internal pure returns (BI memory) {
     require(b.val != 0, ERR_DIV_BY_ZERO);
-    BI memory c;
-    c.val = ((a.val * int256(10) ** b.dec) / b.val);
-    c.dec = b.dec;
+    BI memory c = BI((a.val * (int256(10) ** b.dec)) / b.val, a.dec);
     return c;
   }
 
   function scale(BI memory a, uint256 d) internal pure returns (BI memory) {
     if (a.dec > d) return BI(a.val / int256(10 ** (a.dec - d)), d);
-    return BI(a.val / int256(10 ** (d - a.dec)), d);
+    return BI(a.val * int256(10 ** (d - a.dec)), d);
   }
 
   function cmp(BI memory a, BI memory b) internal pure returns (int256) {
@@ -62,20 +59,32 @@ library BIMath {
 
   function toInt256(BI memory a, uint decimals) internal pure returns (int256) {
     if (a.dec == decimals) return a.val;
-    if (a.dec > decimals) return a.val / int256(10) ** (a.dec - decimals);
-    return a.val * int256(10) ** (decimals - a.dec);
+    if (a.dec > decimals) return a.val / (int256(10) ** (a.dec - decimals));
+    return a.val * (int256(10) ** (decimals - a.dec));
   }
 
   function toInt64(BI memory a, uint decimals) internal pure returns (int64) {
-    int256 res = toInt256(a, decimals);
-    // require(res >= type(int64).min && res <= type(int64).max, ERR_OVERFLOW);
-    return int64(res);
+    int256 c;
+    if (a.dec == decimals) {
+      c = a.val;
+    } else if (a.dec > decimals) {
+      c = a.val / int256(10) ** (a.dec - decimals);
+    } else {
+      c = a.val * int256(10) ** (decimals - a.dec);
+    }
+    return int64(uint64(uint(c)));
   }
 
   function toUint64(BI memory a, uint decimals) internal pure returns (uint64) {
     require(a.val >= 0, ERR_UNSAFE_CAST);
-    uint256 res = uint256(toInt256(a, decimals));
-    require(res >= type(uint64).min && res <= type(uint64).max, ERR_OVERFLOW);
-    return uint64(res);
+    int256 c;
+    if (a.dec == decimals) {
+      c = a.val;
+    } else if (a.dec > decimals) {
+      c = a.val / int256(10) ** (a.dec - decimals);
+    } else {
+      c = a.val * int256(10) ** (decimals - a.dec);
+    }
+    return uint64(uint256(c));
   }
 }

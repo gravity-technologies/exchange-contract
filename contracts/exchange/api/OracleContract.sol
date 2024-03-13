@@ -140,11 +140,11 @@ contract OracleContract is ConfigContract {
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(entry.assetID);
       require(found, "no mark price");
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
-      int64 fundingIndexChange = BI(int(uint(markPrice)), PRICE_DECIMALS)
-        .mul(BI(int(uint(entry.value)), CENTIBEEP_DECIMALS))
+      int256 delta = BI(int(uint(markPrice)), PRICE_DECIMALS)
+        .mul(BI(entry.value, CENTIBEEP_DECIMALS))
         .div(BI(TIME_FACTOR, 0))
-        .toInt64(PRICE_DECIMALS);
-      fundings[entry.assetID] = fundingIndexChange;
+        .toInt256(PRICE_DECIMALS);
+      fundings[entry.assetID] += int64(delta);
     }
     state.prices.fundingTime = sig.expiration;
   }
