@@ -7,7 +7,7 @@ import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract SubAccountContract is BaseContract {
-  int64 private constant _MAX_SESSION_DURATION_NANO = 1 days;
+  int64 private constant _MAX_SESSION_DURATION_NANO = 24 * 60 * 60 * 1e9; // 24 hours
 
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
