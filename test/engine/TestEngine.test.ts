@@ -41,7 +41,7 @@ describe.only("API - TestEngine", function () {
   const testNames: string[] = []
   // const testNames = ["Perp (Valid - Signed at time of received)"]
   testFiles
-    // .filter((t) => filters.includes(t))
+    .filter((t) => filters.includes(t))
     .forEach((file) => {
       describe(file, async function () {
         let tests = parseTestsFromFile(process.cwd() + testDir + file)
