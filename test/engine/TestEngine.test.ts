@@ -31,14 +31,14 @@ describe.only("API - TestEngine", function () {
   })
 
   const filters = [
-    // "TestAccountSigners.json",
-    // "TestAccountMultisig.json",
+    "TestAccountSigners.json",
+    "TestAccountMultisig.json",
     "TestSessionKey.json",
-    // "TestInterestRate.json",
-    // "TestMarkPrice.json",
-    // "TestSessionKey.json",
-    // "TestCreateAccount.json",
-    // "TestSubAccount.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
+    "TestSessionKey.json",
+    "TestCreateAccount.json",
+    "TestSubAccount.json",
   ]
   const testNames: string[] = []
   // const testNames = ["Perp (Valid - Signed at time of received)"]
