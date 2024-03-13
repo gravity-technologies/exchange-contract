@@ -193,7 +193,7 @@ contract SubAccountContract is BaseContract {
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key
-    state.sessions[sessionKey] = Session(sig.signer, keyExpiry);
+    state.sessions[sessionKey] = Session(sig.signer, cappedExpiry);
   }
 
   /// @notice Removing signature verification only makes session keys safer.
