@@ -439,7 +439,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
@@ -608,7 +608,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
@@ -777,7 +777,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
@@ -1582,7 +1582,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
@@ -1655,7 +1655,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-20833334"
+              "funding_rate": "-20833332"
             },
             "name": "ExFundingIndex"
           },
@@ -1824,7 +1824,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
@@ -1897,7 +1897,7 @@
                 "underlying": "ETH",
                 "quote": "USDC"
               },
-              "funding_rate": "-10416667"
+              "funding_rate": "-10416666"
             },
             "name": "ExFundingIndex"
           },
