@@ -37,6 +37,7 @@ describe.only("API - TestEngine", function () {
     "TestInterestRate.json",
     "TestMarkPrice.json",
     "TestSessionKey.json",
+    "TestCreateAccount.json",
   ]
   const testNames: string[] = []
   // const testNames = ["Perp (Valid - Signed at time of received)"]

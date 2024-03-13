@@ -68,7 +68,7 @@ export async function validateExpectation(contract: Contract, expectation: Expec
 }
 
 async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts) {
-  const exists = await contract.accountExists(expectations.account_ids)
+  const exists = await contract.isAllAccountExists(expectations.account_ids)
   expect(exists).to.be.true
 }
 
