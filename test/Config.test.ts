@@ -1,16 +1,18 @@
-import { Contract } from "ethers"
+import { Contract, ethers } from "ethers"
 import { network } from "hardhat"
 import { deployContract } from "../deploy/utils"
 import { getDeployerWallet, wallet } from "./util"
+import { ConfigIDToEnum, CurrencyToEnum } from "./engine/enums"
 
-describe("API - Config", function () {
+describe.only("API - Config", function () {
   let contract: Contract
   let snapshotId: string
   const grvt = wallet()
 
   before(async () => {
     const wallet = getDeployerWallet()
-    contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    contract = await deployContract("GRVTExchangeTest", [], { wallet, silent: true, noVerify: true })
+    await contract.initialize()
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
   beforeEach(async () => {
@@ -19,6 +21,16 @@ describe("API - Config", function () {
 
   afterEach(async () => {
     await network.provider.send("evm_revert", [snapshotId])
+  })
+
+  describe.only("defaultConfig", function () {
+    it("can get default config", async function () {
+      let configID = ConfigIDToEnum.SM_FUTURES_INITIAL_MARGIN
+      let subKey = ethers.utils.hexlify(CurrencyToEnum.BTC)
+      subKey = ethers.utils.hexZeroPad(subKey, 32)
+      const config = await contract.getConfig2D(configID, subKey)
+      console.log(config)
+    })
   })
 
   // describe("scheduleConfig", function () {
