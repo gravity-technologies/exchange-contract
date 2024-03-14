@@ -294,13 +294,6 @@ struct Trade {
   int64[] feeCharged;
 }
 
-struct AssetTradeContext {
-  bytes32 assetID;
-  uint64 markPrice;
-  uint64 underlyingPrice;
-  int32 riskFreeRate;
-}
-
 struct Order {
   // The subaccount initiating the order
   uint64 subAccountID;
@@ -335,9 +328,7 @@ struct Order {
   /// @dev No logic in contract related to this field
   // If True, Order must reduce the position size, or be cancelled
   bool reduceOnly;
-  /// @dev No logic in contract related to this field
   OrderLeg[] legs;
-  uint32 nonce;
   Signature signature;
 }
 

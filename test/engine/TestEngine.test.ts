@@ -37,6 +37,7 @@ describe.only("API - TestEngine", function () {
     "TestInterestRate.json",
     "TestFundingRate.json",
     "TestMarkPrice.json",
+    "TestMatchTradingComputation.json",
     "TestSessionKey.json",
     "TestCreateAccount.json",
     "TestSubAccount.json",
@@ -48,7 +49,7 @@ describe.only("API - TestEngine", function () {
     .forEach((file) => {
       describe(file, async function () {
         let tests = parseTestsFromFile(process.cwd() + testDir + file)
-        // tests = tests.filter((t) => testNames.length == 0 || testNames.includes(t.name))
+        tests = tests.filter((t) => testNames.length == 0 || testNames.includes(t.name))
         tests.slice().forEach((test) => {
           it(test.name + ` correctly runs`, async function () {
             await validateTest(test, contract, w1)

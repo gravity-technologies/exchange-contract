@@ -146,7 +146,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
     _requireValidSig(timestamp, orderHash, order.signature);
-    OrderLeg calldata leg0 = order.legs[0];
 
     // Check that the order's total matched size after this trade does not exceed the order size
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
@@ -190,7 +189,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
 
       // Step 3: Remove position if empty
-      if (pos.balance == 0) removePos(sub, leg.assetID);
+      if (pos.balance == 0) {
+        removePos(sub, leg.assetID);
+      }
     }
 
     // FIXME: Step 4: Update subaccount spot balance, deducting fees
