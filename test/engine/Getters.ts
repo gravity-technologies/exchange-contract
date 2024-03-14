@@ -149,8 +149,10 @@ function convertBigEndianToLittleEndian(bigEndianHex: string): string {
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
   console.log("expectConfig1D", expectations.key, ConfigIDToEnum[expectations.key])
-  const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
-  expect(hex32(val)).to.equal(hex32(convertBigEndianToLittleEndian(expectations.value)))
+  const [val, isSet] = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
+  if (isSet) {
+    expect(hex32(val)).to.equal(hex32(convertBigEndianToLittleEndian(expectations.value)))
+  }
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {

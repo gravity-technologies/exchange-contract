@@ -106,8 +106,8 @@ contract ReadStateContract is TradeContract {
     return c.val;
   }
 
-  function getConfig1D(ConfigID id) public view returns (bytes32) {
-    return state.config1DValues[id].val;
+  function getConfig1D(ConfigID id) public view returns (bytes32, bool) {
+    return (state.config1DValues[id].val, state.config1DValues[id].isSet);
   }
 
   function getConfigSchedule(ConfigID id, bytes32 subKey) public view returns (int64) {
