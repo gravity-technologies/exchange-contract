@@ -6,7 +6,6 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
-import "hardhat/console.sol";
 
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
@@ -341,7 +340,6 @@ contract ConfigContract is BaseContract {
 
     // SM_FUTURES_INITIAL_MARGIN
     ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
-    console.log("SM_FUTURES_INITIAL_MARGIN");
     settings[id].typ = ConfigType.CENTIBEEP2D;
     mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
@@ -508,12 +506,10 @@ contract ConfigContract is BaseContract {
     // // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
-    values1D[id].val = 0;
 
     // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
-    values1D[id].val = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
