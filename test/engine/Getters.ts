@@ -76,13 +76,13 @@ async function expectAccountSigners(contract: Contract, expectations: ExAccountS
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
     let actualPermission = await contract.getSignerPermission(expectations.address, signer)
-    expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
+    expect(BigNumber.from(actualPermission)).to.equal(BigNumber.from(expectedPermission))
   }
 }
 
 async function expectAccountMultisigThreshold(contract: Contract, expectations: ExAccountMultiSigThreshold) {
   let [, actualMultisigThreshold, ,] = await contract.getAccountResult(expectations.address)
-  expect(actualMultisigThreshold).to.equal(expectations.multi_sig_threshold)
+  expect(BigNumber.from(actualMultisigThreshold)).to.equal(BigNumber.from(expectations.multi_sig_threshold))
 }
 
 async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys) {
@@ -92,9 +92,9 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
       expectations.signers[sessionKey].session_key
     )
     expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
-    const expectedAuthExpiry = BigNumber.from(expectations.signers[sessionKey].authorization_expiry).toNumber()
-    const actualAuthExpiry = BigNumber.from(actualAuthorizationExpiry).toNumber()
-    expect(actualAuthExpiry).to.equal(expectedAuthExpiry)
+    const expectedAuthExpiry = expectations.signers[sessionKey].authorization_expiry
+    const actualAuthExpiry = actualAuthorizationExpiry
+    expect(BigNumber.from(actualAuthExpiry)).to.equal(BigNumber.from(expectedAuthExpiry))
   }
 }
 
@@ -132,13 +132,13 @@ async function expectSubAccountSigners(contract: Contract, expectations: ExSubAc
   for (var signer in expectations.signers) {
     let expectedPermission = expectations.signers[signer]
     let actualPermission = await contract.getSubAccSignerPermission(BigInt(expectations.sub_account_id), signer)
-    expect(actualPermission).to.equal(parseInt(expectedPermission, 10))
+    expect(BigNumber.from(actualPermission)).to.equal(BigNumber.from(expectedPermission))
   }
 }
 
 async function expectSubAccountMarginType(contract: Contract, expectations: ExSubAccountMarginType) {
   let res = await getSubAccountResult(contract, expectations.sub_account_id)
-  expect(res.marginType).to.equal(parseInt(expectations.margin_type, 10))
+  expect(BigNumber.from(res.marginType)).to.equal(BigNumber.from(expectations.margin_type))
 }
 
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
@@ -206,7 +206,7 @@ export async function getSubAccountResult(
 
 async function expectSubAccountValue(contract: Contract, expectations: ExSubAccountValue) {
   const value = await contract.getSubAccountValue(BigInt(expectations.sub_account_id))
-  expect(BigInt(value)).to.equal(BigInt(expectations.value))
+  expect(BigNumber.from(value)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
@@ -218,8 +218,8 @@ async function expectSubAccountPosition(contract: Contract, expectations: ExSubA
   if (expectedPos == null) {
     expect(found).to.be.false
   } else {
-    expect(BigInt(balance)).to.equal(BigInt(expectedPos.balance ?? "0"))
-    expect(BigInt(lastAppliedFundingIndex)).to.equal(BigInt(expectedPos.last_applied_funding_index))
+    expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectedPos.balance ?? "0"))
+    expect(BigNumber.from(lastAppliedFundingIndex)).to.equal(BigNumber.from(expectedPos.last_applied_funding_index))
   }
 }
 
