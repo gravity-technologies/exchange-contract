@@ -109,20 +109,14 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 }
 
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
-  let configID = BigNumber.from(ConfigIDToEnum[expectations.key])
-  let configIDHex = ethers.utils.hexZeroPad(configID.toHexString(), 32)
-
   let subKey = BigNumber.from(expectations.sub_key)
   let subKeyHex = ethers.utils.hexZeroPad(subKey.toHexString(), 32)
-  const val = await contract.getConfig2D(configIDHex, subKeyHex)
+  const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], subKeyHex)
   expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
-  let configID = BigNumber.from(ConfigIDToEnum[expectations.key])
-  let configIDHex = ethers.utils.hexZeroPad(configID.toHexString(), 32)
-
-  const val = await contract.getConfig1D(configIDHex)
+  const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
   expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
 
@@ -222,10 +216,12 @@ async function expectSubAccountValue(contract: Contract, expectations: ExSubAcco
 }
 
 async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
+  let assetID = BigNumber.from(toAssetID(expectations.asset))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
   const expectedPos = expectations.position
   const [found, balance, lastAppliedFundingIndex] = await contract.getSubAccountPosition(
     BigInt(expectations.sub_account_id),
-    toAssetID(expectations.asset)
+    assetIDHex
   )
   if (expectedPos == null) {
     expect(found).to.be.false
