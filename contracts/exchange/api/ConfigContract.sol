@@ -6,6 +6,7 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
+import "hardhat/console.sol";
 
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
@@ -329,6 +330,7 @@ contract ConfigContract is BaseContract {
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
+    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
 
     // This is a special value that represents an empty value for a config
     // bytes32 emptyValue = bytes32(uint256(0));
@@ -339,6 +341,7 @@ contract ConfigContract is BaseContract {
 
     // SM_FUTURES_INITIAL_MARGIN
     ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
+    console.log("SM_FUTURES_INITIAL_MARGIN");
     settings[id].typ = ConfigType.CENTIBEEP2D;
     mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
@@ -503,14 +506,14 @@ contract ConfigContract is BaseContract {
     v2d[addr].val = TRUE_BYTES32;
 
     // // ADMIN_FEE_SUB_ACCOUNT_ID
-    // id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
-    // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = 0;
+    id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
+    values1D[id].val = 0;
 
     // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
-    // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
-    // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = 0;
+    id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
+    values1D[id].val = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -529,6 +532,38 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(-5 * int64(ONE_PERCENT));
+
+    ///////////////////////////////////////////////////////////////////
+    /// Fee settings
+    ///////////////////////////////////////////////////////////////////
+
+    // FUTURE_MAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // FUTURE_TAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(140 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_MAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_TAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(120 * int64(ONE_CENTIBEEP)));
   }
 
   struct DefaultAddress {

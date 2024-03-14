@@ -1,4 +1,4 @@
-import { BigNumber, Contract, utils } from "ethers"
+import { BigNumber, Contract, ethers, utils } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -109,13 +109,48 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 }
 
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
-  const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
-  expect(hex32(val)).to.equal(hex32(expectations.value))
+  console.log("expectConfig2D", expectations.key, ConfigIDToEnum[expectations.key])
+  console.log(convertBigEndianToLittleEndian(expectations.sub_key))
+  console.log(convertBigEndianToLittleEndian(expectations.value))
+  let subKey = ""
+  if (isEthereumAddress(expectations.sub_key)) {
+    subKey = expectations.sub_key
+  } else {
+    subKey = convertBigEndianToLittleEndian(expectations.sub_key)
+  }
+  const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], hex32(subKey))
+  expect(hex32(val)).to.equal(hex32(convertBigEndianToLittleEndian(expectations.value)))
+}
+
+const isEthereumAddress = (address: string): boolean => {
+  try {
+    ethers.utils.getAddress(address)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+// Function to convert big-endian hex string with '0x' prefix to little-endian hex string
+function convertBigEndianToLittleEndian(bigEndianHex: string): string {
+  // Remove the '0x' prefix if present
+  const hexWithoutPrefix = bigEndianHex.startsWith("0x") ? bigEndianHex.slice(2) : bigEndianHex
+
+  // Split the hex string into pairs of characters
+  const pairs: string[] = hexWithoutPrefix.match(/.{1,2}/g) || []
+
+  // Reverse the order of the pairs
+  const reversedPairs: string[] = pairs.reverse()
+
+  // Join the reversed pairs and prepend '0x' if necessary
+  const littleEndianHex = reversedPairs.join("")
+  return bigEndianHex.startsWith("0x") ? "0x" + littleEndianHex : littleEndianHex
 }
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
+  console.log("expectConfig1D", expectations.key, ConfigIDToEnum[expectations.key])
   const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
-  expect(hex32(val)).to.equal(hex32(expectations.value))
+  expect(hex32(val)).to.equal(hex32(convertBigEndianToLittleEndian(expectations.value)))
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {

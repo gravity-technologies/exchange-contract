@@ -2,10 +2,13 @@
 pragma solidity ^0.8.20;
 
 import "./TradeContract.sol";
+import "./ConfigContract.sol";
 import "../util/BIMath.sol";
+import "hardhat/console.sol";
 
 contract ReadStateContract is TradeContract {
   using BIMath for BI;
+  bytes32 private constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
 
   struct AccountResult {
     address id;
@@ -87,7 +90,20 @@ contract ReadStateContract is TradeContract {
   }
 
   function getConfig2D(ConfigID id, bytes32 subKey) public view returns (bytes32) {
-    return state.config2DValues[id][subKey].val;
+    console.log("HERE we are ho ho ho");
+    console.log(id == ConfigID.SM_FUTURES_INITIAL_MARGIN);
+    // console.logBytes32(subKey);
+    // return state.config2DValues[id][subKey].val;
+    console.logBytes32(subKey);
+    ConfigValue storage c = state.config2DValues[id][subKey];
+    if (!c.isSet) {
+      console.log("HERE we are ho ho ho 2");
+      c = state.config2DValues[id][DEFAULT_CONFIG_ENTRY];
+      console.logBytes32(c.val);
+    }
+    console.log("HERE we are ho ho ho 3");
+    console.logBytes32(c.val);
+    return c.val;
   }
 
   function getConfig1D(ConfigID id) public view returns (bytes32) {
