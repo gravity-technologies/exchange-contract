@@ -1,5 +1,5 @@
 import { expect } from "chai"
-import { BigNumber, Contract } from "ethers"
+import { BigNumber, Contract, ethers } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -109,18 +109,26 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 }
 
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
-  const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
-  expect(hex32(val)).to.equal(hex32(expectations.value))
+  let configID = BigNumber.from(ConfigIDToEnum[expectations.key])
+  let configIDHex = ethers.utils.hexZeroPad(configID.toHexString(), 32)
+
+  let subKey = BigNumber.from(expectations.sub_key)
+  let subKeyHex = ethers.utils.hexZeroPad(subKey.toHexString(), 32)
+  const val = await contract.getConfig2D(configIDHex, subKeyHex)
+  expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
-  const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
-  expect(hex32(val)).to.equal(hex32(expectations.value))
+  let configID = BigNumber.from(ConfigIDToEnum[expectations.key])
+  let configIDHex = ethers.utils.hexZeroPad(configID.toHexString(), 32)
+
+  const val = await contract.getConfig1D(configIDHex)
+  expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
   const lockEndTime = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
-  expect(lockEndTime).to.equal(Number(expectations.value))
+  expect(BigNumber.from(lockEndTime)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectConfigScheduleAbsent(contract: Contract, expectations: ExConfigScheduleAbsent) {
@@ -142,28 +150,32 @@ async function expectSubAccountMarginType(contract: Contract, expectations: ExSu
 }
 
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
-  const assetID = toAssetID(expectations.asset_dto)
-  const fundingIndex = await contract.getFundingIndex(assetID)
-  expect(BigInt(fundingIndex)).to.equal(BigInt(expectations.funding_rate ?? "0"))
+  let assetID = BigNumber.from(toAssetID(expectations.asset_dto))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  const fundingIndex = await contract.getFundingIndex(assetIDHex)
+  expect(BigNumber.from(fundingIndex)).to.equal(BigNumber.from(expectations.funding_rate ?? "0"))
 }
 
 async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
   const fundingTime = await contract.getFundingTime()
-  expect(fundingTime).to.equal(Number(expectations.funding_time))
+  expect(BigNumber.from(fundingTime)).to.equal(BigNumber.from(expectations.funding_time))
 }
 
 async function expectMarkPrice(contract: Contract, expectations: ExMarkPrice) {
-  const assetID = toAssetID(expectations.asset_dto)
+  // const assetID = toAssetID(expectations.asset_dto)
+  let assetID = BigNumber.from(toAssetID(expectations.asset_dto))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
   let expectMark = BigInt(expectations.mark_price ?? "0")
-  let [markPrice, found] = await contract.getMarkPrice(assetID)
-  expect(BigInt(markPrice)).to.equal(expectMark)
+  let [markPrice, found] = await contract.getMarkPrice(assetIDHex)
+  expect(BigNumber.from(markPrice)).to.equal(BigNumber.from(expectMark))
 }
 
 async function expectInterestRate(contract: Contract, expectations: ExInterestRate) {
-  const assetID = toAssetID(expectations.asset_dto)
+  let assetID = BigNumber.from(toAssetID(expectations.asset_dto))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
   let expectInterest = BigInt(expectations.interest_rate ?? "0")
-  let interestRate = await contract.getInterestRate(assetID)
-  expect(interestRate).to.equal(expectInterest)
+  let interestRate = await contract.getInterestRate(assetIDHex)
+  expect(BigNumber.from(interestRate)).to.equal(BigNumber.from(expectInterest))
 }
 
 export async function getAccountResult(
@@ -228,5 +240,5 @@ async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccou
     BigInt(expectations.sub_account_id),
     CurrencyToEnum[expectations.currency]
   )
-  expect(BigInt(balance)).to.equal(BigInt(expectations.balance))
+  expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectations.balance))
 }
