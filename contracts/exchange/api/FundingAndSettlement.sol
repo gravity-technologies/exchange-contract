@@ -11,10 +11,10 @@ import "./BaseContract.sol";
 contract FundingAndSettlement is BaseContract {
   using BIMath for BI;
 
-  function _fundAndSettle(SubAccount storage sub) internal {
+  function _fundAndSettle(int64 timestamp, SubAccount storage sub) internal {
     _fundPerp(sub);
-    _settleOptionsOrFutures(sub, sub.futures);
-    _settleOptionsOrFutures(sub, sub.options);
+    _settleOptionsOrFutures(timestamp, sub, sub.futures);
+    _settleOptionsOrFutures(timestamp, sub, sub.options);
   }
 
   function _fundPerp(SubAccount storage sub) internal {
@@ -53,32 +53,31 @@ contract FundingAndSettlement is BaseContract {
   }
 
   // TEMPORARY COMMENTED OUT - TO FIX SETTLEMENT LOGIC IN NEXT PR
-  function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
-    // uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
-    // BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
-    // bytes32[] storage positionMapKeys = positions.keys;
-    // mapping(bytes32 => Position) storage positionValues = positions.values;
-    // uint positionLen = positionMapKeys.length;
-    // int64 stateTimestamp = state.timestamp;
-    // for (uint i; i < positionLen; ++i) {
-    //   bytes32 assetID = positionMapKeys[i];
-    //   (uint64 settlePrice, bool found) = _getAssetSettlementPrice(stateTimestamp, assetID);
-    //   if (!found) {
-    //     continue;
-    //   }
-    //   remove(positions, assetID);
-    //   if (settlePrice == 0) {
-    //     continue;
-    //   }
-    //   BI memory posBalance = BI(positionValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
-    //   newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
-    // }
-    // sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
+  function _settleOptionsOrFutures(int64 timestamp, SubAccount storage sub, PositionsMap storage positions) internal {
+    uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
+    BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
+    bytes32[] storage posKeys = positions.keys;
+    mapping(bytes32 => Position) storage posValues = positions.values;
+    uint posLen = posKeys.length;
+    for (uint i; i < posLen; ++i) {
+      bytes32 assetID = posKeys[i];
+      (uint64 settlePrice, bool found) = _getAssetSettlementPrice(timestamp, assetID);
+      if (!found) {
+        continue;
+      }
+      remove(positions, assetID);
+      if (settlePrice == 0) {
+        continue;
+      }
+      BI memory posBalance = BI(posValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+      newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
+    }
+    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
   function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {
     if (assetGetExpiration(assetID) <= timestamp) {
-      return (0, true);
+      return (0, false);
     }
     SettlementPriceEntry storage entry = state.prices.settlement[assetID];
     if (entry.isSet) {
@@ -95,23 +94,30 @@ contract FundingAndSettlement is BaseContract {
 
   function _getSettlementPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
+    if (kind == Kind.SPOT || kind == Kind.PERPS) {
+      return (0, false);
+    }
+
     Asset memory asset = parseAssetID(assetID);
-    (uint64 futPrice, bool found) = _getFutureSettlementPrice9Decimals(asset.underlying, asset.quote, asset.expiration);
+    (uint64 fPrice, bool found) = _getFutureSettlementPrice9Decimals(asset.underlying, asset.quote, asset.expiration);
+    if (!found) {
+      return (0, false);
+    }
 
     if (kind == Kind.FUTURES) {
-      return (futPrice, found);
-    } else if (kind == Kind.CALL) {
-      int64 callPrice = BI(int256(uint256(futPrice)), PRICE_DECIMALS)
-        .sub(BI(int256(uint256(asset.strikePrice)), _getCurrencyDecimal(asset.quote)))
-        .toInt64(PRICE_DECIMALS);
+      return (fPrice, found);
+    }
+    uint qdec = _getCurrencyDecimal(asset.quote);
+    BI memory strike = BI(int256(uint256(asset.strikePrice)), qdec);
+    BI memory fPriceBI = BI(int256(uint256(fPrice)), PRICE_DECIMALS);
+    if (kind == Kind.CALL) {
+      int64 callPrice = fPriceBI.sub(strike).toInt64(PRICE_DECIMALS);
       if (callPrice < 0) {
         return (0, true);
       }
       return (uint64(callPrice), true);
     } else if (kind == Kind.PUT) {
-      int64 putPrice = BI(int256(uint256(asset.strikePrice)), _getCurrencyDecimal(asset.quote))
-        .sub(BI(int256(uint256(futPrice)), PRICE_DECIMALS))
-        .toInt64(PRICE_DECIMALS);
+      int64 putPrice = strike.sub(fPriceBI).toInt64(PRICE_DECIMALS);
       if (putPrice < 0) {
         return (0, true);
       }
@@ -143,7 +149,7 @@ contract FundingAndSettlement is BaseContract {
     Asset memory asset = Asset({
       kind: Kind.SETTLEMENT,
       underlying: currency,
-      quote: currency,
+      quote: Currency.USD,
       expiration: expiry,
       strikePrice: 0
     });
