@@ -391,7 +391,7 @@ export const Order = {
     [PrimaryType.Order]: [
       { name: "subAccountID", type: "uint64" },
       { name: "isMarket", type: "bool" },
-      { name: "timeInForce", type: "uint16" },
+      { name: "timeInForce", type: "uint8" },
       { name: "takerFeePercentageCap", type: "uint32" },
       { name: "makerFeePercentageCap", type: "uint32" },
       { name: "postOnly", type: "bool" },
