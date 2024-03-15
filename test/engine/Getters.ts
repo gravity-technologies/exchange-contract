@@ -119,17 +119,19 @@ async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
 }
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
-  const val = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
+  const key = ConfigIDToEnum[expectations.key]
+  const val = await contract.getConfig1D(key)
   expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
-  const lockEndTime = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
-  expect(BigNumber.from(lockEndTime)).to.equal(BigNumber.from(expectations.value))
+  const lockEndTime = await contract.getConfigSchedule(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
+  expect(BigNumber.from(lockEndTime)).to.equal(BigNumber.from(expectations.lock_end))
 }
 
 async function expectConfigScheduleAbsent(contract: Contract, expectations: ExConfigScheduleAbsent) {
-  const isAbsent = await contract.isConfigScheduleAbsent(expectations.key)
+  const key = ConfigIDToEnum[expectations.key]
+  const isAbsent = await contract.isConfigScheduleAbsent(key, hex32(expectations.sub_key))
   expect(isAbsent).to.be.true
 }
 

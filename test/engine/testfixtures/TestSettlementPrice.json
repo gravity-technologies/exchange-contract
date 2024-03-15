@@ -1,1659 +1,1659 @@
 [
-   {
-      "name": "Set Oracle",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+  {
+    "name": "Set Oracle",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Empty",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": null
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Empty",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - Quote not USD)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USDT",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x2252061bf6469d6eb79c830313d942ed66a30d69f72c7c9f3caf2a599ce22c8a",
-                           "s": "0x0bea0eb969b16b451adb4292be45f66420d3d5aa16ce00b3149502e2087075aa",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": null
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "oracle quote must be USD",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USDT",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Valid - Signed at time of received)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "PERPETUAL",
+                "underlying": "BTC",
+                "quote": "USDT"
+              },
+              "interest_rate": null
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
-                           "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
-                           "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
-                           "v": 28,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - Quote not USD)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - Settlement Price Not Final)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USDT",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x2252061bf6469d6eb79c830313d942ed66a30d69f72c7c9f3caf2a599ce22c8a",
+                  "s": "0x0bea0eb969b16b451adb4292be45f66420d3d5aa16ce00b3149502e2087075aa",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
             ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": false,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x1ee77b27fd3a8c8678fa99a43a8144c4506544182f8c68f4447bf39118897135",
-                           "s": "0x34415cb80060b0b4b4a78680ce79fc7dadebacb4c2cee2cffee0bb1024b34953",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "oracle quote must be USD",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USDT",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "settlement price not final",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Valid - Signed 1ns before received)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Valid - Signed at time of received)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x9980379b524f3aa45d2d9ce5e813300030efc37b68d3737f4f41222924321dbd",
-                           "s": "0x404c7b90899c3b48ffd0bf7357facd7d5148330509c6f15cdd8755554377eac6",
-                           "v": 28,
-                           "expiration": "3599999999999",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0xe3223dbd539d2a16d646e64b5b667e79b5ef2c07f62223f80bcd1162f34d10e8",
-                           "s": "0x21b52b8ae865d828c38ed54f9ab3f6660141cb36400633c8b39cac4c6db763ef",
-                           "v": 28,
-                           "expiration": "3599999999999",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
+                  "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
+                  "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
+                  "v": 28,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
             ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Valid - Signed 1min before received)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x4cf39ad04525a9907b8eb8499f2d6ec96c4c4ac404b6ec54534dcbb4055ab77e",
-                           "s": "0x1211bd71fa19df92ee3feb3dfc994e1752e409d61f39d94aced7a8ffc9e4782c",
-                           "v": 28,
-                           "expiration": "3540000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x953bbd4e8892c341fb31f5ceaa5402130762eb9a19a150d85c2e6651e6b074f6",
-                           "s": "0x127783ec63295aec7547ba03735430af26f656d191e02f563856eee492e40d3e",
-                           "v": 27,
-                           "expiration": "3540000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "10000"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - Signed >1min before received)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - Settlement Price Not Final)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x1b4a8f836d4359653a3c7091c496be89e07205fb3958a4323c5f0bf6f9dd9b69",
-                           "s": "0x1db14802078f4837d5021b6059d8d5fe0169c233c603f1c0dfe6788d1b7bf76e",
-                           "v": 28,
-                           "expiration": "3539999999999",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x308482b5dd14b05583715afcfb429f6942df2ef854efb519d8f7a62eccb1a69b",
-                           "s": "0x1ee6d474570358f00c25cb6257a78e22eefa40c00779e07e028b567720c2de66",
-                           "v": 28,
-                           "expiration": "3539999999999",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "expired",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": false,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x1ee77b27fd3a8c8678fa99a43a8144c4506544182f8c68f4447bf39118897135",
+                  "s": "0x34415cb80060b0b4b4a78680ce79fc7dadebacb4c2cee2cffee0bb1024b34953",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
             ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - Signed 1ns after received)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "settlement price not final",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x8aa5c48b316d85a1f36dd093d792d03764e1542d0f75f97b2e4bf3cfb445eadb",
-                           "s": "0x07dbea870caaed3004b1e29ecd63707aae212c860d967a60aa07006e0a5c8673",
-                           "v": 27,
-                           "expiration": "3600000000001",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x36e1c440aaa852e2caa93f47c87cfe00652d19595708f2a4cc1f42fdafa6a68b",
-                           "s": "0x535660b4b36e60f235b4e1e4fc9cce465c8f0014cf16e1aa1bdf1ef6a87fd656",
-                           "v": 27,
-                           "expiration": "3600000000001",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Valid - Signed 1ns before received)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "expired",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Valid - Entry has expired)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x9980379b524f3aa45d2d9ce5e813300030efc37b68d3737f4f41222924321dbd",
+                  "s": "0x404c7b90899c3b48ffd0bf7357facd7d5148330509c6f15cdd8755554377eac6",
+                  "v": 28,
+                  "expiration": "3599999999999",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0xe3223dbd539d2a16d646e64b5b667e79b5ef2c07f62223f80bcd1162f34d10e8",
+                  "s": "0x21b52b8ae865d828c38ed54f9ab3f6660141cb36400633c8b39cac4c6db763ef",
+                  "v": 28,
+                  "expiration": "3599999999999",
+                  "nonce": 0
+                }
+              }
             ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
-                           "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3599999999999"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0xebe3784e67a718a2f00f973016aee16e846517f02a6374b1e83b66e14b924bb7",
-                           "s": "0x66ce6b9cdb95296d6724a316d56dbb42cf279c629b21392dfd4c598eab1373e7",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3599999999999"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - Entry has not expired)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "10000"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
-                           "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000001"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0xe09f3cff0c07b4c060d08cf4b0cd5df7a647aaf033275c699b6793204e021d92",
-                           "s": "0x5f773781a2f968e80e363031ba740e28c5938265a05d09098cd576d74fff9a5f",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Valid - Signed 1min before received)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "settlement entry not expired",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - No Expiry)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x4cf39ad04525a9907b8eb8499f2d6ec96c4c4ac404b6ec54534dcbb4055ab77e",
+                  "s": "0x1211bd71fa19df92ee3feb3dfc994e1752e409d61f39d94aced7a8ffc9e4782c",
+                  "v": 28,
+                  "expiration": "3540000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x953bbd4e8892c341fb31f5ceaa5402130762eb9a19a150d85c2e6651e6b074f6",
+                  "s": "0x127783ec63295aec7547ba03735430af26f656d191e02f563856eee492e40d3e",
+                  "v": 27,
+                  "expiration": "3540000000000",
+                  "nonce": 0
+                }
+              }
             ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0xc407c517f653332908339f2c0a5c27cd0b9fe82290e649bb8eb598bf81e6852f",
-                           "s": "0x2b30fbc773586dae8c7220562294e669203fc5f1899083a6571db681bef463e7",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "settlement entry has no expiry",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Perp (Invalid - Wrong asset kind)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "10000"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x871b6b4df81b15562184edd14a69670de7d19517145ffa23ffc02f06224e039e",
-                           "s": "0x027cb34ac0422e6b84d29f4dbc47550e69e450ac8743d33231d4b6c7ed0006d6",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - Signed >1min before received)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "asset kind not supported",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
-                     },
-                     "interest_rate": null
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Valid - Re-upload exact same settlement price)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x1b4a8f836d4359653a3c7091c496be89e07205fb3958a4323c5f0bf6f9dd9b69",
+                  "s": "0x1db14802078f4837d5021b6059d8d5fe0169c233c603f1c0dfe6788d1b7bf76e",
+                  "v": 28,
+                  "expiration": "3539999999999",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x308482b5dd14b05583715afcfb429f6942df2ef854efb519d8f7a62eccb1a69b",
+                  "s": "0x1ee6d474570358f00c25cb6257a78e22eefa40c00779e07e028b567720c2de66",
+                  "v": 28,
+                  "expiration": "3539999999999",
+                  "nonce": 0
+                }
+              }
             ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
-                           "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
-                           "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
-                           "v": 28,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "expired",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         },
-         {
-            "time": "3600000000001",
-            "tx_id": "3",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "3",
-               "time": "3600000000001",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x8aa5c48b316d85a1f36dd093d792d03764e1542d0f75f97b2e4bf3cfb445eadb",
-                           "s": "0x07dbea870caaed3004b1e29ecd63707aae212c860d967a60aa07006e0a5c8673",
-                           "v": 27,
-                           "expiration": "3600000000001",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
-            ]
-         }
-      ]
-   },
-   {
-      "name": "Settlement (Invalid - change settlement price)",
-      "steps": [
-         {
-            "time": "0",
-            "tx_id": "1",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "1",
-               "time": "0",
-               "type": "SET_CONFIG",
-               "set_config": {
-                  "key": "ORACLE_ADDRESS",
-                  "value": "0x01",
-                  "signature": {
-                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
-                     "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
-                     "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
-                     "v": 28,
-                     "expiration": "1234",
-                     "nonce": 1234
-                  },
-                  "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
-               }
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - Signed 1ns after received)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
             },
-            "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
-            "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "key": "ORACLE_ADDRESS",
-                     "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                     "value": "0x01"
-                  },
-                  "name": "ExConfig2D"
-               }
-            ]
-         },
-         {
-            "time": "3600000000000",
-            "tx_id": "2",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "2",
-               "time": "3600000000000",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
-                           "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
-                           "v": 27,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     },
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "ETH",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "10000",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
-                           "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
-                           "v": 28,
-                           "expiration": "3600000000000",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               },
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "ETH",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "10000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x8aa5c48b316d85a1f36dd093d792d03764e1542d0f75f97b2e4bf3cfb445eadb",
+                  "s": "0x07dbea870caaed3004b1e29ecd63707aae212c860d967a60aa07006e0a5c8673",
+                  "v": 27,
+                  "expiration": "3600000000001",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x36e1c440aaa852e2caa93f47c87cfe00652d19595708f2a4cc1f42fdafa6a68b",
+                  "s": "0x535660b4b36e60f235b4e1e4fc9cce465c8f0014cf16e1aa1bdf1ef6a87fd656",
+                  "v": 27,
+                  "expiration": "3600000000001",
+                  "nonce": 0
+                }
+              }
             ]
-         },
-         {
-            "time": "3600000000001",
-            "tx_id": "3",
-            "tx": {
-               "trace_id": "0",
-               "tx_id": "3",
-               "time": "3600000000001",
-               "type": "SETTLEMENT_PRICE_TICK",
-               "settlement_price_tick": {
-                  "entries": [
-                     {
-                        "asset": {
-                           "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
-                           "expiration": "3600000000000"
-                        },
-                        "settlement_price": "25001",
-                        "is_final": true,
-                        "signature": {
-                           "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
-                           "r": "0xf39a95c203d61c8a3d2fba8d2b519dbed794fe96438b5a367322cc3a96fea0ba",
-                           "s": "0x4539fecc279f7719bc19371ec6c2c4dff67ff514ab1f55c3b7a04246ffda2679",
-                           "v": 27,
-                           "expiration": "3600000000001",
-                           "nonce": 0
-                        }
-                     }
-                  ]
-               }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "expired",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
             },
-            "tx_abi": null,
-            "tx_data": "",
-            "ret": "BTC Sett 1Jan70 price changed, old 0.000025, new 0.000025",
-            "expectations": [
-               {
-                  "expect": {
-                     "asset_dto": {
-                        "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
-                        "expiration": "3600000000000"
-                     },
-                     "interest_rate": "25000"
-                  },
-                  "name": "ExSettlementPrice"
-               }
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Valid - Entry has expired)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
+                  "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3599999999999"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0xebe3784e67a718a2f00f973016aee16e846517f02a6374b1e83b66e14b924bb7",
+                  "s": "0x66ce6b9cdb95296d6724a316d56dbb42cf279c629b21392dfd4c598eab1373e7",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
             ]
-         }
-      ]
-   }
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
+            },
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3599999999999"
+              },
+              "interest_rate": "10000"
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - Entry has not expired)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
+                  "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000001"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0xe09f3cff0c07b4c060d08cf4b0cd5df7a647aaf033275c699b6793204e021d92",
+                  "s": "0x5f773781a2f968e80e363031ba740e28c5938265a05d09098cd576d74fff9a5f",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "settlement entry not expired",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
+            },
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": null
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - No Expiry)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0xc407c517f653332908339f2c0a5c27cd0b9fe82290e649bb8eb598bf81e6852f",
+                  "s": "0x2b30fbc773586dae8c7220562294e669203fc5f1899083a6571db681bef463e7",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "settlement entry has no expiry",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD"
+              },
+              "interest_rate": null
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Perp (Invalid - Wrong asset kind)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "PERPETUAL",
+                  "underlying": "BTC",
+                  "quote": "USDT"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x871b6b4df81b15562184edd14a69670de7d19517145ffa23ffc02f06224e039e",
+                  "s": "0x027cb34ac0422e6b84d29f4dbc47550e69e450ac8743d33231d4b6c7ed0006d6",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "asset kind not supported",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "PERPETUAL",
+                "underlying": "BTC",
+                "quote": "USDT"
+              },
+              "interest_rate": null
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Valid - Re-upload exact same settlement price)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
+                  "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
+                  "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
+                  "v": 28,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
+            },
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "10000"
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      },
+      {
+        "time": "3600000000001",
+        "tx_id": "3",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "3",
+          "time": "3600000000001",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x8aa5c48b316d85a1f36dd093d792d03764e1542d0f75f97b2e4bf3cfb445eadb",
+                  "s": "0x07dbea870caaed3004b1e29ecd63707aae212c860d967a60aa07006e0a5c8673",
+                  "v": 27,
+                  "expiration": "3600000000001",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Settlement (Invalid - change settlement price)",
+    "steps": [
+      {
+        "time": "0",
+        "tx_id": "1",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "1",
+          "time": "0",
+          "type": "SET_CONFIG",
+          "set_config": {
+            "key": "ORACLE_ADDRESS",
+            "value": "0x01",
+            "signature": {
+              "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+              "r": "0x108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9",
+              "s": "0x426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913",
+              "v": 28,
+              "expiration": "1234",
+              "nonce": 1234
+            },
+            "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09"
+          }
+        },
+        "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAIE19wQpd7QTk9iBQetfsD9pkY8JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfRCLtQhI14fQsjtiO0D54amecBJnlZ8vZdPZykbA17zJQmoPXvcRVkekjHBODQ7yYes2Ze3Bx2J1AwR6EKltCRMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
+        "tx_data": "0xd0f06e540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000120000000000000000000000008135f7042977b41393d88141eb5fb03f69918f090000000000000000000000000000000000000000000000000000000000000001000000000000000000000000a08ee13480c410de20ea3d126ee2a7daa2a30b7d108bb50848d787d0b23b623b40f9e1a99e701267959f2f65d3d9ca46c0d7bcc9426a0f5ef7115647a48c704e0d0ef261eb3665edc1c7627503047a10a96d0913000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "key": "ORACLE_ADDRESS",
+              "sub_key": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+              "value": "0x01"
+            },
+            "name": "ExConfig2D"
+          }
+        ]
+      },
+      {
+        "time": "3600000000000",
+        "tx_id": "2",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "2",
+          "time": "3600000000000",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x5e1d67d5b086f3aaa716aadbdd67938db5bfe3a2b5e4a7a41cbd58a82f7f838e",
+                  "s": "0x1bd38e882c47a9342e836c0447f51f3a3088774b07ec8b16f29b61b844865ea1",
+                  "v": 27,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              },
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "ETH",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "10000",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0x3def2cf794bd4c79c0b76550efb8eabb1255cb0ad377dae14d7dc64708469b03",
+                  "s": "0x68a5fa8672e38580f032d5b174377853f07451e68e57a89a198cf63008ad0bbb",
+                  "v": 28,
+                  "expiration": "3600000000000",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
+            },
+            "name": "ExSettlementPrice"
+          },
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "ETH",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "10000"
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      },
+      {
+        "time": "3600000000001",
+        "tx_id": "3",
+        "tx": {
+          "trace_id": "0",
+          "tx_id": "3",
+          "time": "3600000000001",
+          "type": "SETTLEMENT_PRICE_TICK",
+          "settlement_price_tick": {
+            "entries": [
+              {
+                "asset": {
+                  "kind": "SETTLEMENT",
+                  "underlying": "BTC",
+                  "quote": "USD",
+                  "expiration": "3600000000000"
+                },
+                "settlement_price": "25001",
+                "is_final": true,
+                "signature": {
+                  "signer": "0x8135f7042977b41393d88141eb5fb03f69918f09",
+                  "r": "0xf39a95c203d61c8a3d2fba8d2b519dbed794fe96438b5a367322cc3a96fea0ba",
+                  "s": "0x4539fecc279f7719bc19371ec6c2c4dff67ff514ab1f55c3b7a04246ffda2679",
+                  "v": 27,
+                  "expiration": "3600000000001",
+                  "nonce": 0
+                }
+              }
+            ]
+          }
+        },
+        "tx_abi": null,
+        "tx_data": "",
+        "ret": "BTC Sett 1Jan70 price changed, old 0.000025, new 0.000025",
+        "expectations": [
+          {
+            "expect": {
+              "asset_dto": {
+                "kind": "SETTLEMENT",
+                "underlying": "BTC",
+                "quote": "USD",
+                "expiration": "3600000000000"
+              },
+              "interest_rate": "25000"
+            },
+            "name": "ExSettlementPrice"
+          }
+        ]
+      }
+    ]
+  }
 ]
