@@ -133,6 +133,11 @@ contract ReadStateContract is TradeContract {
     return _getMarkPrice9Decimals(assetID);
   }
 
+  function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
+    SettlementPriceEntry storage entry = state.prices.settlement[assetID];
+    return (entry.value, entry.isSet);
+  }
+
   function getInterestRate(bytes32 assetID) public view returns (int32) {
     return state.prices.interest[assetID];
   }

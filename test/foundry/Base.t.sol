@@ -3,7 +3,6 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "forge-std/Vm.sol";
-import "forge-std/console.sol";
 import "../../contracts/exchange/GRVTExchange.sol";
 import "../../contracts/exchange/types/DataStructure.sol";
 import {Users} from "./types/Types.sol";
