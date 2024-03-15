@@ -74,7 +74,6 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
     if (step.ret != "") {
       await expectToThrowAsync(resp.wait())
     } else {
-      // console.log("🟠 Validating", (step as any).tx.tx_id)
       await resp.wait()
       const expectations = step.expectations ?? []
       if (expectations.length == 0) {

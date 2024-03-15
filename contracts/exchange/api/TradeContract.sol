@@ -111,7 +111,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(sub, order, tradeSizes, spotDelta - int64(totalFee));
+    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta - int64(totalFee));
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -164,12 +164,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _executeOrder(
+    int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
     int64 spotDelta
   ) internal {
-    _fundAndSettle(sub);
+    _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
 
