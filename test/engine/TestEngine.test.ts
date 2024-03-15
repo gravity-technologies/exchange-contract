@@ -30,7 +30,7 @@ describe.only("API - TestEngine", function () {
     await network.provider.send("evm_revert", [snapshotId])
   })
 
-  const filters = [
+  const filters: string[] = [
     "TestAccountMultisig.json",
     "TestAccountSigners.json",
     // "TestConfigChain.json",
@@ -46,7 +46,6 @@ describe.only("API - TestEngine", function () {
     "TestSubAccountSigners.json",
   ]
   const testNames: string[] = []
-  // const testNames = ["Perp (Valid - Signed at time of received)"]
   testFiles
     .filter((t) => filters.includes(t))
     .forEach((file) => {
@@ -75,6 +74,7 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
     if (step.ret != "") {
       await expectToThrowAsync(resp.wait())
     } else {
+      // console.log("🟠 Validating", (step as any).tx.tx_id)
       await resp.wait()
       const expectations = step.expectations ?? []
       if (expectations.length == 0) {

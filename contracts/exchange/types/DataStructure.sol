@@ -205,7 +205,7 @@ struct PriceState {
   // For each underlying/expiration pair, there will be one settled price
   // Prior to any trade, settlement must be applied
   // FIXME: review data type
-  mapping(bytes32 => uint64) settlement;
+  mapping(bytes32 => SettlementPriceEntry) settlement;
   uint256[49] __gap;
 }
 
@@ -358,4 +358,9 @@ struct MakerTradeMatch {
 struct PriceEntry {
   bytes32 assetID;
   int256 value;
+}
+
+struct SettlementPriceEntry {
+  bool isSet;
+  uint64 value;
 }

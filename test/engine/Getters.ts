@@ -14,6 +14,7 @@ import {
   ExMarkPrice,
   ExNumAccounts,
   ExSessionKeys,
+  ExSettlementPrice,
   ExSubAccountMarginType,
   ExSubAccountPosition,
   ExSubAccountSigners,
@@ -62,6 +63,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSubAccountPosition(contract, expectation.expect as ExSubAccountPosition)
     case "ExSubAccountSpot":
       return expectSubAccountSpot(contract, expectation.expect as ExSubAccountSpot)
+    case "ExSettlementPrice":
+      return expectSettlementPrice(contract, expectation.expect as ExSettlementPrice)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -237,4 +240,16 @@ async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccou
     CurrencyToEnum[expectations.currency]
   )
   expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectations.balance))
+}
+
+async function expectSettlementPrice(contract: Contract, expectations: ExSettlementPrice) {
+  let assetID = BigNumber.from(toAssetID(expectations.asset_dto))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  const [price, found] = await contract.getSettlementPrice(assetIDHex)
+  if (expectations.settlement_price == null) {
+    expect(found).to.be.false
+  } else {
+    expect(found).to.be.true
+    expect(BigNumber.from(price)).to.equal(BigNumber.from(expectations.settlement_price))
+  }
 }

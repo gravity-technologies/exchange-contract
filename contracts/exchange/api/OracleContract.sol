@@ -11,6 +11,8 @@ import "../util/BIMath.sol";
 contract OracleContract is ConfigContract {
   using BIMath for BI;
 
+  int64 private constant maxPriceTickSigExpirationNs = 60_000_000_000; // 1 minute in nanos
+
   /// @dev Update the oracle mark prices for spot, futures, and options
   ///
   /// @param timestamp the timestamp of the price tick
@@ -22,7 +24,7 @@ contract OracleContract is ConfigContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _requireValidNoExipry(hash, sig);
+    _verifyPriceUpdateSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => uint64) storage marks = state.prices.mark;
@@ -61,11 +63,11 @@ contract OracleContract is ConfigContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashOraclePrice(timestamp, prices);
-    _requireValidNoExipry(hash, sig);
+    bytes32 hash = hashOraclePrice(sig.expiration, prices);
+    _verifyPriceUpdateSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
-    mapping(bytes32 => uint64) storage settlements = state.prices.settlement;
+    mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
     uint len = prices.length;
     for (uint i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
@@ -73,22 +75,23 @@ contract OracleContract is ConfigContract {
       // Asset kind must be settlement and quoted in USD
       require(
         assetGetKind(assetID) == Kind.SETTLEMENT && assetGetQuote(assetID) == Currency.USD,
-        ERR_INVALID_PRICE_UPDATE
+        "must be settlement kind in USD"
       );
 
       // Only instruments with expiry can have settlement price
       // If instrument has not expired, settlement price should not be updated
       int64 expiry = assetGetExpiration(assetID);
-      require(expiry > 0 && expiry <= timestamp, ERR_INVALID_PRICE_UPDATE);
+      require(expiry > 0 && expiry <= timestamp, "invalid settlement expiry");
 
       // IMPT: This is an extremely important check to prevent settlement price from being updated
       // Given that we do lazy settlement, we need to ensure that the settlement price is not updated
       // Otherwise, we can end up in scenarios where everyone's settlements don't check out.
       uint64 newPrice = uint64(uint256(prices[i].value));
-      uint64 oldPrice = settlements[assetID];
-      require(oldPrice != 0 && newPrice != oldPrice, ERR_INVALID_PRICE_UPDATE);
+      SettlementPriceEntry storage oldSettlementPrice = settlements[assetID];
+      require(!oldSettlementPrice.isSet || newPrice == oldSettlementPrice.value, "settlemente price changed");
 
-      settlements[prices[i].assetID] = newPrice;
+      // Update the settlement price
+      settlements[prices[i].assetID] = SettlementPriceEntry(true, newPrice);
     }
   }
 
@@ -165,7 +168,7 @@ contract OracleContract is ConfigContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, rates);
-    _requireValidNoExipry(hash, sig);
+    _verifyPriceUpdateSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => int32) storage interest = state.prices.interest;
@@ -182,5 +185,23 @@ contract OracleContract is ConfigContract {
 
       interest[rates[i].assetID] = int32(rates[i].value);
     }
+  }
+
+  function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
+    // TODO: fix this Verify signer is oracle
+    // (address oracle, bool found) = _getAddressConfig(ConfigID.ORACLE_ADDRESS);
+    // console.log(found ? "oracle found" : "oracle not found");
+    // console.log(oracle);
+    // require(found && sig.signer == oracle, "signer is not oracle");
+
+    require(
+      sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
+      "price tick expired"
+    );
+
+    // Prevent replay
+    require(!state.replay.executed[hash], "replayed payload");
+    _requireValidNoExipry(hash, sig);
+    state.replay.executed[hash] = true;
   }
 }

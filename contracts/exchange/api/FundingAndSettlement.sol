@@ -80,17 +80,20 @@ contract FundingAndSettlement is BaseContract {
     if (assetGetExpiration(assetID) <= timestamp) {
       return (0, true);
     }
-    uint64 storedPrice = state.prices.settlement[assetID];
-    if (storedPrice != 0) {
-      return (storedPrice, true);
+    SettlementPriceEntry storage entry = state.prices.settlement[assetID];
+    if (entry.isSet) {
+      return (entry.value, true);
     }
 
     (uint64 settlementPrice, bool found) = _getSettlementPrice9Decimals(assetID);
-    state.prices.settlement[assetID] = settlementPrice;
-    return (settlementPrice, found);
+    if (!found) {
+      return (0, false);
+    }
+    state.prices.settlement[assetID] = SettlementPriceEntry(true, settlementPrice);
+    return (settlementPrice, true);
   }
 
-  function _getSettlementPrice9Decimals(bytes32 assetID) private view returns (uint64, bool) {
+  function _getSettlementPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
     Asset memory asset = parseAssetID(assetID);
     (uint64 futPrice, bool found) = _getFutureSettlementPrice9Decimals(asset.underlying, asset.quote, asset.expiration);
@@ -144,7 +147,7 @@ contract FundingAndSettlement is BaseContract {
       expiration: expiry,
       strikePrice: 0
     });
-    uint64 price = state.prices.settlement[assetToID(asset)];
-    return (price, price != 0);
+    SettlementPriceEntry storage price = state.prices.settlement[assetToID(asset)];
+    return (price.value, price.isSet);
   }
 }

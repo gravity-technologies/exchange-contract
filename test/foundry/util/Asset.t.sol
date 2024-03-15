@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 import "../../../contracts/exchange/util/Asset.sol";
 import "../../../contracts/exchange/types/DataStructure.sol";
-import "forge-std/console.sol";
 
 struct AssetTestCase {
   Asset asset;

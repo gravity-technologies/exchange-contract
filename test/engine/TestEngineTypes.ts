@@ -145,6 +145,11 @@ export interface ExSubAccountSpot {
   balance: string
 }
 
+export interface ExSettlementPrice {
+  asset_dto: Asset
+  settlement_price: string
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -166,6 +171,7 @@ export interface Expectation {
     | ExSubAccountValue
     | ExSubAccountPosition
     | ExSubAccountSpot
+    | ExSettlementPrice
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {
