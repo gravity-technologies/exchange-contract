@@ -53,7 +53,8 @@ contract ConfigContract is BaseContract {
   bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
-  bytes32 private constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
+  bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
+  int64 private constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -75,6 +76,19 @@ contract ConfigContract is BaseContract {
   function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
     (uint64 val, bool isSet) = _getUintConfig2D(key, subKey);
     return (int64(val), isSet);
+  }
+
+  function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
+    ConfigValue storage c = state.config1DValues[key];
+    return (int32(uint32((uint256(c.val)))), c.isSet);
+  }
+
+  function _getCentibeepConfig2D(ConfigID key, bytes32 subKey) internal view returns (int32, bool) {
+    ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
+    return (int32(uint32(uint256(c.val))), c.isSet);
   }
 
   function _uintToConfig(uint64 v) internal pure returns (bytes32) {
@@ -217,15 +231,9 @@ contract ConfigContract is BaseContract {
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
     // 2D configs are always placed at odd indices in the enum. See ConfigID
-    if (is2DConfig) {
-      mapping(bytes32 => ConfigValue) storage config = state.config2DValues[key];
-      config[subKey].isSet = true;
-      config[subKey].val = value;
-    } else {
-      ConfigValue storage config = state.config1DValues[key];
-      config.isSet = true;
-      config.val = value;
-    }
+    ConfigValue storage config = is2DConfig ? state.config2DValues[key][subKey] : state.config1DValues[key];
+    config.isSet = true;
+    config.val = value;
 
     // Must delete the schedule after the config is set (to prevent replays)
     delete setting.schedules[subKey];
@@ -246,19 +254,32 @@ contract ConfigContract is BaseContract {
     if (typ == ConfigType.ADDRESS || typ == ConfigType.ADDRESS2D || typ == ConfigType.BOOL || typ == ConfigType.BOOL2D)
       return rules[0].lockDuration;
 
-    if (typ == ConfigType.INT || typ == ConfigType.CENTIBEEP) {
+    if (typ == ConfigType.INT) {
       (int64 oldVal, bool isSet) = _getIntConfig(key);
       if (isSet) return _getIntConfigLockDuration(key, oldVal, _configToInt(newVal));
       return 0;
-    } else if (typ == ConfigType.INT2D || typ == ConfigType.CENTIBEEP2D) {
-      (int64 oldVal, bool isSet) = _getIntConfig2D(key, subKey);
+    }
+    if (typ == ConfigType.INT2D) {
+      (int64 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
       if (isSet) return _getIntConfigLockDuration(key, oldVal, _configToInt(newVal));
       return 0;
-    } else if (typ == ConfigType.UINT) {
+    }
+    if (typ == ConfigType.CENTIBEEP) {
+      (int32 oldVal, bool isSet) = _getCentibeepConfig(key);
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      return 0;
+    }
+    if (typ == ConfigType.CENTIBEEP2D) {
+      (int32 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      return 0;
+    }
+    if (typ == ConfigType.UINT) {
       (uint64 oldVal, bool isSet) = _getUintConfig(key);
       if (isSet) return _getUintConfigLockDuration(key, oldVal, _configToUint(newVal));
       return 0;
-    } else if (typ == ConfigType.UINT2D) {
+    }
+    if (typ == ConfigType.UINT2D) {
       (uint64 oldVal, bool isSet) = _getUintConfig2D(key, subKey);
       if (isSet) return _getUintConfigLockDuration(key, oldVal, _configToUint(newVal));
       return 0;
@@ -345,10 +366,10 @@ contract ConfigContract is BaseContract {
     v2d[DEFAULT_CONFIG_ENTRY].val = _uintToConfig(2 * ONE_PERCENT);
     Rule[] storage rules = settings[id].rules;
     rules.push(Rule(0, 0, 100 * ONE_HUNDRED_PERCENT));
-    rules.push(Rule(1 hours, 10 * ONE_BEEP, 0));
-    rules.push(Rule(4 hours, 1 * ONE_PERCENT, 0));
-    rules.push(Rule(1 days, 10 * ONE_PERCENT, 0));
-    rules.push(Rule(1 weeks, 1 * ONE_HUNDRED_PERCENT, 0));
+    rules.push(Rule(ONE_HOUR_NANOS, 10 * ONE_BEEP, 0));
+    rules.push(Rule(4 * ONE_HOUR_NANOS, 1 * ONE_PERCENT, 0));
+    rules.push(Rule(24 * ONE_HOUR_NANOS, 10 * ONE_PERCENT, 0));
+    rules.push(Rule(7 * 24 * ONE_HOUR_NANOS, 1 * ONE_HUNDRED_PERCENT, 0));
 
     // SM_FUTURES_MAINTENANCE_MARGIN
     id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;
@@ -529,6 +550,38 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(-5 * int64(ONE_PERCENT));
+
+    ///////////////////////////////////////////////////////////////////
+    /// Fee settings
+    ///////////////////////////////////////////////////////////////////
+
+    // FUTURE_MAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // FUTURE_TAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(140 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_MAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_TAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(120 * int64(ONE_CENTIBEEP)));
   }
 
   struct DefaultAddress {
