@@ -12,16 +12,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -31,8 +31,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -53,16 +53,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -72,8 +72,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -90,9 +90,9 @@
                "mark_price_tick": {
                   "entries": null,
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "34613514327852225123566788576547137050444579478074928899560796335046518323814",
-                     "s": "42570116435323090058728694561301094133579798581159256423410419703186797721636",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x4c868e0a6af2c06fa3ddca8ae5828865c416e44003a78e7700d4c820988b3a66",
+                     "s": "0x5e1dd5012c7e3775eecdfd9085def56b982fadb5f114087b6323ae7468b57824",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -141,16 +141,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -160,8 +160,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -194,9 +194,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "95236675224141311143038210145865041323874566593629958511703109935488839833584",
-                     "s": "8990609237743133225097769318000467844908664639807433428778119963711661586810",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xd28e0c471fc1f1274cf2e31d63e1ba459ee7cfefbd3bc26d4944d5cf737dd7f0",
+                     "s": "0x13e08126d4a4cf2a36220057a9e73b6227e5bdb1e4ead81f7fe5197985eeb97a",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -245,16 +245,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -264,8 +264,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -298,9 +298,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "17275535475868435297561203291219733361549845531986828593989768325342916341609",
-                     "s": "28234591591419707355104955751207777655025451283344950276609772788469125932422",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x26319b486f62ae2e582807bfc54f4b6a5efb357d50062e95775583198a696f69",
+                     "s": "0x3e6c3667ee2f908a111fe5cef32532db2071d6e1317961bd8560e807dc28e586",
                      "v": 27,
                      "expiration": "3599999999999",
                      "nonce": 0
@@ -349,16 +349,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -368,8 +368,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -402,9 +402,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "3341543533779793997881986298735901109208443984268321910325997386414903322302",
-                     "s": "52658813666039966492246318655765002414141278046732197135894929520855322877299",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x07633f224869609c4fad7b605cd99386d70bec6d7cbace881701370793d0e6be",
+                     "s": "0x746bd513613972d3b8b55bbd790379ca6aa3cf4aa46039048e0061cdc36e5d73",
                      "v": 28,
                      "expiration": "3540000000000",
                      "nonce": 0
@@ -453,16 +453,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -472,8 +472,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -506,9 +506,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "38490570245729770018896378050466063477972000271964339990000097579720555422411",
-                     "s": "26334995156883359560299487782842191047929060126226525608352596052743675264893",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x5518e406fd40dfd237d62c0ca60c2dd45d6bc874050a1dc33ae747afa6bce2cb",
+                     "s": "0x3a39143c247130180256cbd7154a45e7e2f7cc2c8a611d6b0267e71258a93f7d",
                      "v": 27,
                      "expiration": "3539999999999",
                      "nonce": 0
@@ -557,16 +557,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -576,8 +576,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -610,9 +610,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "97548590069186955213515482245036513573831522351135318970335732214783870051918",
-                     "s": "38274140987747659708700107818752551328993366270206017666781624541153242748527",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xd7aa8b9ec150f6dd4c94aa3cdf25b6d984fbc248be2d706d1962399b17f9264e",
+                     "s": "0x549e6567a3eb7587a050da47d9a03fe399613dfde22d379d4ab0b6ef6bf9966f",
                      "v": 27,
                      "expiration": "3600000000001",
                      "nonce": 0
@@ -661,16 +661,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -680,8 +680,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -715,9 +715,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "89663920812056813059288598583989842631960241990043031751474640794892427206191",
-                     "s": "8482922415016410186365554240785558290011545311417857696336488024529547975035",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xc63bfb11b553d1879bcd092197d5b7c9b193bc476b3ac3726ea2787a3e8a1e2f",
+                     "s": "0x12c129f7f9d0094efd0fc684f8d6650361d012b72fe1549cfd0a3abdeca2597b",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -767,16 +767,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -786,8 +786,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -821,9 +821,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "95011374474963624010760657804602005272390211726998192637460313976010635483389",
-                     "s": "18653137764644506736434005068210645910945800500433643360248558889160733743716",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xd20e8841e0c53a585d34137c92f4cc290aca8c3979e9d42899f9754911bc18fd",
+                     "s": "0x293d4d45432c23144e4cc254f9008b500408fe959044730fb3d014bb0b39da64",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -873,16 +873,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -892,8 +892,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -927,9 +927,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "35307138624545072972276582734909660624960453918424978782656334678861482863764",
-                     "s": "1377197595302298476270936643223962750326709788322490576470330644869958609018",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x4e0f21dd7e4cd89752c98badf8e70cbb211825c32955e3da0e73ced68b84ac94",
+                     "s": "0x030b7759e97d8ee9f7961c510ae9fb2214b734c05d06afc73b973f5d1848287a",
                      "v": 27,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -979,16 +979,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -998,8 +998,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -1034,9 +1034,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "42410122564509828644622241094453135279859164932733796664660191126057396507630",
-                     "s": "22898957199855083443916257448585458466861703163608284577949071551728739845509",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x5dc3475aad4784b3a6114a667901dd5b5ea17566f1c20b1104cffd35d74093ee",
+                     "s": "0x32a059b8e67a615af1ae862cb73059d120a17494a2553262cb038193b6ee8585",
                      "v": 27,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -1100,16 +1100,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -1119,8 +1119,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -1155,9 +1155,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "608797688826723045279469509808641926946200661817642464323585291685847047128",
-                     "s": "6638172823913178684708198138866310382460623530921956016315399092206201961930",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x0158913951b755146bb32f2ed6538854e0d396cb355016c4d414071510131bd8",
+                     "s": "0x0ead129aad877aef797769bf3c45023d08c21524ff6066143537823e85577dca",
                      "v": 27,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -1221,16 +1221,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -1240,8 +1240,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -1276,9 +1276,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "57952280674296510940701467563906486550005806165567097216757661663378992436714",
-                     "s": "52464369718965095991651813738267635032000849899558865955277440490328409226754",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x801fd4173c11a178f2bc545c6fb80e704ed58ac16c8dab65deed443f546e95ea",
+                     "s": "0x73fdc7ec8905a496c7b49d03e22b020dfbbd080fddb21b51d6e07a9fbee7be02",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -1342,16 +1342,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -1361,8 +1361,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -1397,9 +1397,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "43909001756821789268438394484420231808293518747745655367697269468382032825370",
-                     "s": "102090090045382196382191464736010058727493438497371199853606537439828117520",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0x61139d41de965aa1af691156ab1dd511a186f2595bcde0cfce48293092e80c1a",
+                     "s": "0x39c7ebe632574e7c1efa94b6651ec057d4028f0f1e83b0f3063f1d8d820810",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -1463,16 +1463,16 @@
                "type": "SET_CONFIG",
                "set_config": {
                   "key": "ORACLE_ADDRESS",
-                  "value": "1",
+                  "value": "0x01",
                   "signature": {
-                     "signer": "916624847280182614069831174816009467886508903293",
-                     "r": "55398144366555197577227951390165205998523910171651296673686909183254517683399",
-                     "s": "19515282070148931824733008331340179279479343379581684750925792165671560790664",
+                     "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
+                     "r": "0x7a7a3d123601a57ffb39ecd521831cc95b8bcb7b7ee2b8651bb0f34c09da94c7",
+                     "s": "0x2b25421adeb5f12c3b8360b939b23f1f1dd7f5ee2cea0d59468b3118b1b7c288",
                      "v": 28,
                      "expiration": "1234",
                      "nonce": 1234
                   },
-                  "sub_key": "1122545888536363122180292686428854990184574426035"
+                  "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3"
                }
             },
             "tx_abi": "0PBuVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACgjuE0gMQQ3iDqPRJu4qfaoqMLfXp6PRI2AaV/+zns1SGDHMlbi8t7fuK4ZRuw80wJ2pTHKyVCGt618Sw7g2C5ObI/Hx3X9e4s6g1ZRosxGLG3wogAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNI=",
@@ -1482,8 +1482,8 @@
                {
                   "expect": {
                      "key": "ORACLE_ADDRESS",
-                     "sub_key": "1122545888536363122180292686428854990184574426035",
-                     "value": "1"
+                     "sub_key": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "value": "0x01"
                   },
                   "name": "ExConfig2D"
                }
@@ -1516,9 +1516,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "95236675224141311143038210145865041323874566593629958511703109935488839833584",
-                     "s": "8990609237743133225097769318000467844908664639807433428778119963711661586810",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xd28e0c471fc1f1274cf2e31d63e1ba459ee7cfefbd3bc26d4944d5cf737dd7f0",
+                     "s": "0x13e08126d4a4cf2a36220057a9e73b6227e5bdb1e4ead81f7fe5197985eeb97a",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0
@@ -1572,9 +1572,9 @@
                      }
                   ],
                   "signature": {
-                     "signer": "1122545888536363122180292686428854990184574426035",
-                     "r": "86932712411476901742418877659942654000289947345981267772433834248629666910253",
-                     "s": "36031517568083853760808984635412558110677217333367597999663335863882840293644",
+                     "signer": "0xc4a0b2d4487fcef74679af6274d8c1d0adf11bb3",
+                     "r": "0xc0322bebb9d52567a37ce94cbaf41c530e04b57eab874ee33b633c41174b102d",
+                     "s": "0x4fa91dc1d2464b364669e93fcde207978ad33619ec403035bbfd2fd298f0410c",
                      "v": 28,
                      "expiration": "3600000000000",
                      "nonce": 0

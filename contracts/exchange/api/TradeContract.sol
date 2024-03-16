@@ -22,7 +22,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
     BI memory takerNotionals;
-    int64 takerSpotDelta;
+    BI memory takerSpotDelta;
 
     ///////////////////////////////////////////////////////////////////////////
     /// Maker order verification and execution
@@ -38,7 +38,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
       // Compute maker notionals
-      int64 makerSpotDelta;
+      BI memory makerSpotDelta;
       BI memory makerNotionals;
       uint64[] calldata matchSizes = makerMatch.matchedSize;
       Order calldata makerOrder = makerMatch.makerOrder;
@@ -50,17 +50,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         }
 
         OrderLeg calldata leg = makerOrder.legs[legIdx];
-        BI memory matchedSize = BI(int256(uint256(size)), _getCurrencyDecimal(assetGetUnderlying(leg.assetID)));
-        BI memory notional = matchedSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
+        uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
+        BI memory tradeSize = BI(int256(uint256(size)), udec);
+        BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
         uint64 notionalU64 = notional.toUint64(PRICE_DECIMALS);
 
         // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
         if (leg.isBuyingAsset) {
-          makerSpotDelta -= int64(notionalU64);
-          takerSpotDelta += int64(notionalU64);
+          makerSpotDelta = makerSpotDelta.sub(notional);
+          takerSpotDelta = takerSpotDelta.add(notional);
         } else {
-          makerSpotDelta += int64(notionalU64);
-          takerSpotDelta -= int64(notionalU64);
+          makerSpotDelta = makerSpotDelta.add(notional);
+          takerSpotDelta = takerSpotDelta.sub(notional);
         }
         makerNotionals = makerNotionals.add(notional);
         takerMatchedSizes[_findLegIndex(takerLegs, leg.assetID)] += size;
@@ -101,7 +102,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata order,
     uint64[] memory tradeSizes,
     bool isMakerOrder,
-    int64 spotDelta,
+    BI memory spotDelta,
     BI memory notional,
     uint64 totalFee
   ) internal {
@@ -111,7 +112,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta - int64(totalFee));
+    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee));
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -160,7 +161,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Check that the fee paid is within the cap
     uint32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
-    require(totalFee <= feeCap * notional.toUint64(_getCurrencyDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
+    require(totalFee <= feeCap * notional.toUint64(_getBalanceDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
   }
 
   function _executeOrder(
@@ -168,11 +169,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
-    int64 spotDelta
+    BI memory spotDelta,
+    int64 fee
   ) internal {
     _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
+    uint qdec = _getBalanceDecimal(subQuote);
 
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -196,7 +199,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // FIXME: Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta;
+    int64 newSpotBalance = BI(sub.spotBalances[subQuote], qdec).add(spotDelta).sub(BI(fee, qdec)).toInt64(qdec);
     sub.spotBalances[subQuote] = newSpotBalance;
   }
 

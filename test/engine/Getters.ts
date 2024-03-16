@@ -216,6 +216,7 @@ export async function getSubAccountResult(
 async function expectSubAccountValue(contract: Contract, expectations: ExSubAccountValue) {
   const value = await contract.getSubAccountValue(BigInt(expectations.sub_account_id))
   expect(BigNumber.from(value)).to.equal(BigNumber.from(expectations.value))
+  // console.log("ExTotalValue", BigNumber.from(value).toNumber(), "expectations", expectations.value)
 }
 
 async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
@@ -232,6 +233,7 @@ async function expectSubAccountPosition(contract: Contract, expectations: ExSubA
     expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectedPos.balance ?? "0"))
     expect(BigNumber.from(lastAppliedFundingIndex)).to.equal(BigNumber.from(expectedPos.last_applied_funding_index))
   }
+  // console.log("ExPosition: OK", expectations.position)
 }
 
 async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccountSpot) {
@@ -240,6 +242,7 @@ async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccou
     CurrencyToEnum[expectations.currency]
   )
   expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectations.balance))
+  // console.log("ExSpot: OK", BigNumber.from(balance).toNumber(), expectations.balance)
 }
 
 async function expectSettlementPrice(contract: Contract, expectations: ExSettlementPrice) {

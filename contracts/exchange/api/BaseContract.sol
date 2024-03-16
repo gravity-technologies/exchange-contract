@@ -131,7 +131,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return state.lastTxID;
   }
 
-  function _getCurrencyDecimal(Currency currency) internal pure returns (uint64) {
+  function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
     uint idx = uint(currency);
 
     require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
