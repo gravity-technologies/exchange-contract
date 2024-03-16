@@ -125,7 +125,7 @@ async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
 }
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
-  const lockEndTime = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
+  const [lockEndTime, _] = await contract.getConfig1D(ConfigIDToEnum[expectations.key])
   expect(BigNumber.from(lockEndTime)).to.equal(BigNumber.from(expectations.value))
 }
 
