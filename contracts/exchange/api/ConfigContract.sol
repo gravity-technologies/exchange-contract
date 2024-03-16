@@ -451,7 +451,7 @@ contract ConfigContract is BaseContract {
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(33 * ONE_PERCENT);
+    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(67 * ONE_PERCENT);
 
     // PM_SHORT_TERM_VEGA_POWER
     id = ConfigID.PM_SHORT_TERM_VEGA_POWER;

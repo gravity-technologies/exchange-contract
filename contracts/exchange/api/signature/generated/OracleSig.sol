@@ -18,3 +18,9 @@ function hashOraclePrice(int64 timestamp, PriceEntry[] calldata prices) pure ret
   }
   return keccak256(abi.encode(_ORACLE_H, keccak256(pricesEncoded), timestamp));
 }
+
+bytes32 constant _SETTLEMENT_PRICE_H = keccak256("Data(int256 sid,int256 v,int256 timestamp,bool is_final)");
+
+function hashSettlementTick(int64 timestamp, SettlementTick calldata entry) pure returns (bytes32) {
+  return keccak256(abi.encode(_SETTLEMENT_PRICE_H, entry.assetID, entry.value, timestamp, entry.isFinal));
+}

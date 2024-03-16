@@ -53,45 +53,35 @@ contract OracleContract is ConfigContract {
   /// @param timestamp the timestamp of the price tick
   /// @param txID the transaction ID of the price tick
   /// @param prices the settlement prices
-  /// @param sig the signature of the price tick
-  function settlementPriceTick(
-    int64 timestamp,
-    uint64 txID,
-    PriceEntry[] calldata prices,
-    Signature calldata sig
-  ) external {
+  function settlementPriceTick(int64 timestamp, uint64 txID, SettlementTick[] calldata prices) external {
     _setSequence(timestamp, txID);
-
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _verifyPriceUpdateSig(timestamp, hash, sig);
-    // ------- End of Signature Verification -------
-
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
     uint len = prices.length;
     for (uint i; i < len; ++i) {
-      bytes32 assetID = prices[i].assetID;
-
+      SettlementTick calldata entry = prices[i];
+      bytes32 assetID = bytes32(uint(entry.assetID));
       // Asset kind must be settlement and quoted in USD
       require(
         assetGetKind(assetID) == Kind.SETTLEMENT && assetGetQuote(assetID) == Currency.USD,
         "must be settlement kind in USD"
       );
-
       // Only instruments with expiry can have settlement price
       // If instrument has not expired, settlement price should not be updated
       int64 expiry = assetGetExpiration(assetID);
       require(expiry > 0 && expiry <= timestamp, "invalid settlement expiry");
-
       // IMPT: This is an extremely important check to prevent settlement price from being updated
       // Given that we do lazy settlement, we need to ensure that the settlement price is not updated
       // Otherwise, we can end up in scenarios where everyone's settlements don't check out.
-      uint64 newPrice = uint64(uint256(prices[i].value));
+      uint64 newPrice = uint64(uint256(entry.value));
       SettlementPriceEntry storage oldSettlementPrice = settlements[assetID];
       require(!oldSettlementPrice.isSet || newPrice == oldSettlementPrice.value, "settlemente price changed");
-
+      require(entry.isFinal, "settlement price not final");
       // Update the settlement price
-      settlements[prices[i].assetID] = SettlementPriceEntry(true, newPrice);
+      settlements[assetID] = SettlementPriceEntry(true, newPrice);
+      // ---------- Signature Verification -----------
+      bytes32 hash = hashSettlementTick(entry.signature.expiration, entry);
+      _verifyPriceUpdateSig(timestamp, hash, entry.signature);
+      // ------- End of Signature Verification -------
     }
   }
 
@@ -188,7 +178,7 @@ contract OracleContract is ConfigContract {
   }
 
   function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    // TODO: fix this Verify signer is oracle
+    // FIXME: fix this Verify signer is oracle
     // (address oracle, bool found) = _getAddressConfig(ConfigID.ORACLE_ADDRESS);
     // console.log(found ? "oracle found" : "oracle not found");
     // console.log(oracle);
