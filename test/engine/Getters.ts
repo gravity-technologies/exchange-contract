@@ -111,15 +111,9 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
   let subKey = BigNumber.from(expectations.sub_key)
   let subKeyHex = ethers.utils.hexZeroPad(subKey.toHexString(), 32)
-  // console.log("subKeyHex", subKeyHex)
-  console.log("expectations.key", expectations.key)
   const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], subKeyHex)
-  console.log("val", val)
-  // console.log("val", ethers.he(val))
   let valBig = BigNumber.from(expectations.value)
-  console.log("valHex", valBig)
   let valHex = ethers.utils.hexZeroPad(valBig.toHexString(), 32)
-  console.log("valHex", valHex)
   expect(BigNumber.from(val)).to.equal(BigNumber.from(valHex))
 }
 
