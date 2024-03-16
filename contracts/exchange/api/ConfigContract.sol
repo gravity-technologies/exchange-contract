@@ -550,6 +550,38 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(-5 * int64(ONE_PERCENT));
+
+    ///////////////////////////////////////////////////////////////////
+    /// Fee settings
+    ///////////////////////////////////////////////////////////////////
+
+    // FUTURE_MAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // FUTURE_TAKER_FEE_MINIMUM
+    id = ConfigID.FUTURE_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(140 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_MAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_MAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(-30 * int64(ONE_CENTIBEEP)));
+
+    // OPTION_TAKER_FEE_MINIMUM
+    id = ConfigID.OPTION_TAKER_FEE_MINIMUM;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
+    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
+    v2d[DEFAULT_CONFIG_ENTRY].val = _intToConfig(int64(120 * int64(ONE_CENTIBEEP)));
   }
 
   struct DefaultAddress {
