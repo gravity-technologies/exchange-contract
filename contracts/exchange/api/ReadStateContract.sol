@@ -144,7 +144,7 @@ contract ReadStateContract is TradeContract {
 
   function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    uint64 quoteDecimals = _getCurrencyDecimal(sub.quoteCurrency);
+    uint64 quoteDecimals = _getBalanceDecimal(sub.quoteCurrency);
     return _getSubAccountUsdValue(sub).toInt64(quoteDecimals);
   }
 

@@ -23,7 +23,9 @@ contract RiskCheck is BaseContract {
     BI memory derivVal = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
       _getPositionsUsdValue(sub.options)
     );
-    uint qDec = _getCurrencyDecimal(sub.quoteCurrency);
+    uint qDec = _getBalanceDecimal(sub.quoteCurrency);
+
+    // TODO: go through all supported currency
     BI memory spotVal = BI(int(sub.spotBalances[sub.quoteCurrency]), qDec).mul(
       BI(int(uint(markPrice)), PRICE_DECIMALS)
     );
@@ -41,7 +43,7 @@ contract RiskCheck is BaseContract {
       Position storage pos = values[keys[i]];
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
       require(found, ERR_NOT_FOUND);
-      uint64 uDec = _getCurrencyDecimal(assetGetUnderlying(pos.id));
+      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(int256(pos.balance), uDec);
       BI memory markPriceBI = BI(int(uint(markPrice)), PRICE_DECIMALS);
       total = total.add(markPriceBI.mul(balance));

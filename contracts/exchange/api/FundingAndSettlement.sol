@@ -25,7 +25,7 @@ contract FundingAndSettlement is BaseContract {
 
     Currency quoteCurrency = sub.quoteCurrency;
     mapping(bytes32 => int64) storage fundingIndex = state.prices.fundingIndex;
-    uint64 qdec = _getCurrencyDecimal(quoteCurrency);
+    uint64 qdec = _getBalanceDecimal(quoteCurrency);
     PositionsMap storage perps = sub.perps;
     BI memory fundingPayment;
 
@@ -42,7 +42,7 @@ contract FundingAndSettlement is BaseContract {
         continue;
       }
       // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
-      BI memory perpBalance = BI(perp.balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+      BI memory perpBalance = BI(perp.balance, _getBalanceDecimal(assetGetUnderlying(assetID)));
       fundingPayment = fundingPayment.add(BI(fundingIndexChange, PRICE_DECIMALS)).mul(perpBalance).scale(qdec);
       perp.lastAppliedFundingIndex = latestFundingIndex;
       newSpotBalance += fundingPayment.toInt64(qdec);
@@ -52,9 +52,8 @@ contract FundingAndSettlement is BaseContract {
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
-  // TEMPORARY COMMENTED OUT - TO FIX SETTLEMENT LOGIC IN NEXT PR
   function _settleOptionsOrFutures(int64 timestamp, SubAccount storage sub, PositionsMap storage positions) internal {
-    uint64 qdec = _getCurrencyDecimal(sub.quoteCurrency);
+    uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
     BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
@@ -69,7 +68,7 @@ contract FundingAndSettlement is BaseContract {
       if (settlePrice == 0) {
         continue;
       }
-      BI memory posBalance = BI(posValues[assetID].balance, _getCurrencyDecimal(assetGetUnderlying(assetID)));
+      BI memory posBalance = BI(posValues[assetID].balance, _getBalanceDecimal(assetGetUnderlying(assetID)));
       newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
     }
     sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
@@ -107,25 +106,16 @@ contract FundingAndSettlement is BaseContract {
     if (kind == Kind.FUTURES) {
       return (fPrice, found);
     }
-    uint qdec = _getCurrencyDecimal(asset.quote);
-    BI memory strike = BI(int256(uint256(asset.strikePrice)), qdec);
-    BI memory fPriceBI = BI(int256(uint256(fPrice)), PRICE_DECIMALS);
+
     if (kind == Kind.CALL) {
-      int64 callPrice = fPriceBI.sub(strike).toInt64(PRICE_DECIMALS);
-      if (callPrice < 0) {
-        return (0, true);
-      }
-      return (uint64(callPrice), true);
-    } else if (kind == Kind.PUT) {
-      int64 putPrice = strike.sub(fPriceBI).toInt64(PRICE_DECIMALS);
-      if (putPrice < 0) {
-        return (0, true);
-      }
-      return (uint64(putPrice), true);
+      return (fPrice > asset.strikePrice ? fPrice - asset.strikePrice : 0, true);
     }
 
-    // Should never reach here
-    revert(ERR_NOT_FOUND);
+    if (kind == Kind.PUT) {
+      return (fPrice < asset.strikePrice ? asset.strikePrice - fPrice : 0, true);
+    }
+
+    return (0, false);
   }
 
   function _getFutureSettlementPrice9Decimals(
@@ -133,16 +123,16 @@ contract FundingAndSettlement is BaseContract {
     Currency quote,
     int64 expiry
   ) private view returns (uint64, bool) {
-    (uint64 underlyingPrice, bool underlyingFound) = _getCurrencySettlementPrice9Decimals(underlying, expiry);
+    (uint64 uPrice, bool underlyingFound) = _getCurrencySettlementPrice9Decimals(underlying, expiry);
     if (!underlyingFound) {
       return (0, false);
     }
-    (uint64 quotePrice, bool quoteFound) = _getCurrencySettlementPrice9Decimals(quote, expiry);
+    (uint64 qPrice, bool quoteFound) = _getCurrencySettlementPrice9Decimals(quote, expiry);
     if (!quoteFound) {
       return (0, false);
     }
-    require(quotePrice != 0, ERR_DIV_BY_ZERO);
-    return (uint64(underlyingPrice / quotePrice), true);
+    // Just panic when the quote price is 0
+    return (uPrice / qPrice, true);
   }
 
   function _getCurrencySettlementPrice9Decimals(Currency currency, int64 expiry) private view returns (uint64, bool) {
