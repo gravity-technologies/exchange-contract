@@ -6,6 +6,8 @@ import "../util/BIMath.sol";
 
 contract ReadStateContract is TradeContract {
   using BIMath for BI;
+  // The default fallback value which is a zero value array
+  bytes32 private constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
 
   struct AccountResult {
     address id;
@@ -87,11 +89,15 @@ contract ReadStateContract is TradeContract {
   }
 
   function getConfig2D(ConfigID id, bytes32 subKey) public view returns (bytes32) {
-    return state.config2DValues[id][subKey].val;
+    ConfigValue storage c = state.config2DValues[id][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[id][DEFAULT_CONFIG_ENTRY];
+    }
+    return c.val;
   }
 
-  function getConfig1D(ConfigID id) public view returns (bytes32) {
-    return state.config1DValues[id].val;
+  function getConfig1D(ConfigID id) public view returns (bytes32, bool) {
+    return (state.config1DValues[id].val, state.config1DValues[id].isSet);
   }
 
   function getConfigSchedule(ConfigID id, bytes32 subKey) public view returns (int64) {
