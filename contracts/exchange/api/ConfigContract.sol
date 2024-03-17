@@ -6,7 +6,6 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
-import "../util/BIMath.sol";
 
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
@@ -370,11 +369,11 @@ contract ConfigContract is BaseContract {
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(2 * ONE_PERCENT);
     Rule[] storage rules = settings[id].rules;
-    rules.push(Rule(0, 0, BIMath.abs(100 * ONE_HUNDRED_PERCENT)));
-    rules.push(Rule(int64(ONE_HOUR_NANOS), BIMath.abs(10 * ONE_BEEP), 0));
-    rules.push(Rule(int64(4 * ONE_HOUR_NANOS), BIMath.abs(1 * ONE_PERCENT), 0));
-    rules.push(Rule(int64(24 * ONE_HOUR_NANOS), BIMath.abs(10 * ONE_PERCENT), 0));
-    rules.push(Rule(int64(7 * 24 * ONE_HOUR_NANOS), BIMath.abs(1 * ONE_HUNDRED_PERCENT), 0));
+    rules.push(Rule(0, 0, uint64(int64((100 * ONE_HUNDRED_PERCENT)))));
+    rules.push(Rule(int64(ONE_HOUR_NANOS), uint64(int64((10 * ONE_BEEP))), 0));
+    rules.push(Rule(int64(4 * ONE_HOUR_NANOS), uint64(int64((1 * ONE_PERCENT))), 0));
+    rules.push(Rule(int64(24 * ONE_HOUR_NANOS), uint64(int64((10 * ONE_PERCENT))), 0));
+    rules.push(Rule(int64(7 * 24 * ONE_HOUR_NANOS), uint64(int64((1 * ONE_HUNDRED_PERCENT))), 0));
 
     // SM_FUTURES_MAINTENANCE_MARGIN
     id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;
