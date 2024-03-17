@@ -45,8 +45,8 @@ const config: HardhatUserConfig = {
       chainId: 260, // found using era_test_node run
     },
     grvtTestnet: {
-      url: "http://zkstack.dev.grvt.internal",
-      ethNetwork: "http://zkstack.dev.grvt.internal:8545", // in-memory node doesn't support eth node; removing this line will cause an error
+      url: "https://zkstack.testnet.grvt.internal",
+      ethNetwork: "http://zkstack.testnet.internal:8545", // in-memory node doesn't support eth node; removing this line will cause an error
       zksync: true,
       chainId: 270,
     },
