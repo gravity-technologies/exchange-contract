@@ -167,7 +167,7 @@ export const deployContractUpgradable = async (
   // }
 
   // Deploy the contract to zkSync via proxy
-  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [initializationVariables], {
+  const proxiedContract = await hre.zkUpgrades.deployProxy(deployer.zkWallet, contract, [], {
     initializer: "initialize",
   })
   await proxiedContract.deployed()

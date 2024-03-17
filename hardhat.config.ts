@@ -12,7 +12,7 @@ import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 const config: HardhatUserConfig = {
-  defaultNetwork: "grvtTestnet",
+  defaultNetwork: "grvtDev",
   networks: {
     zkSyncSepoliaTestnet: {
       url: "https://sepolia.era.zksync.dev",
@@ -45,8 +45,14 @@ const config: HardhatUserConfig = {
       chainId: 260, // found using era_test_node run
     },
     grvtTestnet: {
+      url: "https://zkstack.testnet.grvt.internal",
+      ethNetwork: "http://zkstack.testnet.internal:8545",
+      zksync: true,
+      chainId: 270,
+    },
+    grvtDev: {
       url: "http://zkstack.dev.grvt.internal",
-      ethNetwork: "http://zkstack.dev.grvt.internal:8545", // in-memory node doesn't support eth node; removing this line will cause an error
+      ethNetwork: "http://zkstack.dev.grvt.internal:8545",
       zksync: true,
       chainId: 270,
     },
