@@ -87,4 +87,11 @@ library BIMath {
     }
     return uint64(uint256(c));
   }
+
+  function abs(int32 n) internal pure returns (uint64) {
+    unchecked {
+      int32 mask = n >> 31;
+      return uint64(uint32((n + mask) ^ mask));
+    }
+  }
 }

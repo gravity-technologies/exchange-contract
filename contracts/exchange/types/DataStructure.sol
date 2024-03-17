@@ -175,11 +175,11 @@ struct ConfigTimelockRule {
   // This only applies for Int Configs.
   // It expresses the maximum delta (in the positive direction) that the config value
   // can be changed by in order for this rule to apply
-  int32 deltaPositive;
+  uint64 deltaPositive;
   // This only applies for Int Configs.
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
-  int32 deltaNegative;
+  uint64 deltaNegative;
 }
 
 struct ReplayState {

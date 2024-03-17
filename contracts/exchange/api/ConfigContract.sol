@@ -6,6 +6,7 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 import "../util/Address.sol";
+import "../util/BIMath.sol";
 
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
@@ -312,11 +313,11 @@ contract ConfigContract is BaseContract {
 
     if (newVal < oldVal) {
       for (uint i; i < rulesLen; ++i) {
-        if (int64(oldVal - newVal) <= int64(rules[i].deltaNegative)) return rules[i].lockDuration;
+        if (oldVal - newVal <= rules[i].deltaNegative) return rules[i].lockDuration;
       }
     } else {
       for (uint i; i < rulesLen; ++i) {
-        if (int64(newVal - oldVal) <= int64(rules[i].deltaPositive)) return rules[i].lockDuration;
+        if (newVal - oldVal <= rules[i].deltaPositive) return rules[i].lockDuration;
       }
     }
 
@@ -338,10 +339,10 @@ contract ConfigContract is BaseContract {
 
     if (newVal < oldVal) {
       for (uint i; i < rulesLen; ++i)
-        if ((oldVal - newVal) <= int64(rules[i].deltaNegative)) return rules[i].lockDuration;
+        if (uint64(oldVal - newVal) <= rules[i].deltaNegative) return rules[i].lockDuration;
     } else if (newVal > oldVal) {
       for (uint i; i < rulesLen; ++i)
-        if ((newVal - oldVal) <= int64(rules[i].deltaPositive)) return rules[i].lockDuration;
+        if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }
@@ -369,11 +370,11 @@ contract ConfigContract is BaseContract {
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(2 * ONE_PERCENT);
     Rule[] storage rules = settings[id].rules;
-    rules.push(Rule(0, 0, 100 * ONE_HUNDRED_PERCENT));
-    rules.push(Rule(ONE_HOUR_NANOS, 10 * ONE_BEEP, 0));
-    rules.push(Rule(4 * ONE_HOUR_NANOS, 1 * ONE_PERCENT, 0));
-    rules.push(Rule(24 * ONE_HOUR_NANOS, 10 * ONE_PERCENT, 0));
-    rules.push(Rule(7 * 24 * ONE_HOUR_NANOS, 1 * ONE_HUNDRED_PERCENT, 0));
+    rules.push(Rule(0, 0, BIMath.abs(100 * ONE_HUNDRED_PERCENT)));
+    rules.push(Rule(int64(ONE_HOUR_NANOS), BIMath.abs(10 * ONE_BEEP), 0));
+    rules.push(Rule(int64(4 * ONE_HOUR_NANOS), BIMath.abs(1 * ONE_PERCENT), 0));
+    rules.push(Rule(int64(24 * ONE_HOUR_NANOS), BIMath.abs(10 * ONE_PERCENT), 0));
+    rules.push(Rule(int64(7 * 24 * ONE_HOUR_NANOS), BIMath.abs(1 * ONE_HUNDRED_PERCENT), 0));
 
     // SM_FUTURES_MAINTENANCE_MARGIN
     id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;

@@ -31,19 +31,19 @@ describe.only("API - TestEngine", function () {
   })
 
   const filters: string[] = [
-    // "TestAccountMultisig.json",
-    // "TestAccountSigners.json",
-    // "TestConfigChain.json",
+    "TestAccountMultisig.json",
+    "TestAccountSigners.json",
+    "TestConfigChain.json",
     "TestConfigChainDefault.json",
-    // "TestCreateAccount.json",
+    "TestCreateAccount.json",
     // "TestFundingRate.json",
-    // "TestInterestRate.json",
-    // "TestMarkPrice.json",
-    // "TestMatchTradingComputation.json",
-    // "TestSessionKey.json",
-    // // "TestSettlementPrice.json",
-    // "TestSubAccount.json",
-    // "TestSubAccountSigners.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
+    "TestMatchTradingComputation.json",
+    "TestSessionKey.json",
+    // "TestSettlementPrice.json",
+    "TestSubAccount.json",
+    "TestSubAccountSigners.json",
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",
