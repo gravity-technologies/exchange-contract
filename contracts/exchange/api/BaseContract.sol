@@ -19,14 +19,16 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
-    string memory expectedTxID = StringsUpgradeable.toString(state.lastTxID + 1);
-    string memory receivedTxID = StringsUpgradeable.toString(txID);
-    string memory errorMessage = string(
-      abi.encodePacked("Invalid txID: expected ", expectedTxID, ", got ", receivedTxID)
-    );
-
     require(timestamp >= state.timestamp, "invalid timestamp");
-    require(txID == state.lastTxID + 1, errorMessage);
+    require(
+      txID == state.lastTxID + 1,
+      string.concat(
+        "expectedTxID:",
+        StringsUpgradeable.toString(state.lastTxID + 1),
+        ",txID:",
+        StringsUpgradeable.toString(txID)
+      )
+    );
     state.timestamp = timestamp;
     state.lastTxID = txID;
   }
