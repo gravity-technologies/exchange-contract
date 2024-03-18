@@ -7,13 +7,7 @@ import "./api/SubAccountContract.sol";
 import "./api/TransferContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract GRVTExchange is
-  Initializable,
-  AccountContract,
-  OracleContract,
-  SubAccountContract,
-  TransferContract,
-{
+contract GRVTExchange is Initializable, AccountContract, OracleContract, SubAccountContract, TransferContract {
   function initialize() public initializer {
     __ReentrancyGuard_init();
 

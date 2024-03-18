@@ -59,11 +59,6 @@ contract ConfigContract is BaseContract {
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
-
-  function _intToConfig(int64 v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint64(v)));
-  }
-
   function _configToInt(bytes32 v) internal pure returns (int64) {
     return int64(uint64((uint256(v))));
   }
