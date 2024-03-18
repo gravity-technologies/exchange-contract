@@ -137,62 +137,6 @@ contract AccountContract is BaseContract {
     acc.signers[signer] = 0;
   }
 
-  /// @notice Add withdrawal address that the account can withdraw to
-  /// This requires the multisig threshold to be met
-  ///
-  /// @param timestamp The timestamp of the transaction
-  /// @param txID The transaction ID
-  /// @param accountID The account ID
-  /// @param withdrawalAddress The withdrawal address
-  /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the account signers with admin permissions
-  function addWithdrawalAddress(
-    int64 timestamp,
-    uint64 txID,
-    address accountID,
-    address withdrawalAddress,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
-
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
-    // ------- End of Signature Verification -------
-
-    acc.onboardedWithdrawalAddresses[withdrawalAddress] = true;
-  }
-
-  /// @notice Remove withdrawal address that the account can withdraw to
-  /// This requires the multisig threshold to be met
-  ///
-  /// @param timestamp The timestamp of the transaction
-  /// @param txID The transaction ID
-  /// @param accountID The account ID
-  /// @param withdrawalAddress The withdrawal address
-  /// @param nonce The nonce of the transaction
-  /// @param sigs The signatures of the account signers with admin permissions
-  function removeWithdrawalAddress(
-    int64 timestamp,
-    uint64 txID,
-    address accountID,
-    address withdrawalAddress,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
-
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
-    // ------- End of Signature Verification -------
-
-    acc.onboardedWithdrawalAddresses[withdrawalAddress] = false;
-  }
-
   /// @notice Add a account that this account can transfer to
   ///
   /// @param timestamp The timestamp of the transaction

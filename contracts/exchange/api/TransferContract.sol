@@ -47,51 +47,6 @@ abstract contract TransferContract is TradeContract {
     account.spotBalances[currency] += int64(numTokens);
   }
 
-  /**
-   * @notice Withdraw collateral from a sub account. This will call external contract.
-   * This follows the Checks-Effects-Interactions pattern to mitigate reentrancy attack.
-   *
-   * @param timestamp Timestamp of the transaction
-   * @param txID Transaction ID
-   * @param fromAccID Sub account to withdraw from
-   * @param recipient address of the recipient
-   * @param currency Currency to withdraw
-   * @param numTokens Number of tokens to withdraw
-   * @param sig Signature of the transaction
-   **/
-  function withdraw(
-    int64 timestamp,
-    uint64 txID,
-    address fromAccID,
-    address recipient,
-    Currency currency,
-    uint64 numTokens,
-    Signature calldata sig
-  ) external nonReentrant {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(fromAccID);
-
-    // Check if the signer has the permission to withdraw
-    _requireAccountPermission(acc, sig.signer, AccountPermWithdraw);
-    require(acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
-
-    // ---------- Signature Verification -----------
-    _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce), sig);
-    // ------- End of Signature Verification -------
-
-    // TODO: charge withdrawal fee
-    int64 withdrawalFee = 0;
-    int64 delta = int64(numTokens) + withdrawalFee;
-
-    require(delta <= acc.spotBalances[currency], "insufficient balance");
-    acc.spotBalances[currency] -= delta;
-
-    // Call token's ERC20 contract to initiate a transfer
-    ERC20 erc20Contract = ERC20(getCurrencyERC20Address(currency));
-    bool success = erc20Contract.transfer(recipient, numTokens);
-    require(success, "transfer failed");
-  }
-
   function getCurrencyERC20Address(Currency currency) private view returns (address) {
     if (currency == Currency.USDT) {
       (address addr, bool ok) = _getAddressConfig(ConfigID.ERC20_USDT_ADDRESS);
