@@ -6,7 +6,6 @@ import "../util/Address.sol";
 import "../util/Asset.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
@@ -20,15 +19,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
     require(timestamp >= state.timestamp, "invalid timestamp");
-    require(
-      txID == state.lastTxID + 1,
-      string.concat(
-        "expectedTxID:",
-        StringsUpgradeable.toString(state.lastTxID + 1),
-        ",txID:",
-        StringsUpgradeable.toString(txID)
-      )
-    );
+    require(txID == state.lastTxID + 1, "invalid txID");
     state.timestamp = timestamp;
     state.lastTxID = txID;
   }
