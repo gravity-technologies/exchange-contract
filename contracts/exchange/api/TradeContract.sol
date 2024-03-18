@@ -24,12 +24,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory takerNotionals;
     BI memory takerSpotDelta;
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Maker order verification and execution
-    ///
-    /// We aggregate the notional values and matched sizes for taker in this
-    /// loop here since we need the before we can verify / execute the taker order
-    ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
     uint64 totalMakersFee;
@@ -244,10 +238,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   // FIXME: Our BE disables charging fees for now. To enable back afterwards
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {
     return 0;
-    // uint64 totalFee;
-    // uint len = feePerLegs.length;
-    // for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
-    // return totalFee;
   }
 
   function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {

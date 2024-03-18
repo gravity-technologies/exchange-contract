@@ -10,13 +10,9 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
 
-  // eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  // precomputed value for keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVTEx")), keccak256(bytes("0")), 0, address(0)));
   bytes32 private constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
   bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
 
-  /// @dev set the system timestamp and last transactionID.
-  /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
     require(timestamp >= state.timestamp, "invalid timestamp");
     require(txID == state.lastTxID + 1, "invalid txID");
@@ -36,9 +32,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return sub;
   }
 
-  /// @notice Checks if a signer has a permissions in an account or associated subaccounts
-  /// @param acc The account
-  /// @param signer The signer's address
   function _requireSignerInAccount(Account storage acc, address signer) internal view {
     if (acc.signers[signer] != 0) {
       return;
@@ -55,7 +48,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(isSubAccSigner, "signer not tagged to account");
   }
 
-  // Verify that the signatures are from the list of eligible signers, signer of each signature has admin permissions and those signatures form a simple majority
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,
     uint quorum,
@@ -92,16 +84,12 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return a >= b ? a : b;
   }
 
-  /// @dev Verify that a signature is valid with replay attack prevention
-  /// To understand why require the payload hash to be unique, and not the signature, read
-  /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
   function _preventReplay(bytes32 hash, Signature calldata sig) internal {
     require(!state.replay.executed[hash], "replayed payload");
     _requireValidSig(state.timestamp, hash, sig);
     state.replay.executed[hash] = true;
   }
 
-  // Verify that a signature is valid. Caller need to prevent replay attack
   function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
     require(sig.expiration > 0 && sig.expiration >= timestamp, "expired");
     _requireValidNoExipry(hash, sig);
@@ -113,7 +101,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
 
-  // Check if the signer has certain permissions on a subaccount
   function _requireSubAccountPermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
     Account storage acc = _requireAccount(sub.accountID);
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return;
@@ -121,12 +108,10 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
   }
 
-  // Check if the signer has certain permissions on an account
   function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
     require(account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0, "no permission");
   }
 
-  // Check if the caller has certain permissions on a subaccount
   function getLastTxID() external view returns (uint64) {
     return state.lastTxID;
   }

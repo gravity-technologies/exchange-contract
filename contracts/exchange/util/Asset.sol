@@ -11,12 +11,6 @@ struct Asset {
   uint64 strikePrice;
 }
 
-/// @dev Parse the assetID into its components
-///
-/// LSB                                                                                                            MSB
-///     +--------------------------------------------------------------------------------------------------------+
-///   0 | Kind (1B) | Underlying (1B) | Quote (1B) | Reserved (1B) | Expiration (8B) | Strike (8B)| Zero Padding | 255
-///     +-----------------------------------------------------------------------------------------+--------------+
 function parseAssetID(bytes32 assetID) pure returns (Asset memory) {
   uint id = uint(assetID);
   return

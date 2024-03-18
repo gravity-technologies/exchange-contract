@@ -13,12 +13,6 @@ contract OracleContract is ConfigContract {
 
   int64 private constant maxPriceTickSigExpirationNs = 60_000_000_000; // 1 minute in nanos
 
-  /// @dev Update the oracle mark prices for spot, futures, and options
-  ///
-  /// @param timestamp the timestamp of the price tick
-  /// @param txID the transaction ID of the price tick
-  /// @param prices the prices of the assets
-  /// @param sig the signature of the price tick
   function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) public {
     _setSequence(timestamp, txID);
 
@@ -48,12 +42,6 @@ contract OracleContract is ConfigContract {
     }
   }
 
-  /// @dev Update the settlement prices
-  ///
-  /// @param timestamp the timestamp of the price tick
-  /// @param txID the transaction ID of the price tick
-  /// @param prices the settlement prices
-  /// @param sig the signature of the price tick
   function settlementPriceTick(
     int64 timestamp,
     uint64 txID,
@@ -78,14 +66,9 @@ contract OracleContract is ConfigContract {
         "must be settlement kind in USD"
       );
 
-      // Only instruments with expiry can have settlement price
-      // If instrument has not expired, settlement price should not be updated
       int64 expiry = assetGetExpiration(assetID);
       require(expiry > 0 && expiry <= timestamp, "invalid settlement expiry");
 
-      // IMPT: This is an extremely important check to prevent settlement price from being updated
-      // Given that we do lazy settlement, we need to ensure that the settlement price is not updated
-      // Otherwise, we can end up in scenarios where everyone's settlements don't check out.
       uint64 newPrice = uint64(uint256(prices[i].value));
       SettlementPriceEntry storage oldSettlementPrice = settlements[assetID];
       require(!oldSettlementPrice.isSet || newPrice == oldSettlementPrice.value, "settlemente price changed");
@@ -95,12 +78,6 @@ contract OracleContract is ConfigContract {
     }
   }
 
-  /// @dev Update the funding prices for perpetuals
-  ///
-  /// @param timestamp the timestamp of the price tick
-  /// @param txID the transaction ID of the price tick
-  /// @param prices the funding tick values
-  /// @param sig the signature of the price tick
   function fundingPriceTick(
     int64 timestamp,
     uint64 txID,
@@ -121,11 +98,6 @@ contract OracleContract is ConfigContract {
       // Verify
       require(assetGetKind(assetID) == Kind.PERPS && assetGetQuote(assetID) != Currency.USD, "wrong kind or quote");
 
-      // Funding rate must be within the configured range
-      // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
-      // Funding (9.2): Applying a cap (or floor)
-      // Applying in both MD and SM: MD for reporting clamped rate, SM for trustless guarantees
-      // Funding Rate = Max( Min(Funding Rate, 5%), -5%)
       bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
       require(highFound, "fundingHigh not found");
@@ -137,8 +109,6 @@ contract OracleContract is ConfigContract {
       // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
       require(sig.expiration >= state.prices.fundingTime + 1 minutes);
 
-      // Update
-      // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(entry.assetID);
       require(found, "no mark price");
@@ -152,12 +122,6 @@ contract OracleContract is ConfigContract {
     state.prices.fundingTime = sig.expiration;
   }
 
-  /// @dev Update the interest rates
-  ///
-  /// @param timestamp the timestamp of the price tick
-  /// @param txID the transaction ID of the price tick
-  /// @param rates the interest rate values
-  /// @param sig the signature of the price tick
   function interestRateTick(
     int64 timestamp,
     uint64 txID,
@@ -188,12 +152,6 @@ contract OracleContract is ConfigContract {
   }
 
   function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    // TODO: fix this Verify signer is oracle
-    // (address oracle, bool found) = _getAddressConfig(ConfigID.ORACLE_ADDRESS);
-    // console.log(found ? "oracle found" : "oracle not found");
-    // console.log(oracle);
-    // require(found && sig.signer == oracle, "signer is not oracle");
-
     require(
       sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
       "price tick expired"

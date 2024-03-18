@@ -14,16 +14,6 @@ abstract contract ERC20 {
 }
 
 abstract contract TransferContract is TradeContract {
-  /**
-   * @notice Deposit collateral into a sub account
-   *
-   * @param timestamp Timestamp of the transaction
-   * @param txID Transaction ID
-   * @param accountID  account to deposit into
-   * @param currency Currency to deposit
-   * @param numTokens Number of tokens to deposit
-   * @param sig Signature of the transaction
-   **/
   function deposit(
     int64 timestamp,
     uint64 txID,
@@ -34,10 +24,6 @@ abstract contract TransferContract is TradeContract {
     Signature calldata sig
   ) external {
     _setSequence(timestamp, txID);
-
-    // Check if the deposit comes from a whilelisted deposit address
-    // (address depositAddr, bool ok) = _getAddressConfig(ConfigID.DEPOSIT_ADDRESS);
-    // require(ok && depositAddr == sig.signer, "invalid depositor");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
@@ -56,17 +42,6 @@ abstract contract TransferContract is TradeContract {
     revert("invalid currency");
   }
 
-  /**
-   * @notice Transfer tokens from one sub account to another sub account
-   *
-   * @param timestamp Timestamp of the transaction
-   * @param txID Transaction ID
-   * @param fromSubID Sub account to transfer from
-   * @param toSubID Sub account to transfer to
-   * @param currency Currency to transfer
-   * @param numTokens Number of tokens to transfer
-   * @param sig Signature of the transaction
-   */
   function transfer(
     int64 timestamp,
     uint64 txID,

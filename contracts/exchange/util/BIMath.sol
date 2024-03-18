@@ -8,7 +8,6 @@ struct BI {
   uint256 dec;
 }
 
-// TODO: add division test
 library BIMath {
   function add(BI memory a, BI memory b) internal pure returns (BI memory) {
     BI memory c;

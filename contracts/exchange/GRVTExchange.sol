@@ -10,8 +10,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 contract GRVTExchange is Initializable, AccountContract, OracleContract, SubAccountContract, TransferContract {
   function initialize() public initializer {
     __ReentrancyGuard_init();
-
-    // Initialize the config default values and timelock rules
     _setDefaultConfigSettings();
   }
 }
