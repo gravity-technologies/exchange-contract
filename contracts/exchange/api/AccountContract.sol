@@ -103,44 +103,6 @@ contract AccountContract is BaseContract {
     acc.signers[signer] = 0;
   }
 
-  function addWithdrawalAddress(
-    int64 timestamp,
-    uint64 txID,
-    address accountID,
-    address withdrawalAddress,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
-
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
-    // ------- End of Signature Verification -------
-
-    acc.onboardedWithdrawalAddresses[withdrawalAddress] = true;
-  }
-
-  function removeWithdrawalAddress(
-    int64 timestamp,
-    uint64 txID,
-    address accountID,
-    address withdrawalAddress,
-    uint32 nonce,
-    Signature[] calldata sigs
-  ) external {
-    _setSequence(timestamp, txID);
-    Account storage acc = _requireAccount(accountID);
-
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
-    // ------- End of Signature Verification -------
-
-    acc.onboardedWithdrawalAddresses[withdrawalAddress] = false;
-  }
-
   function addTransferAccount(
     int64 timestamp,
     uint64 txID,

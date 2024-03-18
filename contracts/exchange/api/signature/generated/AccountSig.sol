@@ -32,22 +32,6 @@ function hashSetMultiSigThreshold(address accID, uint8 threshold, uint32 nonce) 
   return keccak256(abi.encode(_SET_ACC_MULTISIG_THRESHOLD_H, accID, threshold, nonce));
 }
 
-bytes32 constant _ADD_WITHDRAW_ADDR_H = keccak256(
-  "AddWithdrawalAddress(address accountID,address withdrawalAddress,uint32 nonce)"
-);
-
-function hashAddWithdrawalAddress(address accID, address withdrawal, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_ADD_WITHDRAW_ADDR_H, accID, withdrawal, nonce));
-}
-
-bytes32 constant _DEL_WITHDRAW_ADDR_H = keccak256(
-  "RemoveWithdrawalAddress(address accountID,address withdrawalAddress,uint32 nonce)"
-);
-
-function hashRemoveWithdrawalAddress(address accID, address withdrawal, uint32 nonce) pure returns (bytes32) {
-  return keccak256(abi.encode(_DEL_WITHDRAW_ADDR_H, accID, withdrawal, nonce));
-}
-
 bytes32 constant _ADD_TRANSFER_SUB_ACCOUNT_H = keccak256(
   "AddTransferSubAccount(address accountID,address transferAccountID,uint32 nonce)"
 );
