@@ -26,7 +26,7 @@ abstract contract TransferContract is TradeContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
+    // _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     Account storage account = _requireAccount(accountID);
