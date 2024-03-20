@@ -76,7 +76,8 @@ abstract contract TransferContract is TradeContract {
     require(acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce), sig);
+    // FIXME: disable for testnet testing
+    // _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
     // TODO: charge withdrawal fee
