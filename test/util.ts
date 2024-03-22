@@ -50,12 +50,12 @@ export function nonce() {
 
 export type CfgMap = Map<number, Bytes32>
 
-export async function bytes32(v: string | number | Wallet): Promise<Bytes32> {
+export function bytes32(v: string | number | Wallet): Bytes32 {
   let hex: BytesLike = "0"
   if (typeof v === "number") {
     hex = utils.hexlify(v)
   } else if (v instanceof Wallet) {
-    hex = await v.getAddress()
+    hex = v.address
   }
   return utils.hexZeroPad(hex, 32)
 }

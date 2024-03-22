@@ -9,7 +9,7 @@ import {
   genCreateAccountSig,
   genCreateSubAccountSig,
   genDepositSig,
-  genPriceTick,
+  genPriceTickSig,
   genRecoverAddressPayloadSig,
   genRemoveAccountSignerSig,
   genRemoveRecoveryAddressPayloadSig,
@@ -22,7 +22,7 @@ import {
   genWithdrawalSig,
 } from "./signature"
 import { Currency, MarginType, PriceEntry, PriceEntrySig } from "./type"
-import { Bytes32, nonce } from "./util"
+import { Bytes32, bytes32, nonce } from "./util"
 
 export const MAX_GAS = 2_000_000_000
 
@@ -270,11 +270,14 @@ export async function scheduleConfig(
   ts: number,
   txID: number,
   key: number,
+  subKey: Bytes32,
   value: Bytes32
 ) {
   const salt = nonce()
-  const sig = genScheduleConfigSig(txSigner, key, value, salt)
-  const tx = await contract.scheduleConfig(ts, txID, key, value, salt, sig, txRequestDefault())
+  const subKey32 = await bytes32(subKey)
+  const value32 = await bytes32(value)
+  const sig = genScheduleConfigSig(txSigner, key, subKey32, value32, salt)
+  const tx = await contract.scheduleConfig(ts, txID, key, subKey32, value32, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -284,11 +287,19 @@ export async function setConfig(
   ts: number,
   txID: number,
   key: number,
+  subKey: Bytes32,
   value: Bytes32
 ) {
   const salt = nonce()
-  const sig = genSetConfigSig(txSigner, key, value, salt)
-  const tx = await contract.setConfig(ts, txID, key, value, salt, sig, txRequestDefault())
+  // console.log("subkey", subKey)
+  // console.log("value", value)
+  // const subKey32 = await bytes32(subKey)
+  // const value32 = await bytes32(value)
+  // console.log("subKey32", subKey32)
+  // console.log("value32", value32)
+  const sig = genSetConfigSig(txSigner, key, subKey, value, salt)
+  console.log("sig.signer", sig.signer)
+  const tx = await contract.setConfig(ts, txID, key, subKey, value, sig, txRequestDefault())
   await tx.wait()
 }
 
@@ -355,7 +366,7 @@ export async function markPriceTick(
   timestamp: BigInt
 ) {
   const salt = nonce()
-  const sig = genPriceTick(txSigner, priceEntryToPriceEntrySig(values), timestamp, salt)
+  const sig = genPriceTickSig(txSigner, priceEntryToPriceEntrySig(values), timestamp, salt)
   sig.expiration = timestamp
 
   const tx = await contract.markPriceTick(ts, txID, values, sig, txRequestDefault())

@@ -1,0 +1,1 @@
+export const CONFIG_WALLET_PK = "0x35e02b62e63bd3eacb1126a1f5dba7d722a3bdfe2ad0c1636aafb568e565f162"

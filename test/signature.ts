@@ -3,7 +3,7 @@ import { randomInt } from "crypto"
 import { Wallet, utils } from "ethers"
 import * as Types from "../signatures/message/type"
 import { OrderNoSignature, ZKSyncMysteryBoxDefiTaskSignature, Signature, PriceEntry, PriceEntrySig } from "./type"
-import { buf, getTimestampNs } from "./util"
+import { Bytes32, buf, getTimestampNs } from "./util"
 
 export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
   return sign(wallet, {
@@ -254,13 +254,15 @@ export function genRecoverAddressPayloadSig(
 export function genScheduleConfigSig(
   wallet: Wallet,
   key: number,
-  value: string,
+  subKey: Bytes32,
+  value: Bytes32,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
     ...Types.ScheduleConfig,
     message: {
       key,
+      subKey,
       value,
       nonce,
     },
@@ -270,13 +272,15 @@ export function genScheduleConfigSig(
 export function genSetConfigSig(
   wallet: Wallet,
   key: number,
-  value: string,
+  subKey: Bytes32,
+  value: Bytes32,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
     ...Types.SetConfig,
     message: {
       key,
+      subKey,
       value,
       nonce,
     },
@@ -363,7 +367,7 @@ export function genTransferSig(
   })
 }
 
-export function genPriceTick(
+export function genPriceTickSig(
   wallet: Wallet,
   values: PriceEntrySig[],
   timestamp: BigInt,

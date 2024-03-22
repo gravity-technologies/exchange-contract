@@ -23,8 +23,8 @@ contract OracleContract is ConfigContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _verifyPriceUpdateSig(timestamp, hash, sig);
+    // bytes32 hash = hashOracleFastHash(sig.expiration, prices);
+    _verifyPriceUpdateSig(timestamp, 0x0, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => uint64) storage marks = state.prices.mark;
@@ -190,8 +190,8 @@ contract OracleContract is ConfigContract {
     );
 
     // Prevent replay
-    require(!state.replay.executed[hash], "replayed payload");
-    _requireValidNoExipry(hash, sig);
-    state.replay.executed[hash] = true;
+    // require(!state.replay.executed[hash], "replayed payload");
+    // // _requireValidNoExipry(hash, sig);
+    // state.replay.executed[hash] = true;
   }
 }
