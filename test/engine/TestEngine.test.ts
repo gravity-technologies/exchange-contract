@@ -10,7 +10,7 @@ const gasLimit = 2100000000
 const testDir = "/test/engine/testfixtures/"
 
 // We skip these tests in CI since the era test node cannot run these tests
-describe("API - TestEngine", function () {
+describe.only("API - TestEngine", function () {
   let contract: Contract
   let snapshotId: string
   let w1 = getDeployerWallet()
@@ -39,14 +39,18 @@ describe("API - TestEngine", function () {
     "TestFundingRate.json",
     "TestInterestRate.json",
     "TestMarkPrice.json",
+    // "TestMatchFeeComputation.json", // FAILING
+    // "TestMatchFundingAndSettlement.json", // FAILING
+    // "TestMatchPortfolioMargin.json", // FAILING
+    // "TestMatchSimpleMargin.json", // FAILING
+    "TestFundingRate.json",
     "TestMatchTradingComputation.json",
     "TestSessionKey.json",
-    // "TestSettlementPrice.json",
+    "TestSettlementPrice.json",
     "TestSubAccount.json",
     "TestSubAccountSigners.json",
   ]
   const testNames: string[] = [
-    // "Funding (Valid - Signed at time of received)",
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)"
   ]

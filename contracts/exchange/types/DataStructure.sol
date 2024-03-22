@@ -364,3 +364,10 @@ struct SettlementPriceEntry {
   bool isSet;
   uint64 value;
 }
+
+struct SettlementTick {
+  bytes32 assetID;
+  int256 value;
+  bool isFinal;
+  Signature signature;
+}
