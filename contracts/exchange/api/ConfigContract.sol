@@ -175,7 +175,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external onlyRole(CONFIG_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -210,7 +210,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external onlyRole(CONFIG_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
@@ -587,9 +587,6 @@ contract ConfigContract is BaseContract {
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(120 * ONE_CENTIBEEP);
 
     _setupRole(TX_SENDER, defaultAddresses.TxSender);
-    _setupRole(ORACLE_SENDER, defaultAddresses.OracleSender);
-    _setupRole(CONFIG_SENDER, defaultAddresses.ConfigSender);
-    _setupRole(FUNDING_SENDER, defaultAddresses.FundingSender);
   }
 
   struct DefaultAddress {
@@ -598,9 +595,6 @@ contract ConfigContract is BaseContract {
     address MarketData;
     address Recovery;
     address TxSender;
-    address OracleSender;
-    address ConfigSender;
-    address FundingSender;
   }
 
   function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
@@ -611,10 +605,7 @@ contract ConfigContract is BaseContract {
         Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
         MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
         Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae,
-        TxSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
-        OracleSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
-        ConfigSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
-        FundingSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049
+        TxSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049
       });
   }
 }

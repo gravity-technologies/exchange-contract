@@ -24,7 +24,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) public onlyRole(ORACLE_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -62,7 +62,7 @@ contract OracleContract is ConfigContract {
     int64 timestamp,
     uint64 txID,
     SettlementTick[] calldata prices
-  ) external onlyRole(ORACLE_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
     uint len = prices.length;
@@ -105,10 +105,11 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) external onlyRole(FUNDING_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
+    // TODO: Verify that its signed by market data
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
     _requireValidNoExipry(hash, sig);
     // ------- End of Signature Verification -------
@@ -162,7 +163,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata rates,
     Signature calldata sig
-  ) external onlyRole(ORACLE_SENDER) {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------

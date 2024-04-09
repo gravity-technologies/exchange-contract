@@ -46,9 +46,6 @@ enum Currency {
 }
 
 bytes32 constant TX_SENDER = keccak256("TX_SENDER");
-bytes32 constant ORACLE_SENDER = keccak256("ORACLE_SENDER");
-bytes32 constant CONFIG_SENDER = keccak256("CONFIG_SENDER");
-bytes32 constant FUNDING_SENDER = keccak256("FUNDING_SENDER");
 
 uint constant PRICE_DECIMALS = 9;
 uint constant CENTIBEEP_DECIMALS = 6;
