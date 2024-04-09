@@ -6,8 +6,9 @@ import "../util/Address.sol";
 import "../util/Asset.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-contract BaseContract is ReentrancyGuardUpgradeable {
+contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   State internal state;
 
   // eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");

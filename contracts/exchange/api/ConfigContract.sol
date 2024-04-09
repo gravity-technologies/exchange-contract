@@ -586,6 +586,11 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(120 * ONE_CENTIBEEP);
+
+    _setupRole(TX_SENDER, defaultAddresses.TxSender);
+    _setupRole(ORACLE_SENDER, defaultAddresses.OracleSender);
+    _setupRole(CONFIG_SENDER, defaultAddresses.ConfigSender);
+    _setupRole(FUNDING_SENDER, defaultAddresses.FundingSender);
   }
 
   struct DefaultAddress {
@@ -593,6 +598,10 @@ contract ConfigContract is BaseContract {
     address Oracle;
     address MarketData;
     address Recovery;
+    address TxSender;
+    address OracleSender;
+    address ConfigSender;
+    address FundingSender;
   }
 
   function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
@@ -602,7 +611,11 @@ contract ConfigContract is BaseContract {
         Config: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
         Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
         MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
-        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae
+        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae,
+        TxSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
+        OracleSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
+        ConfigSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
+        FundingSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D
       });
   }
 }
