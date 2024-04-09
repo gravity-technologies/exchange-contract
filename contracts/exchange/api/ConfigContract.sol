@@ -175,7 +175,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(CONFIG_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -190,7 +190,6 @@ contract ConfigContract is BaseContract {
     // For 2D config, there's no such restriction
     bool is2DConfig = uint256(setting.typ) % 2 == 0;
     require(is2DConfig || subKey == 0, "invalid subKey");
-
     ConfigSchedule storage sched = setting.schedules[subKey];
     sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
   }
@@ -211,7 +210,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(CONFIG_SENDER) {
     _setSequence(timestamp, txID);
 
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
@@ -612,10 +611,10 @@ contract ConfigContract is BaseContract {
         Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
         MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
         Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae,
-        TxSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
-        OracleSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
-        ConfigSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
-        FundingSender: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D
+        TxSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
+        OracleSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
+        ConfigSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049,
+        FundingSender: 0x36615Cf349d7F6344891B1e7CA7C72883F5dc049
       });
   }
 }

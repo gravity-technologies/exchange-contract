@@ -32,7 +32,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // Check if the deposit comes from a whilelisted deposit address
@@ -67,7 +67,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external nonReentrant {
+  ) external nonReentrant onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
 
@@ -123,7 +123,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -167,7 +167,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) private {
+  ) private onlyRole(TX_SENDER) {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
     require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
@@ -181,7 +181,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) private {
+  ) private onlyRole(TX_SENDER) {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
     require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
@@ -195,7 +195,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) private {
+  ) private onlyRole(TX_SENDER) {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
@@ -210,7 +210,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) private {
+  ) private onlyRole(TX_SENDER) {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");

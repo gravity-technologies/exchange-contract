@@ -25,7 +25,7 @@ contract SubAccountContract is BaseContract {
     Currency quoteCurrency,
     MarginType marginType,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(quoteCurrency != Currency.UNSPECIFIED, "invalid quote currency");
@@ -68,7 +68,7 @@ contract SubAccountContract is BaseContract {
     uint64 subAccID,
     MarginType marginType,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
 
@@ -102,7 +102,7 @@ contract SubAccountContract is BaseContract {
     address signer,
     uint64 permissions,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     // subaccount, account exist
     // has permission
     // new signer permission is valid, and is a subset of current signer permission
@@ -133,7 +133,7 @@ contract SubAccountContract is BaseContract {
     uint64 subAccID,
     address signer,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
 
@@ -181,7 +181,7 @@ contract SubAccountContract is BaseContract {
     address sessionKey,
     int64 keyExpiry,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     require(int64(keyExpiry) > timestamp, "invalid expiry");
@@ -203,7 +203,7 @@ contract SubAccountContract is BaseContract {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID of the transaction
   /// @param signer The address of the signer
-  function removeSessionKey(int64 timestamp, uint64 txID, address signer) external {
+  function removeSessionKey(int64 timestamp, uint64 txID, address signer) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     delete state.sessions[signer];
   }

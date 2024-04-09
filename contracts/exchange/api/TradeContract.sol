@@ -16,6 +16,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   using BIMath for BI;
 
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
+    require(hasRole(TX_SENDER, msg.sender));
     _setSequence(timestamp, txID);
 
     Order calldata takerOrder = trade.takerOrder;
