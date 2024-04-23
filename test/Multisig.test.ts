@@ -17,6 +17,7 @@ describe("API - Multisig", function () {
   before(async () => {
     const deployingWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchange", [], { wallet: deployingWallet, silent: true, noVerify: true })
+    await contract.initialize()
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
 

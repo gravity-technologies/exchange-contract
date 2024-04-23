@@ -11,6 +11,7 @@ describe("API - Session Key", function () {
   before(async () => {
     const wallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    await contract.initialize()
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
   beforeEach(async () => {
