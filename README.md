@@ -44,3 +44,24 @@ Modify networks in `hardhat.config.ts` using the `networks` section. Set a defau
 ## Notes
 
 This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
+
+## Important Temporary Note
+
+### How to Access `era_test_node` with Contracts Larger Than the Limit
+
+The current version of `era_test_node` supports a maximum contract size of 28kb. However, our contracts can be as large as 40kb. To test contracts of this size, you need to run tests against a specific version of `era_test_node` temporarily that supports Validiums.
+
+You can use [this branch](https://github.com/matter-labs/era-test-node/tree/dz-free-pubdata) until we create a separate flag for validium mode.
+
+To utilize this branch:
+
+1. Build the `era_test_node` with:
+
+   ```
+   cargo build --release
+   ```
+
+2. Run it as an executable:
+   ```
+   ./target/release/era_test_node run
+   ```
