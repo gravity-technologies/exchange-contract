@@ -55,6 +55,7 @@ const config: HardhatUserConfig = {
       ethNetwork: "https://eth.zkdev.gravitymarkets.io",
       zksync: true,
       chainId: 270,
+      verifyURL: "https://contract-verification-api.zkdev.gravitymarkets.io/contract_verification",
     },
     hardhat: {
       zksync: true,
