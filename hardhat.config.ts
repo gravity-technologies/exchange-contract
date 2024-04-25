@@ -51,8 +51,8 @@ const config: HardhatUserConfig = {
       chainId: 270,
     },
     grvtDev: {
-      url: "http://zkstack.dev.grvt.internal",
-      ethNetwork: "http://zkstack.dev.grvt.internal:8545",
+      url: "https://zkrpc.zkdev.gravitymarkets.io",
+      ethNetwork: "https://eth.zkdev.gravitymarkets.io",
       zksync: true,
       chainId: 270,
     },
