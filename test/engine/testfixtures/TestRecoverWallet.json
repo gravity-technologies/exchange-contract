@@ -1,0 +1,98 @@
+[
+   {
+      "name": "addRecoveryAddressshould create sub-account successully",
+      "steps": [
+         {
+            "time": "1",
+            "tx_id": "1",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "1",
+               "time": "1",
+               "type": "CREATE_ACCOUNT",
+               "create_account": {
+                  "account": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                  "signature": {
+                     "signer": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                     "r": "0xeedceb4a2c64fd4aa004bdcba073d3148b3127235aa7946b67798525b48f8ea0",
+                     "s": "0x52260a4c003efaf3ea995b8b26fe5e127da2100f6c49e618f991d99c595e1b5f",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "htsA4QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACYKaI7yw8D6y6m1O5PAOdlEDlSlwAAAAAAAAAAAAAAAJgpojvLDwPrLqbU7k8A52UQOVKX7tzrSixk/UqgBL3LoHPTFIsxJyNap5RrZ3mFJbSPjqBSJgpMAD768+qZW4sm/l4SfaIQD2xJ5hj5kdmcWV4bXwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0g==",
+            "tx_data": "0x86db00e1000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000009829a23bcb0f03eb2ea6d4ee4f00e765103952970000000000000000000000009829a23bcb0f03eb2ea6d4ee4f00e76510395297eedceb4a2c64fd4aa004bdcba073d3148b3127235aa7946b67798525b48f8ea052260a4c003efaf3ea995b8b26fe5e127da2100f6c49e618f991d99c595e1b5f000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "address": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                     "signers": {
+                        "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               }
+            ]
+         },
+         {
+            "time": "1",
+            "tx_id": "2",
+            "tx": {
+               "trace_id": "0",
+               "tx_id": "2",
+               "time": "1",
+               "type": "ADD_RECOVERY_ADDRESS",
+               "add_recovery_address": {
+                  "account": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                  "recovery_address": "0x5fd110cc840ebff5c3a0716320b10ca6d441065b",
+                  "signature": {
+                     "signer": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                     "r": "0x85dc76b3d3618faf541ad528baf8242257be8789591802ae7a332d72255359b2",
+                     "s": "0x097fb844faf75458664bf82e489d634e6df0e43fce027040df29fd2a2f7458b5",
+                     "v": 27,
+                     "expiration": "1234",
+                     "nonce": 1234
+                  }
+               }
+            },
+            "tx_abi": "bZqEGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAACYKaI7yw8D6y6m1O5PAOdlEDlSlwAAAAAAAAAAAAAAAF/REMyEDr/1w6BxYyCxDKbUQQZbAAAAAAAAAAAAAAAAmCmiO8sPA+suptTuTwDnZRA5UpeF3Haz02GPr1Qa1Si6+CQiV76HiVkYAq56My1yJVNZsgl/uET691RYZkv4LkidY05t8OQ/zgJwQN8p/SovdFi1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE0gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATS",
+            "tx_data": "0x6d9a8418000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000009829a23bcb0f03eb2ea6d4ee4f00e765103952970000000000000000000000005fd110cc840ebff5c3a0716320b10ca6d441065b0000000000000000000000009829a23bcb0f03eb2ea6d4ee4f00e7651039529785dc76b3d3618faf541ad528baf8242257be8789591802ae7a332d72255359b2097fb844faf75458664bf82e489d634e6df0e43fce027040df29fd2a2f7458b5000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000000000004d200000000000000000000000000000000000000000000000000000000000004d2",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "num_accounts": 1,
+                     "account_ids": [
+                        "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297"
+                     ]
+                  },
+                  "name": "ExNumAccounts"
+               },
+               {
+                  "expect": {
+                     "address": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                     "signers": {
+                        "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297": "2"
+                     }
+                  },
+                  "name": "ExAccountSigners"
+               },
+               {
+                  "expect": {
+                     "address": "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297",
+                     "signer_recovery_addresses": {
+                        "0x9829a23bcb0f03eb2ea6d4ee4f00e76510395297": [
+   "0x5fd110cc840ebff5c3a0716320b10ca6d441065b"
+]
+                     }
+                  },
+                  "name": "ExAccountRecoveryAddresses"
+               }
+            ]
+         }
+      ]
+   }
+]

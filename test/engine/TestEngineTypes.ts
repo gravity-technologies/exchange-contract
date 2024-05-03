@@ -150,6 +150,11 @@ export interface ExSettlementPrice {
   settlement_price: string
 }
 
+export interface ExAccountRecoveryAddresses {
+  address: string
+  signer_recovery_addresses: { [address: string]: string[] }  
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -172,6 +177,7 @@ export interface Expectation {
     | ExSubAccountPosition
     | ExSubAccountSpot
     | ExSettlementPrice
+    | ExAccountRecoveryAddresses
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

@@ -20,6 +20,7 @@ import {
   ExSubAccountSigners,
   ExSubAccountSpot,
   ExSubAccountValue,
+  ExAccountRecoveryAddresses,
   Expectation,
 } from "./TestEngineTypes"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
@@ -65,6 +66,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSubAccountSpot(contract, expectation.expect as ExSubAccountSpot)
     case "ExSettlementPrice":
       return expectSettlementPrice(contract, expectation.expect as ExSettlementPrice)
+    case "ExAccountRecoveryAddresses":
+      return expectAccountRecoveryAddresses(contract, expectation.expect as ExAccountRecoveryAddresses)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -256,5 +259,15 @@ async function expectSettlementPrice(contract: Contract, expectations: ExSettlem
   } else {
     expect(found).to.be.true
     expect(BigNumber.from(price)).to.equal(BigNumber.from(expectations.settlement_price))
+  }
+}
+
+async function expectAccountRecoveryAddresses(contract: Contract, expectations: ExAccountRecoveryAddresses) {
+  for (const signer in expectations.signer_recovery_addresses) {
+    const recoveryAddresses = expectations.signer_recovery_addresses[signer];
+    for (const recoveryAddress of recoveryAddresses) {
+      const result = await contract.isRecoveryAddress(expectations.address, signer, recoveryAddress);
+      expect(result).to.be.greaterThan(0);
+    }
   }
 }
