@@ -21,6 +21,7 @@ import {
   ExSubAccountSpot,
   ExSubAccountValue,
   ExAccountRecoveryAddresses,
+  ExNotAccountRecoveryAddresses,
   Expectation,
 } from "./TestEngineTypes"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
@@ -68,6 +69,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSettlementPrice(contract, expectation.expect as ExSettlementPrice)
     case "ExAccountRecoveryAddresses":
       return expectAccountRecoveryAddresses(contract, expectation.expect as ExAccountRecoveryAddresses)
+    case "ExNotAccountRecoveryAddresses":
+      return expectNotAccountRecoveryAddresses(contract, expectation.expect as ExNotAccountRecoveryAddresses)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -263,11 +266,21 @@ async function expectSettlementPrice(contract: Contract, expectations: ExSettlem
 }
 
 async function expectAccountRecoveryAddresses(contract: Contract, expectations: ExAccountRecoveryAddresses) {
-  for (const signer in expectations.signer_recovery_addresses) {
-    const recoveryAddresses = expectations.signer_recovery_addresses[signer];
+  for (const signer in expectations.recovery_addresses) {
+    const recoveryAddresses = expectations.recovery_addresses[signer];
     for (const recoveryAddress of recoveryAddresses) {
       const result = await contract.isRecoveryAddress(expectations.address, signer, recoveryAddress);
-      expect(result).to.be.greaterThan(0);
+      expect(result).to.be.true;
+    }
+  }
+}
+
+async function expectNotAccountRecoveryAddresses(contract: Contract, expectations: ExNotAccountRecoveryAddresses) {
+  for (const signer in expectations.not_recovery_addresses) {
+    const recoveryAddresses = expectations.not_recovery_addresses[signer];
+    for (const recoveryAddress of recoveryAddresses) {
+      const result = await contract.isRecoveryAddress(expectations.address, signer, recoveryAddress);
+      expect(result).to.be.false;
     }
   }
 }

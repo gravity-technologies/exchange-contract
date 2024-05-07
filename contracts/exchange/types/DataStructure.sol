@@ -122,7 +122,7 @@ struct Account {
   uint64 adminCount;
   mapping(Currency => int64) spotBalances;
   // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
-  mapping(address => mapping(address => uint256)) recoveryAddresses;
+  mapping(address => address[]) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
   mapping(address => bool) onboardedWithdrawalAddresses;
   // All subaccounts belonging to the account can only transfer assets to these L2 Accounts
