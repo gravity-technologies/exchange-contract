@@ -62,9 +62,9 @@ contract GRVTExchangeTest is GRVTExchange {
     return account.spotBalances[currency];
   }
 
-  function isRecoveryAddress(address id, address signer, address recoveryAddress) public view returns (uint256) {
+  function isRecoveryAddress(address id, address signer, address recoveryAddress) public view returns (bool) {
     Account storage account = state.accounts[id];
-    return account.recoveryAddresses[signer][recoveryAddress];
+    return addressExists(account.recoveryAddresses[signer], recoveryAddress);
   }
 
   function isOnboardedWithdrawalAddress(address id, address withdrawalAddress) public view returns (bool) {

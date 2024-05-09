@@ -30,7 +30,7 @@ contract WalletRecoveryContract is BaseContract {
     _preventReplay(hashAddRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
-    acc.recoveryAddresses[sig.signer][recoveryAddress] = 1;
+    addAddress(acc.recoveryAddresses[sig.signer], recoveryAddress);
   }
 
   /// @notice Remove a recovery address for a signer for a given signer for a given account
@@ -55,7 +55,7 @@ contract WalletRecoveryContract is BaseContract {
     _preventReplay(hashRemoveRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
-    delete acc.recoveryAddresses[sig.signer][recoveryAddress];
+    removeAddress(acc.recoveryAddresses[sig.signer], recoveryAddress, false);
   }
 
   /// @notice Recover the address of an account
@@ -84,7 +84,7 @@ contract WalletRecoveryContract is BaseContract {
     // The recoverySigner must be a signer of the account or a recovery signer for the oldSigner
     require(
       ((acc.signers[oldSigner] != 0 && recoverySignerSig.signer == oldSigner)) ||
-        acc.recoveryAddresses[oldSigner][recoverySignerSig.signer] == 1,
+        addressExists(acc.recoveryAddresses[oldSigner], recoverySignerSig.signer),
       "invalid signer"
     );
     _preventReplay(hashRecoverAddress(accID, oldSigner, newSigner, recoverySignerSig.nonce), recoverySignerSig);
@@ -100,5 +100,9 @@ contract WalletRecoveryContract is BaseContract {
       subAcc.signers[newSigner] = subAcc.signers[oldSigner];
       delete subAcc.signers[oldSigner];
     }
+
+    removeAddress(acc.recoveryAddresses[oldSigner], newSigner, false);
+    acc.recoveryAddresses[newSigner] = acc.recoveryAddresses[oldSigner];
+    delete acc.recoveryAddresses[oldSigner];
   }
 }

@@ -43,6 +43,7 @@ describe.only("API - TestEngine", function () {
     // "TestMatchFundingAndSettlement.json", // FAILING
     // "TestMatchPortfolioMargin.json", // FAILING
     // "TestMatchSimpleMargin.json", // FAILING
+    "TestRecoverWallet.json",
     "TestFundingRate.json",
     "TestMatchTradingComputation.json",
     "TestSessionKey.json",
