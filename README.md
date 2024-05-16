@@ -41,6 +41,9 @@ WALLET_PRIVATE_KEY=your_private_key_here...
 
 Modify networks in `hardhat.config.ts` using the `networks` section. Set a default with `defaultNetwork` or use `--network`, e.g., `hardhat test --network dockerizedNode`.
 
+### Deployment
+To deploy the smart contract, run `yarn deploy:upgradable --network <networkName>` with networkName defined in `hardhat.config.ts`
+
 ## Notes
 
 This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
