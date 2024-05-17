@@ -207,10 +207,11 @@ abstract contract TransferContract is TradeContract {
 
     _fundAndSettle(timestamp, fromSub);
 
-    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= int64(numTokens);
+    int64 numTokensSigned = int64(numTokens);
+    fromSub.spotBalances[currency] -= numTokensSigned;
+
     _requireValidSubAccountUsdValue(fromSub);
-    _requireAccount(toAccID).spotBalances[currency] += int64(numTokens);
+    _requireAccount(toAccID).spotBalances[currency] += numTokensSigned;
   }
 
   function _transferSubToSub(
@@ -226,9 +227,10 @@ abstract contract TransferContract is TradeContract {
 
     _fundAndSettle(timestamp, fromSub);
 
-    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= int64(numTokens);
+    int64 numTokensSigned = int64(numTokens);
+    fromSub.spotBalances[currency] -= numTokensSigned;
+
     _requireValidSubAccountUsdValue(fromSub);
-    _requireSubAccount(toSubID).spotBalances[currency] += int64(numTokens);
+    _requireSubAccount(toSubID).spotBalances[currency] += numTokensSigned;
   }
 }

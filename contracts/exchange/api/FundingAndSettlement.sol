@@ -42,8 +42,11 @@ contract FundingAndSettlement is BaseContract {
         continue;
       }
       // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
-      BI memory perpBalance = BI(perp.balance, _getBalanceDecimal(assetGetUnderlying(assetID)));
-      fundingPayment = fundingPayment.add(BI(fundingIndexChange, PRICE_DECIMALS)).mul(perpBalance).scale(qdec);
+      fundingPayment = fundingPayment.add(
+        BI(fundingIndexChange, PRICE_DECIMALS)
+          .mul(BI(-perp.balance, _getBalanceDecimal(assetGetUnderlying(assetID))))
+          .scale(qdec)
+      );
       perp.lastAppliedFundingIndex = latestFundingIndex;
       newSpotBalance += fundingPayment.toInt64(qdec);
     }
