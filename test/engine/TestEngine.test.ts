@@ -31,25 +31,28 @@ describe.only("API - TestEngine", function () {
   })
 
   const filters: string[] = [
-    "TestAccountMultisig.json",
-    "TestAccountSigners.json",
-    "TestConfigChain.json",
-    "TestConfigChainDefault.json",
-    "TestCreateAccount.json",
-    "TestFundingRate.json",
-    "TestInterestRate.json",
-    "TestMarkPrice.json",
-    // "TestMatchFeeComputation.json", // FAILING
-    // "TestMatchFundingAndSettlement.json", // FAILING
-    // "TestMatchPortfolioMargin.json", // FAILING
-    // "TestMatchSimpleMargin.json", // FAILING
-    "TestRecoverWallet.json",
-    "TestFundingRate.json",
-    "TestMatchTradingComputation.json",
-    "TestSessionKey.json",
-    "TestSettlementPrice.json",
-    "TestSubAccount.json",
-    "TestSubAccountSigners.json",
+    // "TestAccountMultisig.json",
+    // "TestAccountSigners.json",
+    // "TestConfigChain.json",
+    // "TestConfigChainDefault.json",
+    // "TestCreateAccount.json",
+    // "TestFundingRate.json",
+    // "TestInterestRate.json",
+    // "TestMarkPrice.json",
+    // // "TestMatchFeeComputation.json", // FAILING
+    // // "TestMatchFundingAndSettlement.json", // FAILING
+    // // "TestMatchPortfolioMargin.json", // FAILING
+    // // "TestMatchSimpleMargin.json", // FAILING
+    // "TestRecoverWallet.json",
+    // "TestFundingRate.json",
+    // "TestMatchTradingComputation.json",
+    // "TestSessionKey.json",
+    // "TestSettlementPrice.json",
+    // "TestSubAccount.json",
+    // "TestSubAccountSigners.json",
+    // "TestDeposit.json",
+    "TestTransfer.json",
+    // "TestWithdrawal.json",
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",

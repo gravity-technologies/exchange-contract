@@ -528,9 +528,8 @@ contract ConfigContract is BaseContract {
     v2d[addr].val = TRUE_BYTES32;
 
     // // ADMIN_FEE_SUB_ACCOUNT_ID
-    // id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
-    // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = 0;
+    id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
 
     // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
     // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
