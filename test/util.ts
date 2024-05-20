@@ -9,13 +9,14 @@ export async function expectToThrowAsync(promise: Promise<any>, message?: string
   let error = null
   try {
     await promise
-    expect.fail("Expected an error but didn't get one!")
   } catch (err) {
     if (message != null) {
       // console.log("🚨", err)
       // expect((<any>error).message).to.include(message)
     }
+    return;
   }
+  expect.fail("Expected an error but didn't get one!")
 }
 
 export async function expectNotToThrowAsync(promise: Promise<any>) {

@@ -36,6 +36,10 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return sub;
   }
 
+  function _requireSubAccountUnderAccount(SubAccount storage subAcc, address accID) internal view {
+    require(subAcc.accountID == accID, "sub account not under account");
+  }
+
   /// @notice Checks if a signer has a permissions in an account or associated subaccounts
   /// @param acc The account
   /// @param signer The signer's address
