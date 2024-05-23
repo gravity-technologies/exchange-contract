@@ -97,14 +97,23 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -163,7 +172,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -176,7 +190,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -197,14 +216,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -263,7 +292,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": false,
                         "signature": {
@@ -278,13 +312,18 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwk7Mm1//BefiZBaG31q/8MNJjiVzKIs0CHRGDNciRiPtU+1E9iru/Be5TY8GokgEGEKchOFRtwgi2j3/lzJCQERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000000000000000000000000000008135f7042977b41393d88141eb5fb03f69918f093b326d7ffc179f89905a1b7d6affc30d263895cca22cd021d118335c89188fb54fb513d8abbbf05ee5363c1a892010610a72138546dc208b68f7fe5cc9090111000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwk7Mm1//BefiZBaG31q/8MNJjiVzKIs0CHRGDNciRiPtU+1E9iru/Be5TY8GokgEGEKchOFRtwgi2j3/lzJCQERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000000000000000000000000000008135f7042977b41393d88141eb5fb03f69918f093b326d7ffc179f89905a1b7d6affc30d263895cca22cd021d118335c89188fb54fb513d8abbbf05ee5363c1a892010610a72138546dc208b68f7fe5cc9090111000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
             "ret": "settlement price not final",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -343,7 +382,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -356,7 +400,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -377,14 +426,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -443,7 +502,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -456,7 +520,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -477,14 +546,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -543,7 +622,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -556,7 +640,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -571,20 +660,30 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmi0kE33+1dzyfMVgHNKc8Wm6+odwIpkT70tgx372BiykfvepcF7Odrwrw9S5L5XzYGGSKQzM980LjNUOHKkfCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM4OHFH/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwkjVm4m7wsD08tCfZ6OdOYI5gfwWgTfqNUOqojOW37H3HPm1gA8RZJ8sabACAa5AdOgNc0BcNnqctgSfP8Z9vKdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM4OHFH/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09a2d24137dfed5dcf27cc5601cd29cf169bafa8770229913ef4b60c77ef6062ca47ef7a9705ece76bc2bc3d4b92f95f3606192290cccf7cd0b8cd50e1ca91f080000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00000010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f0923566e26ef0b03d3cb427d9e8e74e608e607f05a04dfa8d50eaa88ce5b7ec7dc73e6d6003c45927cb1a6c00806b901d3a035cd0170d9ea72d8127cff19f6f29d000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000338387147ff0000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmi0kE33+1dzyfMVgHNKc8Wm6+odwIpkT70tgx372BiykfvepcF7Odrwrw9S5L5XzYGGSKQzM980LjNUOHKkfCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM4OHFH/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwkjVm4m7wsD08tCfZ6OdOYI5gfwWgTfqNUOqojOW37H3HPm1gA8RZJ8sabACAa5AdOgNc0BcNnqctgSfP8Z9vKdAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM4OHFH/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09a2d24137dfed5dcf27cc5601cd29cf169bafa8770229913ef4b60c77ef6062ca47ef7a9705ece76bc2bc3d4b92f95f3606192290cccf7cd0b8cd50e1ca91f080000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00000010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f0923566e26ef0b03d3cb427d9e8e74e608e607f05a04dfa8d50eaa88ce5b7ec7dc73e6d6003c45927cb1a6c00806b901d3a035cd0170d9ea72d8127cff19f6f29d000000000000000000000000000000000000000000000000000000000000001b00000000000000000000000000000000000000000000000000000338387147ff0000000000000000000000000000000000000000000000000000000000000000",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -643,7 +742,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -656,7 +760,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -671,20 +780,30 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmc20ZrdG2TPtfLV4ICUabZhJkEsK7GNh0svXSIFmw80h7hRm/Q7kujz6y0c4dzZ+K9ZyEQS6iTdBdG3WaIQ+7BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwlnnvT85RfgH54KmzlhBQ3yNoap3CM3OluLLsIl1PgToDCRhlIuqf/ZCMmUDInqsHQ6+l37XDfjJE7Xv0DHERSlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f099cdb466b746d933ed7cb57820251a6d9849904b0aec6361d2cbd7488166c3cd21ee1466fd0ee4ba3cfacb473877367e2bd6721104ba893741746dd668843eec1000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00000010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09679ef4fce517e01f9e0a9b3961050df23686a9dc23373a5b8b2ec225d4f813a0309186522ea9ffd908c9940c89eab0743afa5dfb5c37e3244ed7bf40c71114a5000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmc20ZrdG2TPtfLV4ICUabZhJkEsK7GNh0svXSIFmw80h7hRm/Q7kujz6y0c4dzZ+K9ZyEQS6iTdBdG3WaIQ+7BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwlnnvT85RfgH54KmzlhBQ3yNoap3CM3OluLLsIl1PgToDCRhlIuqf/ZCMmUDInqsHQ6+l37XDfjJE7Xv0DHERSlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f099cdb466b746d933ed7cb57820251a6d9849904b0aec6361d2cbd7488166c3cd21ee1466fd0ee4ba3cfacb473877367e2bd6721104ba893741746dd668843eec1000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00000010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09679ef4fce517e01f9e0a9b3961050df23686a9dc23373a5b8b2ec225d4f813a0309186522ea9ffd908c9940c89eab0743afa5dfb5c37e3244ed7bf40c71114a5000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -743,7 +862,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -756,7 +880,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3599999999999"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -777,14 +906,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3599999999999"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -843,7 +982,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -856,7 +1000,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000001"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -871,20 +1020,30 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwloic1bh9zRZ21oKLHyYHowgFKKKqD3e2UppdkfN9jEW39Sr1+/m+qIl7rsyJRNB4usuNHuVOIVkq56zuN17s/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwnouuBd9DziVu6v2ixN6FE2Uy9MKHZRiTgc5+g0uVYJljKtP8SaFFQNcG3R/cM8LH5As8wP4kEMne2xeVe+9XO2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f096889cd5b87dcd1676d6828b1f2607a3080528a2aa0f77b6529a5d91f37d8c45b7f52af5fbf9bea8897baecc8944d078bacb8d1ee54e21592ae7acee375eecff0000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00100010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09e8bae05df43ce256eeafda2c4de85136532f4c28765189381ce7e834b956099632ad3fc49a14540d706dd1fdc33c2c7e40b3cc0fe2410c9dedb17957bef573b6000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwloic1bh9zRZ21oKLHyYHowgFKKKqD3e2UppdkfN9jEW39Sr1+/m+qIl7rsyJRNB4usuNHuVOIVkq56zuN17s/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQABBAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwnouuBd9DziVu6v2ixN6FE2Uy9MKHZRiTgc5+g0uVYJljKtP8SaFFQNcG3R/cM8LH5As8wP4kEMne2xeVe+9XO2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f096889cd5b87dcd1676d6828b1f2607a3080528a2aa0f77b6529a5d91f37d8c45b7f52af5fbf9bea8897baecc8944d078bacb8d1ee54e21592ae7acee375eecff0000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034630b8a00100010406000000000000000000000000000000000000000000000000000000000000271000000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09e8bae05df43ce256eeafda2c4de85136532f4c28765189381ce7e834b956099632ad3fc49a14540d706dd1fdc33c2c7e40b3cc0fe2410c9dedb17957bef573b6000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
             "ret": "settlement entry not expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -943,7 +1102,11 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -958,13 +1121,17 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwk4ODLPGZgiyeMO9qRr1KGirL/r27zIJgzFUFyp8cBFfALVXpqieK3POJ0vEIQmgeMRsUyzUlyguwVGaumz9WKyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09383832cf199822c9e30ef6a46bd4a1a2acbfebdbbcc8260cc5505ca9f1c0457c02d55e9aa278adcf389d2f10842681e311b14cb3525ca0bb05466ae9b3f562b2000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwk4ODLPGZgiyeMO9qRr1KGirL/r27zIJgzFUFyp8cBFfALVXpqieK3POJ0vEIQmgeMRsUyzUlyguwVGaumz9WKyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000001050600000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09383832cf199822c9e30ef6a46bd4a1a2acbfebdbbcc8260cc5505ca9f1c0457c02d55e9aa278adcf389d2f10842681e311b14cb3525ca0bb05466ae9b3f562b2000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000",
             "ret": "settlement entry has no expiry",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD"
+                     },
                      "settlement_price": null
                   },
                   "name": "ExSettlementPrice"
@@ -1023,7 +1190,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -1036,7 +1208,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -1057,14 +1234,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -1082,7 +1269,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -1103,7 +1295,12 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
@@ -1162,7 +1359,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25000",
                         "is_final": true,
                         "signature": {
@@ -1175,7 +1377,12 @@
                         }
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "10000",
                         "is_final": true,
                         "signature": {
@@ -1196,14 +1403,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "10000"
                   },
                   "name": "ExSettlementPrice"
@@ -1221,7 +1438,12 @@
                "settlement_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "settlement_price": "25001",
                         "is_final": true,
                         "signature": {
@@ -1236,13 +1458,18 @@
                   ]
                }
             },
-            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmvNabwcURdQOBhmr3Ugh3wfGzWYc096/+lsNr4ZXJJ1RGQktYoCCpqyfM/PTpKJdgr6Y+tWZ15OhiRcpXzYaJQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x0435607a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a900000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09af35a6f071445d40e0619abdd4821df07c6cd661cd3debffa5b0daf8657249d5119092d628082a6ac9f33f3d3a4a25d82be98fad599d793a18917295f361a250000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "BDVgegAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAgTX3BCl3tBOT2IFB61+wP2mRjwmvNabwcURdQOBhmr3Ugh3wfGzWYc096/+lsNr4ZXJJ1RGQktYoCCpqyfM/PTpKJdgr6Y+tWZ15OhiRcpXzYaJQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x0435607a0000000000000000000000000000000000000000000000000000034630b8a00100000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000034630b8a0000001050600000000000000000000000000000000000000000000000000000000000061a900000000000000000000000000000000000000000000000000000000000000010000000000000000000000008135f7042977b41393d88141eb5fb03f69918f09af35a6f071445d40e0619abdd4821df07c6cd661cd3debffa5b0daf8657249d5119092d628082a6ac9f33f3d3a4a25d82be98fad599d793a18917295f361a250000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000",
             "ret": " price changed, old 0.000025, new 0.000025",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "settlement_price": "25000"
                   },
                   "name": "ExSettlementPrice"

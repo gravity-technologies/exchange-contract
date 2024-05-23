@@ -49,27 +49,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -634,27 +661,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -1187,7 +1241,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
@@ -1227,7 +1285,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
@@ -1361,27 +1423,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -1914,7 +2003,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
@@ -1954,7 +2047,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
@@ -2088,27 +2185,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -2641,7 +2765,13 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
@@ -2681,7 +2811,13 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
@@ -2815,27 +2951,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -3359,7 +3522,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -3397,7 +3566,13 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1000000000",
                            "oco_limit_price": "0",
@@ -3437,7 +3612,13 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1000000000",
                                  "oco_limit_price": "0",
@@ -3571,27 +3752,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -4124,14 +4332,23 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Fut_1Jan70",
+                           "instrument": {
+                              "kind": "FUTURE",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000"
+                           },
                            "size": "2000000000",
                            "limit_price": "59998000000000",
                            "oco_limit_price": "0",
@@ -4171,14 +4388,23 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Fut_1Jan70",
+                                 "instrument": {
+                                    "kind": "FUTURE",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "59998000000000",
                                  "oco_limit_price": "0",
@@ -4323,27 +4549,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -4876,14 +5129,23 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Fut_1Jan70",
+                           "instrument": {
+                              "kind": "FUTURE",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000"
+                           },
                            "size": "2000000000",
                            "limit_price": "59998000000000",
                            "oco_limit_price": "0",
@@ -4923,14 +5185,23 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Fut_1Jan70",
+                                 "instrument": {
+                                    "kind": "FUTURE",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "59998000000000",
                                  "oco_limit_price": "0",
@@ -5075,27 +5346,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -5628,14 +5926,26 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Put_1Jan70_65000",
+                           "instrument": {
+                              "kind": "PUT",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "10000000000",
                            "limit_price": "8600000000000",
                            "oco_limit_price": "0",
@@ -5675,14 +5985,26 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Put_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "PUT",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "10000000000",
                                  "limit_price": "8600000000000",
                                  "oco_limit_price": "0",
@@ -5827,27 +6149,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -6380,14 +6729,26 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Put_1Jan70_65000",
+                           "instrument": {
+                              "kind": "PUT",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "10000000000",
                            "limit_price": "8600000000000",
                            "oco_limit_price": "0",
@@ -6427,14 +6788,26 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Put_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "PUT",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "10000000000",
                                  "limit_price": "8600000000000",
                                  "oco_limit_price": "0",
@@ -6579,27 +6952,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -7132,7 +7532,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
@@ -7172,7 +7576,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
@@ -7306,27 +7714,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -7859,7 +8294,13 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
@@ -7899,7 +8340,13 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
@@ -8033,27 +8480,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -8577,7 +9051,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -8615,7 +9095,13 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1000000000",
                            "oco_limit_price": "0",
@@ -8655,7 +9141,13 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1000000000",
                                  "oco_limit_price": "0",
@@ -8789,27 +9281,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -9342,14 +9861,23 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Fut_1Jan70",
+                           "instrument": {
+                              "kind": "FUTURE",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000"
+                           },
                            "size": "2000000000",
                            "limit_price": "59998000000000",
                            "oco_limit_price": "0",
@@ -9389,14 +9917,23 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Fut_1Jan70",
+                                 "instrument": {
+                                    "kind": "FUTURE",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "59998000000000",
                                  "oco_limit_price": "0",
@@ -9541,27 +10078,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -10094,14 +10658,23 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "60000000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Fut_1Jan70",
+                           "instrument": {
+                              "kind": "FUTURE",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000"
+                           },
                            "size": "2000000000",
                            "limit_price": "59998000000000",
                            "oco_limit_price": "0",
@@ -10141,14 +10714,23 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "60000000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Fut_1Jan70",
+                                 "instrument": {
+                                    "kind": "FUTURE",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "59998000000000",
                                  "oco_limit_price": "0",
@@ -10293,27 +10875,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -10846,14 +11455,26 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Put_1Jan70_65000",
+                           "instrument": {
+                              "kind": "PUT",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "10000000000",
                            "limit_price": "8600000000000",
                            "oco_limit_price": "0",
@@ -10893,14 +11514,26 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Put_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "PUT",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "10000000000",
                                  "limit_price": "8600000000000",
                                  "oco_limit_price": "0",
@@ -11045,27 +11678,54 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000"
+                        },
                         "price": "59998000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_1Jan70_65000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "1200000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_1Jan70_65000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "7200000000000",
+                           "strike_price": "65000000000000"
+                        },
                         "price": "8600000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -11598,14 +12258,26 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Call_1Jan70_65000",
+                           "instrument": {
+                              "kind": "CALL",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "3000000000",
                            "limit_price": "1200000000000",
                            "oco_limit_price": "0",
                            "is_buying_asset": true
                         },
                         {
-                           "instrument": "BTC_USDT_Put_1Jan70_65000",
+                           "instrument": {
+                              "kind": "PUT",
+                              "underlying": "BTC",
+                              "quote": "USDT",
+                              "expiration": "7200000000000",
+                              "strike_price": "65000000000000"
+                           },
                            "size": "10000000000",
                            "limit_price": "8600000000000",
                            "oco_limit_price": "0",
@@ -11645,14 +12317,26 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Call_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "CALL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "1200000000000",
                                  "oco_limit_price": "0",
                                  "is_buying_asset": false
                               },
                               {
-                                 "instrument": "BTC_USDT_Put_1Jan70_65000",
+                                 "instrument": {
+                                    "kind": "PUT",
+                                    "underlying": "BTC",
+                                    "quote": "USDT",
+                                    "expiration": "7200000000000",
+                                    "strike_price": "65000000000000"
+                                 },
                                  "size": "10000000000",
                                  "limit_price": "8600000000000",
                                  "oco_limit_price": "0",

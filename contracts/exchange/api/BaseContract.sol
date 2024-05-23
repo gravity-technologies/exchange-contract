@@ -15,6 +15,9 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 1));
   bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
 
+  int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
+  int64 private constant MAX_SIG_EXPIRATION = 30 * 24 * ONE_HOUR_NANOS;
+
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
@@ -107,7 +110,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
 
   // Verify that a signature is valid. Caller need to prevent replay attack
   function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
-    require(sig.expiration > 0 && sig.expiration >= timestamp, "expired");
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + MAX_SIG_EXPIRATION), "expired");
     _requireValidNoExipry(hash, sig);
   }
 

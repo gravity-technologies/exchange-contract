@@ -11,7 +11,8 @@ import "../util/BIMath.sol";
 contract OracleContract is ConfigContract {
   using BIMath for BI;
 
-  int64 private constant maxPriceTickSigExpirationNs = 60_000_000_000; // 1 minute in nanos
+  int64 private constant ONE_MINUTE_NANOS = 60_000_000_000; // 1 minute in nanos
+  int64 private constant maxPriceTickSigExpirationNs = ONE_MINUTE_NANOS;
 
   /// @dev Update the oracle mark prices for spot, futures, and options
   ///
@@ -101,7 +102,7 @@ contract OracleContract is ConfigContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _requireValidNoExipry(hash, sig);
+    _verifyFundingTickSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => int64) storage fundings = state.prices.fundingIndex;
@@ -123,9 +124,6 @@ contract OracleContract is ConfigContract {
       require(lowFound, "fundingLow not found");
       int64 newFunding = int64(prices[i].value);
       require(newFunding >= fundingLow && newFunding <= fundingHigh, "price out of range");
-
-      // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
-      require(sig.expiration >= state.prices.fundingTime + 1 minutes);
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
@@ -178,15 +176,28 @@ contract OracleContract is ConfigContract {
   }
 
   function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    // FIXME: fix this Verify signer is oracle
-    // (address oracle, bool found) = _getAddressConfig(ConfigID.ORACLE_ADDRESS);
-    // console.log(found ? "oracle found" : "oracle not found");
-    // console.log(oracle);
-    // require(found && sig.signer == oracle, "signer is not oracle");
+    require(_getBoolConfig2D(ConfigID.ORACLE_ADDRESS, _addressToConfig(sig.signer)), "signer is not oracle");
 
     require(
       sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
       "price tick expired"
+    );
+
+    // Prevent replay
+    require(!state.replay.executed[hash], "replayed payload");
+    _requireValidNoExipry(hash, sig);
+    state.replay.executed[hash] = true;
+  }
+
+  function _verifyFundingTickSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
+    // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
+    require(sig.expiration >= state.prices.fundingTime + ONE_MINUTE_NANOS, "funding reate less than 1 minute apart");
+
+    require(_getBoolConfig2D(ConfigID.MARKET_DATA_ADDRESS, _addressToConfig(sig.signer)), "signer is not market data");
+
+    require(
+      sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
+      "signature expired"
     );
 
     // Prevent replay

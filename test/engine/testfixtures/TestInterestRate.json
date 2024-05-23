@@ -105,14 +105,23 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
@@ -171,11 +180,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -195,14 +214,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 25000
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 10000
                   },
                   "name": "ExInterestRate"
@@ -261,11 +290,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -285,14 +324,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 25000
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 10000
                   },
                   "name": "ExInterestRate"
@@ -351,11 +400,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -375,14 +434,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 25000
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 10000
                   },
                   "name": "ExInterestRate"
@@ -441,11 +510,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -459,20 +538,30 @@
                   }
                }
             },
-            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgetNi0dfyNDOh9drnjGdf6NnJaB5Z3SVIqc2OiKj5r4df8YsSOil0WwLhrQHYrtbE1OpxvvlLa8tT7k3ojPNsfrpwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
-            "tx_data": "0x1cd11580000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad362d1d7f23433a1f5dae78c675fe8d9c9681e59dd2548a9cd8e88a8f9af875ff18b123a29745b02e1ad01d8aed6c4d4ea71bef94b6bcb53ee4de88cf36c7eba7000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b8a000000104070000000000000000000000000000000000000000000000000000000000002710",
+            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgetNi0dfyNDOh9drnjGdf6NnJaB5Z3SVIqc2OiKj5r4df8YsSOil0WwLhrQHYrtbE1OpxvvlLa8tT7k3ojPNsfrpwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
+            "tx_data": "0x1cd115800000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad362d1d7f23433a1f5dae78c675fe8d9c9681e59dd2548a9cd8e88a8f9af875ff18b123a29745b02e1ad01d8aed6c4d4ea71bef94b6bcb53ee4de88cf36c7eba7000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b8a000000104070000000000000000000000000000000000000000000000000000000000002710",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
@@ -531,11 +620,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -549,20 +648,30 @@
                   }
                }
             },
-            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgethYEcxW+auaHtZBYso9BKPriRpDN0soYfcdbNfi00deoeEshNXfRWVwMctuPO5cyt2YJg8XFCDJqLYZiDQPBGPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
-            "tx_data": "0x1cd11580000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad85811cc56f9ab9a1ed64162ca3d04a3eb891a43374b2861f71d6cd7e2d3475ea1e12c84d5df45657031cb6e3cee5ccadd98260f171420c9a8b61988340f0463e000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b8a000000104070000000000000000000000000000000000000000000000000000000000002710",
+            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgethYEcxW+auaHtZBYso9BKPriRpDN0soYfcdbNfi00deoeEshNXfRWVwMctuPO5cyt2YJg8XFCDJqLYZiDQPBGPgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
+            "tx_data": "0x1cd115800000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad85811cc56f9ab9a1ed64162ca3d04a3eb891a43374b2861f71d6cd7e2d3475ea1e12c84d5df45657031cb6e3cee5ccadd98260f171420c9a8b61988340f0463e000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b8a000000104070000000000000000000000000000000000000000000000000000000000002710",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
@@ -621,11 +730,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000001"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -645,14 +764,24 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": 25000
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000001"
+                     },
                      "interest_rate": 10000
                   },
                   "name": "ExInterestRate"
@@ -711,11 +840,21 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "rate": 25000
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3599999999999"
+                        },
                         "rate": 10000
                      }
                   ],
@@ -729,20 +868,30 @@
                   }
                }
             },
-            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgetRfD3EhQxwphglOyzloQ0cHQt5O4I6QrU3UIuEzpJK9d5pOBT3WM0oGCeusf1nTdJ943oIidWJhL63y3RoEPCMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4n/8AAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
-            "tx_data": "0x1cd11580000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad45f0f7121431c2986094ecb396843470742de4ee08e90ad4dd422e133a492bd779a4e053dd6334a0609ebac7f59d3749f78de82227562612fadf2dd1a043c232000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b89fff000104070000000000000000000000000000000000000000000000000000000000002710",
+            "tx_abi": "HNEVgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAFU+6YtwTMwimhCcGBaTuESXqgetRfD3EhQxwphglOyzloQ0cHQt5O4I6QrU3UIuEzpJK9d5pOBT3WM0oGCeusf1nTdJ943oIidWJhL63y3RoEPCMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLigAAABBQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4n/8AAQQHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
+            "tx_data": "0x1cd115800000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000553ee98b704ccc229a109c181693b84497aa07ad45f0f7121431c2986094ecb396843470742de4ee08e90ad4dd422e133a492bd779a4e053dd6334a0609ebac7f59d3749f78de82227562612fadf2dd1a043c232000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b8a0000001050700000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000034630b89fff000104070000000000000000000000000000000000000000000000000000000000002710",
             "ret": "interest rate entry has expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"
                },
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3599999999999"
+                     },
                      "interest_rate": null
                   },
                   "name": "ExInterestRate"

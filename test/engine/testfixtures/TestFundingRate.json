@@ -109,7 +109,11 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -177,13 +181,17 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACrmiiLxpEgStjEqmWJLKQVRAskF3N/YRe+l31IMXJAJJLM4Ki/Ec8asfCxiTkiFFpnSnuJ8SLsG6WoD4CBJYZKH1yaIBWjsSCzMGAHl38tPN4R26AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001200000000000000000000000002ae68a22f1a44812b6312a99624b29055102c905dcdfd845efa5df520c5c900924b3382a2fc473c6ac7c2c624e48851699d29ee27c48bb06e96a03e02049619287d726880568ec482ccc1801e5dfcb4f378476e8000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACrmiiLxpEgStjEqmWJLKQVRAskF3N/YRe+l31IMXJAJJLM4Ki/Ec8asfCxiTkiFFpnSnuJ8SLsG6WoD4CBJYZKH1yaIBWjsSCzMGAHl38tPN4R26AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000001200000000000000000000000002ae68a22f1a44812b6312a99624b29055102c905dcdfd845efa5df520c5c900924b3382a2fc473c6ac7c2c624e48851699d29ee27c48bb06e96a03e02049619287d726880568ec482ccc1801e5dfcb4f378476e8000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
             "ret": "ineligible signer",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -212,12 +220,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 25000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": 10000,
                         "mark_price": "0"
                      }
@@ -232,20 +248,28 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjyF5LnEuGbiyamQ7xQyzOa9OeFnbCGGZrkh6N6liMmihyRUX6xA4TVnwc0bCPMKYs8hZ4HYauaW9JAhDpsrMyrwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3c85e4b9c4b866e2c9a990ef1432cce6bd39e1676c218666b921e8dea588c9a28724545fac40e13567c1cd1b08f30a62cf216781d86ae696f490210e9b2b332af000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000002710",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjyF5LnEuGbiyamQ7xQyzOa9OeFnbCGGZrkh6N6liMmihyRUX6xA4TVnwc0bCPMKYs8hZ4HYauaW9JAhDpsrMyrwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhqAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJxA=",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3c85e4b9c4b866e2c9a990ef1432cce6bd39e1676c218666b921e8dea588c9a28724545fac40e13567c1cd1b08f30a62cf216781d86ae696f490210e9b2b332af000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000061a800000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000002710",
             "ret": "missing mark price",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -310,19 +334,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -351,12 +389,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -377,14 +423,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -449,19 +503,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -490,12 +558,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -516,14 +592,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -588,19 +672,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -629,12 +727,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -655,14 +761,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -727,19 +841,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -768,12 +896,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -788,20 +924,28 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjj+Wap5ncFLiN5MAxPzVkf+LZJUY7Nk3u5Uc7/xu7gZ31EeWvs3ugBI8cyf+WLMfbBl2fBi1Yh9jBqDct6v6yKxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3f966a9e677052e2379300c4fcd591ff8b649518ecd937bb951ceffc6eee0677d44796becdee80123c7327fe58b31f6c19767c18b5621f6306a0dcb7abfac8ac4000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjj+Wap5ncFLiN5MAxPzVkf+LZJUY7Nk3u5Uc7/xu7gZ31EeWvs3ugBI8cyf+WLMfbBl2fBi1Yh9jBqDct6v6yKxAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3f966a9e677052e2379300c4fcd591ff8b649518ecd937bb951ceffc6eee0677d44796becdee80123c7327fe58b31f6c19767c18b5621f6306a0dcb7abfac8ac4000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -866,19 +1010,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -907,12 +1065,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -927,20 +1093,28 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjm1bHxO11bN2zQitk3OR+GZqP73YSGpEoQ/8AeQK5H28037eZw6m6uN2XSm8ZRnkRi4quu78eJJHB3uEWZQd4awAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e39b56c7c4ed756cddb3422b64dce47e199a8fef76121a912843ff007902b91f6f34dfb799c3a9bab8dd974a6f194679118b8aaebbbf1e2491c1dee1166507786b000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjm1bHxO11bN2zQitk3OR+GZqP73YSGpEoQ/8AeQK5H28037eZw6m6uN2XSm8ZRnkRi4quu78eJJHB3uEWZQd4awAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e39b56c7c4ed756cddb3422b64dce47e199a8fef76121a912843ff007902b91f6f34dfb799c3a9bab8dd974a6f194679118b8aaebbbf1e2491c1dee1166507786b000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -1005,19 +1179,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1046,7 +1234,11 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50001,
                         "mark_price": "0"
                      }
@@ -1061,13 +1253,17 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjXAa8zu7qShn9yfviGEdiirX4M59HbuKkgoc/TlLdJwd2tj9agOFuqtz2uo8EgiohxiFL0hR1bCfBQAVEBcNQSwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUQ==",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e35c06bcceeeea4a19fdc9fbe21847628ab5f8339f476ee2a482873f4e52dd270776b63f5a80e16eaadcf6ba8f04822a21c6214bd214756c27c140054405c3504b000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c351",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjXAa8zu7qShn9yfviGEdiirX4M59HbuKkgoc/TlLdJwd2tj9agOFuqtz2uo8EgiohxiFL0hR1bCfBQAVEBcNQSwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUQ==",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e35c06bcceeeea4a19fdc9fbe21847628ab5f8339f476ee2a482873f4e52dd270776b63f5a80e16eaadcf6ba8f04822a21c6214bd214756c27c140054405c3504b000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c351",
             "ret": "funding rate exceeds high",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -1132,19 +1328,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1173,7 +1383,11 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": -50001,
                         "mark_price": "0"
                      }
@@ -1188,13 +1402,17 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjwb7LGdZvAUgCFVyWjU7LuMSZEEcbv+5X7Ky4zXNCmxRjUwQY6MnjjPSKZalJPxiOD+B/2dcyZNnHIDna+NNXqwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQH///////////////////////////////////////88rw==",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3c1becb19d66f014802155c968d4ecbb8c49910471bbfee57ecacb8cd73429b1463530418e8c9e38cf48a65a9493f188e0fe07fd9d73264d9c72039daf8d357ab000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000030501ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3caf",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjwb7LGdZvAUgCFVyWjU7LuMSZEEcbv+5X7Ky4zXNCmxRjUwQY6MnjjPSKZalJPxiOD+B/2dcyZNnHIDna+NNXqwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQH///////////////////////////////////////88rw==",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e3c1becb19d66f014802155c968d4ecbb8c49910471bbfee57ecacb8cd73429b1463530418e8c9e38cf48a65a9493f188e0fe07fd9d73264d9c72039daf8d357ab000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000030501ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff3caf",
             "ret": "funding rate exceeds low",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -1259,19 +1477,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1300,12 +1532,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1326,14 +1566,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -1357,12 +1605,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1383,14 +1639,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "1041666666666"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-20833332"
                   },
                   "name": "ExFundingIndex"
@@ -1455,19 +1719,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1496,12 +1774,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1522,14 +1808,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -1553,12 +1847,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1573,20 +1875,28 @@
                   }
                }
             },
-            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjd69726m6bS20ROR9XzfNGRKQ36vdH5MvTPmhQDau9hUX16TyadxzXi3+A9+WZPXQAPd+zVQLdYWwSZFM168YCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADVCj/9/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
-            "tx_data": "0x742a243a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e377af7bdba9ba6d2db444e47d5f37cd191290dfabdd1f932f4cf9a14036aef61517d7a4f269dc735e2dfe03df9664f5d000f77ecd540b7585b049914cd7af180b000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000035428fff7ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+            "tx_abi": "dCokOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1Qo//f/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAACFeyXaEazxo2u35O6NdcloOLJjjd69726m6bS20ROR9XzfNGRKQ36vdH5MvTPmhQDau9hUX16TyadxzXi3+A9+WZPXQAPd+zVQLdYWwSZFM168YCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADVCj/9/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADDUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQB//////////////////////////////////////////8=",
+            "tx_data": "0x742a243a0000000000000000000000000000000000000000000000000000035428fff7ff00000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000120000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e377af7bdba9ba6d2db444e47d5f37cd191290dfabdd1f932f4cf9a14036aef61517d7a4f269dc735e2dfe03df9664f5d000f77ecd540b7585b049914cd7af180b000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000035428fff7ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000030501000000000000000000000000000000000000000000000000000000000000c3500000000000000000000000000000000000000000000000000000000000020401ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
             "ret": "funding rate less than one minute apart",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"

@@ -49,7 +49,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -78,7 +81,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -107,7 +113,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -136,7 +145,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -165,7 +178,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -194,7 +212,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -223,7 +247,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -252,7 +282,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -281,7 +317,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -310,7 +352,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -339,7 +385,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -802,7 +853,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -831,7 +885,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -860,7 +917,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -889,7 +949,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -918,7 +982,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -947,7 +1016,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -976,7 +1051,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -1005,7 +1086,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -1034,7 +1121,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -1063,7 +1156,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -1092,7 +1189,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -1571,7 +1673,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -1600,7 +1705,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -1629,7 +1737,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -1658,7 +1769,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -1687,7 +1802,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -1716,7 +1836,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -1745,7 +1871,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -1774,7 +1906,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -1803,7 +1941,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -1832,7 +1976,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -1861,7 +2009,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -2340,7 +2493,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -2369,7 +2525,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -2398,7 +2557,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -2427,7 +2589,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -2456,7 +2622,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -2485,7 +2656,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -2514,7 +2691,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -2543,7 +2726,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -2572,7 +2761,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -2601,7 +2796,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -2630,7 +2829,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -3109,7 +3313,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -3138,7 +3345,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -3167,7 +3377,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -3196,7 +3409,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -3225,7 +3442,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -3254,7 +3476,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -3283,7 +3511,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -3312,7 +3546,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -3341,7 +3581,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -3370,7 +3616,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -3399,7 +3649,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -3878,7 +4133,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -3907,7 +4165,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -3936,7 +4197,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -3965,7 +4229,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -3994,7 +4262,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -4023,7 +4296,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -4052,7 +4331,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -4081,7 +4366,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -4110,7 +4401,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -4139,7 +4436,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -4168,7 +4469,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -4655,7 +4961,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -4684,7 +4993,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -4713,7 +5025,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -4742,7 +5057,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -4771,7 +5090,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -4800,7 +5124,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -4829,7 +5159,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -4858,7 +5194,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -4887,7 +5229,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -4916,7 +5264,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -4945,7 +5297,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -5432,7 +5789,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -5461,7 +5821,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -5490,7 +5853,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -5519,7 +5885,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -5548,7 +5918,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -5577,7 +5952,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -5606,7 +5987,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -5635,7 +6022,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -5664,7 +6057,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -5693,7 +6092,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -5722,7 +6125,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -6170,7 +6578,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -6199,7 +6610,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -6228,7 +6642,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -6257,7 +6674,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -6286,7 +6707,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -6315,7 +6741,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -6344,7 +6776,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -6373,7 +6811,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -6402,7 +6846,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -6431,7 +6881,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -6460,7 +6914,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -6908,7 +7367,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -6937,7 +7399,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -6966,7 +7431,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -6995,7 +7463,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -7024,7 +7496,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -7053,7 +7530,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -7082,7 +7565,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -7111,7 +7600,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -7140,7 +7635,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -7169,7 +7670,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -7198,7 +7703,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -7646,7 +8156,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -7675,7 +8188,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -7704,7 +8220,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -7733,7 +8252,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -7762,7 +8285,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -7791,7 +8319,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -7820,7 +8354,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -7849,7 +8389,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -7878,7 +8424,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -7907,7 +8459,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -7936,7 +8492,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -8384,7 +8945,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -8413,7 +8977,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -8442,7 +9009,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -8471,7 +9041,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -8500,7 +9074,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -8529,7 +9108,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -8558,7 +9143,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -8587,7 +9178,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -8616,7 +9213,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -8645,7 +9248,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -8674,7 +9281,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -9146,7 +9758,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -9175,7 +9790,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -9204,7 +9822,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -9233,7 +9854,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -9262,7 +9887,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -9291,7 +9921,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -9320,7 +9956,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -9349,7 +9991,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -9378,7 +10026,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -9407,7 +10061,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -9436,7 +10094,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
@@ -9892,7 +10555,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      }
                   ],
@@ -9921,7 +10587,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -9950,7 +10619,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -9979,7 +10651,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -10008,7 +10684,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_8Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "price": "60005000000000"
                      }
                   ],
@@ -10037,7 +10718,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      }
                   ],
@@ -10066,7 +10753,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_8Jan70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      }
                   ],
@@ -10095,7 +10788,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      }
                   ],
@@ -10124,7 +10823,13 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Put_8Jan70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      }
                   ],
@@ -10153,7 +10858,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -10182,7 +10891,12 @@
                "interest_rate_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "604800000000000"
+                        },
                         "rate": 25000
                      }
                   ],
