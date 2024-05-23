@@ -10,9 +10,9 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
 
-  // eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)");
-  // precomputed value for keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVTEx")), keccak256(bytes("0")), 0, address(0)));
-  bytes32 private constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
+  bytes32 private constant eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId)");
+  bytes32 private constant DOMAIN_HASH =
+    keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 1));
   bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
 
   /// @dev set the system timestamp and last transactionID.
