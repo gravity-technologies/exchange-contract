@@ -36,9 +36,9 @@ describe.only("API - TestEngine", function () {
     "TestConfigChain.json",
     "TestConfigChainDefault.json",
     "TestCreateAccount.json",
-    "TestFundingRate.json", // FAILING
-    "TestInterestRate.json", // FAILING
-    "TestMarkPrice.json", // FAILING
+    "TestFundingRate.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
     // // "TestMatchFeeComputation.json", // FAILING
     // // "TestMatchFundingAndSettlement.json", // FAILING
     // // "TestMatchPortfolioMargin.json", // FAILING
@@ -46,7 +46,7 @@ describe.only("API - TestEngine", function () {
     // // "TestMatchTradingComputation.json", // FAILING
     "TestRecoverWallet.json",
     "TestSessionKey.json",
-    "TestSettlementPrice.json", // FAILING
+    "TestSettlementPrice.json",
     "TestSubAccount.json",
     "TestDeposit.json",
     "TestTransfer.json",
