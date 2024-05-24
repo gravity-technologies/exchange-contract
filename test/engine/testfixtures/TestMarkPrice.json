@@ -105,14 +105,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "BTC"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -171,11 +178,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -195,14 +209,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -261,11 +282,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -285,14 +313,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -351,11 +386,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -375,14 +417,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -441,11 +490,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -459,20 +515,27 @@
                   }
                }
             },
-            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzYi7q4Rs2zeBRKpYXXhL3HkNFsfQsE2jmAvUp4ddlZzc2GVay3n16+bTbSgIzMjF3Mz4eHcHfHkZt7HACT0UytgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYTnKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
-            "tx_data": "0xbbbd2247000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3622eeae11b36cde0512a96175e12f71e4345b1f42c1368e602f529e1d7656737361956b2de7d7af9b4db4a0233323177333e1e1dc1df1e466dec70024f4532b6000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000010501000000000000000000000000000000000000000000000000000009184e72a00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
+            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzYi7q4Rs2zeBRKpYXXhL3HkNFsfQsE2jmAvUp4ddlZzc2GVay3n16+bTbSgIzMjF3Mz4eHcHfHkZt7HACT0UytgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADODhxR/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYTnKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
+            "tx_data": "0xbbbd22470000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3622eeae11b36cde0512a96175e12f71e4345b1f42c1368e602f529e1d7656737361956b2de7d7af9b4db4a0233323177333e1e1dc1df1e466dec70024f4532b6000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000338387147ff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000010501000000000000000000000000000000000000000000000000000009184e72a00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -531,11 +594,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -549,20 +619,27 @@
                   }
                }
             },
-            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzN4GdpNwuP12Q5IwszYAU5CYfU3a3qdVQjRopYWH7DwppmvdWjQ4ATF8D9OxJGbu4lbxZ1bUcoHQpZ3KGUXVyQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYTnKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
-            "tx_data": "0xbbbd2247000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb337819da4dc2e3f5d90e48c2ccd8014e4261f5376b7a9d5508d1a296161fb0f0a699af7568d0e004c5f03f4ec4919bbb895bc59d5b51ca0742967728651757241000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000010501000000000000000000000000000000000000000000000000000009184e72a00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
+            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8RuzN4GdpNwuP12Q5IwszYAU5CYfU3a3qdVQjRopYWH7DwppmvdWjQ4ATF8D9OxJGbu4lbxZ1bUcoHQpZ3KGUXVyQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkYTnKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
+            "tx_data": "0xbbbd22470000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb337819da4dc2e3f5d90e48c2ccd8014e4261f5376b7a9d5508d1a296161fb0f0a699af7568d0e004c5f03f4ec4919bbb895bc59d5b51ca0742967728651757241000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000010501000000000000000000000000000000000000000000000000000009184e72a00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
             "ret": "expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -621,11 +698,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -645,14 +730,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_1Jan70",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3600000000000"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -711,11 +804,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000001"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -735,14 +836,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_1Jan70",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3600000000001"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -801,11 +910,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_1Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3599999999999"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -819,20 +936,28 @@
                   }
                }
             },
-            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruzw4itE/Q8egk827rwsBzL/cum7gs7j5waTz8hdrXXYrsm/1ASCv6Oqp1xqRjeZeBvgQ16ns8J7eoqu0fOySurZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLif/wABBQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
-            "tx_data": "0xbbbd2247000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3c388ad13f43c7a093cdbbaf0b01ccbfdcba6ee0b3b8f9c1a4f3f2176b5d762bb26ff50120afe8eaa9d71a918de65e06f810d7a9ecf09edea2abb47cec92bab65000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b89fff0001050200000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
+            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruzw4itE/Q8egk827rwsBzL/cum7gs7j5waTz8hdrXXYrsm/1ASCv6Oqp1xqRjeZeBvgQ16ns8J7eoqu0fOySurZQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGMLif/wABBQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
+            "tx_data": "0xbbbd22470000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3c388ad13f43c7a093cdbbaf0b01ccbfdcba6ee0b3b8f9c1a4f3f2176b5d762bb26ff50120afe8eaa9d71a918de65e06f810d7a9ecf09edea2abb47cec92bab65000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000034630b89fff0001050200000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
             "ret": "mark price entry has expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_1Jan70",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3599999999999"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -891,11 +1016,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_1Jan70_0",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -915,21 +1049,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USD_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "30000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -988,11 +1137,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_1Jan70_0",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3599999999999",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1006,27 +1164,42 @@
                   }
                }
             },
-            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruzg3lE1XC8weyXX4Z2L7N2J69LbSs0BsqcTxML081W0Jhr5Im9Y00zPC+md7mnnvSD+h7axGNL9DfJ/pkQvLc3ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAABNIAAANGMLif/wABBQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
-            "tx_data": "0xbbbd2247000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3837944d570bcc1ec975f86762fb37627af4b6d2b3406ca9c4f130bd3cd56d0986be489bd634d333c2fa677b9a79ef483fa1edac4634bf437c9fe9910bcb73764000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000004d20000034630b89fff0001050300000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
+            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruzg3lE1XC8weyXX4Z2L7N2J69LbSs0BsqcTxML081W0Jhr5Im9Y00zPC+md7mnnvSD+h7axGNL9DfJ/pkQvLc3ZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAABNIAAANGMLif/wABBQMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
+            "tx_data": "0xbbbd22470000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3837944d570bcc1ec975f86762fb37627af4b6d2b3406ca9c4f130bd3cd56d0986be489bd634d333c2fa677b9a79ef483fa1edac4634bf437c9fe9910bcb73764000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000004d20000034630b89fff0001050300000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
             "ret": "mark price entry has expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USD_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -1085,11 +1258,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Put_1Jan70_0",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3600000000000",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1109,21 +1291,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDT_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USDT",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USD_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "30000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -1182,11 +1379,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Put_1Jan70_0",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3599999999999",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1200,27 +1406,42 @@
                   }
                }
             },
-            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruz/xBjEYe8tzTIVqN8OQ95fRrgRQT4l3KlgqFb08GZjitRff8THCdIy+u60gh5VR8LH1QRIHG6MoSlilU6OgGJ/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAABNIAAANGMLif/wABBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
-            "tx_data": "0xbbbd2247000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3ff10631187bcb734c856a37c390f797d1ae04504f89772a582a15bd3c1998e2b517dff131c2748cbebbad20879551f0b1f54112071ba3284a58a553a3a0189fd000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000004d20000034630b89fff0001040400000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
+            "tx_abi": "u70iRwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0YwuKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAAAMSgstRIf873RnmvYnTYwdCt8Ruz/xBjEYe8tzTIVqN8OQ95fRrgRQT4l3KlgqFb08GZjitRff8THCdIy+u60gh5VR8LH1QRIHG6MoSlilU6OgGJ/QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADRjC4oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAABNIAAANGMLif/wABBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtI61fgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHc1lAA=",
+            "tx_data": "0xbbbd22470000000000000000000000000000000000000000000000000000034630b8a00000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000120000000000000000000000000c4a0b2d4487fcef74679af6274d8c1d0adf11bb3ff10631187bcb734c856a37c390f797d1ae04504f89772a582a15bd3c1998e2b517dff131c2748cbebbad20879551f0b1f54112071ba3284a58a553a3a0189fd000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000000034630b8a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000004d20000034630b89fff0001040400000000000000000000000000000000000000000000000000001b48eb57e00000000000000000000000000000000000000000000000000000000000000003050000000000000000000000000000000000000000000000000000000077359400",
             "ret": "mark price entry has expired",
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDT_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USDT",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USD_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -1279,11 +1500,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1303,14 +1531,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -1328,7 +1563,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "20000000000000"
                      }
                   ],
@@ -1348,14 +1587,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "10000000000000"
                   },
                   "name": "ExMarkPrice"

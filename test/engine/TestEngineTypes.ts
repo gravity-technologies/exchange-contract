@@ -160,30 +160,37 @@ export interface ExNotAccountRecoveryAddresses {
   not_recovery_addresses: { [address: string]: string[] }
 }
 
+export interface ExAccountSpot {
+  account_id: string
+  currency: string
+  balance: string
+}
+
 export interface Expectation {
   name: string
   expect:
-    | ExNumAccounts
-    | ExAccountSigners
-    | ExAccountMultiSigThreshold
-    | ExAccountWithdrawalAddresses
-    | ExSessionKeys
-    | ExConfig1D
-    | ExConfig2D
-    | ExConfigSchedule
-    | ExConfigScheduleAbsent
-    | ExSubAccountSigners
-    | ExSubAccountMarginType
-    | ExFundingIndex
-    | ExFundingTime
-    | ExMarkPrice
-    | ExInterestRate
-    | ExSubAccountValue
-    | ExSubAccountPosition
-    | ExSubAccountSpot
-    | ExSettlementPrice
-    | ExAccountRecoveryAddresses
-    | ExNotAccountRecoveryAddresses
+  | ExNumAccounts
+  | ExAccountSigners
+  | ExAccountMultiSigThreshold
+  | ExAccountWithdrawalAddresses
+  | ExSessionKeys
+  | ExConfig1D
+  | ExConfig2D
+  | ExConfigSchedule
+  | ExConfigScheduleAbsent
+  | ExSubAccountSigners
+  | ExSubAccountMarginType
+  | ExFundingIndex
+  | ExFundingTime
+  | ExMarkPrice
+  | ExInterestRate
+  | ExSubAccountValue
+  | ExSubAccountPosition
+  | ExSubAccountSpot
+  | ExSettlementPrice
+  | ExAccountRecoveryAddresses
+  | ExNotAccountRecoveryAddresses
+  | ExAccountSpot
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

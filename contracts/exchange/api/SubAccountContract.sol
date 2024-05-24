@@ -143,6 +143,8 @@ contract SubAccountContract is BaseContract {
     _preventReplay(hashRemoveSigner(subAccID, signer, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
+    require(sub.signers[signer] != 0, "signer not found");
+
     // If we reach here, that means the user calling this API is an admin. Hence, even after we remove the last
     // subaccount signer, the subaccount is still accessible by the account admins. Thus we skip the logic to
     // require at least 1 admin

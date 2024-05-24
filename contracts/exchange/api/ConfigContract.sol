@@ -54,7 +54,6 @@ contract ConfigContract is BaseContract {
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
-  int64 private constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -528,9 +527,8 @@ contract ConfigContract is BaseContract {
     v2d[addr].val = TRUE_BYTES32;
 
     // // ADMIN_FEE_SUB_ACCOUNT_ID
-    // id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
-    // settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = 0;
+    id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
 
     // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
     // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;

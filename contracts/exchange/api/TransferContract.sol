@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import "./TradeContract.sol";
 import "./signature/generated/TransferSig.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "../util/BIMath.sol";
 
 abstract contract ERC20 {
   /**
@@ -14,6 +15,8 @@ abstract contract ERC20 {
 }
 
 abstract contract TransferContract is TradeContract {
+  using BIMath for BI;
+
   /**
    * @notice Deposit collateral into a sub account
    *
@@ -43,8 +46,11 @@ abstract contract TransferContract is TradeContract {
     // _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
+    int64 numTokensSigned = int64(numTokens);
+    require(numTokensSigned >= 0, "invalid withdrawal amount");
+
     Account storage account = _requireAccount(accountID);
-    account.spotBalances[currency] += int64(numTokens);
+    account.spotBalances[currency] += numTokensSigned;
   }
 
   /**
@@ -75,22 +81,36 @@ abstract contract TransferContract is TradeContract {
     _requireAccountPermission(acc, sig.signer, AccountPermWithdraw);
     require(acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
+    int64 numTokensSigned = int64(numTokens);
+    require(numTokensSigned >= 0, "invalid withdrawal amount");
+
     // ---------- Signature Verification -----------
     // FIXME: disable for testnet testing
     // _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
-    // TODO: charge withdrawal fee
     int64 withdrawalFee = 0;
-    int64 delta = int64(numTokens) + withdrawalFee;
+    (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+    if (feeSubAccIdSet) {
+      (uint64 spotMark, bool markSet) = _getMarkPrice9Decimals(_getSpotAssetID(currency));
+      require(markSet, "missing mark price");
+      uint64 tokenDec = _getBalanceDecimal(currency);
+      withdrawalFee = BI(1, 0).div(BI(int256(int64(spotMark)), PRICE_DECIMALS)).toInt64(tokenDec);
+      _requireSubAccount(feeSubAccId).spotBalances[currency] += int64(withdrawalFee);
+    }
 
-    require(delta <= acc.spotBalances[currency], "insufficient balance");
-    acc.spotBalances[currency] -= delta;
+    require(numTokensSigned <= acc.spotBalances[currency], "insufficient balance");
+    require(numTokensSigned > withdrawalFee, "withdrawal amount too small");
 
-    // Call token's ERC20 contract to initiate a transfer
-    ERC20 erc20Contract = ERC20(getCurrencyERC20Address(currency));
-    bool success = erc20Contract.transfer(recipient, numTokens);
-    require(success, "transfer failed");
+    acc.spotBalances[currency] -= numTokensSigned;
+
+    int64 numTokensToSend = numTokensSigned - withdrawalFee;
+
+    // TODO: send token to recipient
+    // // Call token's ERC20 contract to initiate a transfer
+    // ERC20 erc20Contract = ERC20(getCurrencyERC20Address(currency));
+    // bool success = erc20Contract.transfer(recipient, numTokensToSend);
+    // require(success, "transfer failed");
   }
 
   function getCurrencyERC20Address(Currency currency) private view returns (address) {
@@ -130,34 +150,25 @@ abstract contract TransferContract is TradeContract {
     _preventReplay(hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
+    int64 numTokensSigned = int64(numTokens);
+    require(numTokensSigned >= 0, "invalid transfer amount");
     // 1. Same account
     if (fromAccID == toAccID) {
       require(fromSubID != toSubID, "self transfer");
       if (fromSubID == 0) {
         // 1.1 Main -> Sub
-        _transferMainToSub(fromAccID, toSubID, currency, numTokens, sig);
+        _transferMainToSub(fromAccID, toAccID, toSubID, currency, numTokensSigned, sig);
       } else if (toSubID == 0) {
         // 1.2 Sub -> Main
-        _transferSubToMain(fromSubID, fromAccID, currency, numTokens, sig);
+        _transferSubToMain(timestamp, fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       } else {
         // 1.3 Sub -> Sub
-        _transferSubToSub(fromSubID, toSubID, currency, numTokens, sig);
+        _transferSubToSub(timestamp, fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       }
     } else {
-      // 2. Diff Account
-      if (fromSubID == 0 && toSubID == 0) {
-        // 2.1 Main -> Main
-        _transferMainToMain(fromAccID, toAccID, currency, numTokens, sig);
-      } else if (fromSubID == 0) {
-        // 2.2 Main -> Sub
-        _transferMainToSub(fromAccID, toSubID, currency, numTokens, sig);
-      } else if (toSubID == 0) {
-        // 2.3 Sub -> Main (TBD: should ban this case?)
-        _transferSubToMain(fromSubID, toAccID, currency, numTokens, sig);
-      } else {
-        // 2.4 Sub -> Sub (TBD: should ban this case?)
-        _transferSubToSub(fromSubID, toSubID, currency, numTokens, sig);
-      }
+      // 2. Different accounts
+      require(fromSubID == 0 && toSubID == 0, "transfer between sub accounts of different accounts");
+      _transferMainToMain(fromAccID, toAccID, currency, numTokensSigned, sig);
     }
   }
 
@@ -165,57 +176,78 @@ abstract contract TransferContract is TradeContract {
     address fromAccID,
     address toAccID,
     Currency currency,
-    uint64 numTokens,
+    int64 numTokens,
     Signature calldata sig
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
-    _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
-    require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= int64(numTokens);
-    _requireAccount(toAccID).spotBalances[currency] += int64(numTokens);
+    _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
+    require(fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
+    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
+    fromAcc.spotBalances[currency] -= numTokens;
+    _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
   function _transferMainToSub(
     address fromAccID,
+    address toAccID,
     uint64 toSubID,
     Currency currency,
-    uint64 numTokens,
+    int64 numTokens,
     Signature calldata sig
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
-    require(int64(numTokens) <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= int64(numTokens);
-    _requireSubAccount(toSubID).spotBalances[currency] += int64(numTokens);
+    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
+    fromAcc.spotBalances[currency] -= numTokens;
+
+    SubAccount storage toSubAcc = _requireSubAccount(toSubID);
+    _requireSubAccountUnderAccount(toSubAcc, toAccID);
+    toSubAcc.spotBalances[currency] += numTokens;
   }
 
   function _transferSubToMain(
+    int64 timestamp,
     uint64 fromSubID,
+    address fromAccID,
     address toAccID,
     Currency currency,
-    uint64 numTokens,
+    int64 numTokens,
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
-    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= int64(numTokens);
+    _requireSubAccountUnderAccount(fromSub, fromAccID);
+
+    _fundAndSettle(timestamp, fromSub);
+
+    fromSub.spotBalances[currency] -= numTokens;
+
     _requireValidSubAccountUsdValue(fromSub);
-    _requireAccount(toAccID).spotBalances[currency] += int64(numTokens);
+    _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
   function _transferSubToSub(
+    int64 timestamp,
     uint64 fromSubID,
     uint64 toSubID,
+    address fromAccID,
+    address toAccID,
     Currency currency,
-    uint64 numTokens,
+    int64 numTokens,
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
-    require(int64(numTokens) <= fromSub.spotBalances[currency], "insufficient balance");
-    fromSub.spotBalances[currency] -= int64(numTokens);
+    _requireSubAccountUnderAccount(fromSub, fromAccID);
+
+    SubAccount storage toSub = _requireSubAccount(toSubID);
+    _requireSubAccountUnderAccount(toSub, toAccID);
+
+    _fundAndSettle(timestamp, fromSub);
+
+    fromSub.spotBalances[currency] -= numTokens;
+
     _requireValidSubAccountUsdValue(fromSub);
-    _requireSubAccount(toSubID).spotBalances[currency] += int64(numTokens);
+    toSub.spotBalances[currency] += numTokens;
   }
 }
