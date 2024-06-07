@@ -3180,7 +3180,7 @@
             },
             "tx_abi": null,
             "tx_data": "",
-            "ret": "expired",
+            "ret": "expired signature",
             "expectations": [
                {
                   "expect": {
@@ -3990,7 +3990,7 @@
             },
             "tx_abi": null,
             "tx_data": "",
-            "ret": "expired",
+            "ret": "expired signature",
             "expectations": [
                {
                   "expect": {
@@ -4863,7 +4863,7 @@
             },
             "tx_abi": null,
             "tx_data": "",
-            "ret": "expired",
+            "ret": "expired signature",
             "expectations": [
                {
                   "expect": {
@@ -5745,7 +5745,7 @@
             },
             "tx_abi": null,
             "tx_data": "",
-            "ret": "expired",
+            "ret": "expired signature",
             "expectations": [
                {
                   "expect": {
