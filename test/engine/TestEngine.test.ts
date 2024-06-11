@@ -3,7 +3,7 @@ import { network } from "hardhat"
 import { Wallet } from "zksync-ethers"
 import { LOCAL_RICH_WALLETS, deployContract, getProvider, getWallet } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet } from "../util"
-import { validateExpectation } from "./Getters"
+import { validateExpectations } from "./Getters"
 import { TestCase, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 
 const gasLimit = 2100000000
@@ -31,24 +31,24 @@ describe.only("API - TestEngine", function () {
   })
 
   const filters: string[] = [
-    // "TestAccountMultisig.json",
-    // "TestAccountSigners.json",
-    // "TestConfigChain.json",
-    // "TestConfigChainDefault.json",
-    // "TestCreateAccount.json",
-    // "TestFundingRate.json",
-    // "TestInterestRate.json",
-    // "TestMarkPrice.json",
+    "TestAccountMultisig.json",
+    "TestAccountSigners.json",
+    "TestConfigChain.json",
+    "TestConfigChainDefault.json",
+    "TestCreateAccount.json",
+    "TestFundingRate.json",
+    "TestInterestRate.json",
+    "TestMarkPrice.json",
     // "TestMatchFeeComputation.json", // FAILING
     // "TestMatchFundingAndSettlement.json", // FAILING
-    "TestMatchTradingComputation.json", // FAILING
-    // "TestRecoverWallet.json",
-    // "TestSessionKey.json",
-    // "TestSettlementPrice.json",
-    // "TestSubAccount.json",
-    // "TestDeposit.json",
-    // "TestTransfer.json",
-    // "TestWithdrawal.json",
+    "TestMatchTradingComputation.json",
+    "TestRecoverWallet.json",
+    "TestSessionKey.json",
+    "TestSettlementPrice.json",
+    "TestSubAccount.json",
+    "TestDeposit.json",
+    "TestTransfer.json",
+    "TestWithdrawal.json",
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",
@@ -72,32 +72,29 @@ describe.only("API - TestEngine", function () {
 async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
   const steps = test.steps ?? []
   for (const step of steps) {
-    if (step.tx_data != "") {
-      var tx: ethers.providers.TransactionRequest = {
-        to: contract.address,
-        gasLimit: gasLimit,
-        data: step.tx_data,
-      }
-      w1 = w1.connect(getProvider())
-      const resp = await w1.sendTransaction(tx)
-      if (step.ret != "") {
-        await expectToThrowAsync(resp.wait())
-      } else {
-        // console.log("Step", (step as any).tx.tx_id)
-        await resp.wait()
-        const expectations = step.expectations ?? []
-        if (expectations.length == 0) {
-          continue
-        }
-      }
-    }
-    if (step.expectations != null) {
-      for (let expectation of step.expectations) {
-        await validateExpectation(contract, expectation)
-      }
+    if (step.tx_data == "") {
+      await validateExpectations(contract, step.expectations)
+      continue
     }
 
-
+    var tx: ethers.providers.TransactionRequest = {
+      to: contract.address,
+      gasLimit: gasLimit,
+      data: step.tx_data,
+    }
+    w1 = w1.connect(getProvider())
+    const resp = await w1.sendTransaction(tx)
+    if (step.ret != "") {
+      await expectToThrowAsync(resp.wait())
+    } else {
+      // console.log("Step", (step as any).tx.tx_id)
+      await resp.wait()
+      const expectations = step.expectations ?? []
+      if (expectations.length == 0) {
+        continue
+      }
+    }
   }
+
   return
 }

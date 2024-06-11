@@ -28,6 +28,12 @@ import {
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
 
+export async function validateExpectations(contract: Contract, expectations: Expectation[]) {
+  for (let expectation of (expectations ?? [])) {
+    await validateExpectation(contract, expectation)
+  }
+}
+
 export async function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
     case "ExAccountSigners":
@@ -80,7 +86,7 @@ export async function validateExpectation(contract: Contract, expectation: Expec
 }
 
 async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts) {
-  const exists = await contract.isAllAccountExists(expectations.account_ids)
+  const exists = await contract.isAllAccountExists(expectations.account_ids ?? [])
   expect(exists).to.be.true
 }
 
