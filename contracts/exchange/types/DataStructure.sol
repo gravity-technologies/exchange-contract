@@ -45,6 +45,21 @@ enum Currency {
   BTC
 }
 
+function currencyStart() pure returns (Currency) {
+  return Currency.USD;
+}
+
+function currencyNext(Currency iter) pure returns (Currency) {
+  if (iter == type(Currency).max) {
+    return Currency.UNSPECIFIED; // or any invalid value
+  }
+  return Currency(uint(iter) + 1);
+}
+
+function currencyIsValid(Currency iter) pure returns (bool) {
+  return iter > type(Currency).min && iter <= type(Currency).max;
+}
+
 uint constant PRICE_DECIMALS = 9;
 uint constant CENTIBEEP_DECIMALS = 6;
 int constant TIME_FACTOR = 480;
