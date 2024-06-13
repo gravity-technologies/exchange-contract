@@ -25,6 +25,8 @@ contract WalletRecoveryContract is BaseContract {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
+    require(sig.signer != recoveryAddress, "recovery address cannot be the signer");
+
     // ---------- Signature Verification -----------
     _requireSignerInAccount(acc, sig.signer);
     _preventReplay(hashAddRecoveryAddress(accID, recoveryAddress, sig.nonce), sig);
