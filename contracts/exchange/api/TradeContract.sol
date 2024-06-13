@@ -95,7 +95,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
       _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
     }
-    }
   }
 
   function _verifyAndExecuteOrder(
@@ -105,7 +104,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     bool isMakerOrder,
     BI memory spotDelta,
     BI memory notional,
-    uint64 totalFee
+    int64 totalFee
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
 
@@ -161,8 +160,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Check that the fee paid is within the cap
-    uint32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
-    require(totalFee <= feeCap * notional.toUint64(_getBalanceDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
+    int32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    require(totalFee <= feeCap * notional.toInt64(_getBalanceDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
   }
 
   function _executeOrder(
@@ -243,12 +242,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   // FIXME: Our BE disables charging fees for now. To enable back afterwards
-  function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {
-    return 0;
-    // uint64 totalFee;
-    // uint len = feePerLegs.length;
-    // for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
-    // return totalFee;
+  function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
+    int64 totalFee;
+    uint len = feePerLegs.length;
+    for (uint i; i < len; ++i) totalFee += int64(feePerLegs[i]);
+    return totalFee;
   }
 
   function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
