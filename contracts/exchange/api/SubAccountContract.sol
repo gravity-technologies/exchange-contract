@@ -209,8 +209,4 @@ contract SubAccountContract is BaseContract {
     _setSequence(timestamp, txID);
     delete state.sessions[signer];
   }
-
-  function _min(int64 a, int64 b) private pure returns (int64) {
-    return a <= b ? a : b;
-  }
 }

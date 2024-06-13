@@ -95,6 +95,14 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     state.replay.executed[hash] = true;
   }
 
+  function _min(int64 a, int64 b) internal pure returns (int64) {
+    return a <= b ? a : b;
+  }
+
+  function _max(int64 a, int64 b) internal pure returns (int64) {
+    return a >= b ? a : b;
+  }
+
   function _max(uint a, uint b) internal pure returns (uint) {
     return a >= b ? a : b;
   }
@@ -172,6 +180,30 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     }
 
     // Otherwise, we have to convert to USDT/USDC price
+    (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
+    if (!quoteFound) {
+      return (0, false);
+    }
+
+    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+  }
+
+  function _getIndexPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+    Kind kind = assetGetKind(assetID);
+
+    Currency underlying = assetGetUnderlying(assetID);
+    Currency quote = assetGetQuote(assetID);
+
+    // If spot, process separately
+    if (kind == Kind.SPOT) {
+      return _getQuoteMarkPrice9Decimals(underlying);
+    }
+
+    (uint64 underlyingPrice, bool found) = _getQuoteMarkPrice9Decimals(underlying);
+    if (!found) {
+      return (0, false);
+    }
+
     (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
     if (!quoteFound) {
       return (0, false);

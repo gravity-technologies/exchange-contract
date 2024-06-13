@@ -57,6 +57,10 @@ library BIMath {
     return a.val * (int256(10) ** (b.dec - a.dec)) - b.val;
   }
 
+  function neg(BI memory n) internal pure returns (BI memory) {
+    return BI(-n.val, n.dec);
+  }
+
   function toInt256(BI memory a, uint decimals) internal pure returns (int256) {
     if (a.dec == decimals) return a.val;
     if (a.dec > decimals) return a.val / (int256(10) ** (a.dec - decimals));
@@ -87,4 +91,8 @@ library BIMath {
     }
     return uint64(uint256(c));
   }
+}
+
+function bpsToDecimal(int bps) pure returns (BI memory) {
+  return BI(int256(bps), 6);
 }

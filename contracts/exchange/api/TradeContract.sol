@@ -32,7 +32,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
-    uint64 totalMakersFee;
+    int64 totalMakersFee;
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
@@ -69,7 +69,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Aggregate taker notional accross all makers
       takerNotionals = takerNotionals.add(makerNotionals);
-      uint64 makerFee = _getTotalFee(makerMatch.feeCharged);
+      int64 makerFee = _getTotalFee(makerMatch.feeCharged);
       totalMakersFee += makerFee;
 
       _verifyAndExecuteOrder(
@@ -86,14 +86,15 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     ///////////////////////////////////////////////////////////////////
     /// Taker order verification and execution
     ///////////////////////////////////////////////////////////////////
-    uint64 takerFee = _getTotalFee(trade.feeCharged);
+    int64 takerFee = _getTotalFee(trade.feeCharged);
     _verifyAndExecuteOrder(timestamp, takerOrder, takerMatchedSizes, false, takerSpotDelta, takerNotionals, takerFee);
 
     // Deposit the trading fees, only once
     (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (ok) {
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
-      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += int64(totalMakersFee + takerFee);
+      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
+    }
     }
   }
 
@@ -123,7 +124,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] memory tradeSizes,
     bool isMakerOrder,
     BI memory notional,
-    uint64 totalFee
+    int64 totalFee
   ) internal {
     // Arrange from cheapest to most expensive verification
 
