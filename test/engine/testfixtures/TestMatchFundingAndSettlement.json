@@ -6465,6 +6465,42 @@
                   "name": "ExSubAccountValue"
                }
             ]
+         },
+         {
+            "time": "0",
+            "tx_id": "31",
+            "tx": null,
+            "tx_abi": null,
+            "tx_data": "",
+            "ret": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "sub_account_id": "1",
+                     "asset": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "7200000000000"
+                     },
+                     "position": null
+                  },
+                  "name": "ExSubAccountPosition"
+               },
+               {
+                  "expect": {
+                     "sub_account_id": "2",
+                     "asset": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "7200000000000"
+                     },
+                     "position": null
+                  },
+                  "name": "ExSubAccountPosition"
+               }
+            ]
          }
       ]
    },
