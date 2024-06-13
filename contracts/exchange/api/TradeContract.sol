@@ -21,7 +21,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
-    BI memory takerNotionals;
+    BI memory takerTradeNotional;
+    BI memory takerOptionIndexNotional;
     BI memory takerSpotDelta;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -37,9 +38,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
-      // Compute maker notionals
+      // Compute maker notional
       BI memory makerSpotDelta;
-      BI memory makerNotionals;
+      BI memory makerTradeNotional;
+      BI memory makerOptionIndexNotional;
+
       uint64[] calldata matchSizes = makerMatch.matchedSize;
       Order calldata makerOrder = makerMatch.makerOrder;
       uint makerLegsLen = makerOrder.legs.length;
@@ -63,12 +66,21 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           makerSpotDelta = makerSpotDelta.add(notional);
           takerSpotDelta = takerSpotDelta.sub(notional);
         }
-        makerNotionals = makerNotionals.add(notional);
+        if (_isOption(assetGetKind(leg.assetID))) {
+          (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
+          require(found, ERR_NOT_FOUND);
+
+          BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
+          makerOptionIndexNotional = makerOptionIndexNotional.add(indexNotional);
+        }
+        makerTradeNotional = makerTradeNotional.add(notional);
+
         takerMatchedSizes[_findLegIndex(takerLegs, leg.assetID)] += size;
       }
 
       // Aggregate taker notional accross all makers
-      takerNotionals = takerNotionals.add(makerNotionals);
+      takerTradeNotional = takerTradeNotional.add(makerTradeNotional);
+      takerOptionIndexNotional = takerOptionIndexNotional.add(makerOptionIndexNotional);
       int64 makerFee = _getTotalFee(makerMatch.feeCharged);
       totalMakersFee += makerFee;
 
@@ -78,7 +90,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         makerMatch.matchedSize,
         true,
         makerSpotDelta,
-        makerNotionals,
+        makerTradeNotional,
+        makerOptionIndexNotional,
         makerFee
       );
     }
@@ -87,7 +100,16 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     /// Taker order verification and execution
     ///////////////////////////////////////////////////////////////////
     int64 takerFee = _getTotalFee(trade.feeCharged);
-    _verifyAndExecuteOrder(timestamp, takerOrder, takerMatchedSizes, false, takerSpotDelta, takerNotionals, takerFee);
+    _verifyAndExecuteOrder(
+      timestamp,
+      takerOrder,
+      takerMatchedSizes,
+      false,
+      takerSpotDelta,
+      takerTradeNotional,
+      takerOptionIndexNotional,
+      takerFee
+    );
 
     // Deposit the trading fees, only once
     (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
@@ -103,12 +125,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] memory tradeSizes,
     bool isMakerOrder,
     BI memory spotDelta,
-    BI memory notional,
+    BI memory tradeNotional,
+    BI memory optionIndexNotional,
     int64 totalFee
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
 
-    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, notional, totalFee);
+    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
@@ -122,7 +145,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata order,
     uint64[] memory tradeSizes,
     bool isMakerOrder,
-    BI memory notional,
+    BI memory tradeNotional,
+    BI memory optionIndexNotional,
     int64 totalFee
   ) internal {
     // Arrange from cheapest to most expensive verification
@@ -152,6 +176,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
 
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
+
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
@@ -159,9 +184,39 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       executedSize[leg.assetID] = total;
     }
 
+    bool isOption = false;
+    for (uint i; i < legsLen; ++i) {
+      if (_isOption(assetGetKind(legs[i].assetID))) {
+        isOption = true;
+        break;
+      }
+    }
+
     // Check that the fee paid is within the cap
-    int32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
-    require(totalFee <= feeCap * notional.toInt64(_getBalanceDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
+    int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
+
+    int64 totalfeeCap;
+
+    if (isOption) {
+      totalfeeCap = optionIndexNotional.mul(feeCapRateBI).toInt64(_getBalanceDecimal(subQuote));
+      BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
+      if (totalfeeCap > 0) {
+        totalfeeCap = _min(totalfeeCap, tradeNotional.mul(premiumCapFee).toInt64(_getBalanceDecimal(subQuote)));
+      } else {
+        totalfeeCap = _max(totalfeeCap, tradeNotional.mul(premiumCapFee.neg()).toInt64(_getBalanceDecimal(subQuote)));
+      }
+    } else {
+      totalfeeCap = tradeNotional.mul(feeCapRateBI).toInt64(_getBalanceDecimal(subQuote));
+    }
+
+    require(totalFee <= totalfeeCap, ERR_FEE_CAP_EXCEEDED);
+  }
+
+  function _calculateBaseFee(bytes32 assetID, BI memory notional, BI memory fee) private pure returns (int64) {
+    if (notional.val == 0) return 0;
+    uint qDec = _getBalanceDecimal(assetGetQuote(assetID));
+    return notional.mul(fee).toInt64(qDec);
   }
 
   function _executeOrder(
@@ -253,5 +308,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint len = legs.length;
     for (uint i; i < len; ++i) if (legs[i].assetID == assetID) return i;
     revert(ERR_NOT_FOUND);
+  }
+
+  function _isOption(Kind kind) private pure returns (bool) {
+    return kind == Kind.CALL || kind == Kind.PUT;
+  }
+
+  function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
+    return BI(int256(bps), 6);
   }
 }
