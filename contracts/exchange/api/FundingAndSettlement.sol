@@ -50,7 +50,6 @@ contract FundingAndSettlement is BaseContract {
       perp.lastAppliedFundingIndex = latestFundingIndex;
       newSpotBalance += fundingPayment.toInt64(qdec);
     }
-    require(newSpotBalance >= 0, ERR_UNDERFLOW);
     sub.spotBalances[quoteCurrency] = newSpotBalance;
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
