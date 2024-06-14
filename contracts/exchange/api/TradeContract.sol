@@ -35,6 +35,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint matchesLen = makerMatches.length;
     int64 totalMakersFee;
 
+    (uint64 feeSubID, bool isFeeCharged) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
@@ -92,7 +94,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         makerSpotDelta,
         makerTradeNotional,
         makerOptionIndexNotional,
-        makerFee
+        makerFee,
+        isFeeCharged
       );
     }
 
@@ -108,12 +111,12 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       takerSpotDelta,
       takerTradeNotional,
       takerOptionIndexNotional,
-      takerFee
+      takerFee,
+      isFeeCharged
     );
 
     // Deposit the trading fees, only once
-    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    if (ok) {
+    if (isFeeCharged) {
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
       _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
     }
@@ -127,7 +130,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory spotDelta,
     BI memory tradeNotional,
     BI memory optionIndexNotional,
-    int64 totalFee
+    int64 totalFee,
+    bool isFeeCharged
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
 
@@ -135,7 +139,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee));
+    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -226,7 +230,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata order,
     uint64[] memory matchSizes,
     BI memory spotDelta,
-    int64 fee
+    int64 fee,
+    bool isFeeCharged
   ) internal {
     _fundAndSettle(timestamp, sub);
 
@@ -254,9 +259,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    // FIXME: Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = BI(sub.spotBalances[subQuote], qDec).add(spotDelta).sub(BI(fee, qDec)).toInt64(qDec);
-    sub.spotBalances[subQuote] = newSpotBalance;
+    // Step 4: Update subaccount spot balance, deducting fees
+    BI memory newSpotBalanceBI = BI(sub.spotBalances[subQuote], qDec).add(spotDelta);
+
+    if (isFeeCharged) {
+      newSpotBalanceBI = newSpotBalanceBI.sub(BI(fee, qDec));
+    }
+
+    sub.spotBalances[subQuote] = newSpotBalanceBI.toInt64(qDec);
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {

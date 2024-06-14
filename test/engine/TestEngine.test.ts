@@ -89,10 +89,7 @@ async function validateTest(test: TestCase, contract: Contract, w1: Wallet) {
     } else {
       // console.log("Step", (step as any).tx.tx_id)
       await resp.wait()
-      const expectations = step.expectations ?? []
-      if (expectations.length == 0) {
-        continue
-      }
+      await validateExpectations(contract, step.expectations)
     }
   }
 

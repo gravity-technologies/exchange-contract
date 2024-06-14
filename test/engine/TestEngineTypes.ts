@@ -166,6 +166,15 @@ export interface ExAccountSpot {
   balance: string
 }
 
+export interface ExConfigNotSet {
+  key: string
+}
+
+export interface ExConfig2DNotSet {
+  key: string
+  sub_key: string
+}
+
 export interface Expectation {
   name: string
   expect:

@@ -94,6 +94,14 @@ contract GRVTExchangeTest is GRVTExchange {
     return state.config2DValues[id][DEFAULT_CONFIG_ENTRY].val;
   }
 
+  function config1DIsSet(ConfigID id) public view returns (bool) {
+    return state.config1DValues[id].isSet;
+  }
+
+  function config2DIsSet(ConfigID id) public view returns (bool) {
+    return state.config2DValues[id][DEFAULT_CONFIG_ENTRY].isSet;
+  }
+
   function getConfig1D(ConfigID id) public view returns (bytes32) {
     return state.config1DValues[id].val;
   }
