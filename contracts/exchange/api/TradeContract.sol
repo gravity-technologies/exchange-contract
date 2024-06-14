@@ -66,7 +66,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           makerSpotDelta = makerSpotDelta.add(notional);
           takerSpotDelta = takerSpotDelta.sub(notional);
         }
-        if (_isOption(assetGetKind(leg.assetID))) {
+        if (_isOption(leg.assetID)) {
           (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
           require(found, ERR_NOT_FOUND);
 
@@ -153,6 +153,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Check that quote asset is the same as subaccount quote asset
     Currency subQuote = sub.quoteCurrency;
+    uint qDec = _getBalanceDecimal(subQuote);
+
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -176,7 +178,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
 
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
-
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
@@ -186,7 +187,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     bool isOption = false;
     for (uint i; i < legsLen; ++i) {
-      if (_isOption(assetGetKind(legs[i].assetID))) {
+      if (_isOption(legs[i].assetID)) {
         isOption = true;
         break;
       }
@@ -199,23 +200,23 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 totalfeeCap;
 
     if (isOption) {
-      totalfeeCap = optionIndexNotional.mul(feeCapRateBI).toInt64(_getBalanceDecimal(subQuote));
+      totalfeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
       BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
+
       if (totalfeeCap > 0) {
-        totalfeeCap = _min(totalfeeCap, tradeNotional.mul(premiumCapFee).toInt64(_getBalanceDecimal(subQuote)));
+        totalfeeCap = _min(totalfeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
       } else {
-        totalfeeCap = _max(totalfeeCap, tradeNotional.mul(premiumCapFee.neg()).toInt64(_getBalanceDecimal(subQuote)));
+        totalfeeCap = _max(totalfeeCap, _calculateBaseFee(tradeNotional, premiumCapFee.neg(), qDec));
       }
     } else {
-      totalfeeCap = tradeNotional.mul(feeCapRateBI).toInt64(_getBalanceDecimal(subQuote));
+      totalfeeCap = _calculateBaseFee(tradeNotional, feeCapRateBI, qDec);
     }
 
     require(totalFee <= totalfeeCap, ERR_FEE_CAP_EXCEEDED);
   }
 
-  function _calculateBaseFee(bytes32 assetID, BI memory notional, BI memory fee) private pure returns (int64) {
+  function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
     if (notional.val == 0) return 0;
-    uint qDec = _getBalanceDecimal(assetGetQuote(assetID));
     return notional.mul(fee).toInt64(qDec);
   }
 
@@ -230,7 +231,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
-    uint qdec = _getBalanceDecimal(subQuote);
+    uint qDec = _getBalanceDecimal(subQuote);
 
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -254,7 +255,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // FIXME: Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = BI(sub.spotBalances[subQuote], qdec).add(spotDelta).sub(BI(fee, qdec)).toInt64(qdec);
+    int64 newSpotBalance = BI(sub.spotBalances[subQuote], qDec).add(spotDelta).sub(BI(fee, qDec)).toInt64(qDec);
     sub.spotBalances[subQuote] = newSpotBalance;
   }
 
@@ -291,7 +292,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       remove(sub.perps, assetID);
     } else if (kind == Kind.FUTURES) {
       remove(sub.futures, assetID);
-    } else if (kind == Kind.CALL || kind == Kind.PUT) {
+    } else if (_isOption(kind)) {
       remove(sub.options, assetID);
     }
   }
@@ -312,6 +313,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   function _isOption(Kind kind) private pure returns (bool) {
     return kind == Kind.CALL || kind == Kind.PUT;
+  }
+
+  function _isOption(bytes32 assetID) private pure returns (bool) {
+    return _isOption(assetGetKind(assetID));
   }
 
   function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
