@@ -172,7 +172,6 @@ export interface ExConfigNotSet {
 
 export interface ExConfig2DNotSet {
   key: string
-  sub_key: string
 }
 
 export interface Expectation {
