@@ -66,21 +66,23 @@ contract FundingAndSettlement is BaseContract {
       if (!found) {
         continue;
       }
+
+      int64 positionBalance = posValues[assetID].balance;
       remove(positions, assetID);
+
       if (settlePrice == 0) {
         continue;
       }
-      BI memory posBalance = BI(posValues[assetID].balance, _getBalanceDecimal(assetGetUnderlying(assetID)));
+
+      BI memory posBalance = BI(positionBalance, _getBalanceDecimal(assetGetUnderlying(assetID)));
       newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
     }
     sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
   function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {
-    if (assetGetExpiration(assetID) <= timestamp) {
-      return (0, false);
-    }
     SettlementPriceEntry storage entry = state.prices.settlement[assetID];
+
     if (entry.isSet) {
       return (entry.value, true);
     }
@@ -134,7 +136,10 @@ contract FundingAndSettlement is BaseContract {
       return (0, false);
     }
     // Just panic when the quote price is 0
-    return (uPrice / qPrice, true);
+    return (
+      BI(int(uint(uPrice)), PRICE_DECIMALS).div(BI(int(uint(qPrice)), PRICE_DECIMALS)).toUint64(PRICE_DECIMALS),
+      true
+    );
   }
 
   function _getCurrencySettlementPrice9Decimals(Currency currency, int64 expiry) private view returns (uint64, bool) {
