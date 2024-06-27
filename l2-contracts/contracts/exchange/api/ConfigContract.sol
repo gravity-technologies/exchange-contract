@@ -532,9 +532,8 @@ contract ConfigContract is BaseContract {
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
 
-    
     id = ConfigID.ERC20_ADDRESSES;
-    settings[id].type = ConfigType.ADDRESS2D;
+    settings[id].typ = ConfigType.ADDRESS2D;
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
