@@ -5,6 +5,8 @@ import "./TradeContract.sol";
 import "./signature/generated/TransferSig.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "../util/BIMath.sol";
+import "../../interface/IL2StandardToken.sol";
+import "../../interface/IL2SharedBridge.sol";
 
 abstract contract ERC20 {
   /**
@@ -46,8 +48,14 @@ abstract contract TransferContract is TradeContract {
     // _preventReplay(hashDeposit(fromEthAddress, accountID, currency, numTokens, sig.nonce), sig);
     // ------- End of Signature Verification -------
 
+    // Signature verification is not required as this will always be called by our backend
+    // and token transfer will fail if `fromEthAddress` haven't successfully bridged in
+    // the token required for deposit
+
     int64 numTokensSigned = int64(numTokens);
     require(numTokensSigned >= 0, "invalid withdrawal amount");
+
+    IL2StandardToken(getCurrencyERC20Address(currency)).fundExchangeAccount(fromEthAddress, numTokens);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
@@ -106,20 +114,17 @@ abstract contract TransferContract is TradeContract {
 
     int64 numTokensToSend = numTokensSigned - withdrawalFee;
 
-    // TODO: send token to recipient
-    // // Call token's ERC20 contract to initiate a transfer
-    // ERC20 erc20Contract = ERC20(getCurrencyERC20Address(currency));
-    // bool success = erc20Contract.transfer(recipient, numTokensToSend);
-    // require(success, "transfer failed");
+    (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
+    require(ok, "missing L2 shared bridge address");
+    IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
+
+    l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), uint256(int256(numTokensToSend)));
   }
 
   function getCurrencyERC20Address(Currency currency) private view returns (address) {
-    if (currency == Currency.USDT) {
-      (address addr, bool ok) = _getAddressConfig(ConfigID.ERC20_USDT_ADDRESS);
-      require(ok, "invalid USDT address");
-      return addr;
-    }
-    revert("invalid currency");
+    (address addr, bool ok) = _getAddressConfig2D(ConfigID.ERC20_ADDRESSES, _currencyToConfig(currency));
+    require(ok, "unsupported currency");
+    return addr;
   }
 
   /**

@@ -8,10 +8,10 @@ jobs:
     strategy:
       matrix:
           module: 
-            - "./contracts"
+            - "./l2_contracts/contracts"
       fail-fast: true
 
-    name: Hardhat project
+    name: L2 Hardhat project
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
