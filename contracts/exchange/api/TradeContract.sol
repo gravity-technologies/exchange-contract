@@ -258,13 +258,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Step 4: Update subaccount spot balance, deducting fees
-    BI memory newSpotBalanceBI = BI(sub.spotBalances[subQuote], qDec).add(spotDelta);
-
+    int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta.toInt64(qDec);
     if (isFeeCharged) {
-      newSpotBalanceBI = newSpotBalanceBI.sub(BI(fee, qDec));
+      newSpotBalance -= fee;
     }
-
-    sub.spotBalances[subQuote] = newSpotBalanceBI.toInt64(qDec);
+    sub.spotBalances[subQuote] = newSpotBalance;
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {

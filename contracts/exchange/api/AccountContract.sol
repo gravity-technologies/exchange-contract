@@ -14,6 +14,7 @@ contract AccountContract is BaseContract {
   /// @param sig The signature of the acting user
   function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
     _setSequence(timestamp, txID);
+
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
 
