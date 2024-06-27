@@ -88,10 +88,9 @@ abstract contract TransferContract is TradeContract {
     int64 withdrawalFeeCharged = 0;
     (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (feeSubAccIdSet) {
-      (uint64 spotMark, bool markSet) = _getMarkPrice9Decimals(_getSpotAssetID(currency));
-      require(markSet, "missing mark price");
+      BI memory spotMarkPrice = _requireMarkPriceBI(_getSpotAssetID(currency));
       uint64 tokenDec = _getBalanceDecimal(currency);
-      withdrawalFeeCharged = _getWithdrawalFee().div(BI(int256(int64(spotMark)), PRICE_DECIMALS)).toInt64(tokenDec);
+      withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
       _requireSubAccount(feeSubAccId).spotBalances[currency] += int64(withdrawalFeeCharged);
     }
 
@@ -175,10 +174,10 @@ abstract contract TransferContract is TradeContract {
         _transferMainToSub(fromAccID, toAccID, toSubID, currency, numTokensSigned, sig);
       } else if (toSubID == 0) {
         // 1.2 Sub -> Main
-        _transferSubToMain(timestamp, fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToMain(fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       } else {
         // 1.3 Sub -> Sub
-        _transferSubToSub(timestamp, fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToSub(fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       }
     } else {
       // 2. Different accounts
@@ -221,7 +220,6 @@ abstract contract TransferContract is TradeContract {
   }
 
   function _transferSubToMain(
-    int64 timestamp,
     uint64 fromSubID,
     address fromAccID,
     address toAccID,
@@ -233,16 +231,15 @@ abstract contract TransferContract is TradeContract {
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
-    _fundAndSettle(timestamp, fromSub);
+    _fundAndSettle(fromSub);
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireValidSubAccountUsdValue(fromSub);
+    _requireNonNegativeUsdValue(fromSub);
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
   function _transferSubToSub(
-    int64 timestamp,
     uint64 fromSubID,
     uint64 toSubID,
     address fromAccID,
@@ -258,11 +255,11 @@ abstract contract TransferContract is TradeContract {
     SubAccount storage toSub = _requireSubAccount(toSubID);
     _requireSubAccountUnderAccount(toSub, toAccID);
 
-    _fundAndSettle(timestamp, fromSub);
+    _fundAndSettle(fromSub);
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireValidSubAccountUsdValue(fromSub);
+    _requireNonNegativeUsdValue(fromSub);
     toSub.spotBalances[currency] += numTokens;
   }
 }

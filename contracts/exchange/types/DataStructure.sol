@@ -36,12 +36,12 @@ enum Kind {
 }
 
 enum Currency {
-  UNSPECIFIED,
-  USD,
-  USDC,
-  USDT,
-  ETH,
-  BTC
+  UNSPECIFIED, // 0
+  USD, // 1
+  USDC, // 2
+  USDT, // 3
+  ETH, // 4
+  BTC // 5
 }
 
 function currencyStart() pure returns (Currency) {
@@ -243,59 +243,63 @@ enum ConfigType {
   UINT,
   UINT2D,
   CENTIBEEP,
-  CENTIBEEP2D
+  CENTIBEEP2D,
+  BYTE32,
+  BYTE322D
 }
 
 // See https://docs.google.com/spreadsheets/d/1MEp2BMtBjkdfTn7WXc_egh5ucc1UK8v6ibNWUuzW6AI/edit#gid=0 for the most up to date list of configs
 enum ConfigID {
-  UNSPECIFIED,
+  UNSPECIFIED, // 0
   // SIMPLE MARGIN CONFIGS
-  SM_FUTURES_INITIAL_MARGIN,
-  SM_FUTURES_MAINTENANCE_MARGIN,
-  SM_FUTURES_VARIABLE_MARGIN,
-  SM_OPTIONS_INITIAL_MARGIN_HIGH,
-  SM_OPTIONS_INITIAL_MARGIN_LOW,
-  SM_OPTIONS_MAINTENANCE_MARGIN,
+  SM_FUTURES_INITIAL_MARGIN, // 1
+  SM_FUTURES_MAINTENANCE_MARGIN, // 2
+  SM_FUTURES_VARIABLE_MARGIN, // 3
+  SM_OPTIONS_INITIAL_MARGIN_HIGH, // 4
+  SM_OPTIONS_INITIAL_MARGIN_LOW, // 5
+  SM_OPTIONS_MAINTENANCE_MARGIN, // 6
   // PORTFOLIO MARGIN CONFIGS
-  PM_SPOT_MOVE,
-  PM_VOL_MOVE_UP,
-  PM_VOL_MOVE_DOWN,
-  PM_SPOT_MOVE_EXTREME,
-  PM_EXTREME_MOVE_DISCOUNT,
-  PM_SHORT_TERM_VEGA_POWER,
-  PM_LONG_TERM_VEGA_POWER,
-  PM_INITIAL_MARGIN_FACTOR,
-  PM_FUTURES_CONTINGENCY_MARGIN,
-  PM_OPTIONS_CONTINGENCY_MARGIN,
+  PM_SPOT_MOVE, // 7
+  PM_VOL_MOVE_UP, // 8
+  PM_VOL_MOVE_DOWN, // 9
+  PM_SPOT_MOVE_EXTREME, // 10
+  PM_EXTREME_MOVE_DISCOUNT, // 11
+  PM_SHORT_TERM_VEGA_POWER, // 12
+  PM_LONG_TERM_VEGA_POWER, // 13
+  PM_INITIAL_MARGIN_FACTOR, // 14
+  PM_FUTURES_CONTINGENCY_MARGIN, // 15
+  PM_OPTIONS_CONTINGENCY_MARGIN, // 16
   // ADMIN
-  ADMIN_RECOVERY_ADDRESS,
-  ORACLE_ADDRESS,
-  CONFIG_ADDRESS,
-  ADMIN_FEE_SUB_ACCOUNT_ID, // the sub account that collects fees
-  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID,
+  ADMIN_RECOVERY_ADDRESS, // 17
+  ORACLE_ADDRESS, // 18
+  CONFIG_ADDRESS, // 19
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 20 the sub account that collects fees
+  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID, // 21
   // Funding
-  FUNDING_RATE_HIGH,
-  FUNDING_RATE_LOW,
-  MARKET_DATA_ADDRESS,
-  FUTURE_MAKER_FEE_MINIMUM,
-  FUTURE_TAKER_FEE_MINIMUM,
-  OPTION_MAKER_FEE_MINIMUM,
-  OPTION_TAKER_FEE_MINIMUM,
-  ERC20_ADDRESSES,
-  L2_SHARED_BRIDGE_ADDRESS,
-  MAINTENANCE_MARGIN_TIER_01,
-  MAINTENANCE_MARGIN_TIER_02,
-  MAINTENANCE_MARGIN_TIER_03,
-  MAINTENANCE_MARGIN_TIER_04,
-  MAINTENANCE_MARGIN_TIER_05,
-  MAINTENANCE_MARGIN_TIER_06,
-  MAINTENANCE_MARGIN_TIER_07,
-  MAINTENANCE_MARGIN_TIER_08,
-  MAINTENANCE_MARGIN_TIER_09,
-  MAINTENANCE_MARGIN_TIER_10,
-  MAINTENANCE_MARGIN_TIER_11,
-  MAINTENANCE_MARGIN_TIER_12,
-  WITHDRAWAL_FEE
+  FUNDING_RATE_HIGH, // 22
+  FUNDING_RATE_LOW, // 23
+  MARKET_DATA_ADDRESS, // 24
+  FUTURE_MAKER_FEE_MINIMUM, // 25
+  FUTURE_TAKER_FEE_MINIMUM, // 26
+  OPTION_MAKER_FEE_MINIMUM, // 27
+  OPTION_TAKER_FEE_MINIMUM, // 28
+  ERC20_ADDRESSES, // 29
+  L2_SHARED_BRIDGE_ADDRESS, // 30
+  MAINTENANCE_MARGIN_TIER_01, // 31
+  MAINTENANCE_MARGIN_TIER_02, // 32
+  MAINTENANCE_MARGIN_TIER_03, // 33
+  MAINTENANCE_MARGIN_TIER_04, // 34
+  MAINTENANCE_MARGIN_TIER_05, // 35
+  MAINTENANCE_MARGIN_TIER_06, // 36
+  MAINTENANCE_MARGIN_TIER_07, // 37
+  MAINTENANCE_MARGIN_TIER_08, // 38
+  MAINTENANCE_MARGIN_TIER_09, // 39
+  MAINTENANCE_MARGIN_TIER_10, // 40
+  MAINTENANCE_MARGIN_TIER_11, // 41
+  MAINTENANCE_MARGIN_TIER_12, // 42
+  WITHDRAWAL_FEE, // 43
+  // Liquidation
+  INSURANCE_FUND_SUB_ACCOUNT_ID // 44
 }
 
 struct ConfigValue {
@@ -397,4 +401,47 @@ struct SettlementTick {
   int256 value;
   bool isFinal;
   Signature signature;
+}
+
+enum LiquidationType {
+  UNDEFINED, // 0
+  LIQUIDATE, // 1
+  AUTO_DELEVERAGE // 2
+}
+
+/**
+ * @dev Represents a list of liquidation orders, which is used to liquidate a subaccount.
+ */
+struct Liquidate {
+  uint64 liquidatedSubAccountID;
+  uint64 initiatorSubAccountID;
+  LiquidationOrder[] orders;
+  LiquidationType liquidationType;
+}
+
+/**
+ * @dev Represents a liquidation order, which is used to liquidate a subaccount.
+ *
+ * Counterparty of the liquidation trade. MM stands for maintenance margin.
+ *
+ * +----------------------------+-------------------------------+-------------------------------------+
+ * |         passive            |           initiator           |            What it means?           |
+ * +----------------------------+-------------------------------+-------------------------------------+
+ * | Some subaccount below MM   | Insurance fund                | Full liquidation                    |
+ * +----------------------------+-------------------------------+-------------------------------------+
+ * | Some subaccount above MM   | Insurance fund                | ADL to get money into the insurance |
+ * |                            |                               | fund                                |
+ * +----------------------------+-------------------------------+-------------------------------------+
+ * | Some subaccount below MM   | backstop liquidity provider   | Liquidation to the backstop         |
+ * |                            |                               | liquidity provider                  |
+ * +----------------------------+-------------------------------+-------------------------------------+
+ * | Some subaccount below MM   | Some subaccount above MM      | Partial liquidation                 |
+ * +----------------------------+-------------------------------+-------------------------------------+
+ */
+struct LiquidationOrder {
+  uint64 subAccountID; ///< The initiator of the liquidation trade
+  OrderLeg[] legs; ///< The legs of the trade
+  uint64 liquidationFees; ///< The fee associated with the liquidation order
+  Currency feeCurrency; ///< The currency of the fee
+  Signature signature; ///< The signature of the initiator
 }

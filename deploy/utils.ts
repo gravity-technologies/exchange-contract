@@ -6,7 +6,7 @@ import { Deployer } from "@matterlabs/hardhat-zksync-deploy/dist/deployer"
 import dotenv from "dotenv"
 import { formatEther } from "ethers/lib/utils"
 import { BigNumberish, BigNumber, BytesLike, ethers } from "ethers"
-import { REQUIRED_L1_TO_L2_GAS_PER_PUBDATA_LIMIT } from "zksync-web3/build/src/utils";
+import { REQUIRED_L1_TO_L2_GAS_PER_PUBDATA_LIMIT } from "zksync-web3/build/src/utils"
 
 import "@matterlabs/hardhat-zksync-node/dist/type-extensions"
 import "@matterlabs/hardhat-zksync-verify/dist/src/type-extensions"

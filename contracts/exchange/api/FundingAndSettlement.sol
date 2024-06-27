@@ -10,10 +10,10 @@ import "./BaseContract.sol";
 contract FundingAndSettlement is BaseContract {
   using BIMath for BI;
 
-  function _fundAndSettle(int64 timestamp, SubAccount storage sub) internal {
+  function _fundAndSettle(SubAccount storage sub) internal {
     _fundPerp(sub);
-    _settleOptionsOrFutures(timestamp, sub, sub.futures);
-    _settleOptionsOrFutures(timestamp, sub, sub.options);
+    _settleOptionsOrFutures(sub, sub.futures);
+    _settleOptionsOrFutures(sub, sub.options);
   }
 
   function _fundPerp(SubAccount storage sub) internal {
@@ -53,7 +53,7 @@ contract FundingAndSettlement is BaseContract {
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
-  function _settleOptionsOrFutures(int64 timestamp, SubAccount storage sub, PositionsMap storage positions) internal {
+  function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
     uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
     BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
     bytes32[] storage posKeys = positions.keys;
@@ -61,7 +61,7 @@ contract FundingAndSettlement is BaseContract {
     uint posLen = posKeys.length;
     for (uint i; i < posLen; ++i) {
       bytes32 assetID = posKeys[i];
-      (uint64 settlePrice, bool found) = _getAssetSettlementPrice(timestamp, assetID);
+      (uint64 settlePrice, bool found) = _getAssetSettlementPrice(assetID);
       if (!found) {
         continue;
       }
@@ -79,7 +79,7 @@ contract FundingAndSettlement is BaseContract {
     sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
-  function _getAssetSettlementPrice(int64 timestamp, bytes32 assetID) private returns (uint64, bool) {
+  function _getAssetSettlementPrice(bytes32 assetID) private returns (uint64, bool) {
     SettlementPriceEntry storage entry = state.prices.settlement[assetID];
 
     if (entry.isSet) {

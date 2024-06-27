@@ -38,11 +38,3 @@ function removeAddressIfExists(address[] storage arr, address addressToRemove) {
     return;
   }
 }
-
-function signerHasPerm(
-  mapping(address => uint64) storage signers,
-  address signerAddress,
-  uint64 perm
-) view returns (bool) {
-  return (signers[signerAddress] & perm) != 0;
-}

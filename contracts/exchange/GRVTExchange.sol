@@ -2,19 +2,21 @@
 pragma solidity ^0.8.20;
 
 import "./api/AccountContract.sol";
-import "./api/OracleContract.sol";
 import "./api/SubAccountContract.sol";
-import "./api/TransferContract.sol";
 import "./api/WalletRecoveryContract.sol";
+import "./api/OracleContract.sol";
+import "./api/TransferContract.sol";
+import "./api/LiquidationContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchange is
   Initializable,
   AccountContract,
-  OracleContract,
   SubAccountContract,
+  WalletRecoveryContract,
+  OracleContract,
   TransferContract,
-  WalletRecoveryContract
+  LiquidationContract
 {
   function initialize() public initializer {
     __ReentrancyGuard_init();

@@ -135,9 +135,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
 
     // Execute the order, ensuring sufficient balance pre and post trade
-    _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
-    _requireValidSubAccountUsdValue(sub);
+    _requireNonNegativeUsdValue(sub);
+    _executeOrder(sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
+    _requireNonNegativeUsdValue(sub);
   }
 
   function _verifyOrderFull(
@@ -222,7 +222,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _executeOrder(
-    int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
@@ -230,7 +229,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 fee,
     bool isFeeCharged
   ) internal {
-    _fundAndSettle(timestamp, sub);
+    _fundAndSettle(sub);
 
     Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
@@ -262,33 +261,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       newSpotBalance -= fee;
     }
     sub.spotBalances[subQuote] = newSpotBalance;
-  }
-
-  function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
-    if (kind == Kind.PERPS) return sub.perps;
-    if (kind == Kind.FUTURES) return sub.futures;
-    return sub.options;
-  }
-
-  function _getOrCreatePosition(SubAccount storage sub, bytes32 assetID) internal returns (Position storage) {
-    Kind kind = assetGetKind(assetID);
-    PositionsMap storage posmap = _getPositionCollection(sub, kind);
-
-    // If the position already exists, return it
-    if (posmap.values[assetID].id != 0x0) {
-      return posmap.values[assetID];
-    }
-
-    // Otherwise, create a new position
-    Position storage pos = getOrNew(posmap, assetID);
-
-    if (kind == Kind.PERPS) {
-      // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
-      // to avoid mis-calculation of funding payment (leads to improper accounting of on-chain assets)
-      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetID];
-    }
-
-    return pos;
   }
 
   function removePos(SubAccount storage sub, bytes32 assetID) internal {

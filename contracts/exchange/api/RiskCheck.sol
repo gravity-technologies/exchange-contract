@@ -11,7 +11,7 @@ contract RiskCheck is BaseContract {
 
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
-  function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
+  function _requireNonNegativeUsdValue(SubAccount storage sub) internal view {
     require(_getSubAccountUsdValue(sub).val >= 0, "invalid total value");
   }
 
@@ -26,19 +26,9 @@ contract RiskCheck is BaseContract {
       if (balance == 0) {
         continue;
       }
-
-      uint64 dec = _getBalanceDecimal(i);
-      BI memory balanceBI = BI(int256(balance), dec);
-
+      BI memory balanceBI = BI(int256(balance), _getBalanceDecimal(i));
       bytes32 spotID = _getSpotAssetID(i);
-      (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
-
-      require(found, ERR_NOT_FOUND);
-
-      BI memory markPriceBI = BI(int256(uint256(markPrice)), PRICE_DECIMALS);
-      BI memory balanceValue = balanceBI.mul(markPriceBI);
-
-      totalValue = totalValue.add(balanceValue);
+      totalValue = totalValue.add(balanceBI.mul(_requireMarkPriceBI(spotID)));
     }
 
     return totalValue;
@@ -53,12 +43,10 @@ contract RiskCheck is BaseContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
-      require(found, ERR_NOT_FOUND);
+      BI memory markPrice = _requireMarkPriceBI(pos.id);
       uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(int256(pos.balance), uDec);
-      BI memory markPriceBI = BI(int(uint(markPrice)), PRICE_DECIMALS);
-      total = total.add(markPriceBI.mul(balance));
+      total = total.add(balance.mul(markPrice));
     }
     return total;
   }

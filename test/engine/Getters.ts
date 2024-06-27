@@ -141,6 +141,7 @@ async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
 
 async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
   const key = ConfigIDToEnum[expectations.key]
+  expect(key).to.not.be.null
   const val = await contract.getConfig1D(key)
   expect(BigNumber.from(val)).to.equal(BigNumber.from(expectations.value))
 }
