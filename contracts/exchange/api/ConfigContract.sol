@@ -139,6 +139,10 @@ contract ConfigContract is BaseContract {
     return address(uint160(uint256(v)));
   }
 
+  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
+    return bytes32(uint256(uint(v)));
+  }
+
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
   function _getAddressConfig(ConfigID key) internal view returns (address, bool) {
     ConfigValue storage c = state.config1DValues[key];
@@ -352,6 +356,8 @@ contract ConfigContract is BaseContract {
   // This should be called only once during the proxy contract deployment, in the initialize function
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
+
+    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
     // This is a special value that represents an empty value for a config
@@ -526,6 +532,15 @@ contract ConfigContract is BaseContract {
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
 
+    id = ConfigID.ERC20_ADDRESSES;
+    settings[id].typ = ConfigType.ADDRESS2D;
+
+    id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
+    settings[id].typ = ConfigType.ADDRESS;
+    addr = _addressToConfig(defaultAddresses.L2SharedBridge);
+    values1D[id].isSet = true;
+    values1D[id].val = addr;
+
     // // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
@@ -591,6 +606,7 @@ contract ConfigContract is BaseContract {
     address Oracle;
     address MarketData;
     address Recovery;
+    address L2SharedBridge;
   }
 
   function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
@@ -600,7 +616,8 @@ contract ConfigContract is BaseContract {
         Config: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
         Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
         MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
-        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae
+        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae,
+        L2SharedBridge: 0x7f5Df4E44Da1818eb8665e42B4d686353F20E435 // set to the value in era test node
       });
   }
 }
