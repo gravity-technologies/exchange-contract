@@ -16,6 +16,7 @@ describe("API - Wallet Recovery", function () {
   before(async () => {
     const wallet = getDeployerWallet()
     contract = await deployContract("GRVTExchange", [], { wallet, silent: true, noVerify: true })
+    await contract.initialize()
     // contract = await deployContractUpgradable("GRVTExchange", [], { wallet, silent: true })
   })
   beforeEach(async () => {

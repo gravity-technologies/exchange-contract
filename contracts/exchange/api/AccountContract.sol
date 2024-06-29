@@ -13,7 +13,12 @@ contract AccountContract is BaseContract {
   /// @param txID The transaction ID
   /// @param accountID The ID the account will be tagged to
   /// @param sig The signature of the acting user
-  function createAccount(int64 timestamp, uint64 txID, address accountID, Signature calldata sig) external {
+  function createAccount(
+    int64 timestamp,
+    uint64 txID,
+    address accountID,
+    Signature calldata sig
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
@@ -46,7 +51,7 @@ contract AccountContract is BaseContract {
     uint8 multiSigThreshold,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
     require(acc.id != address(0), "account does not exist");
@@ -78,7 +83,7 @@ contract AccountContract is BaseContract {
     uint64 permissions,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
     require(acc.id != address(0), "account does not exist");
@@ -118,7 +123,7 @@ contract AccountContract is BaseContract {
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -153,7 +158,7 @@ contract AccountContract is BaseContract {
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -181,7 +186,7 @@ contract AccountContract is BaseContract {
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -207,7 +212,7 @@ contract AccountContract is BaseContract {
     address transferAccountID,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     require(transferAccountID != address(0), "invalid transfer account");
 
     _setSequence(timestamp, txID);
@@ -228,7 +233,7 @@ contract AccountContract is BaseContract {
     address transferAccountID,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 

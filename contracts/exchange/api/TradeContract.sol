@@ -15,7 +15,7 @@ import "../util/Asset.sol";
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
-  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
+  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     Order calldata takerOrder = trade.takerOrder;

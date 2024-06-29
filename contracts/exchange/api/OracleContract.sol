@@ -20,7 +20,12 @@ contract OracleContract is ConfigContract {
   /// @param txID the transaction ID of the price tick
   /// @param prices the prices of the assets
   /// @param sig the signature of the price tick
-  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) public {
+  function markPriceTick(
+    int64 timestamp,
+    uint64 txID,
+    PriceEntry[] calldata prices,
+    Signature calldata sig
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -54,7 +59,11 @@ contract OracleContract is ConfigContract {
   /// @param timestamp the timestamp of the price tick
   /// @param txID the transaction ID of the price tick
   /// @param prices the settlement prices
-  function settlementPriceTick(int64 timestamp, uint64 txID, SettlementTick[] calldata prices) external {
+  function settlementPriceTick(
+    int64 timestamp,
+    uint64 txID,
+    SettlementTick[] calldata prices
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
     uint len = prices.length;
@@ -97,10 +106,11 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
+    // TODO: Verify that its signed by market data
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
     _verifyFundingTickSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
@@ -151,7 +161,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata rates,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(TX_SENDER) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------

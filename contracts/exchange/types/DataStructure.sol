@@ -45,6 +45,8 @@ enum Currency {
   BTC
 }
 
+bytes32 constant TX_SENDER = keccak256("TX_SENDER");
+
 uint constant PRICE_DECIMALS = 9;
 uint constant CENTIBEEP_DECIMALS = 6;
 int constant TIME_FACTOR = 480;
