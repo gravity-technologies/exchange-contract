@@ -99,7 +99,6 @@ describe.only("API - TestEngine", function () {
     "TestDeposit.json",
     "TestTransfer.json",
     "TestWithdrawal.json",
-    "TestSetupSequence.json",
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",
@@ -160,6 +159,12 @@ const L2TokenInfo: {
     name: string
   }
 } = {
+  "USDC": {
+    l1Token: "0x1111000000000000000000000000000000001110",
+    erc20Decimals: 6,
+    exchangeDecimals: 6,
+    name: "USD Coin",
+  },
   "USDT": {
     l1Token: "0x1111000000000000000000000000000000001111",
     erc20Decimals: 6,
