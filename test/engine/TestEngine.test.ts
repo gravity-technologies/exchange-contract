@@ -97,7 +97,7 @@ describe.only("API - TestEngine", function () {
     "TestSettlementPrice.json",
     "TestSubAccount.json",
     "TestDeposit.json",
-    // "TestTransfer.json",
+    "TestTransfer.json",
     "TestWithdrawal.json",
     "TestSetupSequence.json",
   ]
