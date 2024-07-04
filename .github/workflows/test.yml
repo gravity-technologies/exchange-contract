@@ -39,7 +39,7 @@ jobs:
           yarn compile:era
 
       - name: Run Era Test Node Action
-        uses: gravity-technologies/era-test-node-action@6b25c071d0628e8515bdc68b60bf2f4a58040188
+        uses: gravity-technologies/era-test-node-action@main
         with:
           mode: 'run'
           showCalls: 'user'
