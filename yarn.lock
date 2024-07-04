@@ -4964,8 +4964,3 @@ zksync-ethers@^5.0.0:
   integrity sha512-iks12h2/a7aS3kLm48oQWRm5HNViJP7lnGMSx4yidEB0Xob2MTgBv5G/9x40GaiCA1Yld8XIgC5YfcMmHWnh5Q==
   dependencies:
     ethers "~5.7.0"
-
-zksync-web3@0.15.4:
-  version "0.15.4"
-  resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.15.4.tgz#5991435593e591aa5f7ee68567315be07b478710"
-  integrity sha512-6CEpRBbF4nGwRYSF3KvPGqg2aNJFYTl8AR+cejBnC2Uyu1v3NYSkmkXXVuMGupJ7HIQR1aTqFEDsUFPyO/bL0Q==

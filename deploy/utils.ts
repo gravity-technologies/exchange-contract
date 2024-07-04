@@ -129,11 +129,6 @@ export const deployContract = async (
   return contract
 }
 
-export const loadArtifact = async (contractArtifactName: string) => {
-  const deployer = new Deployer(hre, getWallet())
-  return deployer.loadArtifact(contractArtifactName)
-}
-
 export const deployContractUpgradable = async (
   contractArtifactName: string,
   initializationVariables?: any[],
