@@ -5,8 +5,10 @@ import "./TradeContract.sol";
 import "./signature/generated/TransferSig.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "../util/BIMath.sol";
-import "../../interface/IL2StandardToken.sol";
-import "../../interface/IL2SharedBridge.sol";
+
+import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
+import {IL2TokenFundExchange} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2TokenFundExchange.sol";
+import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 
 abstract contract ERC20 {
   /**
@@ -48,7 +50,7 @@ abstract contract TransferContract is TradeContract {
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
-    IL2StandardToken(getCurrencyERC20Address(currency)).fundExchangeAccount(accountID, uint256(fundExchangeAmount));
+    IL2TokenFundExchange(getCurrencyERC20Address(currency)).fundExchangeAccount(accountID, fundExchangeAmount);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
@@ -117,7 +119,8 @@ abstract contract TransferContract is TradeContract {
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
-    IL2StandardToken token = IL2StandardToken(getCurrencyERC20Address(currency));
+    address ta = getCurrencyERC20Address(currency);
+    IERC20MetadataUpgradeable token = IERC20MetadataUpgradeable(ta);
     uint8 erc20TokenDec = token.decimals();
     int256 erc20Amount = BI(numTokens, _getBalanceDecimal(currency)).scale(erc20TokenDec).toInt256(erc20TokenDec);
     require(erc20Amount >= 0, "invalid amount");

@@ -1,13 +1,15 @@
 import { Contract, ethers } from "ethers"
 import { network } from "hardhat"
-import { Wallet, types } from "zksync-ethers"
-import { LOCAL_RICH_WALLETS, deployContract, deployContractCreate2, getProvider, getWallet, loadArtifact } from "../../deploy/utils"
+import { Wallet } from "zksync-ethers"
+import { LOCAL_RICH_WALLETS, deployContract, getProvider, getWallet } from "../../deploy/utils"
 import { expectToThrowAsync, getDeployerWallet } from "../util"
 import { validateExpectations } from "./Getters"
-import { DepositTxInfo, TestCase, TestStep, TxInfo, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
-import { hashBytecode } from "zksync-web3/build/src/utils";
+import { DepositTxInfo, TestCase, TestStep, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
 import { L2SharedBridge__factory } from "../../typechain-types/factories/lib/era-contracts/l2-contracts/contracts/bridge/L2SharedBridge__factory"
 import { L2SharedBridge } from "../../typechain-types/lib/era-contracts/l2-contracts/contracts/bridge/L2SharedBridge"
+import { execSync } from 'child_process';
+import path from 'path';
+
 const gasLimit = 2100000000
 const testDir = "/test/engine/testfixtures/"
 
@@ -20,6 +22,7 @@ describe.only("API - TestEngine", function () {
   let testSnapshotId: string
   let w1 = getDeployerWallet()
   let testFiles = loadTestFilesFromDir(process.cwd() + testDir)
+
 
   before(async () => {
     runSnapshotId = await network.provider.send("evm_snapshot")
@@ -40,32 +43,23 @@ describe.only("API - TestEngine", function () {
     // setup L2SharedBridge and BeaconProxy for L2StandardERC20 for deposit and withdrawal
     // DO NOT update the salt as it would change the deployed contract address, which is fixed across runs and 
     // hardcoded in risk RTF tests
-    const l2TokenImplAddress = await deployContractCreate2("L2StandardERC20", "l2TokenImpl", [], deployOptions)
-    const l2Erc20TokenBeacon = await deployContractCreate2("UpgradeableBeacon", "l2Erc20TokenBeacon", [
-      l2TokenImplAddress.address,
-    ], deployOptions)
-    await deployContractCreate2("BeaconProxy", "BeaconProxy", [l2Erc20TokenBeacon.address, "0x"], deployOptions)
+    const result = execSync([
+      'npx',
+      'hardhat',
+      'deploy-erc20-test-setup',
+      '--deployer-private-key', deployerWallet.privateKey,
+      '--governor-private-key', governorWallet.privateKey,
+      '--l1-bridge-private-key', l1BridgeWallet.privateKey,
+      '--salt', ethers.utils.keccak256(ethers.utils.toUtf8Bytes('test'))
+    ].join(" "), { cwd: path.resolve('lib/era-contracts/l2-contracts'), stdio: 'pipe' });
 
-    const beaconProxyBytecodeHash = hashBytecode((await loadArtifact("BeaconProxy")).bytecode);
-
-    const l2SharedBridgeImpl = await deployContractCreate2("L2SharedBridge", "erc20BridgeImpl", [9], deployOptions)
-    const l2SharedBridgeProxy = await deployContractCreate2("TransparentUpgradeableProxy", "erc20BridgeProxy", [
-      l2SharedBridgeImpl.address,
-      governorWallet.address,
-      l2SharedBridgeImpl.interface.encodeFunctionData("initialize", [
-        unapplyL1ToL2Alias(l1BridgeWallet.address),
-        ethers.constants.AddressZero,
-        beaconProxyBytecodeHash,
-        governorWallet.address,
-      ]),
-    ], deployOptions)
-
-    const l2SharedBridge = L2SharedBridge__factory.connect(l2SharedBridgeProxy.address, deployerWallet);
+    const l2SharedBridgeAddress = result.toString().trim();
+    const l2SharedBridge = L2SharedBridge__factory.connect(l2SharedBridgeAddress, deployerWallet);
 
     // exchange address is required before ERC20 can be deployed
     await (await l2SharedBridge.setExchangeAddress(exchangeContract.address)).wait();
 
-    l2SharedBridgeAsL1Bridge = L2SharedBridge__factory.connect(l2SharedBridge.address, l1BridgeWallet);
+    l2SharedBridgeAsL1Bridge = L2SharedBridge__factory.connect(l2SharedBridgeAddress, l1BridgeWallet);
   })
 
   after(async () => {
