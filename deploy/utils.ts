@@ -6,7 +6,6 @@ import { Deployer } from "@matterlabs/hardhat-zksync-deploy/dist/deployer"
 import dotenv from "dotenv"
 import { formatEther } from "ethers/lib/utils"
 import { BigNumberish } from "ethers"
-import { ethers } from "ethers"
 
 import "@matterlabs/hardhat-zksync-node/dist/type-extensions"
 import "@matterlabs/hardhat-zksync-verify/dist/src/type-extensions"
@@ -107,63 +106,6 @@ export const deployContract = async (
 
   // Deploy the contract to zkSync
   const contract = await deployer.deploy(artifact, constructorArguments)
-
-  const constructorArgs = contract.interface.encodeDeploy(constructorArguments)
-  const fullContractSource = `${artifact.sourceName}:${artifact.contractName}`
-
-  // Display contract deployment info
-  log(`\n"${artifact.contractName}" was successfully deployed:`)
-  log(` - Contract address: ${contract.address}`)
-  log(` - Contract source: ${fullContractSource}`)
-  log(` - Encoded constructor arguments: ${constructorArgs}\n`)
-
-  if (!options?.noVerify && hre.network.config.verifyURL) {
-    log(`Requesting contract verification...`)
-    await verifyContract({
-      address: contract.address,
-      contract: fullContractSource,
-      constructorArguments: constructorArgs,
-      bytecode: artifact.bytecode,
-    })
-  }
-
-  return contract
-}
-
-export const deployContractCreate2 = async (
-  contractArtifactName: string,
-  saltBeforeHash: string,
-  constructorArguments?: any[],
-  options?: DeployContractOptions
-) => {
-  const log = (message: string) => {
-    if (!options?.silent) console.log(message)
-  }
-
-  log(`\nStarting deployment process of "${contractArtifactName}"...`)
-
-  const wallet = options?.wallet ?? getWallet()
-  const deployer = new Deployer(hre, wallet, "create2")
-  const artifact = await deployer.loadArtifact(contractArtifactName).catch((error) => {
-    if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
-      console.error(error.message)
-      throw `⛔️ Please make sure you have compiled your contracts or specified the correct contract name!`
-    } else {
-      throw error
-    }
-  })
-
-  // Estimate contract deployment fee
-  const deploymentFee = await deployer.estimateDeployFee(artifact, constructorArguments || [])
-  log(`Estimated deployment cost: ${formatEther(deploymentFee)} ETH`)
-
-  // Check if the wallet has enough balance
-  await verifyEnoughBalance(wallet, deploymentFee)
-
-  // Deploy the contract to zkSync
-  const contract = await deployer.deploy(artifact, constructorArguments, {
-    customData: { salt: ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltBeforeHash)) },
-  })
 
   const constructorArgs = contract.interface.encodeDeploy(constructorArguments)
   const fullContractSource = `${artifact.sourceName}:${artifact.contractName}`

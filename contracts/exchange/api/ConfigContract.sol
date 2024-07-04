@@ -537,7 +537,6 @@ contract ConfigContract is BaseContract {
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
-    addr = _addressToConfig(defaultAddresses.L2SharedBridge);
     values1D[id].isSet = true;
     values1D[id].val = addr;
 
@@ -606,7 +605,6 @@ contract ConfigContract is BaseContract {
     address Oracle;
     address MarketData;
     address Recovery;
-    address L2SharedBridge;
   }
 
   function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
@@ -616,8 +614,7 @@ contract ConfigContract is BaseContract {
         Config: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
         Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
         MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
-        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae,
-        L2SharedBridge: 0x7f5Df4E44Da1818eb8665e42B4d686353F20E435 // set to the value in era test node
+        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae
       });
   }
 }
