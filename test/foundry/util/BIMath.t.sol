@@ -111,6 +111,56 @@ contract BIMathTest is Test {
     a.div(b);
   }
 
+  function testScale() public {
+    // Test Case 1: Scale up by 2 decimals
+    BI memory a = BI(1, 0);
+    BI memory want = BI(100, 2);
+    BI memory c = BIMath.scale(a, 2);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 2: Scale down by 2 decimals
+    a = BI(100, 2);
+    want = BI(1, 0);
+    c = BIMath.scale(a, 0);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 3: Scale up by 10 decimals
+    a = BI(1, 0);
+    want = BI(1_000_000_000_000, 12);
+    c = BIMath.scale(a, 12);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 4: Scale down by 10 decimals
+    a = BI(1_000_000_000_000, 12);
+    want = BI(1, 0);
+    c = BIMath.scale(a, 0);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 5: Scale to the same decimal
+    a = BI(1_000_000_000, 9);
+    want = BI(1_000_000_000, 9);
+    c = BIMath.scale(a, 9);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 6: Scale up and down multiple steps
+    a = BI(123456, 3);
+    want = BI(123456000000, 9);
+    c = BIMath.scale(a, 9);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 7: Scale down with remainder
+    a = BI(123456, 3);
+    want = BI(123, 0);
+    c = BIMath.scale(a, 0);
+    assertTrue(c.cmp(want) == 0);
+
+    // Test Case 8: Scale up with initial non-zero decimals
+    a = BI(123456, 3);
+    want = BI(123456000000, 9);
+    c = BIMath.scale(a, 9);
+    assertTrue(c.cmp(want) == 0);
+  }
+
   function testNegSub() public {
     BI memory a = BI(-10, 1);
     BI memory b = BI(5, 1);
