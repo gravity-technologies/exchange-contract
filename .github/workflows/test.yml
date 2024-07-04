@@ -12,7 +12,7 @@ jobs:
       fail-fast: true
 
     name: Hardhat project
-    runs-on: ubuntu-latest
+    runs-on: ['ubuntu-latest', 'x64']
     steps:
       - uses: actions/checkout@v3
         with:
@@ -46,9 +46,7 @@ jobs:
           showStorageLogs: 'read'
           showVmDetails: 'all'
           showGasDetails: 'all'
-          resolveHashes: 'true'
           log: 'info'
-          logFilePath: 'era_test_node.log'
           target: 'x86_64-unknown-linux-gnu'
           releaseTag: v0.1.0-alpha.19.dz-free-pubdata
           downloadUrlOverride: 'https://github.com/gravity-technologies/era-test-node/releases/download/v0.1.0-alpha.19.dz-free-pubdata/era_test_node-v0.1.0-alpha.19.dz-free-pubdata-x86_64-unknown-linux-gnu.tar.gz'
