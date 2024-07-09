@@ -201,22 +201,22 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
 
-    int64 totalfeeCap;
+    int64 totalFeeCap;
 
     if (isOption) {
-      totalfeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
+      totalFeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
       BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
 
-      if (totalfeeCap > 0) {
-        totalfeeCap = _min(totalfeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
+      if (totalFeeCap > 0) {
+        totalFeeCap = _min(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
       } else {
-        totalfeeCap = _max(totalfeeCap, _calculateBaseFee(tradeNotional, premiumCapFee.neg(), qDec));
+        totalFeeCap = _max(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee.neg(), qDec));
       }
     } else {
-      totalfeeCap = _calculateBaseFee(tradeNotional, feeCapRateBI, qDec);
+      totalFeeCap = _calculateBaseFee(tradeNotional, feeCapRateBI, qDec);
     }
 
-    require(totalFee <= totalfeeCap, ERR_FEE_CAP_EXCEEDED);
+    require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
   }
 
   function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
