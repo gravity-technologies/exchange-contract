@@ -25,6 +25,19 @@ export interface TestStep {
 
   // List of expectations to be executed after the transaction is executed
   expectations: Expectation[]
+
+  tx: TxInfo | undefined
+}
+
+export interface TxInfo {
+  type: string
+  deposit: DepositTxInfo | undefined
+}
+
+export interface DepositTxInfo {
+  to_account_id: string
+  token_currency: string
+  num_tokens: string
 }
 
 export interface ExNumAccounts {
