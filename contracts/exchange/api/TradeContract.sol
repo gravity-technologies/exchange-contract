@@ -21,7 +21,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
-    BI memory takerNotionals;
+    BI memory takerTradeNotional;
+    BI memory takerOptionIndexNotional;
     BI memory takerSpotDelta;
 
     ///////////////////////////////////////////////////////////////////////////
@@ -32,14 +33,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
-    uint64 totalMakersFee;
+    int64 totalMakersFee;
+
+    (uint64 feeSubID, bool isFeeCharged) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
-      // Compute maker notionals
+      // Compute maker notional
       BI memory makerSpotDelta;
-      BI memory makerNotionals;
+      BI memory makerTradeNotional;
+      BI memory makerOptionIndexNotional;
+
       uint64[] calldata matchSizes = makerMatch.matchedSize;
       Order calldata makerOrder = makerMatch.makerOrder;
       uint makerLegsLen = makerOrder.legs.length;
@@ -63,13 +68,22 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           makerSpotDelta = makerSpotDelta.add(notional);
           takerSpotDelta = takerSpotDelta.sub(notional);
         }
-        makerNotionals = makerNotionals.add(notional);
+        if (_isOption(leg.assetID)) {
+          (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
+          require(found, ERR_NOT_FOUND);
+
+          BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
+          makerOptionIndexNotional = makerOptionIndexNotional.add(indexNotional);
+        }
+        makerTradeNotional = makerTradeNotional.add(notional);
+
         takerMatchedSizes[_findLegIndex(takerLegs, leg.assetID)] += size;
       }
 
       // Aggregate taker notional accross all makers
-      takerNotionals = takerNotionals.add(makerNotionals);
-      uint64 makerFee = _getTotalFee(makerMatch.feeCharged);
+      takerTradeNotional = takerTradeNotional.add(makerTradeNotional);
+      takerOptionIndexNotional = takerOptionIndexNotional.add(makerOptionIndexNotional);
+      int64 makerFee = _getTotalFee(makerMatch.feeCharged);
       totalMakersFee += makerFee;
 
       _verifyAndExecuteOrder(
@@ -78,22 +92,33 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         makerMatch.matchedSize,
         true,
         makerSpotDelta,
-        makerNotionals,
-        makerFee
+        makerTradeNotional,
+        makerOptionIndexNotional,
+        makerFee,
+        isFeeCharged
       );
     }
 
     ///////////////////////////////////////////////////////////////////
     /// Taker order verification and execution
     ///////////////////////////////////////////////////////////////////
-    uint64 takerFee = _getTotalFee(trade.feeCharged);
-    _verifyAndExecuteOrder(timestamp, takerOrder, takerMatchedSizes, false, takerSpotDelta, takerNotionals, takerFee);
+    int64 takerFee = _getTotalFee(trade.feeCharged);
+    _verifyAndExecuteOrder(
+      timestamp,
+      takerOrder,
+      takerMatchedSizes,
+      false,
+      takerSpotDelta,
+      takerTradeNotional,
+      takerOptionIndexNotional,
+      takerFee,
+      isFeeCharged
+    );
 
     // Deposit the trading fees, only once
-    (uint64 feeSubID, bool ok) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    if (ok) {
+    if (isFeeCharged) {
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
-      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += int64(totalMakersFee + takerFee);
+      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
     }
   }
 
@@ -103,16 +128,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] memory tradeSizes,
     bool isMakerOrder,
     BI memory spotDelta,
-    BI memory notional,
-    uint64 totalFee
+    BI memory tradeNotional,
+    BI memory optionIndexNotional,
+    int64 totalFee,
+    bool isFeeCharged
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
 
-    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, notional, totalFee);
+    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
 
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireValidSubAccountUsdValue(sub);
-    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee));
+    _executeOrder(timestamp, sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
     _requireValidSubAccountUsdValue(sub);
   }
 
@@ -122,13 +149,16 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata order,
     uint64[] memory tradeSizes,
     bool isMakerOrder,
-    BI memory notional,
-    uint64 totalFee
+    BI memory tradeNotional,
+    BI memory optionIndexNotional,
+    int64 totalFee
   ) internal {
     // Arrange from cheapest to most expensive verification
 
     // Check that quote asset is the same as subaccount quote asset
     Currency subQuote = sub.quoteCurrency;
+    uint qDec = _getBalanceDecimal(subQuote);
+
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -159,9 +189,39 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       executedSize[leg.assetID] = total;
     }
 
+    bool isOption = false;
+    for (uint i; i < legsLen; ++i) {
+      if (_isOption(legs[i].assetID)) {
+        isOption = true;
+        break;
+      }
+    }
+
     // Check that the fee paid is within the cap
-    uint32 feeCap = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
-    require(totalFee <= feeCap * notional.toUint64(_getBalanceDecimal(subQuote)), ERR_FEE_CAP_EXCEEDED);
+    int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
+
+    int64 totalFeeCap;
+
+    if (isOption) {
+      totalFeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
+      BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
+
+      if (totalFeeCap > 0) {
+        totalFeeCap = _min(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
+      } else {
+        totalFeeCap = _max(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee.neg(), qDec));
+      }
+    } else {
+      totalFeeCap = _calculateBaseFee(tradeNotional, feeCapRateBI, qDec);
+    }
+
+    require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
+  }
+
+  function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
+    if (notional.val == 0) return 0;
+    return notional.mul(fee).toInt64(qDec);
   }
 
   function _executeOrder(
@@ -170,12 +230,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata order,
     uint64[] memory matchSizes,
     BI memory spotDelta,
-    int64 fee
+    int64 fee,
+    bool isFeeCharged
   ) internal {
     _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
-    uint qdec = _getBalanceDecimal(subQuote);
+    uint qDec = _getBalanceDecimal(subQuote);
 
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ++i) {
@@ -198,9 +259,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    // FIXME: Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = BI(sub.spotBalances[subQuote], qdec).add(spotDelta).sub(BI(fee, qdec)).toInt64(qdec);
-    sub.spotBalances[subQuote] = newSpotBalance;
+    // Step 4: Update subaccount spot balance, deducting fees
+    BI memory newSpotBalanceBI = BI(sub.spotBalances[subQuote], qDec).add(spotDelta);
+
+    if (isFeeCharged) {
+      newSpotBalanceBI = newSpotBalanceBI.sub(BI(fee, qDec));
+    }
+
+    sub.spotBalances[subQuote] = newSpotBalanceBI.toInt64(qDec);
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
@@ -236,23 +302,34 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       remove(sub.perps, assetID);
     } else if (kind == Kind.FUTURES) {
       remove(sub.futures, assetID);
-    } else if (kind == Kind.CALL || kind == Kind.PUT) {
+    } else if (_isOption(kind)) {
       remove(sub.options, assetID);
     }
   }
 
   // FIXME: Our BE disables charging fees for now. To enable back afterwards
-  function _getTotalFee(int64[] memory feePerLegs) private pure returns (uint64) {
-    return 0;
-    // uint64 totalFee;
-    // uint len = feePerLegs.length;
-    // for (uint i; i < len; ++i) totalFee += uint64(feePerLegs[i]);
-    // return totalFee;
+  function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
+    int64 totalFee;
+    uint len = feePerLegs.length;
+    for (uint i; i < len; ++i) totalFee += int64(feePerLegs[i]);
+    return totalFee;
   }
 
   function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
     uint len = legs.length;
     for (uint i; i < len; ++i) if (legs[i].assetID == assetID) return i;
     revert(ERR_NOT_FOUND);
+  }
+
+  function _isOption(Kind kind) private pure returns (bool) {
+    return kind == Kind.CALL || kind == Kind.PUT;
+  }
+
+  function _isOption(bytes32 assetID) private pure returns (bool) {
+    return _isOption(assetGetKind(assetID));
+  }
+
+  function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
+    return BI(int256(bps), 6);
   }
 }

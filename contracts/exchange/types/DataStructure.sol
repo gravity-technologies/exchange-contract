@@ -45,6 +45,21 @@ enum Currency {
   BTC
 }
 
+function currencyStart() pure returns (Currency) {
+  return Currency.USD;
+}
+
+function currencyNext(Currency iter) pure returns (Currency) {
+  if (iter == type(Currency).max) {
+    return Currency.UNSPECIFIED;
+  }
+  return Currency(uint(iter) + 1);
+}
+
+function currencyIsValid(Currency iter) pure returns (bool) {
+  return iter > type(Currency).min && iter <= type(Currency).max;
+}
+
 uint constant PRICE_DECIMALS = 9;
 uint constant CENTIBEEP_DECIMALS = 6;
 int constant TIME_FACTOR = 480;
@@ -267,8 +282,8 @@ enum ConfigID {
   FUTURE_TAKER_FEE_MINIMUM,
   OPTION_MAKER_FEE_MINIMUM,
   OPTION_TAKER_FEE_MINIMUM,
-  DEPOSIT_ADDRESS,
-  ERC20_USDT_ADDRESS
+  ERC20_ADDRESSES,
+  L2_SHARED_BRIDGE_ADDRESS
 }
 
 struct ConfigValue {
@@ -313,9 +328,9 @@ struct Order {
   TimeInForce timeInForce;
   // The taker fee percentage cap signed by the order.
   // This is the maximum taker fee percentage the order sender is willing to pay for the order.
-  uint32 takerFeePercentageCap;
+  int32 takerFeePercentageCap;
   // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
-  uint32 makerFeePercentageCap;
+  int32 makerFeePercentageCap;
   /// @dev No logic in contract related to this field
   // If True, Order must be a maker order. It has to fill the orderbook instead of match it.
   // If False, Order can be either a maker or taker order.

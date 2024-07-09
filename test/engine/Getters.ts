@@ -23,10 +23,18 @@ import {
   ExAccountRecoveryAddresses,
   ExNotAccountRecoveryAddresses,
   ExAccountSpot,
+  ExConfigNotSet,
+  ExConfig2DNotSet,
   Expectation,
 } from "./TestEngineTypes"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
+
+export async function validateExpectations(contract: Contract, expectations: Expectation[]) {
+  for (let expectation of (expectations ?? [])) {
+    await validateExpectation(contract, expectation)
+  }
+}
 
 export async function validateExpectation(contract: Contract, expectation: Expectation) {
   switch (expectation.name) {
@@ -74,13 +82,17 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectNotAccountRecoveryAddresses(contract, expectation.expect as ExNotAccountRecoveryAddresses)
     case "ExAccountSpot":
       return expectAccountSpot(contract, expectation.expect as ExAccountSpot)
+    case "ExConfigNotSet":
+      return expectConfigNotSet(contract, expectation.expect as ExConfigNotSet)
+    case "ExConfig2DNotSet":
+      return expectConfig2DNotSet(contract, expectation.expect as ExConfig2DNotSet)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
 }
 
 async function expectNumAccounts(contract: Contract, expectations: ExNumAccounts) {
-  const exists = await contract.isAllAccountExists(expectations.account_ids)
+  const exists = await contract.isAllAccountExists(expectations.account_ids ?? [])
   expect(exists).to.be.true
 }
 
@@ -295,4 +307,18 @@ async function expectAccountSpot(contract: Contract, expectations: ExAccountSpot
     CurrencyToEnum[expectations.currency]
   )
   expect(BigNumber.from(balance)).to.equal(BigNumber.from(expectations.balance))
+}
+
+async function expectConfigNotSet(contract: Contract, expectations: ExConfigNotSet) {
+  const isSet = await contract.config1DIsSet(
+    ConfigIDToEnum[expectations.key]
+  )
+  expect(isSet).to.be.false;
+}
+
+async function expectConfig2DNotSet(contract: Contract, expectations: ExConfig2DNotSet) {
+  const isSet = await contract.config2DIsSet(
+    ConfigIDToEnum[expectations.key]
+  )
+  expect(isSet).to.be.false;
 }

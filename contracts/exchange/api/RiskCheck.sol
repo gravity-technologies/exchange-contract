@@ -17,19 +17,31 @@ contract RiskCheck is BaseContract {
 
   /// @dev Get the total value of a sub account in quote currency decimal
   function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (BI memory) {
-    bytes32 spotID = _getSpotAssetID(sub.quoteCurrency);
-    (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
-    require(found, ERR_NOT_FOUND);
-    BI memory derivVal = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
+    BI memory totalValue = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
       _getPositionsUsdValue(sub.options)
     );
-    uint qDec = _getBalanceDecimal(sub.quoteCurrency);
 
-    // TODO: go through all supported currency
-    BI memory spotVal = BI(int(sub.spotBalances[sub.quoteCurrency]), qDec).mul(
-      BI(int(uint(markPrice)), PRICE_DECIMALS)
-    );
-    return spotVal.add(derivVal);
+    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      int64 balance = sub.spotBalances[i];
+      if (balance == 0) {
+        continue;
+      }
+
+      uint64 dec = _getBalanceDecimal(i);
+      BI memory balanceBI = BI(int256(balance), dec);
+
+      bytes32 spotID = _getSpotAssetID(i);
+      (uint64 markPrice, bool found) = _getMarkPrice9Decimals(spotID);
+
+      require(found, ERR_NOT_FOUND);
+
+      BI memory markPriceBI = BI(int256(uint256(markPrice)), PRICE_DECIMALS);
+      BI memory balanceValue = balanceBI.mul(markPriceBI);
+
+      totalValue = totalValue.add(balanceValue);
+    }
+
+    return totalValue;
   }
 
   /// @dev Get the total value of a position collections

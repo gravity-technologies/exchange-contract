@@ -139,6 +139,10 @@ contract ConfigContract is BaseContract {
     return address(uint160(uint256(v)));
   }
 
+  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
+    return bytes32(uint256(uint(v)));
+  }
+
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
   function _getAddressConfig(ConfigID key) internal view returns (address, bool) {
     ConfigValue storage c = state.config1DValues[key];
@@ -352,6 +356,8 @@ contract ConfigContract is BaseContract {
   // This should be called only once during the proxy contract deployment, in the initialize function
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
+
+    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
     // This is a special value that represents an empty value for a config
@@ -525,6 +531,14 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
+
+    id = ConfigID.ERC20_ADDRESSES;
+    settings[id].typ = ConfigType.ADDRESS2D;
+
+    id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
+    settings[id].typ = ConfigType.ADDRESS;
+    values1D[id].isSet = true;
+    values1D[id].val = addr;
 
     // // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
