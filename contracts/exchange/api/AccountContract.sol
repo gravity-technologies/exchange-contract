@@ -19,7 +19,7 @@ contract AccountContract is BaseContract {
     require(acc.id == address(0), "account already exists");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateAccount(accountID, sig.nonce);
+    bytes32 hash = hashCreateAccount(accountID, sig.nonce, sig.expiration);
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
@@ -53,8 +53,11 @@ contract AccountContract is BaseContract {
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.adminCount, "invalid threshold");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     acc.multiSigThreshold = multiSigThreshold;
@@ -84,8 +87,11 @@ contract AccountContract is BaseContract {
     require(acc.id != address(0), "account does not exist");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddAccountSigner(accountID, signer, permissions, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashAddAccountSigner(accountID, signer, permissions, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     uint64 curPerm = acc.signers[signer];
@@ -123,8 +129,11 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveAccountSigner(accountID, signer, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashRemoveAccountSigner(accountID, signer, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     uint64 curPerm = acc.signers[signer];
@@ -158,8 +167,11 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     acc.onboardedWithdrawalAddresses[withdrawalAddress] = true;
@@ -186,8 +198,11 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     acc.onboardedWithdrawalAddresses[withdrawalAddress] = false;
@@ -214,8 +229,11 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashAddTransferAccount(accountID, transferAccountID, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashAddTransferAccount(accountID, transferAccountID, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End hashAddTransferAccount -------
 
     acc.onboardedTransferAccounts[transferAccountID] = true;
@@ -233,8 +251,11 @@ contract AccountContract is BaseContract {
     Account storage acc = _requireAccount(accountID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashRemoveTransferAccount(accountID, transferAccountID, nonce);
-    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hash, sigs);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashRemoveTransferAccount(accountID, transferAccountID, nonce, sigs[i].expiration);
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
     acc.onboardedTransferAccounts[transferAccountID] = false;

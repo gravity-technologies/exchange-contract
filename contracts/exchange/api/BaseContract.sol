@@ -66,11 +66,12 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,
     uint quorum,
-    bytes32 hash,
+    bytes32[] memory hashes,
     Signature[] calldata sigs
   ) internal {
     // FIXME: implement
     uint numSigs = sigs.length;
+    require(numSigs == hashes.length, "invalid number of hashes");
     // 1. Check that there are no duplicate signing key in the signatures
     for (uint i; i < numSigs; ++i) {
       for (uint j = i + 1; j < numSigs; ++j) {
@@ -82,17 +83,17 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
-    require(!state.replay.executed[hash], "invalid transaction");
+    for (uint i; i < numSigs; ++i) {
+      require(!state.replay.executed[hashes[i]], "invalid transaction");
+    }
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
     for (uint i; i < numSigs; ++i) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
-      _requireValidSig(timestamp, hash, sigs[i]);
+      _requireValidSig(timestamp, hashes[i], sigs[i]);
+      state.replay.executed[hashes[i]] = true;
     }
-
-    // 5. Mark the payload hash as executed, to prevent replay attack
-    state.replay.executed[hash] = true;
   }
 
   function _min(int64 a, int64 b) internal pure returns (int64) {

@@ -88,8 +88,7 @@ abstract contract TransferContract is TradeContract {
     require(numTokensSigned >= 0, "invalid withdrawal amount");
 
     // ---------- Signature Verification -----------
-    // FIXME: disable for testnet testing
-    // _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce), sig);
+    _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     int64 withdrawalFee = 0;
@@ -158,7 +157,10 @@ abstract contract TransferContract is TradeContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce), sig);
+    _preventReplay(
+      hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce, sig.expiration),
+      sig
+    );
     // ------- End of Signature Verification -------
 
     int64 numTokensSigned = int64(numTokens);

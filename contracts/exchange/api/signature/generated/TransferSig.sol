@@ -5,7 +5,7 @@ pragma solidity ^0.8.20;
 import "../../../types/DataStructure.sol";
 
 bytes32 constant _DEPOSIT_H = keccak256(
-  "Deposit(address fromEthAddress,address toAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce)"
+  "Deposit(address fromEthAddress,address toAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
 );
 
 function hashDeposit(
@@ -13,14 +13,17 @@ function hashDeposit(
   address toAccountID,
   Currency currency,
   uint64 numTokens,
-  uint32 nonce
+  uint32 nonce,
+  int64 expiration
 ) pure returns (bytes32) {
-  bytes32 h = keccak256(abi.encode(_DEPOSIT_H, fromEthAddress, toAccountID, uint16(currency), numTokens, nonce));
+  bytes32 h = keccak256(
+    abi.encode(_DEPOSIT_H, fromEthAddress, toAccountID, uint16(currency), numTokens, nonce, expiration)
+  );
   return h;
 }
 
 bytes32 constant _WITHDRAWAL_H = keccak256(
-  "Withdrawal(address fromAccount,address toEthAddress,uint8 tokenCurrency,uint64 numTokens,uint32 nonce)"
+  "Withdrawal(address fromAccount,address toEthAddress,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
 );
 
 function hashWithdrawal(
@@ -28,13 +31,15 @@ function hashWithdrawal(
   address toEthAddress,
   Currency currency,
   uint64 numTokens,
-  uint32 nonce
+  uint32 nonce,
+  int64 expiration
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_WITHDRAWAL_H, fromAccountID, toEthAddress, uint8(currency), numTokens, nonce));
+  return
+    keccak256(abi.encode(_WITHDRAWAL_H, fromAccountID, toEthAddress, uint8(currency), numTokens, nonce, expiration));
 }
 
 bytes32 constant _TRANSFER_H = keccak256(
-  "Transfer(address fromAccount,uint64 fromSubAccount,address toAccount,uint64 toSubAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce)"
+  "Transfer(address fromAccount,uint64 fromSubAccount,address toAccount,uint64 toSubAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
 );
 
 function hashTransfer(
@@ -44,8 +49,11 @@ function hashTransfer(
   uint64 toSubID,
   Currency currency,
   uint64 numTokens,
-  uint32 nonce
+  uint32 nonce,
+  int64 expiration
 ) pure returns (bytes32) {
   return
-    keccak256(abi.encode(_TRANSFER_H, fromAccount, fromSubID, toAccount, toSubID, uint8(currency), numTokens, nonce));
+    keccak256(
+      abi.encode(_TRANSFER_H, fromAccount, fromSubID, toAccount, toSubID, uint8(currency), numTokens, nonce, expiration)
+    );
 }

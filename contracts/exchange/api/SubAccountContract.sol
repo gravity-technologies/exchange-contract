@@ -39,7 +39,7 @@ contract SubAccountContract is BaseContract {
     require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, sig.nonce);
+    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, sig.nonce, sig.expiration);
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
@@ -80,7 +80,7 @@ contract SubAccountContract is BaseContract {
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetMarginType(subAccID, marginType, sig.nonce), sig);
+    _preventReplay(hashSetMarginType(subAccID, marginType, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     sub.marginType = marginType;
@@ -114,7 +114,7 @@ contract SubAccountContract is BaseContract {
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAdmin);
 
     // // ---------- Signature Verification -----------
-    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, sig.nonce), sig);
+    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     sub.signers[signer] = permissions;
@@ -140,7 +140,7 @@ contract SubAccountContract is BaseContract {
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRemoveSigner(subAccID, signer, sig.nonce), sig);
+    _preventReplay(hashRemoveSigner(subAccID, signer, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     require(sub.signers[signer] != 0, "signer not found");
