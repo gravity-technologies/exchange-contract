@@ -44,7 +44,6 @@ jobs:
           mode: 'run'
           showCalls: 'user'
           log: 'info'
-          target: 'x86_64-unknown-linux-gnu'
           releaseTag: v0.1.0-alpha.19.dz-free-pubdata
           downloadUrlOverride: 'https://github.com/gravity-technologies/era-test-node/releases/download/v0.1.0-alpha.19.dz-free-pubdata/era_test_node-v0.1.0-alpha.19.dz-free-pubdata-x86_64-unknown-linux-gnu.tar.gz'
       - name: Run Hardhat tests
