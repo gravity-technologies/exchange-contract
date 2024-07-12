@@ -54,6 +54,7 @@ contract ConfigContract is BaseContract {
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
+  uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -598,6 +599,11 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(120 * ONE_CENTIBEEP);
+
+    id = ConfigID.WITHDRAWAL_FEE;
+    settings[id].typ = ConfigType.UINT;
+    values1D[id].isSet = true;
+    values1D[id].val = _uintToConfig(DEFAULT_WITHDRAWAL_FEE_USD * _getBalanceMultiplier(Currency.USD));
   }
 
   struct DefaultAddress {

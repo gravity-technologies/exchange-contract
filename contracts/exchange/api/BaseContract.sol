@@ -158,6 +158,10 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return 9;
   }
 
+  function _getBalanceMultiplier(Currency currency) internal pure returns (uint64) {
+    return uint64(10) ** _getBalanceDecimal(currency);
+  }
+
   // Price utils
   function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
