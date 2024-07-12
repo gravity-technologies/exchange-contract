@@ -49,4 +49,5 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   OPTIONS_TAKER_FEE_MINIMUM: 28,
   ERC_20_ADDRESSES: 29,
   L_2_SHARED_BRIDGE_ADDRESS: 30,
+  WITHDRAWAL_FEE: 43,
 }
