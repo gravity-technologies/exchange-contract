@@ -91,22 +91,22 @@ abstract contract TransferContract is TradeContract {
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    int64 withdrawalFee = 0;
+    int64 withdrawalFeeCharged = 0;
     (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (feeSubAccIdSet) {
       (uint64 spotMark, bool markSet) = _getMarkPrice9Decimals(_getSpotAssetID(currency));
       require(markSet, "missing mark price");
       uint64 tokenDec = _getBalanceDecimal(currency);
-      withdrawalFee = BI(1, 0).div(BI(int256(int64(spotMark)), PRICE_DECIMALS)).toInt64(tokenDec);
-      _requireSubAccount(feeSubAccId).spotBalances[currency] += int64(withdrawalFee);
+      withdrawalFeeCharged = _getWithdrawalFee().div(BI(int256(int64(spotMark)), PRICE_DECIMALS)).toInt64(tokenDec);
+      _requireSubAccount(feeSubAccId).spotBalances[currency] += int64(withdrawalFeeCharged);
     }
 
     require(numTokensSigned <= acc.spotBalances[currency], "insufficient balance");
-    require(numTokensSigned > withdrawalFee, "withdrawal amount too small");
+    require(numTokensSigned > withdrawalFeeCharged, "withdrawal amount too small");
 
     acc.spotBalances[currency] -= numTokensSigned;
 
-    int64 numTokensToSend = numTokensSigned - withdrawalFee;
+    int64 numTokensToSend = numTokensSigned - withdrawalFeeCharged;
 
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
@@ -115,6 +115,14 @@ abstract contract TransferContract is TradeContract {
     uint256 erc20WithdrawalAmount = scaleToERC20Amount(currency, numTokensToSend);
 
     l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20WithdrawalAmount);
+  }
+
+  function _getWithdrawalFee() private view returns (BI memory) {
+    (uint64 fee, bool feeSet) = _getUintConfig(ConfigID.WITHDRAWAL_FEE);
+    if (!feeSet) {
+      return BI(0, 0);
+    }
+    return BI(int(int64(fee)), _getBalanceDecimal(Currency.USD));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
