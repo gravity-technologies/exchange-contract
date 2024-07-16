@@ -14,7 +14,7 @@ export async function expectToThrowAsync(promise: Promise<any>, message?: string
       // console.log("🚨", err)
       // expect((<any>error).message).to.include(message)
     }
-    return;
+    return
   }
   expect.fail("Expected an error but didn't get one!")
 }
