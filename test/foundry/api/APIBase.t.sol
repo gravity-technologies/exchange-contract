@@ -18,7 +18,7 @@ abstract contract APIBase is BaseTest {
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
     address accountID = wallet;
-    bytes32 structHash = hashCreateAccount(accountID, sigNonce);
+    bytes32 structHash = hashCreateAccount(accountID, sigNonce, expiry);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.createAccount(currentTimestapInt64, txNonce, accountID, sig);
   }
@@ -54,7 +54,8 @@ abstract contract APIBase is BaseTest {
       subAccID,
       Currency.USDC,
       MarginType.PORTFOLIO_CROSS_MARGIN,
-      sigNonce
+      sigNonce,
+      expiry
     );
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.createSubAccount(
@@ -78,7 +79,7 @@ abstract contract APIBase is BaseTest {
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashAddRecoveryAddress(accountID, recoveryAddress, sigNonce);
+    bytes32 structHash = hashAddRecoveryAddress(accountID, recoveryAddress, sigNonce, expiry);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.addRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
@@ -93,7 +94,7 @@ abstract contract APIBase is BaseTest {
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashRemoveRecoveryAddress(accountID, recoveryAddress, sigNonce);
+    bytes32 structHash = hashRemoveRecoveryAddress(accountID, recoveryAddress, sigNonce, expiry);
     Signature memory sig = getUserSig(msgSigner, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.removeRecoveryAddress(currentTimestapInt64, txNonce, accountID, recoveryAddress, sig);
   }
@@ -109,7 +110,7 @@ abstract contract APIBase is BaseTest {
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashRecoverAddress(accountID, oldSigner, newSigner, sigNonce);
+    bytes32 structHash = hashRecoverAddress(accountID, oldSigner, newSigner, sigNonce, expiry);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.recoverAddress(currentTimestapInt64, txNonce, accountID, oldSigner, newSigner, sig);
   }
@@ -125,7 +126,7 @@ abstract contract APIBase is BaseTest {
     int64 currentTimestapInt64 = int64(int256(currentTimestamp));
     int64 expiry = int64(int256(expiryTimestamp));
     uint32 sigNonce = random();
-    bytes32 structHash = hashAddSubAccountSigner(subAccID, signer, permissions, sigNonce);
+    bytes32 structHash = hashAddSubAccountSigner(subAccID, signer, permissions, sigNonce, expiry);
     Signature memory sig = getUserSig(wallet, privateKey, DOMAIN_HASH, structHash, expiry, sigNonce);
     grvtExchange.addSubAccountSigner(currentTimestapInt64, txNonce, subAccID, signer, permissions, sig);
   }

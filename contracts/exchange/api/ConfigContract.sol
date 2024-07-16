@@ -185,7 +185,7 @@ contract ConfigContract is BaseContract {
     // ---------- Signature Verification -----------
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
-    _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce), sig);
+    _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
@@ -221,7 +221,7 @@ contract ConfigContract is BaseContract {
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetConfig(key, subKey, value, sig.nonce), sig);
+    _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
