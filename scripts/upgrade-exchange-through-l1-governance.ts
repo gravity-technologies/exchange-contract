@@ -93,7 +93,6 @@ task("deploy-l2-new-target", "Deploy new target on L2")
         // approve l1SharedBridge to spend max amount of token
         // upgrade proxy to new target
         const gasPrice = await l1Provider.getGasPrice();
-        gasPrice.mul(10);
         const governanceCalls = [
             {
                 target: await getBaseToken(chainId, bridgeHub, l1Provider),
