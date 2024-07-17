@@ -62,8 +62,6 @@ task("deploy-l2-new-target", "Deploy new target on L2")
         const exchangeCodehash = hashBytecode(exchangeArtifact.bytecode);
         const exchangeImpl = await l2Deployer.deploy(exchangeArtifact, []);
 
-
-
         const newExchangeImplConstructorData = ethers.utils.arrayify("0x");
         const expectedNewExchangeImplAddress = computeL2Create2Address(
             l1Deployer.address,
