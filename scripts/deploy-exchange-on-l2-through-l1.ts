@@ -15,7 +15,6 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     .addParam("bridgeHub", "bridgeHub")
     .addParam("l1SharedBridge", "l1SharedBridge")
     .addParam("chainId", "chainId")
-    .addParam("gasPrice", "gasPrice")
     .addParam("saltPreImage", "saltPreImage")
     .setAction(async (taskArgs, hre) => {
         const {
@@ -53,9 +52,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
             ADDRESS_ONE,
             "0x"
         ]);
-        console.log(tupInstance)
         const tupCodehash = hashBytecode(tupArtifact.bytecode);
-
 
         const exchangeImplConstructorData = ethers.utils.arrayify("0x");
         const expectedExchangeImplAddress = computeL2Create2Address(
@@ -65,7 +62,6 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
             salt
         )
 
-        console.log("calldata", new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", []))
         const exchangeProxyConstructorData = ethers.utils.arrayify(
             new ethers.utils.AbiCoder().encode(
                 ["address", "address", "bytes"],

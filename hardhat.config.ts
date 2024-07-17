@@ -14,6 +14,7 @@ import { HardhatUserConfig } from "hardhat/config"
 
 import "./scripts/deploy-exchange-on-l2-through-l1";
 import "./scripts/set-exchange-address";
+import "./scripts/upgrade-exchange-through-l1-governance";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "grvtDev",
