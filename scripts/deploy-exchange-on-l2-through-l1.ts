@@ -6,6 +6,7 @@ import { Wallet as L2Wallet, Provider as L2Provider } from 'zksync-ethers';
 import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders, } from "./utils";
 import { task } from "hardhat/config";
 import { applyL1ToL2Alias, hashBytecode } from "zksync-web3/build/src/utils";
+import { Interface, keccak256 } from "ethers/lib/utils";
 
 task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     .addParam("l1DeployerPrivateKey", "l1DeployerPrivateKey")
@@ -33,22 +34,28 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
 
         const l1Deployer = new L1Wallet(l1DeployerPrivateKey!, l1Provider);
 
+        const salt = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltPreImage));
+        console.log("CREATE2 salt: ", salt);
+        console.log("CREATE2 salt preimage: ", saltPreImage);
+
         // deploy an instance of the exchange and TUP to L2 only to save the code on chain
         // actual deployment to be done through L1
         const exchangeArtifact = await l2Deployer.loadArtifact("GRVTExchange");
         const exchangeImpl = await l2Deployer.deploy(exchangeArtifact, []);
         const exchangeCodehash = hashBytecode(exchangeArtifact.bytecode);
 
+        // TODO: add balance check
+        // TODO: maintain local state of deployed contracts and information required for proofs
+
         const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
-        await l2Deployer.deploy(tupArtifact, [
+        const tupInstance = await l2Deployer.deploy(tupArtifact, [
             exchangeImpl.address,
             ADDRESS_ONE,
-            "0x",
+            "0x"
         ]);
+        console.log(tupInstance)
         const tupCodehash = hashBytecode(tupArtifact.bytecode);
-        const salt = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltPreImage));
-        console.log("CREATE2 salt: ", salt);
-        console.log("CREATE2 salt preimage: ", saltPreImage);
+
 
         const exchangeImplConstructorData = ethers.utils.arrayify("0x");
         const expectedExchangeImplAddress = computeL2Create2Address(
@@ -58,10 +65,15 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
             salt
         )
 
+        console.log("calldata", new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", []))
         const exchangeProxyConstructorData = ethers.utils.arrayify(
             new ethers.utils.AbiCoder().encode(
                 ["address", "address", "bytes"],
-                [expectedExchangeImplAddress, applyL1ToL2Alias(governance), "0x"]
+                [
+                    expectedExchangeImplAddress,
+                    applyL1ToL2Alias(governance),
+                    new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [])
+                ]
             )
         );
 
@@ -103,7 +115,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
             tupArtifact.bytecode,
             exchangeProxyConstructorData,
             salt,
-            1000000,
+            5000000,
         )
         const exchangeProxyDepTxReceipt = await exchangeProxyDepTx.wait();
         console.log("Exchange impl deployment tx hash: ", exchangeProxyDepTx.hash);
