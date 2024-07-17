@@ -473,7 +473,7 @@
   resolved "https://registry.yarnpkg.com/@matterlabs/hardhat-zksync-chai-matchers/-/hardhat-zksync-chai-matchers-1.2.1.tgz#af38f77beddb477238d87dcd099822f8f2589a25"
   integrity sha512-gwbuH50ffOmFX/tfmnC8Q+HkyPobPUDlX+sJUf5sZYon0TEM01OxDsOmJN3yb65uphSAf9sqkEwZ6YWVO6l4gw==
 
-"@matterlabs/hardhat-zksync-deploy@^0.7.0":
+"@matterlabs/hardhat-zksync-deploy@0.7.0", "@matterlabs/hardhat-zksync-deploy@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@matterlabs/hardhat-zksync-deploy/-/hardhat-zksync-deploy-0.7.0.tgz#e56b73d8f8fbd0f809a779d0028418ea7d914017"
   integrity sha512-PGZcuhKsVzZ2IWPt931pK2gA+HDxnCtye+7CwvoOnM6diHeO9tB1QHFX/ywR9ErOW9wpezhPYkVDx9myFrdoqQ==
@@ -4962,5 +4962,12 @@ zksync-ethers@^5.0.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/zksync-ethers/-/zksync-ethers-5.1.0.tgz#bb42260b3e56d2497af64e0962d7d8cee4a25eed"
   integrity sha512-iks12h2/a7aS3kLm48oQWRm5HNViJP7lnGMSx4yidEB0Xob2MTgBv5G/9x40GaiCA1Yld8XIgC5YfcMmHWnh5Q==
+  dependencies:
+    ethers "~5.7.0"
+
+zksync-web3@^0.15.4:
+  version "0.15.5"
+  resolved "https://registry.yarnpkg.com/zksync-web3/-/zksync-web3-0.15.5.tgz#aabe379464963ab573e15948660a709f409b5316"
+  integrity sha512-97gB7OKJL4spegl8fGO54g6cvTd/75G6yFWZWEa2J09zhjTrfqabbwE/GwiUJkFQ5BbzoH4JaTlVz1hoYZI+DQ==
   dependencies:
     ethers "~5.7.0"

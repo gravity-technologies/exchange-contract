@@ -11,6 +11,10 @@ import "@typechain/hardhat"
 import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
+
+import "./scripts/deploy-exchange-on-l2-through-l1";
+import "./scripts/set-exchange-address";
+
 const config: HardhatUserConfig = {
   defaultNetwork: "grvtDev",
   networks: {
@@ -37,6 +41,7 @@ const config: HardhatUserConfig = {
       url: "http://localhost:3050",
       ethNetwork: "http://localhost:8545",
       zksync: true,
+      chainId: 270,
     },
     inMemoryNode: {
       url: "http://127.0.0.1:8011",
@@ -61,7 +66,7 @@ const config: HardhatUserConfig = {
     },
   },
   zksolc: {
-    version: "latest",
+    version: "v1.5.1",
     settings: {
       // find all available options in the official documentation
       // https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-solc.html#configuration
