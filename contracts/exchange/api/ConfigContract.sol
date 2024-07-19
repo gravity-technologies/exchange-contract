@@ -5,7 +5,6 @@ import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
-import "../util/Address.sol";
 
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
@@ -60,9 +59,9 @@ contract ConfigContract is BaseContract {
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
 
-  function _intToConfig(int64 v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint64(v)));
-  }
+  // function _intToConfig(int64 v) internal pure returns (bytes32) {
+  //   return bytes32(uint256(uint64(v)));
+  // }
 
   function _configToInt(bytes32 v) internal pure returns (int64) {
     return int64(uint64((uint256(v))));
@@ -73,10 +72,10 @@ contract ConfigContract is BaseContract {
     return (int64(uint64((uint256(c.val)))), c.isSet);
   }
 
-  function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
-    (uint64 val, bool isSet) = _getUintConfig2D(key, subKey);
-    return (int64(val), isSet);
-  }
+  // function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
+  //   (uint64 val, bool isSet) = _getUintConfig2D(key, subKey);
+  //   return (int64(val), isSet);
+  // }
 
   function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
     return bytes32(uint256(uint32(v)));
@@ -116,17 +115,17 @@ contract ConfigContract is BaseContract {
     return (uint64(uint256(c.val)), c.isSet);
   }
 
-  function _boolToConfig(bool v) internal pure returns (bytes32) {
-    return v ? TRUE_BYTES32 : FALSE_BYTES32;
-  }
+  // function _boolToConfig(bool v) internal pure returns (bytes32) {
+  //   return v ? TRUE_BYTES32 : FALSE_BYTES32;
+  // }
 
-  function _configToBool(bytes32 v) internal pure returns (bool) {
-    return v == TRUE_BYTES32;
-  }
+  // function _configToBool(bytes32 v) internal pure returns (bool) {
+  //   return v == TRUE_BYTES32;
+  // }
 
-  function _getBoolConfig(ConfigID key) internal view returns (bool) {
-    return state.config1DValues[key].val == TRUE_BYTES32;
-  }
+  // function _getBoolConfig(ConfigID key) internal view returns (bool) {
+  //   return state.config1DValues[key].val == TRUE_BYTES32;
+  // }
 
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
@@ -136,9 +135,9 @@ contract ConfigContract is BaseContract {
     return bytes32(uint256(uint160(v)));
   }
 
-  function _configToAddress(bytes32 v) internal pure returns (address) {
-    return address(uint160(uint256(v)));
-  }
+  // function _configToAddress(bytes32 v) internal pure returns (address) {
+  //   return address(uint160(uint256(v)));
+  // }
 
   function _currencyToConfig(Currency v) internal pure returns (bytes32) {
     return bytes32(uint256(uint(v)));

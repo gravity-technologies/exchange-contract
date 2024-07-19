@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "./BaseContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
-import "../util/Address.sol";
 
 contract SubAccountContract is BaseContract {
   int64 private constant _MAX_SESSION_DURATION_NANO = 24 * 60 * 60 * 1e9; // 24 hours

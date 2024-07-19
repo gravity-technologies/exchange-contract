@@ -2,8 +2,6 @@
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.20;
 
-import "../../../types/DataStructure.sol";
-
 bytes32 constant _CREATE_ACCOUNT_H = keccak256("CreateAccount(address accountID,uint32 nonce,int64 expiration)");
 
 function hashCreateAccount(address accID, uint32 nonce, int64 expiration) pure returns (bytes32) {

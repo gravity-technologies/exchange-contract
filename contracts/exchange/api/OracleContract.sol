@@ -12,7 +12,9 @@ contract OracleContract is ConfigContract {
   using BIMath for BI;
 
   int64 private constant ONE_MINUTE_NANOS = 60_000_000_000; // 1 minute in nanos
-  int64 private constant maxPriceTickSigExpirationNs = ONE_MINUTE_NANOS;
+
+  /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
+  int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
 
   /// @dev Update the oracle mark prices for spot, futures, and options
   ///
@@ -179,7 +181,7 @@ contract OracleContract is ConfigContract {
     require(_getBoolConfig2D(ConfigID.ORACLE_ADDRESS, _addressToConfig(sig.signer)), "signer is not oracle");
 
     require(
-      sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
+      sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp,
       "price tick expired"
     );
 
@@ -196,7 +198,7 @@ contract OracleContract is ConfigContract {
     require(_getBoolConfig2D(ConfigID.MARKET_DATA_ADDRESS, _addressToConfig(sig.signer)), "signer is not market data");
 
     require(
-      sig.expiration >= timestamp - maxPriceTickSigExpirationNs && sig.expiration <= timestamp,
+      sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp,
       "signature expired"
     );
 
