@@ -27,11 +27,3 @@ function removeAddress(address[] storage arr, address addressToRemove, bool prev
   }
   require(false, "not found");
 }
-
-function signerHasPerm(
-  mapping(address => uint64) storage signers,
-  address signerAddress,
-  uint64 perm
-) view returns (bool) {
-  return (signers[signerAddress] & perm) != 0;
-}

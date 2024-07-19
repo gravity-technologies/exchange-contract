@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import "./TradeContract.sol";
 import "./signature/generated/TransferSig.sol";
-import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "../util/BIMath.sol";
 
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";

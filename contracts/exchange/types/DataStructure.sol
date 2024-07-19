@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 import "./PositionMap.sol";
-import "../util/BIMath.sol";
 
 enum MarginType {
   UNSPECIFIED,

@@ -37,8 +37,8 @@ contract GRVTExchangeTest is GRVTExchange {
     // 6. signers;
   }
 
-  function getAccountResult(address _address) public view returns (AccountResult memory) {
-    Account storage account = state.accounts[_address];
+  function getAccountResult(address accID) public view returns (AccountResult memory) {
+    Account storage account = state.accounts[accID];
     return
       AccountResult({
         id: account.id,
@@ -57,8 +57,8 @@ contract GRVTExchangeTest is GRVTExchange {
     return true;
   }
 
-  function getAccountSpotBalance(address _address, Currency currency) public view returns (int64) {
-    Account storage account = state.accounts[_address];
+  function getAccountSpotBalance(address accID, Currency currency) public view returns (int64) {
+    Account storage account = state.accounts[accID];
     return account.spotBalances[currency];
   }
 
@@ -72,8 +72,8 @@ contract GRVTExchangeTest is GRVTExchange {
     return account.onboardedWithdrawalAddresses[withdrawalAddress];
   }
 
-  function getAccountOnboardedTransferAccount(address _address, address transferAccount) public view returns (bool) {
-    Account storage account = state.accounts[_address];
+  function getAccountOnboardedTransferAccount(address accID, address transferAccount) public view returns (bool) {
+    Account storage account = state.accounts[accID];
     return account.onboardedTransferAccounts[transferAccount];
   }
 
@@ -114,8 +114,8 @@ contract GRVTExchangeTest is GRVTExchange {
     return state.configSettings[id].schedules[subKey].lockEndTime == 0;
   }
 
-  function getSubAccountResult(uint64 _id) public view returns (SubAccountResult memory) {
-    SubAccount storage subAccount = state.subAccounts[_id];
+  function getSubAccountResult(uint64 id) public view returns (SubAccountResult memory) {
+    SubAccount storage subAccount = state.subAccounts[id];
     return
       SubAccountResult({
         id: subAccount.id,
@@ -128,8 +128,8 @@ contract GRVTExchangeTest is GRVTExchange {
       });
   }
 
-  function getSubAccSignerPermission(uint64 _id, address signer) public view returns (uint64) {
-    SubAccount storage subAccount = state.subAccounts[_id];
+  function getSubAccSignerPermission(uint64 id, address signer) public view returns (uint64) {
+    SubAccount storage subAccount = state.subAccounts[id];
     return subAccount.signers[signer];
   }
 

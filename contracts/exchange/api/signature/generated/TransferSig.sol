@@ -4,23 +4,23 @@ pragma solidity ^0.8.20;
 
 import "../../../types/DataStructure.sol";
 
-bytes32 constant _DEPOSIT_H = keccak256(
-  "Deposit(address fromEthAddress,address toAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
-);
+// bytes32 constant _DEPOSIT_H = keccak256(
+//   "Deposit(address fromEthAddress,address toAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
+// );
 
-function hashDeposit(
-  address fromEthAddress,
-  address toAccountID,
-  Currency currency,
-  uint64 numTokens,
-  uint32 nonce,
-  int64 expiration
-) pure returns (bytes32) {
-  bytes32 h = keccak256(
-    abi.encode(_DEPOSIT_H, fromEthAddress, toAccountID, uint16(currency), numTokens, nonce, expiration)
-  );
-  return h;
-}
+// function hashDeposit(
+//   address fromEthAddress,
+//   address toAccountID,
+//   Currency currency,
+//   uint64 numTokens,
+//   uint32 nonce,
+//   int64 expiration
+// ) pure returns (bytes32) {
+//   bytes32 h = keccak256(
+//     abi.encode(_DEPOSIT_H, fromEthAddress, toAccountID, uint16(currency), numTokens, nonce, expiration)
+//   );
+//   return h;
+// }
 
 bytes32 constant _WITHDRAWAL_H = keccak256(
   "Withdrawal(address fromAccount,address toEthAddress,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"

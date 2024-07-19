@@ -41,20 +41,6 @@ function hashAddSubAccountSigner(
   return keccak256(abi.encode(_ADD_SUB_SIGNER_H, subID, signer, perms, nonce, expiration));
 }
 
-bytes32 constant _SET_SIGNER_PERM_H = keccak256(
-  "SetSubAccountSignerPermissions(uint64 subAccountID,address signer,uint64 permissions,uint32 nonce,int64 expiration)"
-);
-
-function hashSetSignerPermissions(
-  uint64 subID,
-  address signer,
-  uint64 perms,
-  uint32 nonce,
-  int64 expiration
-) pure returns (bytes32) {
-  return keccak256(abi.encode(_SET_SIGNER_PERM_H, subID, signer, perms, nonce, expiration));
-}
-
 bytes32 constant _DEL_SIGNER_H = keccak256(
   "RemoveSubAccountSigner(uint64 subAccountID,address signer,uint32 nonce,int64 expiration)"
 );

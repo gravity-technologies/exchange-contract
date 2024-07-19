@@ -7,9 +7,7 @@ import "./ConfigContract.sol";
 import "./signature/generated/TradeSig.sol";
 import "../types/DataStructure.sol";
 import "../common/Error.sol";
-import "../util/Address.sol";
 import "../util/BIMath.sol";
-import "../util/Trade.sol";
 import "../util/Asset.sol";
 
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {

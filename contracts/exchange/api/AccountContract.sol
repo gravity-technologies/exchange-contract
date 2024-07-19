@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "./BaseContract.sol";
 import "./signature/generated/AccountSig.sol";
 import "../types/DataStructure.sol";
-import "../util/Address.sol";
 
 contract AccountContract is BaseContract {
   /// @notice Create a new account
