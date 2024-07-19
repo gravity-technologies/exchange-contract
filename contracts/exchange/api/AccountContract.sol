@@ -1,11 +1,26 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
-import "./signature/generated/AccountSig.sol";
 import "../types/DataStructure.sol";
 
 contract AccountContract is BaseContract {
+  bytes32 constant _CREATE_ACCOUNT_H = keccak256("CreateAccount(address accountID,uint32 nonce,int64 expiration)");
+  bytes32 constant _ADD_ACC_SIGNER_H =
+    keccak256("AddAccountSigner(address accountID,address signer,uint64 permissions,uint32 nonce,int64 expiration)");
+  bytes32 constant _DEL_ACC_SIGNER_H =
+    keccak256("RemoveAccountSigner(address accountID,address signer,uint32 nonce,int64 expiration)");
+  bytes32 constant _SET_ACC_MULTISIG_THRESHOLD_H =
+    keccak256("SetAccountMultiSigThreshold(address accountID,uint8 multiSigThreshold,uint32 nonce,int64 expiration)");
+  bytes32 constant _ADD_WITHDRAW_ADDR_H =
+    keccak256("AddWithdrawalAddress(address accountID,address withdrawalAddress,uint32 nonce,int64 expiration)");
+  bytes32 constant _DEL_WITHDRAW_ADDR_H =
+    keccak256("RemoveWithdrawalAddress(address accountID,address withdrawalAddress,uint32 nonce,int64 expiration)");
+  bytes32 constant _ADD_TRANSFER_ACCOUNT_H =
+    keccak256("AddTransferAccount(address accountID,address transferAccountID,uint32 nonce,int64 expiration)");
+  bytes32 constant _DEL_TRANSFER_ACC_H =
+    keccak256("RemoveTransferAccount(address accountID,address transferAccountID,uint32 nonce,int64 expiration)");
+
   /// @notice Create a new account
   ///
   /// @param timestamp The timestamp of the transaction
@@ -19,7 +34,7 @@ contract AccountContract is BaseContract {
     require(acc.id == address(0), "account already exists");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateAccount(accountID, sig.nonce, sig.expiration);
+    bytes32 hash = keccak256(abi.encode(_CREATE_ACCOUNT_H, accountID, sig.nonce, sig.expiration));
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
@@ -55,7 +70,9 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashSetMultiSigThreshold(accountID, multiSigThreshold, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(
+        abi.encode(_SET_ACC_MULTISIG_THRESHOLD_H, accountID, multiSigThreshold, nonce, sigs[i].expiration)
+      );
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
@@ -89,7 +106,7 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashAddAccountSigner(accountID, signer, permissions, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(abi.encode(_ADD_ACC_SIGNER_H, accountID, signer, permissions, nonce, sigs[i].expiration));
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
@@ -131,7 +148,7 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashRemoveAccountSigner(accountID, signer, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(abi.encode(_DEL_ACC_SIGNER_H, accountID, signer, nonce, sigs[i].expiration));
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
@@ -169,7 +186,7 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashAddWithdrawalAddress(accountID, withdrawalAddress, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(abi.encode(_ADD_WITHDRAW_ADDR_H, accountID, withdrawalAddress, nonce, sigs[i].expiration));
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
@@ -200,7 +217,7 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashRemoveWithdrawalAddress(accountID, withdrawalAddress, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(abi.encode(_DEL_WITHDRAW_ADDR_H, accountID, withdrawalAddress, nonce, sigs[i].expiration));
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
@@ -231,7 +248,9 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashAddTransferAccount(accountID, transferAccountID, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(
+        abi.encode(_ADD_TRANSFER_ACCOUNT_H, accountID, transferAccountID, nonce, sigs[i].expiration)
+      );
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End hashAddTransferAccount -------
@@ -253,7 +272,7 @@ contract AccountContract is BaseContract {
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
     for (uint256 i = 0; i < sigs.length; i++) {
-      hashes[i] = hashRemoveTransferAccount(accountID, transferAccountID, nonce, sigs[i].expiration);
+      hashes[i] = keccak256(abi.encode(_DEL_TRANSFER_ACC_H, accountID, transferAccountID, nonce, sigs[i].expiration));
     }
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------

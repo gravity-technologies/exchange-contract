@@ -1,12 +1,29 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
-import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 
 contract SubAccountContract is BaseContract {
   int64 private constant _MAX_SESSION_DURATION_NANO = 24 * 60 * 60 * 1e9; // 24 hours
+
+  bytes32 constant _CREATE_SUBACCOUNT_H =
+    keccak256(
+      "CreateSubAccount(address accountID,uint64 subAccountID,uint8 quoteCurrency,uint8 marginType,uint32 nonce,int64 expiration)"
+    );
+
+  bytes32 constant _SET_SUB_MARGIN_H =
+    keccak256("SetSubAccountMarginType(uint64 subAccountID,uint8 marginType,uint32 nonce,int64 expiration)");
+
+  bytes32 constant _ADD_SUB_SIGNER_H =
+    keccak256(
+      "AddSubAccountSigner(uint64 subAccountID,address signer,uint64 permissions,uint32 nonce,int64 expiration)"
+    );
+
+  bytes32 constant _DEL_SIGNER_H =
+    keccak256("RemoveSubAccountSigner(uint64 subAccountID,address signer,uint32 nonce,int64 expiration)");
+
+  bytes32 constant _ADD_SESSION_KEY_H = keccak256("AddSessionKey(address sessionKey,int64 keyExpiry)");
 
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
@@ -38,7 +55,17 @@ contract SubAccountContract is BaseContract {
     require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, sig.nonce, sig.expiration);
+    bytes32 hash = keccak256(
+      abi.encode(
+        _CREATE_SUBACCOUNT_H,
+        accountID,
+        subAccountID,
+        uint8(quoteCurrency),
+        uint8(marginType),
+        sig.nonce,
+        sig.expiration
+      )
+    );
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
@@ -74,12 +101,12 @@ contract SubAccountContract is BaseContract {
     require(marginType != MarginType.UNSPECIFIED, "invalid margin");
     // To change margin type requires that there's no OPEN position
     // See Binance: https://www.binance.com/en/support/faq/how-to-switch-between-cross-margin-mode-and-isolated-margin-mode-360038075852#:~:text=You%20are%20not%20allowed%20to%20change%20the%20margin%20mode%20if%20you%20have%20any%20open%20orders%20or%20positions%3B
-    // TODO: revise this to if subaccount is liquidatable under new margin model. If it is not, we allow it through.
     require(sub.options.keys.length + sub.futures.keys.length + sub.perps.keys.length == 0, "open positions exist");
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetMarginType(subAccID, marginType, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_SET_SUB_MARGIN_H, subAccID, marginType, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     sub.marginType = marginType;
@@ -113,7 +140,8 @@ contract SubAccountContract is BaseContract {
     _requireUpsertSigner(acc, sub, sig.signer, permissions, SubAccountPermAdmin);
 
     // // ---------- Signature Verification -----------
-    _preventReplay(hashAddSubAccountSigner(subID, signer, permissions, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_ADD_SUB_SIGNER_H, subID, signer, permissions, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     sub.signers[signer] = permissions;
@@ -139,7 +167,8 @@ contract SubAccountContract is BaseContract {
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashRemoveSigner(subAccID, signer, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_DEL_SIGNER_H, subAccID, signer, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     require(sub.signers[signer] != 0, "signer not found");
@@ -190,7 +219,8 @@ contract SubAccountContract is BaseContract {
     int64 cappedExpiry = _min(keyExpiry, timestamp + _MAX_SESSION_DURATION_NANO);
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
+    bytes32 hash = keccak256(abi.encode(_ADD_SESSION_KEY_H, sessionKey, keyExpiry));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     // Overwrite any existing session key

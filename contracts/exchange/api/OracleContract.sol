@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
 import "./ConfigContract.sol";
-import "./signature/generated/OracleSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
@@ -11,10 +10,14 @@ import "../util/BIMath.sol";
 contract OracleContract is ConfigContract {
   using BIMath for BI;
 
-  int64 private constant ONE_MINUTE_NANOS = 60_000_000_000; // 1 minute in nanos
+  int64 private constant ONE_MINUTE_NANOS = 60 * 1e9; // 1 minute in nanos
 
   /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
   int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
+
+  bytes32 constant _SETTLEMENT_PRICE_H = keccak256("Data(int256 sid,int256 v,int256 timestamp,bool is_final)");
+  bytes32 constant _ORACLE_H = keccak256("Data(Values[] values,int256 timestamp)Values(int256 sid,int256 v)");
+  bytes32 constant _ORACLE_VALUE_H = keccak256("Values(int256 sid,int256 v)");
 
   /// @dev Update the oracle mark prices for spot, futures, and options
   ///
@@ -22,7 +25,7 @@ contract OracleContract is ConfigContract {
   /// @param txID the transaction ID of the price tick
   /// @param prices the prices of the assets
   /// @param sig the signature of the price tick
-  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) public {
+  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) external {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -31,14 +34,14 @@ contract OracleContract is ConfigContract {
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => uint64) storage marks = state.prices.mark;
-    uint len = prices.length;
+    uint256 len = prices.length;
 
-    for (uint i; i < len; ++i) {
+    for (uint256 i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
       Kind kind = assetGetKind(assetID);
 
       // Only spot, futures, and options are allowed to have mark prices
-      require(uint(kind) > 0 && uint(kind) < 6, "wrong kind");
+      require(uint256(kind) > 0 && uint256(kind) < 6, "wrong kind");
 
       // Non-Spot assets must be quoted in USD
       require(kind == Kind.SPOT || assetGetQuote(assetID) == Currency.USD, "spot price must be quoted in USD");
@@ -59,10 +62,10 @@ contract OracleContract is ConfigContract {
   function settlementPriceTick(int64 timestamp, uint64 txID, SettlementTick[] calldata prices) external {
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
-    uint len = prices.length;
-    for (uint i; i < len; ++i) {
+    uint256 len = prices.length;
+    for (uint256 i; i < len; ++i) {
       SettlementTick calldata entry = prices[i];
-      bytes32 assetID = bytes32(uint(entry.assetID));
+      bytes32 assetID = bytes32(uint256(entry.assetID));
       // Asset kind must be settlement and quoted in USD
       require(
         assetGetKind(assetID) == Kind.SETTLEMENT && assetGetQuote(assetID) == Currency.USD,
@@ -82,7 +85,7 @@ contract OracleContract is ConfigContract {
       // Update the settlement price
       settlements[assetID] = SettlementPriceEntry(true, newPrice);
       // ---------- Signature Verification -----------
-      bytes32 hash = hashSettlementTick(entry.signature.expiration, entry);
+      bytes32 hash = keccak256(abi.encode(_SETTLEMENT_PRICE_H, entry.assetID, entry.value, timestamp, entry.isFinal));
       _verifyPriceUpdateSig(timestamp, hash, entry.signature);
       // ------- End of Signature Verification -------
     }
@@ -108,8 +111,8 @@ contract OracleContract is ConfigContract {
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => int64) storage fundings = state.prices.fundingIndex;
-    uint len = prices.length;
-    for (uint i; i < len; ++i) {
+    uint256 len = prices.length;
+    for (uint256 i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
       // Verify
       require(assetGetKind(assetID) == Kind.PERPS && assetGetQuote(assetID) != Currency.USD, "wrong kind or quote");
@@ -119,7 +122,7 @@ contract OracleContract is ConfigContract {
       // Funding (9.2): Applying a cap (or floor)
       // Applying in both MD and SM: MD for reporting clamped rate, SM for trustless guarantees
       // Funding Rate = Max( Min(Funding Rate, 5%), -5%)
-      bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
+      bytes32 subKey = bytes32(uint256(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
       require(highFound, "fundingHigh not found");
       (int64 fundingLow, bool lowFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_LOW, subKey);
@@ -133,11 +136,11 @@ contract OracleContract is ConfigContract {
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(entry.assetID);
       require(found, "no mark price");
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
-      int256 delta = BI(int(uint(markPrice)), PRICE_DECIMALS)
+      int64 delta = BI(int256(uint256(markPrice)), PRICE_DECIMALS)
         .mul(BI(entry.value, CENTIBEEP_DECIMALS))
         .div(BI(TIME_FACTOR, 0))
-        .toInt256(PRICE_DECIMALS);
-      fundings[entry.assetID] += int64(delta);
+        .toInt64(PRICE_DECIMALS);
+      fundings[entry.assetID] += delta;
     }
     state.prices.fundingTime = sig.expiration;
   }
@@ -162,8 +165,8 @@ contract OracleContract is ConfigContract {
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => int32) storage interest = state.prices.interest;
-    uint len = rates.length;
-    for (uint i; i < len; ++i) {
+    uint256 len = rates.length;
+    for (uint256 i; i < len; ++i) {
       bytes32 assetID = rates[i].assetID;
 
       // Asset kind must be rate and quoted in USD
@@ -206,5 +209,17 @@ contract OracleContract is ConfigContract {
     require(!state.replay.executed[hash], "replayed payload");
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
+  }
+
+  function hashOraclePrice(int64 timestamp, PriceEntry[] calldata prices) private pure returns (bytes32) {
+    bytes memory pricesEncoded;
+    uint256 numValues = prices.length;
+    for (uint256 i; i < numValues; ++i) {
+      pricesEncoded = abi.encodePacked(
+        pricesEncoded,
+        keccak256(abi.encode(_ORACLE_VALUE_H, prices[i].assetID, prices[i].value))
+      );
+    }
+    return keccak256(abi.encode(_ORACLE_H, keccak256(pricesEncoded), timestamp));
   }
 }

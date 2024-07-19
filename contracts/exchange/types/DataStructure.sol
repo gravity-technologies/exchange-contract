@@ -1,47 +1,41 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./PositionMap.sol";
 
 enum MarginType {
-  UNSPECIFIED,
-  ISOLATED,
-  SIMPLE_CROSS_MARGIN,
-  PORTFOLIO_CROSS_MARGIN
-}
-
-enum AccountRecoveryType {
-  UNSPECIFIED,
-  GUARDIAN,
-  SUB_ACCOUNT_SIGNERS
+  UNSPECIFIED, // 0
+  ISOLATED, // 1
+  SIMPLE_CROSS_MARGIN, // 2
+  PORTFOLIO_CROSS_MARGIN // 3
 }
 
 enum TimeInForce {
-  UNSPECIFIED,
-  GOOD_TILL_TIME,
-  ALL_OR_NONE,
-  IMMEDIATE_OR_CANCEL,
-  FILL_OR_KILL
+  UNSPECIFIED, // 0
+  GOOD_TILL_TIME, // 1
+  ALL_OR_NONE, // 2
+  IMMEDIATE_OR_CANCEL, // 3
+  FILL_OR_KILL // 4
 }
 
 enum Kind {
-  UNSPECIFIED,
-  PERPS,
-  FUTURES,
-  CALL,
-  PUT,
-  SPOT,
-  SETTLEMENT,
-  RATE
+  UNSPECIFIED, // 0
+  PERPS, // 1
+  FUTURES, // 2
+  CALL, // 3
+  PUT, // 4
+  SPOT, // 5
+  SETTLEMENT, // 6
+  RATE // 7
 }
 
 enum Currency {
-  UNSPECIFIED,
-  USD,
-  USDC,
-  USDT,
-  ETH,
-  BTC
+  UNSPECIFIED, // 0
+  USD, // 1
+  USDC, // 2
+  USDT, // 3
+  ETH, // 4
+  BTC // 5
 }
 
 function currencyStart() pure returns (Currency) {
@@ -52,16 +46,16 @@ function currencyNext(Currency iter) pure returns (Currency) {
   if (iter == type(Currency).max) {
     return Currency.UNSPECIFIED;
   }
-  return Currency(uint(iter) + 1);
+  return Currency(uint256(iter) + 1);
 }
 
 function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
-uint constant PRICE_DECIMALS = 9;
-uint constant CENTIBEEP_DECIMALS = 6;
-int constant TIME_FACTOR = 480;
+uint256 constant PRICE_DECIMALS = 9;
+uint256 constant CENTIBEEP_DECIMALS = 6;
+int256 constant TIME_FACTOR = 480;
 
 uint64 constant AccountPermAdmin = 1 << 1;
 uint64 constant AccountPermInternalTransfer = 1 << 2;
@@ -208,8 +202,6 @@ struct PriceState {
   // Map assetID to price. Price is int64 instead of uint64 because we need negative value to represent absence of price
   mapping(bytes32 => uint64) mark;
   mapping(bytes32 => int32) interest;
-  // TODO: revise: No need to store oracle prices, they are lazily uploaded at point of liquidation
-
   // Prior to any trade, funding must be applied
   // We centrally upload funding rates. On smart contract side, we simply apply a tiny minmax clamp
   // So that users are only minimally impacted if GRVT exhibits bad integrity
@@ -233,17 +225,17 @@ struct Session {
 
 // --------------- Config --------------
 enum ConfigType {
-  UNSPECIFIED,
-  BOOL,
-  BOOL2D,
-  ADDRESS,
-  ADDRESS2D,
-  INT,
-  INT2D,
-  UINT,
-  UINT2D,
-  CENTIBEEP,
-  CENTIBEEP2D
+  UNSPECIFIED, // 0
+  BOOL, // 1
+  BOOL2D, // 2
+  ADDRESS, // 3
+  ADDRESS2D, // 4
+  INT, // 5
+  INT2D, // 6
+  UINT, // 7
+  UINT2D, // 8
+  CENTIBEEP, // 9
+  CENTIBEEP2D // 10
 }
 
 // See https://docs.google.com/spreadsheets/d/1MEp2BMtBjkdfTn7WXc_egh5ucc1UK8v6ibNWUuzW6AI/edit#gid=0 for the most up to date list of configs

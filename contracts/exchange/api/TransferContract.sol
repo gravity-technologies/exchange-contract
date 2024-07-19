@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./TradeContract.sol";
-import "./signature/generated/TransferSig.sol";
 import "../util/BIMath.sol";
 
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
@@ -19,6 +18,16 @@ abstract contract ERC20 {
 
 abstract contract TransferContract is TradeContract {
   using BIMath for BI;
+
+  bytes32 constant _WITHDRAWAL_H =
+    keccak256(
+      "Withdrawal(address fromAccount,address toEthAddress,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
+    );
+
+  bytes32 constant _TRANSFER_H =
+    keccak256(
+      "Transfer(address fromAccount,uint64 fromSubAccount,address toAccount,uint64 toSubAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration)"
+    );
 
   /**
    * @notice Deposit collateral into a sub account
@@ -87,7 +96,10 @@ abstract contract TransferContract is TradeContract {
     require(numTokensSigned >= 0, "invalid withdrawal amount");
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(
+      abi.encode(_WITHDRAWAL_H, fromAccID, recipient, uint8(currency), numTokens, sig.nonce, sig.expiration)
+    );
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     int64 withdrawalFeeCharged = 0;
@@ -121,7 +133,7 @@ abstract contract TransferContract is TradeContract {
     if (!feeSet) {
       return BI(0, 0);
     }
-    return BI(int(int64(fee)), _getBalanceDecimal(Currency.USD));
+    return BI(int256(int64(fee)), _getBalanceDecimal(Currency.USD));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
@@ -164,10 +176,20 @@ abstract contract TransferContract is TradeContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    _preventReplay(
-      hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce, sig.expiration),
-      sig
+    bytes32 hash = keccak256(
+      abi.encode(
+        _TRANSFER_H,
+        fromAccID,
+        fromSubID,
+        toAccID,
+        toSubID,
+        uint8(currency),
+        numTokens,
+        sig.nonce,
+        sig.expiration
+      )
     );
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     int64 numTokensSigned = int64(numTokens);

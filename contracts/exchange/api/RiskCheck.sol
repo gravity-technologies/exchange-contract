@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
 import "../types/DataStructure.sol";
@@ -8,8 +8,6 @@ import "../util/BIMath.sol";
 
 contract RiskCheck is BaseContract {
   using BIMath for BI;
-
-  error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   function _requireValidSubAccountUsdValue(SubAccount storage sub) internal view {
     require(_getSubAccountUsdValue(sub).val >= 0, "invalid total value");
@@ -50,14 +48,14 @@ contract RiskCheck is BaseContract {
     bytes32[] storage keys = positions.keys;
     mapping(bytes32 => Position) storage values = positions.values;
 
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
+    uint256 count = keys.length;
+    for (uint256 i; i < count; ++i) {
       Position storage pos = values[keys[i]];
       (uint64 markPrice, bool found) = _getMarkPrice9Decimals(pos.id);
       require(found, ERR_NOT_FOUND);
       uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(int256(pos.balance), uDec);
-      BI memory markPriceBI = BI(int(uint(markPrice)), PRICE_DECIMALS);
+      BI memory markPriceBI = BI(int256(uint256(markPrice)), PRICE_DECIMALS);
       total = total.add(markPriceBI.mul(balance));
     }
     return total;

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "../common/Error.sol";
 
@@ -8,10 +8,9 @@ struct BI {
   uint256 dec;
 }
 
-// TODO: add division test
 library BIMath {
   function add(BI memory a, BI memory b) internal pure returns (BI memory) {
-    BI memory c;
+    BI memory c = BI(0, 0);
     if (a.dec == b.dec) {
       c.val = a.val + b.val;
       c.dec = a.dec;
@@ -61,13 +60,13 @@ library BIMath {
     return BI(-n.val, n.dec);
   }
 
-  function toInt256(BI memory a, uint decimals) internal pure returns (int256) {
+  function toInt256(BI memory a, uint256 decimals) internal pure returns (int256) {
     if (a.dec == decimals) return a.val;
     if (a.dec > decimals) return a.val / (int256(10) ** (a.dec - decimals));
     return a.val * (int256(10) ** (decimals - a.dec));
   }
 
-  function toInt64(BI memory a, uint decimals) internal pure returns (int64) {
+  function toInt64(BI memory a, uint256 decimals) internal pure returns (int64) {
     int256 c;
     if (a.dec == decimals) {
       c = a.val;
@@ -76,10 +75,10 @@ library BIMath {
     } else {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
-    return int64(uint64(uint(c)));
+    return int64(uint64(uint256(c)));
   }
 
-  function toUint64(BI memory a, uint decimals) internal pure returns (uint64) {
+  function toUint64(BI memory a, uint256 decimals) internal pure returns (uint64) {
     require(a.val >= 0, ERR_UNSAFE_CAST);
     int256 c;
     if (a.dec == decimals) {
@@ -93,6 +92,6 @@ library BIMath {
   }
 }
 
-function bpsToDecimal(int bps) pure returns (BI memory) {
+function bpsToDecimal(int256 bps) pure returns (BI memory) {
   return BI(int256(bps), 6);
 }

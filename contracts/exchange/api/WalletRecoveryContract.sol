@@ -1,12 +1,20 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
-import "./signature/generated/WalletRecoverySig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
 
 contract WalletRecoveryContract is BaseContract {
+  bytes32 constant _ADD_RECOVERY_ADDRESS_H =
+    keccak256("AddRecoveryAddress(address accountID,address recoverySigner,uint32 nonce,int64 expiration)");
+
+  bytes32 constant _DEL_RECOVERY_ADDRESS_H =
+    keccak256("RemoveRecoveryAddress(address accountID,address recoverySigner,uint32 nonce,int64 expiration)");
+
+  bytes32 constant _RECOVER_ADDRESS_H =
+    keccak256("RecoverAddress(address accountID,address oldSigner,address newSigner,uint32 nonce,int64 expiration)");
+
   /// @notice Add a recovery address for a signer for a given signer for a given account
   /// The recoveryAddress can be used to change the signer from the signer to another signer from the account and subAccounts associated with the account
   ///
@@ -29,7 +37,8 @@ contract WalletRecoveryContract is BaseContract {
 
     // ---------- Signature Verification -----------
     _requireSignerInAccount(acc, sig.signer);
-    _preventReplay(hashAddRecoveryAddress(accID, recoveryAddress, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_ADD_RECOVERY_ADDRESS_H, accID, recoveryAddress, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     addAddress(acc.recoveryAddresses[sig.signer], recoveryAddress);
@@ -54,7 +63,8 @@ contract WalletRecoveryContract is BaseContract {
 
     // ---------- Signature Verification -----------
     _requireSignerInAccount(acc, sig.signer);
-    _preventReplay(hashRemoveRecoveryAddress(accID, recoveryAddress, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_DEL_RECOVERY_ADDRESS_H, accID, recoveryAddress, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     removeAddress(acc.recoveryAddresses[sig.signer], recoveryAddress, false);
@@ -89,10 +99,10 @@ contract WalletRecoveryContract is BaseContract {
         addressExists(acc.recoveryAddresses[oldSigner], recoverySignerSig.signer),
       "invalid signer"
     );
-    _preventReplay(
-      hashRecoverAddress(accID, oldSigner, newSigner, recoverySignerSig.nonce, recoverySignerSig.expiration),
-      recoverySignerSig
+    bytes32 hash = keccak256(
+      abi.encode(_RECOVER_ADDRESS_H, accID, oldSigner, newSigner, recoverySignerSig.nonce, recoverySignerSig.expiration)
     );
+    _preventReplay(hash, recoverySignerSig);
     // ------- End of Signature Verification -------
     // Add a new signer with the same permission as the old signer to the account
     acc.signers[newSigner] = acc.signers[oldSigner];

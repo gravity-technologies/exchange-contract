@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./api/AccountContract.sol";
 import "./api/OracleContract.sol";
@@ -16,7 +16,7 @@ contract GRVTExchange is
   TransferContract,
   WalletRecoveryContract
 {
-  function initialize() public initializer {
+  function initialize() external initializer {
     __ReentrancyGuard_init();
 
     // Initialize the config default values and timelock rules

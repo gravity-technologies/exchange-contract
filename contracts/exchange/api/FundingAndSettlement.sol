@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "../types/DataStructure.sol";
 import "../types/PositionMap.sol";
@@ -26,13 +26,13 @@ contract FundingAndSettlement is BaseContract {
     mapping(bytes32 => int64) storage fundingIndex = state.prices.fundingIndex;
     uint64 qdec = _getBalanceDecimal(quoteCurrency);
     PositionsMap storage perps = sub.perps;
-    BI memory fundingPayment;
+    BI memory fundingPayment = BI(0, 0);
 
     bytes32[] storage keys = perps.keys;
     int64 fundingTime = state.prices.fundingTime;
     int64 newSpotBalance = int64(sub.spotBalances[quoteCurrency]);
-    uint len = keys.length;
-    for (uint i; i < len; ++i) {
+    uint256 len = keys.length;
+    for (uint256 i; i < len; ++i) {
       bytes32 assetID = keys[i];
       int64 latestFundingIndex = fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
@@ -58,8 +58,8 @@ contract FundingAndSettlement is BaseContract {
     BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
-    uint posLen = posKeys.length;
-    for (uint i; i < posLen; ++i) {
+    uint256 posLen = posKeys.length;
+    for (uint256 i; i < posLen; ++i) {
       bytes32 assetID = posKeys[i];
       (uint64 settlePrice, bool found) = _getAssetSettlementPrice(timestamp, assetID);
       if (!found) {
@@ -136,7 +136,9 @@ contract FundingAndSettlement is BaseContract {
     }
     // Just panic when the quote price is 0
     return (
-      BI(int(uint(uPrice)), PRICE_DECIMALS).div(BI(int(uint(qPrice)), PRICE_DECIMALS)).toUint64(PRICE_DECIMALS),
+      BI(int256(uint256(uPrice)), PRICE_DECIMALS).div(BI(int256(uint256(qPrice)), PRICE_DECIMALS)).toUint64(
+        PRICE_DECIMALS
+      ),
       true
     );
   }

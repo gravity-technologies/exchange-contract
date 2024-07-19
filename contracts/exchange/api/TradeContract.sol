@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./FundingAndSettlement.sol";
 import "./RiskCheck.sol";
@@ -19,9 +19,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
-    BI memory takerTradeNotional;
-    BI memory takerOptionIndexNotional;
-    BI memory takerSpotDelta;
+    BI memory takerTradeNotional = BI(0, 0);
+    BI memory takerOptionIndexNotional = BI(0, 0);
+    BI memory takerSpotDelta = BI(0, 0);
 
     ///////////////////////////////////////////////////////////////////////////
     /// Maker order verification and execution
@@ -30,30 +30,30 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     /// loop here since we need the before we can verify / execute the taker order
     ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
-    uint matchesLen = makerMatches.length;
+    uint256 matchesLen = makerMatches.length;
     int64 totalMakersFee;
 
     (uint64 feeSubID, bool isFeeCharged) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
 
-    for (uint i; i < matchesLen; ++i) {
+    for (uint256 i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
 
       // Compute maker notional
-      BI memory makerSpotDelta;
-      BI memory makerTradeNotional;
-      BI memory makerOptionIndexNotional;
+      BI memory makerSpotDelta = BI(0, 0);
+      BI memory makerTradeNotional = BI(0, 0);
+      BI memory makerOptionIndexNotional = BI(0, 0);
 
       uint64[] calldata matchSizes = makerMatch.matchedSize;
       Order calldata makerOrder = makerMatch.makerOrder;
-      uint makerLegsLen = makerOrder.legs.length;
-      for (uint legIdx; legIdx < makerLegsLen; ++legIdx) {
+      uint256 makerLegsLen = makerOrder.legs.length;
+      for (uint256 legIdx; legIdx < makerLegsLen; ++legIdx) {
         uint64 size = matchSizes[legIdx];
         if (size == 0) {
           continue;
         }
 
         OrderLeg calldata leg = makerOrder.legs[legIdx];
-        uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
+        uint256 udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
         BI memory tradeSize = BI(int256(uint256(size)), udec);
         BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
         uint64 notionalU64 = notional.toUint64(PRICE_DECIMALS);
@@ -70,7 +70,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
           require(found, ERR_NOT_FOUND);
 
-          BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
+          BI memory indexNotional = tradeSize.mul(BI(int256(uint256(indexPrice)), PRICE_DECIMALS));
           makerOptionIndexNotional = makerOptionIndexNotional.add(indexNotional);
         }
         makerTradeNotional = makerTradeNotional.add(notional);
@@ -155,11 +155,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Check that quote asset is the same as subaccount quote asset
     Currency subQuote = sub.quoteCurrency;
-    uint qDec = _getBalanceDecimal(subQuote);
+    uint256 qDec = _getBalanceDecimal(subQuote);
 
     OrderLeg[] calldata legs = order.legs;
-    uint legsLen = legs.length;
-    for (uint i; i < legsLen; ++i) {
+    uint256 legsLen = legs.length;
+    for (uint256 i; i < legsLen; ++i) {
       require(assetGetQuote(legs[i].assetID) == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
     }
 
@@ -180,7 +180,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
 
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
-    for (uint i; i < legsLen; ++i) {
+    for (uint256 i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
@@ -188,7 +188,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     bool isOption = false;
-    for (uint i; i < legsLen; ++i) {
+    for (uint256 i; i < legsLen; ++i) {
       if (_isOption(legs[i].assetID)) {
         isOption = true;
         break;
@@ -217,7 +217,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
   }
 
-  function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
+  function _calculateBaseFee(BI memory notional, BI memory fee, uint256 qDec) private pure returns (int64) {
     if (notional.val == 0) return 0;
     return notional.mul(fee).toInt64(qDec);
   }
@@ -234,10 +234,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     _fundAndSettle(timestamp, sub);
 
     Currency subQuote = sub.quoteCurrency;
-    uint qDec = _getBalanceDecimal(subQuote);
+    uint256 qDec = _getBalanceDecimal(subQuote);
 
-    uint legsLen = order.legs.length;
-    for (uint i; i < legsLen; ++i) {
+    uint256 legsLen = order.legs.length;
+    for (uint256 i; i < legsLen; ++i) {
       if (matchSizes[i] == 0) continue;
       OrderLeg calldata leg = order.legs[i];
 
@@ -281,7 +281,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Otherwise, create a new position
-    Position storage pos = getOrNew(posmap, assetID);
+    if (posmap.values[assetID].id == 0) {
+      // If the position does not exists, set the id to the assetID to mark it's existence
+      posmap.values[assetID].id = assetID;
+      posmap.index[assetID] = posmap.keys.length;
+      posmap.keys.push(assetID);
+    }
+    Position storage pos = posmap.values[assetID];
 
     if (kind == Kind.PERPS) {
       // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
@@ -306,14 +312,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   // FIXME: Our BE disables charging fees for now. To enable back afterwards
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
     int64 totalFee;
-    uint len = feePerLegs.length;
-    for (uint i; i < len; ++i) totalFee += int64(feePerLegs[i]);
+    uint256 len = feePerLegs.length;
+    for (uint256 i; i < len; ++i) totalFee += int64(feePerLegs[i]);
     return totalFee;
   }
 
-  function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
-    uint len = legs.length;
-    for (uint i; i < len; ++i) if (legs[i].assetID == assetID) return i;
+  function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint256) {
+    uint256 len = legs.length;
+    for (uint256 i; i < len; ++i) if (legs[i].assetID == assetID) return i;
     revert(ERR_NOT_FOUND);
   }
 

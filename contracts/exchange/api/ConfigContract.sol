@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "./BaseContract.sol";
 import "../types/DataStructure.sol";
-import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
 ///////////////////////////////////////////////////////////////////
@@ -25,7 +24,7 @@ import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 ///          (PortfolioInitialMarginFactor, DOGE) = 1.5
 ///
 /// Reading a config value
-///  - Every config value is encoded as a byte32. Storing uint, int, address,
+///  - Every config value is encoded as a byte32. Storing uint256, int256, address,
 ///    hash will convert the value to a bytes32 representation internally
 ///  - The value of 1D config is stored in `config1DValues` mapping
 ///    To read this we need only the (key) of the config
@@ -46,14 +45,19 @@ import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 contract ConfigContract is BaseContract {
   // --------------- Constants ---------------
   int32 private constant ONE_CENTIBEEP = 1;
-  int32 private constant ONE_BEEP = 100;
-  int32 private constant ONE_PERCENT = 10000;
-  int32 private constant ONE_HUNDRED_PERCENT = 1000000;
+  int32 private constant ONE_BEEP = 1e2;
+  int32 private constant ONE_PERCENT = 1e4;
+  int32 private constant ONE_HUNDRED_PERCENT = 1e6;
   bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
+
+  bytes32 constant _SCHEDULE_CONFIG_H =
+    keccak256("ScheduleConfig(uint8 key,bytes32 subKey,bytes32 value,uint32 nonce,int64 expiration)");
+  bytes32 constant _SET_CONFIG_H =
+    keccak256("SetConfig(uint8 key,bytes32 subKey,bytes32 value,uint32 nonce,int64 expiration)");
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -140,7 +144,7 @@ contract ConfigContract is BaseContract {
   // }
 
   function _currencyToConfig(Currency v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint(v)));
+    return bytes32(uint256(uint256(v)));
   }
 
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
@@ -184,7 +188,8 @@ contract ConfigContract is BaseContract {
     // ---------- Signature Verification -----------
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
-    _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_SCHEDULE_CONFIG_H, uint8(key), subKey, value, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
@@ -220,7 +225,8 @@ contract ConfigContract is BaseContract {
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
     // ---------- Signature Verification -----------
-    _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
+    bytes32 hash = keccak256(abi.encode(_SET_CONFIG_H, uint8(key), subKey, value, sig.nonce, sig.expiration));
+    _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
     ConfigSetting storage setting = state.configSettings[key];
@@ -297,7 +303,7 @@ contract ConfigContract is BaseContract {
     return 0;
   }
 
-  /// @dev Find the timelock duration in nanoseconds that corresponds to the change in `uint` value
+  /// @dev Find the timelock duration in nanoseconds that corresponds to the change in `uint256` value
   /// We expect the timelocks duration should be in increasing order of delta change and
   /// timelock duration, ie:
   ///    rules[i].deltaPositive < rules[i+1].deltaPositive AND rules[i].deltaNegative < rules[i+1].deltaNegative
@@ -311,14 +317,14 @@ contract ConfigContract is BaseContract {
     if (newVal == oldVal) return 0; // No change in value, no lock duration
 
     Rule[] storage rules = state.configSettings[key].rules;
-    uint rulesLen = rules.length;
+    uint256 rulesLen = rules.length;
 
     if (newVal < oldVal) {
-      for (uint i; i < rulesLen; ++i) {
+      for (uint256 i; i < rulesLen; ++i) {
         if (oldVal - newVal <= rules[i].deltaNegative) return rules[i].lockDuration;
       }
     } else {
-      for (uint i; i < rulesLen; ++i) {
+      for (uint256 i; i < rulesLen; ++i) {
         if (newVal - oldVal <= rules[i].deltaPositive) return rules[i].lockDuration;
       }
     }
@@ -326,7 +332,7 @@ contract ConfigContract is BaseContract {
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }
 
-  /// @dev Find the timelock duration in nanoseconds that corresponds to the change in `int` value
+  /// @dev Find the timelock duration in nanoseconds that corresponds to the change in `int256` value
   /// We expect the timelocks duration should be in increasing order of delta change and
   /// timelock duration, ie:
   ///    rules[i].deltaPositive < rules[i+1].deltaPositive AND rules[i].deltaNegative < rules[i+1].deltaNegative
@@ -337,13 +343,13 @@ contract ConfigContract is BaseContract {
     if (newVal == oldVal) return 0; // No change in value, no lock duration
 
     Rule[] storage rules = state.configSettings[key].rules;
-    uint rulesLen = rules.length;
+    uint256 rulesLen = rules.length;
 
     if (newVal < oldVal) {
-      for (uint i; i < rulesLen; ++i)
+      for (uint256 i; i < rulesLen; ++i)
         if (uint64(oldVal - newVal) <= rules[i].deltaNegative) return rules[i].lockDuration;
     } else if (newVal > oldVal) {
-      for (uint i; i < rulesLen; ++i)
+      for (uint256 i; i < rulesLen; ++i)
         if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
@@ -10,6 +10,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
 
+  uint64 private constant PRICE_MULTIPLIER = uint64(10 ** PRICE_DECIMALS);
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   bytes32 private constant DOMAIN_HASH =
@@ -68,16 +69,16 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   // Verify that the signatures are from the list of eligible signers, signer of each signature has admin permissions and those signatures form a simple majority
   function _requireSignatureQuorum(
     mapping(address => uint64) storage eligibleSigners,
-    uint quorum,
+    uint256 quorum,
     bytes32[] memory hashes,
     Signature[] calldata sigs
   ) internal {
     // FIXME: implement
-    uint numSigs = sigs.length;
+    uint256 numSigs = sigs.length;
     require(numSigs == hashes.length, "invalid number of hashes");
     // 1. Check that there are no duplicate signing key in the signatures
-    for (uint i; i < numSigs; ++i) {
-      for (uint j = i + 1; j < numSigs; ++j) {
+    for (uint256 i; i < numSigs; ++i) {
+      for (uint256 j = i + 1; j < numSigs; ++j) {
         require(sigs[i].signer != sigs[j].signer, "duplicate signing key");
       }
     }
@@ -86,13 +87,13 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
-    for (uint i; i < numSigs; ++i) {
+    for (uint256 i; i < numSigs; ++i) {
       require(!state.replay.executed[hashes[i]], "invalid transaction");
     }
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
-    for (uint i; i < numSigs; ++i) {
+    for (uint256 i; i < numSigs; ++i) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
       _requireValidSig(timestamp, hashes[i], sigs[i]);
       state.replay.executed[hashes[i]] = true;
@@ -147,7 +148,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   }
 
   function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
-    uint idx = uint(currency);
+    uint256 idx = uint256(currency);
 
     require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
 
@@ -189,7 +190,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return (0, false);
     }
 
-    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (uint64((uint256(underlyingPrice) * PRICE_MULTIPLIER) / uint256(quotePrice)), true);
   }
 
   function _getIndexPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
@@ -213,7 +214,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return (0, false);
     }
 
-    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (uint64((uint256(underlyingPrice) * (PRICE_MULTIPLIER)) / uint256(quotePrice)), true);
   }
 
   function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
