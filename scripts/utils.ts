@@ -62,12 +62,14 @@ export async function create2DeployFromL1NoFactoryDeps(
   const bytecodeHash = hashBytecode(bytecode);
   const calldata = deployerSystemContracts.encodeFunctionData("create2", [create2Salt, bytecodeHash, constructor]);
   gasPrice ??= await bridgehub.provider.getGasPrice();
-  const expectedCost = await bridgehub.l2TransactionBaseCost(
+
+  // pay 5 times the base cost(in L2 base token) to ensure the transaction goes through
+  const expectedCost = (await bridgehub.l2TransactionBaseCost(
     chainId,
     gasPrice,
     l2GasLimit,
     REQUIRED_L2_GAS_PRICE_PER_PUBDATA
-  );
+  )).mul(5);
 
   const baseTokenAddress = await bridgehub.baseToken(chainId);
   const baseToken = IERC20Factory.connect(baseTokenAddress, wallet);
@@ -89,8 +91,6 @@ export async function create2DeployFromL1NoFactoryDeps(
     },
   );
 }
-
-const SUPPORTED_L1_TESTNETS = ['mainnet', 'rinkeby', 'ropsten', 'kovan', 'goerli', 'sepolia'];
 
 export function createProviders(
   networks: NetworksConfig,
