@@ -11,27 +11,7 @@ import "@typechain/hardhat"
 // upgradable plugin
 import "@matterlabs/hardhat-zksync-upgradable"
 
-import { HardhatUserConfig , task} from "hardhat/config"
-
-// Define a custom task to replace the chain ID
-task("replace-chain-id", "Replaces the chain ID in the BaseContract.sol file")
-  .setAction(async (taskArgs, hre) => {
-    const {name: networkName, config: {chainId} } = hre.network;
-
-    if (!chainId) {
-      console.error(`Chain ID not found for network ${networkName}`);
-      return;
-    }
-
-    const filePath = path.join(__dirname, "./contracts/exchange/api/BaseContract.sol");
-    const fileContent = fs.readFileSync(filePath, "utf8");
-
-    const updatedContent = fileContent.replace(/uint private constant CHAIN_ID = \d+;/, `uint private constant CHAIN_ID = ${chainId};`);
-    
-    fs.writeFileSync(filePath, updatedContent, "utf8");
-
-    console.log(`Replaced chain ID with ${chainId} for network ${networkName}`);
-  });
+import { HardhatUserConfig } from "hardhat/config"
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
