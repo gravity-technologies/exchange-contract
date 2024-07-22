@@ -12,9 +12,11 @@ contract BaseContract is ReentrancyGuardUpgradeable {
 
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
-  bytes32 private constant DOMAIN_HASH =
-    keccak256(abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 1));
-  bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
+  /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
+  bytes32 private immutable DOMAIN_HASH =
+    keccak256(
+      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
+    );
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 
@@ -117,13 +119,13 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   }
 
   // Verify that a signature is valid. Caller need to prevent replay attack
-  function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
+  function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal view {
     require(sig.expiration >= timestamp && sig.expiration <= (timestamp + MAX_SIG_EXPIRY), "expired");
     _requireValidNoExipry(hash, sig);
   }
 
-  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal pure {
-    bytes32 digest = keccak256(abi.encodePacked(PREFIXED_DOMAIN_HASH, hash));
+  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal view {
+    bytes32 digest = keccak256(abi.encodePacked(abi.encodePacked("\x19\x01", DOMAIN_HASH), hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
