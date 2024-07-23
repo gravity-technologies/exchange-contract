@@ -13,7 +13,7 @@
     "lint:quiet": "solhint -q contracts/**/*.sol",
     "compile": "hardhat compile",
     "compile:era": "cd lib/era-contracts/l2-contracts && yarn && npx hardhat compile",
-    "test:hardhat": "hardhat test --network inMemoryNode",
+    "test:hardhat": "yarn compile:era && hardhat test --network inMemoryNode",
     "test:forge": "forge test -vv",
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",
     "prettier:sol": "prettier --write --plugin=prettier-plugin-solidity contracts/**/*.sol",

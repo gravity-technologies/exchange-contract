@@ -34,10 +34,6 @@ jobs:
         run: |
           yarn install
 
-      - name: Compile era contracts
-        run: |
-          yarn compile:era
-
       - name: Run Era Test Node Action
         uses: gravity-technologies/era-test-node-action@main
         with:
@@ -51,7 +47,6 @@ jobs:
       - name: Run Hardhat tests
         run: |
           yarn prettier:check
-          yarn compile:era
           yarn test:hardhat
         id: test-hardhat
 

@@ -56,6 +56,12 @@ describe.only("API - TestEngine", function () {
     const l2SharedBridgeAddress = result.toString().trim();
     const l2SharedBridge = L2SharedBridgeFactory.connect(l2SharedBridgeAddress, deployerWallet);
 
+    console.log(`Deployed L2SharedBridge at ${l2SharedBridgeAddress}`);
+    for (const token in L2TokenInfo) {
+      const tokenAddress = await l2SharedBridge.l2TokenAddress(L2TokenInfo[token].l1Token);
+      console.log(`Token ${token} has L2 address ${tokenAddress}`);
+    }
+
     // exchange address is required before ERC20 can be deployed
     await (await l2SharedBridge.setExchangeAddress(exchangeContract.address)).wait();
 
