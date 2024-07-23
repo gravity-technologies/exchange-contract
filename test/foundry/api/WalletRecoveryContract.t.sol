@@ -76,7 +76,8 @@ contract WalletRecoveryContractTest is APIBase {
     progressToNextTxn();
     addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSignerRecoveryAddressTwo);
     progressToNextTxn();
-    // adding the same address twice is no-op
+    // adding the same address twice is causes revert
+    vm.expectRevert("address exists");
     addRecoveryAddressHelper(accSigner, accSignerPrivateKey, accountID, accSignerRecoveryAddressTwo);
     progressToNextTxn();
   }

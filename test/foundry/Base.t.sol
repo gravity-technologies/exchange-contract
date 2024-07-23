@@ -11,7 +11,13 @@ contract BaseTest is Test {
   /*//////////////////////////////////////////////////////////////
                                CONSTANTS
     //////////////////////////////////////////////////////////////*/
-  bytes32 constant DOMAIN_HASH = bytes32(0x3872804bea0616a4202203552aedc3568e0a2ec586cd6ebbef3dec4e3bd471dd);
+  bytes32 private constant EIP712_DOMAIN_TYPEHASH =
+    keccak256("EIP712Domain(string name,string version,uint256 chainId)");
+
+  bytes32 immutable DOMAIN_HASH =
+    keccak256(
+      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
+    );
 
   /*//////////////////////////////////////////////////////////////
                                VARIABLES
