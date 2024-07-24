@@ -5,7 +5,6 @@ import "../types/DataStructure.sol";
 import "../types/PositionMap.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
-import "../common/Error.sol";
 import "./BaseContract.sol";
 
 contract FundingAndSettlement is BaseContract {

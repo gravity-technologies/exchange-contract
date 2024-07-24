@@ -60,5 +60,6 @@
     "typescript": "^5.4.2",
     "zksync-ethers": "^5.0.0",
     "zksync-web3": "^0.15.4"
-  }
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

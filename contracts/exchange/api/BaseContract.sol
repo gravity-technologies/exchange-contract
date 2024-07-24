@@ -2,21 +2,26 @@
 pragma solidity ^0.8.20;
 
 import "../types/DataStructure.sol";
-import "../util/Address.sol";
 import "../util/Asset.sol";
+import "../common/Error.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
 
-  bytes32 private constant eip712domainTypehash = keccak256("EIP712Domain(string name,string version,uint256 chainId)");
-  bytes32 private constant DOMAIN_HASH =
-    keccak256(abi.encode(eip712domainTypehash, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 1));
-  bytes private constant PREFIXED_DOMAIN_HASH = abi.encodePacked("\x19\x01", DOMAIN_HASH);
+  bytes32 private constant EIP712_DOMAIN_TYPEHASH =
+    keccak256("EIP712Domain(string name,string version,uint256 chainId)");
+  /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
+  bytes32 private immutable DOMAIN_HASH =
+    keccak256(
+      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
+    );
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
-  int64 private constant MAX_SIG_EXPIRATION = 30 * 24 * ONE_HOUR_NANOS;
+
+  /// @dev The maximum signature expiry time. Any signature with a longer expiry time will capped to this value
+  int64 private constant MAX_SIG_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
@@ -104,10 +109,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return a >= b ? a : b;
   }
 
-  function _max(uint a, uint b) internal pure returns (uint) {
-    return a >= b ? a : b;
-  }
-
   /// @dev Verify that a signature is valid with replay attack prevention
   /// To understand why require the payload hash to be unique, and not the signature, read
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
@@ -118,13 +119,13 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   }
 
   // Verify that a signature is valid. Caller need to prevent replay attack
-  function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal pure {
-    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + MAX_SIG_EXPIRATION), "expired");
+  function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal view {
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + MAX_SIG_EXPIRY), "expired");
     _requireValidNoExipry(hash, sig);
   }
 
-  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal pure {
-    bytes32 digest = keccak256(abi.encodePacked(PREFIXED_DOMAIN_HASH, hash));
+  function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal view {
+    bytes32 digest = keccak256(abi.encodePacked(abi.encodePacked("\x19\x01", DOMAIN_HASH), hash));
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
   }
@@ -232,5 +233,13 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       assetToID(
         Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
       );
+  }
+
+  function signerHasPerm(
+    mapping(address => uint64) storage signers,
+    address signerAddress,
+    uint64 perm
+  ) internal view returns (bool) {
+    return (signers[signerAddress] & perm) != 0;
   }
 }

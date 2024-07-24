@@ -7,9 +7,7 @@ import "./ConfigContract.sol";
 import "./signature/generated/TradeSig.sol";
 import "../types/DataStructure.sol";
 import "../common/Error.sol";
-import "../util/Address.sol";
 import "../util/BIMath.sol";
-import "../util/Trade.sol";
 import "../util/Asset.sol";
 
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
@@ -260,13 +258,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Step 4: Update subaccount spot balance, deducting fees
-    BI memory newSpotBalanceBI = BI(sub.spotBalances[subQuote], qDec).add(spotDelta);
-
+    int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta.toInt64(qDec);
     if (isFeeCharged) {
-      newSpotBalanceBI = newSpotBalanceBI.sub(BI(fee, qDec));
+      newSpotBalance -= fee;
     }
-
-    sub.spotBalances[subQuote] = newSpotBalanceBI.toInt64(qDec);
+    sub.spotBalances[subQuote] = newSpotBalance;
   }
 
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {

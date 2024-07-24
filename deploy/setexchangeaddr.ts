@@ -7,12 +7,12 @@ import { expectToThrowAsync, nonce } from "../test/util"
 import { genCreateAccountSig } from "../test/signature"
 
 interface Signature {
-    signer: string
-    r: string
-    s: string
-    v: number
-    expiration: BigInt
-    nonce: number
+  signer: string
+  r: string
+  s: string
+  v: number
+  expiration: BigInt
+  nonce: number
 }
 
 // Address of the contract to interact with
@@ -24,31 +24,25 @@ if (!L2_SHARED_BRIDGE_ADDRESS) throw "⛔️ Provide address of the contract to 
 
 // An example of a script to interact with the contract
 export default async function () {
-    try {
-        await setL2SharedBridgeExchangeAddress(CONTRACT_ADDRESS, L2_SHARED_BRIDGE_ADDRESS);
-    } catch (error) {
-    }
+  try {
+    await setL2SharedBridgeExchangeAddress(CONTRACT_ADDRESS, L2_SHARED_BRIDGE_ADDRESS)
+  } catch (error) {}
 }
 
-export const setL2SharedBridgeExchangeAddress = async (
-    exchangeAddress: string,
-    l2SharedBridgeAddress: string,
-) => {
-    const abi = [
-        "function setExchangeAddress(address _exchangeAddress) external"
-    ];
+export const setL2SharedBridgeExchangeAddress = async (exchangeAddress: string, l2SharedBridgeAddress: string) => {
+  const abi = ["function setExchangeAddress(address _exchangeAddress) external"]
 
-    const zkWallet = getWallet();
-    const l2SharedBridge = new ethers.Contract(l2SharedBridgeAddress, abi, zkWallet);
+  const zkWallet = getWallet()
+  const l2SharedBridge = new ethers.Contract(l2SharedBridgeAddress, abi, zkWallet)
 
-    try {
-        const tx = await l2SharedBridge.setExchangeAddress(exchangeAddress);
-        console.log("setExchangeAddress transaction hash:", tx.hash);
+  try {
+    const tx = await l2SharedBridge.setExchangeAddress(exchangeAddress)
+    console.log("setExchangeAddress transaction hash:", tx.hash)
 
-        // Wait for the transaction to be mined
-        const receipt = await tx.wait();
-        console.log("Transaction was mined in block:", receipt.blockNumber);
-    } catch (error) {
-        console.error("Error calling setExchangeAddress:", error);
-    }
+    // Wait for the transaction to be mined
+    const receipt = await tx.wait()
+    console.log("Transaction was mined in block:", receipt.blockNumber)
+  } catch (error) {
+    console.error("Error calling setExchangeAddress:", error)
+  }
 }
