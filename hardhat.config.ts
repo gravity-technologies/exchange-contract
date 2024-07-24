@@ -13,44 +13,13 @@ import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 
-<<<<<<< HEAD
 import "./scripts/deploy-exchange-on-l2-through-l1";
 import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 
-=======
->>>>>>> main
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
-<<<<<<< HEAD
-    zkSyncSepoliaTestnet: {
-      url: "https://sepolia.era.zksync.dev",
-      ethNetwork: "sepolia",
-      zksync: true,
-      verifyURL: "https://explorer.sepolia.era.zksync.dev/contract_verification",
-    },
-    zkSyncMainnet: {
-      url: "https://mainnet.era.zksync.io",
-      ethNetwork: "mainnet",
-      zksync: true,
-      verifyURL: "https://zksync2-mainnet-explorer.zksync.io/contract_verification",
-    },
-    zkSyncGoerliTestnet: {
-      // deprecated network
-      url: "https://testnet.era.zksync.dev",
-      ethNetwork: "goerli",
-      zksync: true,
-      verifyURL: "https://zksync2-testnet-explorer.zksync.dev/contract_verification",
-    },
-    dockerizedNode: {
-      url: "http://localhost:3050",
-      ethNetwork: "http://localhost:8545",
-      zksync: true,
-      chainId: 270,
-    },
-=======
->>>>>>> main
     inMemoryNode: {
       url: "http://127.0.0.1:8011",
       ethNetwork: "", // in-memory node doesn't support eth node; removing this line will cause an error
@@ -62,8 +31,6 @@ const config: HardhatUserConfig = {
       ethNetwork: "https://eth.zkdev.gravitymarkets.io",
       zksync: true,
       chainId: 271,
-<<<<<<< HEAD
-=======
     },
     grvtTestnet: {
       url: "https://zkstack.testnet.grvt.internal",
@@ -76,7 +43,6 @@ const config: HardhatUserConfig = {
       ethNetwork: "http://zkstack.grvt.internal:8545",
       zksync: true,
       chainId: 325,
->>>>>>> main
     },
     hardhat: {
       zksync: true,
