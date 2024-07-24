@@ -9,14 +9,6 @@ import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts
 import {IL2TokenFundExchange} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2TokenFundExchange.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 
-abstract contract ERC20 {
-  /**
-   * @dev Moves a `value` amount of tokens from the caller's account to `to`.
-   * Returns a boolean value indicating whether the operation succeeded.
-   */
-  function transfer(address to, uint256 value) external virtual returns (bool);
-}
-
 abstract contract TransferContract is TradeContract {
   using BIMath for BI;
 
@@ -25,21 +17,24 @@ abstract contract TransferContract is TradeContract {
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
+   * @param txHash hash of the BridgeMint event
    * @param accountID  account to deposit into
    * @param currency Currency to deposit
    * @param numTokens Number of tokens to deposit
-   * @param sig Signature of the transaction
    **/
   function deposit(
     int64 timestamp,
     uint64 txID,
-    address fromEthAddress, // TODO: remove this, not needed
+    bytes32 txHash,
     address accountID,
     Currency currency,
-    uint64 numTokens,
-    Signature calldata sig // TODO: remove this, not needed
+    uint64 numTokens
   ) external {
     _setSequence(timestamp, txID);
+
+    require(!state.replay.executed[txHash], "replayed payload");
+    state.replay.executed[txHash] = true;
+
     // Signature verification is not required as this will always be called by our backend
     // and token transfer will fail if `fromEthAddress` haven't successfully bridged in
     // the token required for deposit
