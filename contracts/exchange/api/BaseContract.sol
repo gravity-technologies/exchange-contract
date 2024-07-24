@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
+import "../util/Address.sol";
 import "../common/Error.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
@@ -233,13 +234,5 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       assetToID(
         Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
       );
-  }
-
-  function signerHasPerm(
-    mapping(address => uint64) storage signers,
-    address signerAddress,
-    uint64 perm
-  ) internal view returns (bool) {
-    return (signers[signerAddress] & perm) != 0;
   }
 }

@@ -36,7 +36,7 @@ abstract contract APIBase is BaseTest {
     uint32 sigNonce = random();
     Signature[] memory sigs = new Signature[](wallets.length);
     for (uint i = 0; i < wallets.length; i++) {
-      bytes32 structHash = hashAddAccountSigner(accountID, signer, permissions, sigNonce);
+      bytes32 structHash = hashAddAccountSigner(accountID, signer, permissions, sigNonce, expiry);
       Signature memory sig = getUserSig(wallets[i], privateKeys[i], DOMAIN_HASH, structHash, expiry, sigNonce);
       sigs[i] = sig;
     }

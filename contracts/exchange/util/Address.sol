@@ -27,3 +27,22 @@ function removeAddress(address[] storage arr, address addressToRemove, bool prev
   }
   require(false, "not found");
 }
+
+// Remove an address from an array, if such address exists.
+function removeAddressIfExists(address[] storage arr, address addressToRemove) {
+  for (uint256 i; i < arr.length; ++i) {
+    if (arr[i] != addressToRemove) continue;
+    // Move the last element to the position of the element to be removed
+    arr[i] = arr[arr.length - 1];
+    arr.pop();
+    return;
+  }
+}
+
+function signerHasPerm(
+  mapping(address => uint64) storage signers,
+  address signerAddress,
+  uint64 perm
+) view returns (bool) {
+  return (signers[signerAddress] & perm) != 0;
+}

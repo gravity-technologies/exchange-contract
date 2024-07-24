@@ -106,7 +106,7 @@ contract WalletRecoveryContract is BaseContract {
       delete subAcc.signers[oldSigner];
     }
 
-    removeAddress(acc.recoveryAddresses[oldSigner], newSigner, false);
+    removeAddressIfExists(acc.recoveryAddresses[oldSigner], newSigner);
     acc.recoveryAddresses[newSigner] = acc.recoveryAddresses[oldSigner];
     delete acc.recoveryAddresses[oldSigner];
   }

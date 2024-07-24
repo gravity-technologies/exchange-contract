@@ -34,23 +34,19 @@ jobs:
         run: |
           yarn install
 
-      - name: Compile era contracts
-        run: |
-          yarn compile:era
-
       - name: Run Era Test Node Action
         uses: gravity-technologies/era-test-node-action@main
         with:
           mode: 'run'
           showCalls: 'user'
           log: 'info'
+          logFilePath: 'era_test_node.log'
           target: 'x86_64-unknown-linux-gnu'
           releaseTag: v0.1.0-alpha.19.dz-free-pubdata
           downloadUrlOverride: 'https://github.com/gravity-technologies/era-test-node/releases/download/v0.1.0-alpha.19.dz-free-pubdata/era_test_node-v0.1.0-alpha.19.dz-free-pubdata-x86_64-unknown-linux-gnu.tar.gz'
       - name: Run Hardhat tests
         run: |
           yarn prettier:check
-          yarn compile:era
           yarn test:hardhat
         id: test-hardhat
 

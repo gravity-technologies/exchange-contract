@@ -5,8 +5,8 @@ import { LOCAL_RICH_WALLETS, deployContract, getProvider, getWallet } from "../.
 import { expectToThrowAsync, getDeployerWallet } from "../util"
 import { validateExpectations } from "./Getters"
 import { DepositTxInfo, TestCase, TestStep, loadTestFilesFromDir, parseTestsFromFile } from "./TestEngineTypes"
-import { L2SharedBridge__factory } from "../../typechain-types/factories/lib/era-contracts/l2-contracts/contracts/bridge/L2SharedBridge__factory"
-import { L2SharedBridge } from "../../typechain-types/lib/era-contracts/l2-contracts/contracts/bridge/L2SharedBridge"
+import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
+import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridge"
 import { execSync } from 'child_process';
 import path from 'path';
 
@@ -54,12 +54,18 @@ describe.only("API - TestEngine", function () {
     ].join(" "), { cwd: path.resolve('lib/era-contracts/l2-contracts'), stdio: 'pipe' });
 
     const l2SharedBridgeAddress = result.toString().trim();
-    const l2SharedBridge = L2SharedBridge__factory.connect(l2SharedBridgeAddress, deployerWallet);
+    const l2SharedBridge = L2SharedBridgeFactory.connect(l2SharedBridgeAddress, deployerWallet);
+
+    console.log(`Deployed L2SharedBridge at ${l2SharedBridgeAddress}`);
+    for (const token in L2TokenInfo) {
+      const tokenAddress = await l2SharedBridge.l2TokenAddress(L2TokenInfo[token].l1Token);
+      console.log(`Token ${token} has L2 address ${tokenAddress}`);
+    }
 
     // exchange address is required before ERC20 can be deployed
     await (await l2SharedBridge.setExchangeAddress(exchangeContract.address)).wait();
 
-    l2SharedBridgeAsL1Bridge = L2SharedBridge__factory.connect(l2SharedBridgeAddress, l1BridgeWallet);
+    l2SharedBridgeAsL1Bridge = L2SharedBridgeFactory.connect(l2SharedBridgeAddress, l1BridgeWallet);
   })
 
   after(async () => {
@@ -93,6 +99,7 @@ describe.only("API - TestEngine", function () {
     "TestDeposit.json",
     "TestTransfer.json",
     "TestWithdrawal.json",
+    // "TestLiquidate.json"
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",

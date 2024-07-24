@@ -15,7 +15,7 @@
     "compile:era": "yarn compile:era:l1 && yarn compile:era:l2",
     "compile:era:l1": "cd lib/era-contracts/l1-contracts && yarn && npx hardhat compile",
     "compile:era:l2": "cd lib/era-contracts/l2-contracts && yarn && npx hardhat compile",
-    "test:hardhat": "hardhat test --network inMemoryNode",
+    "test:hardhat": "yarn compile:era && hardhat test --network inMemoryNode",
     "test:forge": "forge test -vv",
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",
     "prettier:sol": "prettier --write --plugin=prettier-plugin-solidity contracts/**/*.sol",

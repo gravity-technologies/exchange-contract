@@ -24,7 +24,7 @@ const config: HardhatUserConfig = {
       url: "http://127.0.0.1:8011",
       ethNetwork: "", // in-memory node doesn't support eth node; removing this line will cause an error
       zksync: true,
-      chainId: 271, // found using era_test_node run
+      chainId: 260, // found using era_test_node run
     },
     grvtDev: {
       url: "https://zkrpc.zkdev.gravitymarkets.io",
