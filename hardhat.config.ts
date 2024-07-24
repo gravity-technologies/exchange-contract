@@ -13,6 +13,10 @@ import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 
+import "./scripts/deploy-exchange-on-l2-through-l1";
+import "./scripts/set-exchange-address";
+import "./scripts/upgrade-exchange-through-l1-governance";
+
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
@@ -23,8 +27,8 @@ const config: HardhatUserConfig = {
       chainId: 260, // found using era_test_node run
     },
     grvtDev: {
-      url: "http://zkstack.dev.grvt.internal",
-      ethNetwork: "http://zkstack.dev.grvt.internal:8545",
+      url: "https://zkrpc.zkdev.gravitymarkets.io",
+      ethNetwork: "https://eth.zkdev.gravitymarkets.io",
       zksync: true,
       chainId: 271,
     },
@@ -45,7 +49,7 @@ const config: HardhatUserConfig = {
     },
   },
   zksolc: {
-    version: "latest",
+    version: "1.5.1",
     settings: {
       // find all available options in the official documentation
       // https://era.zksync.io/docs/tools/hardhat/hardhat-zksync-solc.html#configuration
