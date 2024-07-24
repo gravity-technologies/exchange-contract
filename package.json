@@ -12,7 +12,9 @@
     "lint": "solhint -f table contracts/**/*.sol --ignore-path .solhintignore",
     "lint:quiet": "solhint -q contracts/**/*.sol",
     "compile": "hardhat compile",
-    "compile:era": "cd lib/era-contracts/l2-contracts && yarn && npx hardhat compile",
+    "compile:era": "yarn compile:era:l1 && yarn compile:era:l2",
+    "compile:era:l1": "cd lib/era-contracts/l1-contracts && yarn && npx hardhat compile",
+    "compile:era:l2": "cd lib/era-contracts/l2-contracts && yarn && npx hardhat compile",
     "test:hardhat": "hardhat test --network inMemoryNode",
     "test:forge": "forge test -vv",
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",
@@ -29,7 +31,7 @@
   },
   "devDependencies": {
     "@matterlabs/hardhat-zksync-chai-matchers": "^1.2.1",
-    "@matterlabs/hardhat-zksync-deploy": "^0.7.0",
+    "@matterlabs/hardhat-zksync-deploy": "0.7.0",
     "@matterlabs/hardhat-zksync-node": "^0.0.1",
     "@matterlabs/hardhat-zksync-solc": "^1.1.4",
     "@matterlabs/hardhat-zksync-upgradable": "^0.2.2",
@@ -39,8 +41,8 @@
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
     "@nomicfoundation/hardhat-foundry": "^1.1.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
-    "@openzeppelin/contracts": "^4.9.6",
-    "@openzeppelin/contracts-upgradeable": "^4.9.6",
+    "@openzeppelin/contracts": "4.9.5",
+    "@openzeppelin/contracts-upgradeable": "4.9.5",
     "@typechain/ethers-v5": "^11.1.2",
     "@typechain/hardhat": "^7.0.0",
     "@types/chai": "^4.3.4",
@@ -56,7 +58,8 @@
     "ts-node": "^10.9.2",
     "typechain": "^8.3.2",
     "typescript": "^5.4.2",
-    "zksync-ethers": "^5.0.0"
+    "zksync-ethers": "^5.0.0",
+    "zksync-web3": "^0.15.4"
   },
   "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
