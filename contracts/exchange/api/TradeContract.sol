@@ -56,7 +56,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
         BI memory tradeSize = BI(int256(uint256(size)), udec);
         BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
-        uint64 notionalU64 = notional.toUint64(PRICE_DECIMALS);
 
         // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
         if (leg.isBuyingAsset) {

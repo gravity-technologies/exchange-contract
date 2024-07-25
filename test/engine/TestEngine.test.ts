@@ -86,6 +86,7 @@ describe.only("API - TestEngine", function () {
     "TestConfigChain.json",
     "TestConfigChainDefault.json",
     "TestCreateAccount.json",
+    "TestDeposit.json",
     "TestFundingRate.json",
     "TestInterestRate.json",
     "TestMarkPrice.json",
@@ -96,7 +97,6 @@ describe.only("API - TestEngine", function () {
     "TestSessionKey.json",
     "TestSettlementPrice.json",
     "TestSubAccount.json",
-    "TestDeposit.json",
     "TestTransfer.json",
     "TestWithdrawal.json",
     // "TestLiquidate.json"

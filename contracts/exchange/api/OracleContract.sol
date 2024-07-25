@@ -22,7 +22,7 @@ contract OracleContract is ConfigContract {
   /// @param txID the transaction ID of the price tick
   /// @param prices the prices of the assets
   /// @param sig the signature of the price tick
-  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) public {
+  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) external {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
