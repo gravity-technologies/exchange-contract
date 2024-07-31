@@ -243,14 +243,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       );
   }
 
-  function signerHasPerm(
-    mapping(address => uint64) storage signers,
-    address signerAddress,
-    uint64 perm
-  ) internal view returns (bool) {
-    return (signers[signerAddress] & perm) != 0;
-  }
-
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
     if (kind == Kind.PERPS) return sub.perps;
     if (kind == Kind.FUTURES) return sub.futures;
