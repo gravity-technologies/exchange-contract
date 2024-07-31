@@ -130,13 +130,11 @@ contract OracleContract is ConfigContract {
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
-      (uint64 markPrice, bool found) = _getMarkPrice9Decimals(entry.assetID);
-      require(found, "no mark price");
+      BI memory markPrice = _requireMarkPriceBI(entry.assetID);
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
-      int256 delta = BI(int(uint(markPrice)), PRICE_DECIMALS)
-        .mul(BI(entry.value, CENTIBEEP_DECIMALS))
-        .div(BI(TIME_FACTOR, 0))
-        .toInt256(PRICE_DECIMALS);
+      int256 delta = markPrice.mul(BI(entry.value, CENTIBEEP_DECIMALS)).div(BI(TIME_FACTOR, 0)).toInt256(
+        PRICE_DECIMALS
+      );
       fundings[entry.assetID] += int64(delta);
     }
     state.prices.fundingTime = sig.expiration;

@@ -5,6 +5,7 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/Address.sol";
 import "../common/Error.sol";
+import "../util/BIMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
@@ -165,6 +166,12 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 
+  function _requireMarkPriceBI(bytes32 assetID) internal view returns (BI memory) {
+    (uint64 markPrice, bool found) = _getMarkPrice9Decimals(assetID);
+    require(found, "mark price not found");
+    return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
+  }
+
   // Price utils
   function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
@@ -234,5 +241,32 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       assetToID(
         Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
       );
+  }
+
+  function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
+    if (kind == Kind.PERPS) return sub.perps;
+    if (kind == Kind.FUTURES) return sub.futures;
+    return sub.options;
+  }
+
+  function _getOrCreatePosition(SubAccount storage sub, bytes32 assetID) internal returns (Position storage) {
+    Kind kind = assetGetKind(assetID);
+    PositionsMap storage posmap = _getPositionCollection(sub, kind);
+
+    // If the position already exists, return it
+    if (posmap.values[assetID].id != 0x0) {
+      return posmap.values[assetID];
+    }
+
+    // Otherwise, create a new position
+    Position storage pos = getOrNew(posmap, assetID);
+
+    if (kind == Kind.PERPS) {
+      // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
+      // to avoid mis-calculation of funding payment (leads to improper accounting of on-chain assets)
+      pos.lastAppliedFundingIndex = state.prices.fundingIndex[assetID];
+    }
+
+    return pos;
   }
 }

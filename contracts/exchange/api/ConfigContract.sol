@@ -64,12 +64,12 @@ contract ConfigContract is BaseContract {
   // }
 
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return int64(uint64((uint256(v))));
+    return int64(uint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int64(uint64((uint256(c.val)))), c.isSet);
+    return (int64(uint64(uint256(c.val))), c.isSet);
   }
 
   // function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
@@ -83,7 +83,7 @@ contract ConfigContract is BaseContract {
 
   function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int32(uint32((uint256(c.val)))), c.isSet);
+    return (int32(uint32(uint256(c.val))), c.isSet);
   }
 
   function _getCentibeepConfig2D(ConfigID key, bytes32 subKey) internal view returns (int32, bool) {
@@ -99,7 +99,7 @@ contract ConfigContract is BaseContract {
   }
 
   function _configToUint(bytes32 v) internal pure returns (uint64) {
-    return uint64((uint256(v)));
+    return uint64(uint256(v));
   }
 
   function _getUintConfig(ConfigID key) internal view returns (uint64, bool) {
@@ -113,6 +113,19 @@ contract ConfigContract is BaseContract {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
     return (uint64(uint256(c.val)), c.isSet);
+  }
+
+  function _getByte32Config(ConfigID key) internal view returns (bytes32, bool) {
+    ConfigValue storage c = state.config1DValues[key];
+    return (c.val, c.isSet);
+  }
+
+  function _getByte32Config2D(ConfigID key, bytes32 subKey) internal view returns (bytes32, bool) {
+    ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
+    return (c.val, c.isSet);
   }
 
   // function _boolToConfig(bool v) internal pure returns (bytes32) {
@@ -349,6 +362,10 @@ contract ConfigContract is BaseContract {
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }
 
+  function _getMaintenanceMarginBytes32(uint32 volume, uint32 ratio) internal pure returns (bytes32) {
+    return bytes32((uint(volume) << 224) | (uint(ratio) << 160));
+  }
+
   ///////////////////////////////////////////////////////////////////
   /// Default Config Settings
   ///////////////////////////////////////////////////////////////////
@@ -359,6 +376,9 @@ contract ConfigContract is BaseContract {
 
     mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
+
+    bytes32 btc = _currencyToConfig(Currency.BTC);
+    bytes32 eth = _currencyToConfig(Currency.ETH);
 
     // This is a special value that represents an empty value for a config
     // bytes32 emptyValue = bytes32(uint256(0));
@@ -393,10 +413,10 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(50 * ONE_CENTIBEEP);
-    v2d[bytes32(uint256(Currency.BTC))].isSet = true;
-    v2d[bytes32(uint256(Currency.BTC))].val = _centiBeepToConfig(50 * ONE_CENTIBEEP);
-    v2d[bytes32(uint256(Currency.ETH))].isSet = true;
-    v2d[bytes32(uint256(Currency.ETH))].val = _centiBeepToConfig(4 * ONE_CENTIBEEP);
+    v2d[btc].isSet = true;
+    v2d[btc].val = _centiBeepToConfig(50 * ONE_CENTIBEEP);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _centiBeepToConfig(4 * ONE_CENTIBEEP);
 
     // SM_OPTIONS_INITIAL_MARGIN_HIGH
     id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_HIGH;
@@ -537,16 +557,38 @@ contract ConfigContract is BaseContract {
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
-    values1D[id].isSet = true;
-    values1D[id].val = addr;
 
-    // // ADMIN_FEE_SUB_ACCOUNT_ID
+    id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(10_0000, 75);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(100_0000, 75);
+
+    id = ConfigID.MAINTENANCE_MARGIN_TIER_02;
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(50_0000, 125);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(500_0000, 125);
+
+    id = ConfigID.MAINTENANCE_MARGIN_TIER_03;
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(100_0000, 175);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(1000_0000, 175);
+
+    // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
 
-    // // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
-    // id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
-    // settings[id].typ = ConfigType.UINT;
+    // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
+    id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
     // values1D[id].val = 0;
 
     ///////////////////////////////////////////////////////////////////
@@ -603,6 +645,16 @@ contract ConfigContract is BaseContract {
     settings[id].typ = ConfigType.UINT;
     values1D[id].isSet = true;
     values1D[id].val = _uintToConfig(DEFAULT_WITHDRAWAL_FEE_USD * _getBalanceMultiplier(Currency.USD));
+
+    // MAINTENANCE MARGIN TIERS
+    uint hi = uint(ConfigID.MAINTENANCE_MARGIN_TIER_12);
+    for (uint i = uint(ConfigID.MAINTENANCE_MARGIN_TIER_01); i <= hi; i++) {
+      settings[ConfigID(i)].typ = ConfigType.BYTE322D;
+    }
+
+    // INSURANCE FUND ID
+    id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
+    settings[id].typ = ConfigType.UINT;
   }
 
   struct DefaultAddress {
