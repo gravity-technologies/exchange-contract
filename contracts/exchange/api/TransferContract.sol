@@ -76,7 +76,9 @@ abstract contract TransferContract is TradeContract {
 
     // Check if the signer has the permission to withdraw
     _requireAccountPermission(acc, sig.signer, AccountPermWithdraw);
-    require(acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
+
+    bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
+    require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
     int64 numTokensSigned = int64(numTokens);
     require(numTokensSigned >= 0, "invalid withdrawal amount");
@@ -195,7 +197,8 @@ abstract contract TransferContract is TradeContract {
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
-    require(fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
+    bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
+    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;

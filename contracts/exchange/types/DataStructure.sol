@@ -299,7 +299,9 @@ enum ConfigID {
   MAINTENANCE_MARGIN_TIER_12, // 42
   WITHDRAWAL_FEE, // 43
   // Liquidation
-  INSURANCE_FUND_SUB_ACCOUNT_ID // 44
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 44
+  // Bridging Partners Accounts can transfer and withdraw to any address
+  BRIDGING_PARTNER_ADDRESSES // 45
 }
 
 struct ConfigValue {
