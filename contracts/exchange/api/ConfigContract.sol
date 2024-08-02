@@ -655,6 +655,10 @@ contract ConfigContract is BaseContract {
     // INSURANCE FUND ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+
+    // BRIDGING PARTNER ADDRESSES
+    id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
+    settings[id].typ = ConfigType.BOOL2D;
   }
 
   struct DefaultAddress {

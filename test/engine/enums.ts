@@ -63,4 +63,5 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   MAINTENANCE_MARGIN_TIER_12: 42,
   WITHDRAWAL_FEE: 43,
   INSURANCE_FUND_SUB_ACCOUNT_ID: 44,
+  BRIDGING_PARTNER_ADDRESSES: 45,
 }
