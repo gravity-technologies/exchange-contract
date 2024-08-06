@@ -27,14 +27,14 @@ const config: HardhatUserConfig = {
       chainId: 260, // found using era_test_node run
     },
     grvtDev: {
-      url: "https://zkrpc.zkdev.gravitymarkets.io",
-      ethNetwork: "https://eth.zkdev.gravitymarkets.io",
+      url: "https://zkrpc-test.testnet.grvt.io/",
+      ethNetwork: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       zksync: true,
-      chainId: 271,
+      chainId: 327,
     },
     grvtTestnet: {
-      url: "https://zkstack.testnet.grvt.internal",
-      ethNetwork: "http://zkstack.testnet.internal:8545",
+      url: "https://rpc.zkdev.gravitymarkets.io",
+      ethNetwork: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       zksync: true,
       chainId: 326,
     },
