@@ -6,7 +6,7 @@ import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders } from "./utils"
 import { task } from "hardhat/config"
 import { applyL1ToL2Alias, hashBytecode } from "zksync-web3/build/src/utils"
-import { Interface, keccak256 } from "ethers/lib/utils"
+import { Interface } from "ethers/lib/utils"
 
 task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
   .addParam("l1DeployerPrivateKey", "l1DeployerPrivateKey")
