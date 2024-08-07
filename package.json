@@ -23,6 +23,7 @@
     "sizer": "forge build --sizes",
     "deploy": "hardhat deploy-zksync --script deploy.ts",
     "deploy:upgradable": "hardhat deploy-zksync --script deployupgradable.ts",
+    "deploy:upgradabletest": "hardhat deploy-zksync --script deployupgradabletest.ts",
     "deploy:upgrade": "hardhat deploy-zksync --script upgrade.ts",
     "execute": "hardhat deploy-zksync --script",
     "clean": "hardhat clean",

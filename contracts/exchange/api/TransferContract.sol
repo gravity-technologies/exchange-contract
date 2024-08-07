@@ -8,6 +8,7 @@ import "../util/BIMath.sol";
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
 import {IL2TokenFundExchange} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2TokenFundExchange.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
+import "hardhat/console.sol";
 
 abstract contract TransferContract is TradeContract {
   using BIMath for BI;
@@ -32,7 +33,9 @@ abstract contract TransferContract is TradeContract {
   ) external {
     _setSequence(timestamp, txID);
 
+    console.log(0x1);
     require(!state.replay.executed[txHash], "replayed payload");
+    console.log(0x2);
     state.replay.executed[txHash] = true;
 
     // Signature verification is not required as this will always be called by our backend
@@ -40,11 +43,13 @@ abstract contract TransferContract is TradeContract {
     // the token required for deposit
 
     int64 numTokensSigned = int64(numTokens);
-    require(numTokensSigned >= 0, "invalid withdrawal amount");
+    require(numTokensSigned >= 0, "invalid deposit amount");
+    console.log(0x3);
 
-    uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
+    // uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
-    IL2TokenFundExchange(getCurrencyERC20Address(currency)).fundExchangeAccount(accountID, fundExchangeAmount);
+    // IL2TokenFundExchange(getCurrencyERC20Address(currency)).fundExchangeAccount(accountID, fundExchangeAmount);
+    console.log(0x4);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
