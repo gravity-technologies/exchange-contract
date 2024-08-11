@@ -40,7 +40,7 @@ abstract contract TransferContract is TradeContract {
     // the token required for deposit
 
     int64 numTokensSigned = int64(numTokens);
-    require(numTokensSigned >= 0, "invalid withdrawal amount");
+    require(numTokensSigned >= 0, "invalid deposit amount");
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
@@ -219,6 +219,7 @@ abstract contract TransferContract is TradeContract {
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
     _requireSubAccountUnderAccount(toSubAcc, toAccID);
+    _fundAndSettle(toSubAcc);
     toSubAcc.spotBalances[currency] += numTokens;
   }
 

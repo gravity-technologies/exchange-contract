@@ -18,7 +18,8 @@ contract FundingAndSettlement is BaseContract {
 
   function _fundPerp(SubAccount storage sub) internal {
     // Skip Funding, since it has already been applied
-    if (sub.lastAppliedFundingTimestamp == state.prices.fundingTime) {
+    int64 fundingTime = state.prices.fundingTime;
+    if (sub.lastAppliedFundingTimestamp == fundingTime) {
       return;
     }
 
@@ -29,8 +30,6 @@ contract FundingAndSettlement is BaseContract {
     BI memory fundingPayment;
 
     bytes32[] storage keys = perps.keys;
-    int64 fundingTime = state.prices.fundingTime;
-    int64 newSpotBalance = int64(sub.spotBalances[quoteCurrency]);
     uint len = keys.length;
     for (uint i; i < len; ++i) {
       bytes32 assetID = keys[i];
@@ -47,9 +46,8 @@ contract FundingAndSettlement is BaseContract {
           .scale(qdec)
       );
       perp.lastAppliedFundingIndex = latestFundingIndex;
-      newSpotBalance += fundingPayment.toInt64(qdec);
     }
-    sub.spotBalances[quoteCurrency] = newSpotBalance;
+    sub.spotBalances[quoteCurrency] += fundingPayment.toInt64(qdec);
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
