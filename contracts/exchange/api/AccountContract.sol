@@ -94,14 +94,15 @@ contract AccountContract is BaseContract {
     // ------- End of Signature Verification -------
 
     uint64 curPerm = acc.signers[signer];
-    if (curPerm & AccountPermAdmin == 0 && permissions & AccountPermAdmin != 0) {
+    bool isCurrentlyAdmin = curPerm & AccountPermAdmin != 0;
+    bool isNewlyAdmin = permissions & AccountPermAdmin != 0;
+    if (!isCurrentlyAdmin && isNewlyAdmin) {
       acc.adminCount++;
-    }
-
-    if (curPerm & AccountPermAdmin != 0 && permissions & AccountPermAdmin == 0) {
-      require(acc.adminCount > 1, "require 1 admin");
-      require(acc.multiSigThreshold <= acc.adminCount - 1, "require threshold <= adminCount - 1");
-      acc.adminCount--;
+    } else if (isCurrentlyAdmin && !isNewlyAdmin) {
+      uint64 newAdminCount = acc.adminCount - 1;
+      require(newAdminCount > 0, "require 1 admin");
+      require(acc.multiSigThreshold <= newAdminCount, "multisigThreshold must <= admins");
+      acc.adminCount = newAdminCount;
     }
 
     acc.signers[signer] = permissions;
@@ -138,9 +139,10 @@ contract AccountContract is BaseContract {
     uint64 curPerm = acc.signers[signer];
     bool isAdmin = curPerm & AccountPermAdmin != 0;
     if (isAdmin) {
-      require(acc.adminCount > 1, "require 1 admin");
-      require(acc.multiSigThreshold <= acc.adminCount - 1, "require threshold <= adminCount - 1");
-      acc.adminCount--;
+      uint64 newAdminCount = acc.adminCount - 1;
+      require(newAdminCount > 0, "require 1 admin");
+      require(acc.multiSigThreshold <= newAdminCount, "multisigThreshold must <= admins");
+      acc.adminCount = newAdminCount;
     }
     acc.signers[signer] = 0;
   }
