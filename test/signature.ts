@@ -1,8 +1,8 @@
 import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
 import { randomInt } from "crypto"
 import { Wallet, utils } from "ethers"
-import * as Types from "../signatures/message/type"
-import { OrderNoSignature, ZKSyncMysteryBoxDefiTaskSignature, Signature, PriceEntry, PriceEntrySig } from "./type"
+import * as Types from "../signatures/schema"
+import { OrderNoSignature, PriceEntrySig, Signature } from "./type"
 import { buf, getTimestampNs } from "./util"
 
 export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
@@ -124,7 +124,7 @@ export function genAddTransferSubAccountPayloadSig(
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
-    ...Types.AddTransferSubAccount,
+    ...Types.AddTransferAccount,
     message: {
       accountID,
       transferSubAccount,
@@ -133,14 +133,14 @@ export function genAddTransferSubAccountPayloadSig(
   })
 }
 
-export function genRemoveTransferSubAccountPayloadSig(
+export function genRemoveTransferAccountPayloadSig(
   wallet: Wallet,
   accountID: string,
   transferSubAccount: string,
   nonce: number = randomInt(22021991)
 ): Signature {
   return sign(wallet, {
-    ...Types.RemoveTransferSubAccount,
+    ...Types.RemoveTransferAccount,
     message: {
       accountID,
       transferSubAccount,
@@ -303,30 +303,12 @@ export function genAddSessionKeySig(
 // Trade
 export function genOrderSig(wallet: Wallet, order: OrderNoSignature): Signature {
   return sign(wallet, {
-    ...Types.Order,
+    ...Types.OrderSchema,
     message: order,
   })
 }
 
 // Transfer
-export function genDepositSig(
-  wallet: Wallet,
-  fromEthAddress: string,
-  toSubaccount: string,
-  numTokens: number,
-  nonce: number = randomInt(22021991)
-): Signature {
-  return sign(wallet, {
-    ...Types.Deposit,
-    message: {
-      fromEthAddress,
-      toSubaccount,
-      numTokens,
-      nonce,
-    },
-  })
-}
-
 export function genWithdrawalSig(
   wallet: Wallet,
   fromSubaccount: string,
@@ -376,14 +358,6 @@ export function genPriceTick(
       timestamp,
       nonce,
     },
-  })
-}
-
-// ZKSyncMysteryBoxDefiTask
-export function genZKSyncMysteryBoxDefiTaskSig(wallet: Wallet, task: ZKSyncMysteryBoxDefiTaskSignature): Signature {
-  return sign(wallet, {
-    ...Types.ZKSynvMysteryBoxDefiTask,
-    message: task,
   })
 }
 
