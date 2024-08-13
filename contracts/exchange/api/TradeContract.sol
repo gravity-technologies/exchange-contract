@@ -9,6 +9,7 @@ import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
+import "hardhat/console.sol";
 
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
@@ -153,6 +154,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory optionIndexNotional,
     int64 totalFee
   ) internal {
+    console.log("isMaker", uint(isMakerOrder ? 1 : 0));
     // Arrange from cheapest to most expensive verification
 
     // Check that quote asset is the same as subaccount quote asset
@@ -206,7 +208,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
+      console.log("orderHash", uint(orderHash));
+      console.log("isWholeOrder", uint(isWholeOrder ? 1 : 0));
+      console.log("prevSize", executedSize[leg.assetID]);
+      console.log("tradeSizes", tradeSizes[i]);
+      console.log("total", total);
+      console.log("order.size", leg.size);
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
+      console.log("size OK");
       executedSize[leg.assetID] = total;
     }
 
