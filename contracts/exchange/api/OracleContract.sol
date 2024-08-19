@@ -62,7 +62,7 @@ contract OracleContract is ConfigContract {
     uint len = prices.length;
     for (uint i; i < len; ++i) {
       SettlementTick calldata entry = prices[i];
-      bytes32 assetID = bytes32(uint(entry.assetID));
+      bytes32 assetID = entry.assetID;
       // Asset kind must be settlement and quoted in USD
       require(
         assetGetKind(assetID) == Kind.SETTLEMENT && assetGetQuote(assetID) == Currency.USD,
