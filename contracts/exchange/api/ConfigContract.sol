@@ -153,7 +153,7 @@ contract ConfigContract is BaseContract {
   // }
 
   function _currencyToConfig(Currency v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint(v)));
+    return bytes32(uint256(v));
   }
 
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
