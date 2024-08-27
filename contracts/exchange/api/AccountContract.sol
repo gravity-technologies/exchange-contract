@@ -17,6 +17,7 @@ contract AccountContract is BaseContract {
 
     Account storage acc = state.accounts[accountID];
     require(acc.id == address(0), "account already exists");
+    require(accountID == sig.signer, "accountID must be signer");
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashCreateAccount(accountID, sig.nonce, sig.expiration);
