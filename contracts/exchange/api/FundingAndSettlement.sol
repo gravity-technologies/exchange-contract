@@ -51,28 +51,40 @@ contract FundingAndSettlement is BaseContract {
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
+  struct SettmentEntry {
+    bytes32 assetID;
+    uint64 settlePrice;
+  }
+
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
     uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
     BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
     uint posLen = posKeys.length;
+
+    SettmentEntry[] memory settlements = new SettmentEntry[](posLen);
+    uint settlementCount = 0;
     for (uint i; i < posLen; ++i) {
       bytes32 assetID = posKeys[i];
       (uint64 settlePrice, bool found) = _getAssetSettlementPrice(assetID);
       if (!found) {
         continue;
       }
+      settlements[settlementCount] = SettmentEntry(assetID, settlePrice);
+      settlementCount++;
+    }
 
-      int64 positionBalance = posValues[assetID].balance;
-      remove(positions, assetID);
-
-      if (settlePrice == 0) {
+    for (uint i = 0; i < settlementCount; i++) {
+      SettmentEntry memory entry = settlements[i];
+      int64 positionBalance = posValues[entry.assetID].balance;
+      remove(positions, entry.assetID);
+      if (entry.settlePrice == 0) {
         continue;
       }
 
-      BI memory posBalance = BI(positionBalance, _getBalanceDecimal(assetGetUnderlying(assetID)));
-      newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(settlePrice)), PRICE_DECIMALS)));
+      BI memory posBalance = BI(positionBalance, _getBalanceDecimal(assetGetUnderlying(entry.assetID)));
+      newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(entry.settlePrice)), PRICE_DECIMALS)));
     }
     sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
