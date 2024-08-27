@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
+import "./FundingAndSettlement.sol";
 import "./BaseContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 
-contract SubAccountContract is BaseContract {
+contract SubAccountContract is BaseContract, FundingAndSettlement {
   int64 private constant _MAX_SESSION_DURATION_NANO = 24 * 60 * 60 * 1e9; // 24 hours
 
   /// @notice Create a subaccount
@@ -75,6 +76,7 @@ contract SubAccountContract is BaseContract {
     // To change margin type requires that there's no OPEN position
     // See Binance: https://www.binance.com/en/support/faq/how-to-switch-between-cross-margin-mode-and-isolated-margin-mode-360038075852#:~:text=You%20are%20not%20allowed%20to%20change%20the%20margin%20mode%20if%20you%20have%20any%20open%20orders%20or%20positions%3B
     // TODO: revise this to if subaccount is liquidatable under new margin model. If it is not, we allow it through.
+    _fundAndSettle(sub);
     require(sub.options.keys.length + sub.futures.keys.length + sub.perps.keys.length == 0, "open positions exist");
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
 
