@@ -162,18 +162,23 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(assetGetQuote(legs[i].assetID) == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
     }
 
-    // Check that the signer has trade permission
-    address subAccountSigner = order.signature.signer;
-    Session storage session = state.sessions[subAccountSigner];
-    if (session.expiry != 0) {
-      require(session.expiry >= timestamp, ERR_SESSION_EXPIRED);
-      subAccountSigner = session.subAccountSigner;
-    }
-    _requireSubAccountPermission(sub, subAccountSigner, SubAccountPermTrade);
-
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
     _requireValidSig(timestamp, orderHash, order.signature);
+
+    // Check that the signer has trade permission
+    Session storage session = state.sessions[order.signature.signer];
+
+    // The signer is considered to have trade permission if any of the following is true:
+    // - order's signer is in the session key map, and session hasn't expired, and the sessionKey's signer has trade permission
+    // - order's signer has trade permission
+    require(
+      (session.expiry != 0 &&
+        session.expiry >= timestamp &&
+        hasSubAccountPermission(sub, session.subAccountSigner, SubAccountPermTrade)) ||
+        hasSubAccountPermission(sub, order.signature.signer, SubAccountPermTrade),
+      ERR_NO_TRADE_PERMISSION
+    );
 
     // Check that the order's total matched size after this trade does not exceed the order size
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
