@@ -5,6 +5,7 @@ string constant ERR_UNSUPPORTED_CURRENCY = "UC";
 string constant ERR_MISMATCH_QUOTE_CURRENCY = "MQC";
 string constant ERR_SESSION_EXPIRED = "SSE";
 string constant ERR_INVALID_MATCHED_SIZE = "IMS";
+string constant ERR_NO_TRADE_PERMISSION = "NTP";
 string constant ERR_MISSISNG_FEE_SUB_ACCOUNT = "MFEE";
 string constant ERR_FEE_CAP_EXCEEDED = "FCE";
 string constant ERR_OVERFLOW = "OF";
