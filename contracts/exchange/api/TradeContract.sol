@@ -134,6 +134,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
 
+    // Fund and settle the subaccount before checking total value
+    _fundAndSettle(sub);
+
     // Execute the order, ensuring sufficient balance pre and post trade
     _requireNonNegativeUsdValue(sub);
     _executeOrder(sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
@@ -229,8 +232,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 fee,
     bool isFeeCharged
   ) internal {
-    _fundAndSettle(sub);
-
     Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
 
