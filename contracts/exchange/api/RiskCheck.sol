@@ -5,6 +5,7 @@ import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
+import "hardhat/console.sol";
 
 contract RiskCheck is BaseContract {
   using BIMath for BI;
@@ -20,6 +21,11 @@ contract RiskCheck is BaseContract {
     BI memory totalValue = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
       _getPositionsUsdValue(sub.options)
     );
+    console.log(
+      "posValue",
+      totalValue.val > 0 ? "" : "-",
+      totalValue.val > 0 ? uint(totalValue.val) : uint(-totalValue.val)
+    );
 
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
       int64 balance = sub.spotBalances[i];
@@ -28,9 +34,23 @@ contract RiskCheck is BaseContract {
       }
       BI memory balanceBI = BI(int256(balance), _getBalanceDecimal(i));
       bytes32 spotID = _getSpotAssetID(i);
-      totalValue = totalValue.add(balanceBI.mul(_requireMarkPriceBI(spotID)));
+      BI memory spotMarkPrice = _requireMarkPriceBI(spotID);
+      BI memory spotValue = balanceBI.mul(spotMarkPrice);
+      uint balanceAbs = balanceBI.val > 0 ? uint(balanceBI.val) : uint(-balanceBI.val);
+      console.log(
+        "spotValue",
+        spotValue.val > 0 ? "" : "-",
+        spotValue.val > 0 ? uint(spotValue.val) : uint(-spotValue.val)
+      );
+      console.log("spot bxp", balanceAbs, uint(spotMarkPrice.val));
+      totalValue = totalValue.add(spotValue);
     }
 
+    console.log(
+      "totalValue",
+      totalValue.val > 0 ? "" : "-",
+      totalValue.val > 0 ? uint(totalValue.val) : uint(-totalValue.val)
+    );
     return totalValue;
   }
 
@@ -48,6 +68,11 @@ contract RiskCheck is BaseContract {
       uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetWithUSDQuote));
       BI memory balance = BI(int256(pos.balance), uDec);
       total = total.add(balance.mul(markPrice));
+      console.log(
+        pos.balance > 0 ? "bxp" : "bxp -",
+        pos.balance > 0 ? uint(uint64(pos.balance)) : uint(uint64(-pos.balance)),
+        uint(markPrice.val)
+      );
     }
     return total;
   }

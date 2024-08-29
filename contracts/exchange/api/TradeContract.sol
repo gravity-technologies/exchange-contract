@@ -16,6 +16,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
     _setSequence(timestamp, txID);
+    console.log("trade:setSequence");
 
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
@@ -35,6 +36,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 totalMakersFee;
 
     (uint64 feeSubID, bool isFeeCharged) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+    console.log(isFeeCharged ? "fee charged" : "no fee");
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
@@ -116,6 +118,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Deposit the trading fees, only once
     if (isFeeCharged) {
       Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
+      console.log("fee charged sub ok");
       _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
     }
   }
@@ -132,16 +135,33 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     bool isFeeCharged
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
+    console.log(isMakerOrder ? "maker" : "taker");
+    console.log("lastFundingTime", uint(uint64(sub.lastAppliedFundingTimestamp)));
+    // int64 spot = sub.spotBalances[Currency.USDT];
+    // console.log("spot", spot > 0 ? "" : "-", spot > 0 ? uint(uint64(spot)) : uint(uint64(-spot)));
+    // logFirstPerps(sub);
 
     _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
-
-    // Fund and settle the subaccount before checking total value
-    _fundAndSettle(sub);
+    console.log("verify order full:OK");
 
     // Execute the order, ensuring sufficient balance pre and post trade
+    console.log("fundSettle");
+    _fundAndSettle(sub);
+    int64 spot = sub.spotBalances[Currency.USDT];
+    console.log("spot2", spot > 0 ? "" : "-", spot > 0 ? uint(uint64(spot)) : uint(uint64(-spot)));
+    logFirstPerps(sub);
+    console.log("preVal");
     _requireNonNegativeUsdValue(sub);
     _executeOrder(sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
+    console.log("postVal");
     _requireNonNegativeUsdValue(sub);
+  }
+
+  function logFirstPerps(SubAccount storage sub) private {
+    if (sub.perps.keys.length == 0) return;
+    bytes32 assetID = sub.perps.keys[0];
+    int64 balance = sub.perps.values[assetID].balance;
+    console.log("perp.balance", balance > 0 ? "" : "-", balance > 0 ? uint(uint64(balance)) : uint(uint64(-balance)));
   }
 
   function _verifyOrderFull(
@@ -154,7 +174,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory optionIndexNotional,
     int64 totalFee
   ) internal {
-    console.log("isMaker", uint(isMakerOrder ? 1 : 0));
     // Arrange from cheapest to most expensive verification
 
     // Check that quote asset is the same as subaccount quote asset
@@ -191,6 +210,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
 
     if (legsLen > 1) {
+      console.log("check uniq legs");
       bytes32[] memory seenAssetIDs = new bytes32[](legsLen);
       uint seenCount = 0;
 
@@ -203,19 +223,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         seenAssetIDs[seenCount] = leg.assetID;
         seenCount++;
       }
+      console.log("check uniq legs:OK");
     }
 
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
-      console.log("orderHash", uint(orderHash));
-      console.log("isWholeOrder", uint(isWholeOrder ? 1 : 0));
-      console.log("prevSize", executedSize[leg.assetID]);
-      console.log("tradeSizes", tradeSizes[i]);
-      console.log("total", total);
-      console.log("order.size", leg.size);
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
-      console.log("size OK");
       executedSize[leg.assetID] = total;
     }
 

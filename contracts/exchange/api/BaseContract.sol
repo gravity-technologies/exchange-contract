@@ -8,6 +8,7 @@ import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "hardhat/console.sol";
 
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
@@ -187,7 +188,6 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return _getQuoteMarkPrice9Decimals(assetGetUnderlying(assetID));
     }
 
-    Currency quote = assetGetQuote(assetID);
     // Only derivatives remaining
     (uint64 underlyingPrice, bool found) = _getUnderlyingMarkPrice9Decimals(assetID);
     if (!found) {
@@ -195,6 +195,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     }
 
     // If getting price in USD, we can simply scale and return
+    Currency quote = assetGetQuote(assetID);
     if (quote == Currency.USD) {
       return (underlyingPrice, true);
     }

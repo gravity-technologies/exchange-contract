@@ -145,6 +145,10 @@ contract GRVTExchangeTest is GRVTExchange {
     return _getMarkPrice9Decimals(assetID);
   }
 
+  function getRawMarkPrice(bytes32 assetID) public view returns (uint64) {
+    return state.prices.mark[assetID];
+  }
+
   function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
     SettlementPriceEntry storage entry = state.prices.settlement[assetID];
     return (entry.value, entry.isSet);

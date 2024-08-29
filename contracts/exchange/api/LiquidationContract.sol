@@ -6,6 +6,7 @@ import "./signature/generated/TradeSig.sol";
 import "./RiskCheck.sol";
 import "./ConfigContract.sol";
 import "../util/BIMath.sol";
+import "hardhat/console.sol";
 
 struct MaintenanceMarginConfig {
   BI size;
@@ -62,7 +63,9 @@ contract LiquidationContract is ConfigContract, FundingAndSettlement, RiskCheck 
     uint64 passiveSubAccountID,
     LiquidationType liquidationType
   ) private {
+    console.log("getInitatorAcc");
     SubAccount storage initiator = _requireSubAccount(order.subAccountID);
+    console.log("getPassiveAcc");
     SubAccount storage passive = _requireSubAccount(passiveSubAccountID);
 
     _fundAndSettle(initiator);
@@ -70,15 +73,20 @@ contract LiquidationContract is ConfigContract, FundingAndSettlement, RiskCheck 
 
     // Validate the liquidation order based on its type
     if (liquidationType == LiquidationType.LIQUIDATE) {
+      console.log("type=liquidate, but !aboveMM");
       require(!isAboveMaintenanceMargin(passive), "Margin is above maintenance level");
     } else if (liquidationType == LiquidationType.AUTO_DELEVERAGE) {
+      console.log("type=ADL, but belowMM");
       require(isAboveMaintenanceMargin(passive), "Margin is below maintenance level");
+      console.log("type=ADL, fee != 0");
       require(order.liquidationFees == 0, "ADL takes no fee");
     }
 
     // Validate: The initiator must have the permission to trade
+    console.log("initatior no perm");
     _requireSubAccountPermission(initiator, order.signature.signer, SubAccountPermTrade);
     // Validate the initiator's signature must be valid
+    console.log("replayed");
     _preventReplay(hashLiquidationOrder(order), order.signature);
 
     // Update positions and spot balances based on whether the initiator is buying or selling the asset
@@ -88,6 +96,7 @@ contract LiquidationContract is ConfigContract, FundingAndSettlement, RiskCheck 
       Position storage passivePos = _getOrCreatePosition(passive, leg.assetID);
 
       int64 sizeDelta = leg.isBuyingAsset ? -int64(leg.size) : int64(leg.size);
+      console.log("not reduce only");
       _requireReduceOnly(passivePos.balance, sizeDelta);
 
       Currency quoteCurrency = assetGetQuote(leg.assetID);
@@ -116,8 +125,20 @@ contract LiquidationContract is ConfigContract, FundingAndSettlement, RiskCheck 
     }
 
     // Post trade validation, all parties should have equity >= 0
+    console.log("initiator negative check");
     _requireNonNegativeUsdValue(initiator);
+    console.log("passive negative check");
     _requireNonNegativeUsdValue(passive);
+    console.log("passive negative passed");
+
+    // Pay fees to insurance fund, in case of partial liquidation
+    if (order.liquidationFees > 0) {
+      (uint64 feeSubID, bool feeSubFound) = _getUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
+      console.log("fee sub check");
+      require(feeSubFound, "fee account not found");
+      console.log("fee sub update");
+      _requireSubAccount(feeSubID).spotBalances[order.feeCurrency] += int64(order.liquidationFees);
+    }
   }
 
   /**

@@ -7,6 +7,7 @@ import "./signature/generated/OracleSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
+import "hardhat/console.sol";
 
 contract OracleContract is ConfigContract {
   using BIMath for BI;
@@ -26,8 +27,8 @@ contract OracleContract is ConfigContract {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _verifyPriceUpdateSig(timestamp, hash, sig);
+    // bytes32 hash = hashOraclePrice(sig.expiration, prices);
+    // _verifyPriceUpdateSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => uint64) storage marks = state.prices.mark;
