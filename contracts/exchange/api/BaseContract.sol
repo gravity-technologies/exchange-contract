@@ -134,10 +134,18 @@ contract BaseContract is ReentrancyGuardUpgradeable {
 
   // Check if the signer has certain permissions on a subaccount
   function _requireSubAccountPermission(SubAccount storage sub, address signer, uint64 requiredPerm) internal view {
+    require(hasSubAccountPermission(sub, signer, requiredPerm), "no permission");
+  }
+
+  function hasSubAccountPermission(
+    SubAccount storage sub,
+    address signer,
+    uint64 requiredPerm
+  ) internal view returns (bool) {
     Account storage acc = _requireAccount(sub.accountID);
-    if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return;
+    if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return true;
     uint64 signerAuthz = sub.signers[signer];
-    require(signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0, "no permission");
+    return signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0;
   }
 
   // Check if the signer has certain permissions on an account
