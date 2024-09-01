@@ -8,7 +8,6 @@ import {
   genAddWithdrawalAddressSig,
   genCreateAccountSig,
   genCreateSubAccountSig,
-  genDepositSig,
   genPriceTick,
   genRecoverAddressPayloadSig,
   genRemoveAccountSignerSig,
@@ -315,21 +314,6 @@ export async function removeSessionKey(contract: Contract, txSigner: Wallet, ts:
 
 // Trade
 // Transfer
-
-export async function deposit(
-  contract: Contract,
-  txSigner: Wallet,
-  ts: number,
-  txID: number,
-  fromEthAddress: string,
-  toSubAccount: string,
-  numTokens: number
-) {
-  const salt = nonce()
-  const sig = genDepositSig(txSigner, fromEthAddress, toSubAccount, numTokens, salt)
-  const tx = await contract.deposit(ts, txID, fromEthAddress, toSubAccount, numTokens, salt, sig, txRequestDefault())
-  await tx.wait()
-}
 
 export async function withdraw(
   contract: Contract,
