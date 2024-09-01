@@ -654,7 +654,7 @@ contract ConfigContract is BaseContract {
 
     // INSURANCE FUND ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
-    settings[id].typ = ConfigType.UINT;
+    settings[id].typ = ConfigType.UINT2D;
 
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;

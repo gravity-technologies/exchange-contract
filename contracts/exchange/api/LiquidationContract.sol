@@ -16,6 +16,8 @@ struct MaintenanceMarginConfig {
 uint256 constant MAX_M_MARGIN_TIERS = 12;
 // The bit mask for the least significant 32 bits
 uint256 constant LSB_32_MASK = 0xFFFFFFFF;
+// The bit mask for the least significant 24 bits, used for Kind, Underlying, Quote encoding in determining the insurance fund subaccount ID
+bytes32 constant KUQ_MASK = bytes32(uint256(0xFFFFFF));
 
 /**
  * @title LiquidationContract
@@ -103,18 +105,19 @@ contract LiquidationContract is ConfigContract, FundingAndSettlement, RiskCheck 
         initiator.spotBalances[quoteCurrency] += notionalValue;
         passive.spotBalances[quoteCurrency] -= notionalValue + int64(order.liquidationFees);
       }
+
+      // Pay fees to insurance fund, in case of partial liquidation
+      bytes32 kuq = leg.assetID & KUQ_MASK;
+      if (order.liquidationFees > 0) {
+        (uint64 feeSubID, bool feeSubFound) = _getUintConfig2D(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID, kuq);
+        require(feeSubFound, "fee account not found");
+        _requireSubAccount(feeSubID).spotBalances[order.feeCurrency] += int64(order.liquidationFees);
+      }
     }
 
     // Post trade validation, all parties should have equity >= 0
     _requireNonNegativeUsdValue(initiator);
     _requireNonNegativeUsdValue(passive);
-
-    // Pay fees to insurance fund, in case of partial liquidation
-    if (order.liquidationFees > 0) {
-      (uint64 feeSubID, bool feeSubFound) = _getUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
-      require(feeSubFound, "fee account not found");
-      _requireSubAccount(feeSubID).spotBalances[order.feeCurrency] += int64(order.liquidationFees);
-    }
   }
 
   /**
