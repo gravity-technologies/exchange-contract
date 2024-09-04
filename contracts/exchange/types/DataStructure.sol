@@ -363,6 +363,8 @@ struct Order {
   bool reduceOnly;
   OrderLeg[] legs;
   Signature signature;
+  // If the trade was a liquidation
+  bool isLiquidation;
 }
 
 struct OrderLeg {

@@ -31,9 +31,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
-    int64 totalMakersFee;
-
-    (uint64 feeSubID, bool isFeeCharged) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
@@ -80,8 +77,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       // Aggregate taker notional accross all makers
       takerTradeNotional = takerTradeNotional.add(makerTradeNotional);
       takerOptionIndexNotional = takerOptionIndexNotional.add(makerOptionIndexNotional);
-      int64 makerFee = _getTotalFee(makerMatch.feeCharged);
-      totalMakersFee += makerFee;
 
       _verifyAndExecuteOrder(
         timestamp,
@@ -91,15 +86,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         makerSpotDelta,
         makerTradeNotional,
         makerOptionIndexNotional,
-        makerFee,
-        isFeeCharged
+        makerMatch.feeCharged
       );
     }
 
     ///////////////////////////////////////////////////////////////////
     /// Taker order verification and execution
     ///////////////////////////////////////////////////////////////////
-    int64 takerFee = _getTotalFee(trade.feeCharged);
     _verifyAndExecuteOrder(
       timestamp,
       takerOrder,
@@ -108,15 +101,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       takerSpotDelta,
       takerTradeNotional,
       takerOptionIndexNotional,
-      takerFee,
-      isFeeCharged
+      trade.feeCharged
     );
-
-    // Deposit the trading fees, only once
-    if (isFeeCharged) {
-      Currency quoteCurrency = _requireSubAccount(takerOrder.subAccountID).quoteCurrency;
-      _requireSubAccount(feeSubID).spotBalances[quoteCurrency] += totalMakersFee + takerFee;
-    }
   }
 
   function _verifyAndExecuteOrder(
@@ -127,10 +113,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory spotDelta,
     BI memory tradeNotional,
     BI memory optionIndexNotional,
-    int64 totalFee,
-    bool isFeeCharged
+    int64[] memory feePerLegs
   ) internal {
     SubAccount storage sub = _requireSubAccount(order.subAccountID);
+    int64 totalFee = _getTotalFee(feePerLegs);
 
     _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
 
@@ -138,9 +124,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     _fundAndSettle(sub);
 
     // Execute the order, ensuring sufficient balance pre and post trade
-    _requireNonNegativeUsdValue(sub);
-    _executeOrder(sub, order, tradeSizes, spotDelta, int64(totalFee), isFeeCharged);
-    _requireNonNegativeUsdValue(sub);
+    _requireValidMargin(sub, order.isLiquidation, true);
+    _executeOrder(sub, order, tradeSizes, spotDelta, totalFee);
+    _requireValidMargin(sub, order.isLiquidation, false);
   }
 
   function _verifyOrderFull(
@@ -175,11 +161,16 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // The signer is considered to have trade permission if any of the following is true:
     // - order's signer is in the session key map, and session hasn't expired, and the sessionKey's signer has trade permission
     // - order's signer has trade permission
+    SubAccount storage permSub = sub;
+    if (order.isLiquidation) {
+      (permSub, ) = _getSubAccountFromUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
+    }
+
     require(
       (session.expiry != 0 &&
         session.expiry >= timestamp &&
-        hasSubAccountPermission(sub, session.subAccountSigner, SubAccountPermTrade)) ||
-        hasSubAccountPermission(sub, order.signature.signer, SubAccountPermTrade),
+        hasSubAccountPermission(permSub, session.subAccountSigner, SubAccountPermTrade)) ||
+        hasSubAccountPermission(permSub, order.signature.signer, SubAccountPermTrade),
       ERR_NO_TRADE_PERMISSION
     );
 
@@ -204,6 +195,12 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Check that the fee paid is within the cap
     int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    if (order.isLiquidation) {
+      int32 liquidationFee = isOption ? int32(2500) : int32(7000);
+      if (feeCapRate < liquidationFee) {
+        feeCapRate = liquidationFee;
+      }
+    }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
 
     int64 totalFeeCap;
@@ -229,13 +226,20 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     return notional.mul(fee).toInt64(qDec);
   }
 
+  function _getFeeSubAccount(bool isLiquidation) private view returns (SubAccount storage, bool) {
+    if (isLiquidation) {
+      return _getSubAccountFromUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
+    } else {
+      return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+    }
+  }
+
   function _executeOrder(
     SubAccount storage sub,
     Order calldata order,
     uint64[] memory matchSizes,
     BI memory spotDelta,
-    int64 fee,
-    bool isFeeCharged
+    int64 fee
   ) internal {
     Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
@@ -263,8 +267,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Step 4: Update subaccount spot balance, deducting fees
     int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta.toInt64(qDec);
+    (SubAccount storage feeSub, bool isFeeCharged) = _getFeeSubAccount(order.isLiquidation);
     if (isFeeCharged) {
       newSpotBalance -= fee;
+      feeSub.spotBalances[subQuote] += fee;
     }
     sub.spotBalances[subQuote] = newSpotBalance;
   }
