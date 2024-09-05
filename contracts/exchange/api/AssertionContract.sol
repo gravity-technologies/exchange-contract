@@ -149,23 +149,22 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertSubAccountValue(uint64 subAccountID, int64 expected) public view {
     int64 value = getSubAccountValue(subAccountID);
-    if (value != expected) {
-      revert(
-        string(
-          abi.encodePacked(
-            "AssertionContract: subAccountValue mismatch. ",
-            "SubAccountID: ",
-            subAccountID.toString(),
-            ", ",
-            "Expected: ",
-            _int64ToString(expected),
-            ", ",
-            "Actual: ",
-            _int64ToString(value)
-          )
+    require(
+      value == expected,
+      string(
+        abi.encodePacked(
+          "AssertionContract: subAccountValue mismatch. ",
+          "SubAccountID: ",
+          subAccountID.toString(),
+          ", ",
+          "Expected: ",
+          _int64ToString(expected),
+          ", ",
+          "Actual: ",
+          _int64ToString(value)
         )
-      );
-    }
+      )
+    );
   }
 
   function assertSubAccountPosition(
@@ -177,44 +176,62 @@ contract AssertionContract is ConfigContract, RiskCheck {
   ) public view {
     (bool found, int64 balance, int64 lastAppliedFundingIndex) = getSubAccountPosition(subAccountID, assetID);
 
-    if (found != expectedFound) {
-      revert(
-        string(
-          abi.encodePacked(
-            "AssertionContract: subAccountPosition 'found' mismatch. Expected: ",
-            expectedFound ? "true" : "false",
-            ", Actual: ",
-            found ? "true" : "false"
-          )
+    require(
+      found == expectedFound,
+      string(
+        abi.encodePacked(
+          "AssertionContract: subAccountPosition 'found' mismatch. ",
+          "SubAccountID: ",
+          subAccountID.toString(),
+          ", ",
+          "AssetID: ",
+          bytes32ToString(assetID),
+          ", ",
+          "Expected: ",
+          expectedFound ? "true" : "false",
+          ", Actual: ",
+          found ? "true" : "false"
         )
-      );
-    }
+      )
+    );
 
-    if (balance != expectedBalance) {
-      revert(
-        string(
-          abi.encodePacked(
-            "AssertionContract: subAccountPosition 'balance' mismatch. Expected: ",
-            _int64ToString(expectedBalance),
-            ", Actual: ",
-            _int64ToString(balance)
-          )
+    require(
+      balance == expectedBalance,
+      string(
+        abi.encodePacked(
+          "AssertionContract: subAccountPosition 'balance' mismatch. ",
+          "SubAccountID: ",
+          subAccountID.toString(),
+          ", ",
+          "AssetID: ",
+          bytes32ToString(assetID),
+          ", ",
+          "Expected: ",
+          _int64ToString(expectedBalance),
+          ", Actual: ",
+          _int64ToString(balance)
         )
-      );
-    }
+      )
+    );
 
-    if (lastAppliedFundingIndex != expectedLastAppliedFundingIndex) {
-      revert(
-        string(
-          abi.encodePacked(
-            "AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. Expected: ",
-            _int64ToString(expectedLastAppliedFundingIndex),
-            ", Actual: ",
-            _int64ToString(lastAppliedFundingIndex)
-          )
+    require(
+      lastAppliedFundingIndex == expectedLastAppliedFundingIndex,
+      string(
+        abi.encodePacked(
+          "AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. ",
+          "SubAccountID: ",
+          subAccountID.toString(),
+          ", ",
+          "AssetID: ",
+          bytes32ToString(assetID),
+          ", ",
+          "Expected: ",
+          _int64ToString(expectedLastAppliedFundingIndex),
+          ", Actual: ",
+          _int64ToString(lastAppliedFundingIndex)
         )
-      );
-    }
+      )
+    );
   }
 
   function _int64ToString(int64 value) internal pure returns (string memory) {
