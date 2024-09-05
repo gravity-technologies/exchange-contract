@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "./RiskCheck.sol";
 import "../types/PositionMap.sol";
 import "./ConfigContract.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 struct SpotBalanceAssertion {
   Currency currency;
@@ -50,7 +49,6 @@ struct SubAccountAssertion {
 
 contract AssertionContract is ConfigContract, RiskCheck {
   using BIMath for BI;
-  using Strings for uint64;
 
   function assertIsAllAccountExists(address[] calldata accountIDs, bool expected) public view {
     bool result = isAllAccountExists(accountIDs);
@@ -149,22 +147,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertSubAccountValue(uint64 subAccountID, int64 expected) public view {
     int64 value = getSubAccountValue(subAccountID);
-    require(
-      value == expected,
-      string(
-        abi.encodePacked(
-          "AssertionContract: subAccountValue mismatch. ",
-          "SubAccountID: ",
-          subAccountID.toString(),
-          ", ",
-          "Expected: ",
-          _int64ToString(expected),
-          ", ",
-          "Actual: ",
-          _int64ToString(value)
-        )
-      )
-    );
+    require(value == expected, string(abi.encodePacked("AssertionContract: subAccountValue mismatch. ")));
   }
 
   function assertSubAccountPosition(
@@ -178,67 +161,18 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
     require(
       found == expectedFound,
-      string(
-        abi.encodePacked(
-          "AssertionContract: subAccountPosition 'found' mismatch. ",
-          "SubAccountID: ",
-          subAccountID.toString(),
-          ", ",
-          "AssetID: ",
-          bytes32ToString(assetID),
-          ", ",
-          "Expected: ",
-          expectedFound ? "true" : "false",
-          ", Actual: ",
-          found ? "true" : "false"
-        )
-      )
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'found' mismatch. "))
     );
 
     require(
       balance == expectedBalance,
-      string(
-        abi.encodePacked(
-          "AssertionContract: subAccountPosition 'balance' mismatch. ",
-          "SubAccountID: ",
-          subAccountID.toString(),
-          ", ",
-          "AssetID: ",
-          bytes32ToString(assetID),
-          ", ",
-          "Expected: ",
-          _int64ToString(expectedBalance),
-          ", Actual: ",
-          _int64ToString(balance)
-        )
-      )
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'balance' mismatch. "))
     );
 
     require(
       lastAppliedFundingIndex == expectedLastAppliedFundingIndex,
-      string(
-        abi.encodePacked(
-          "AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. ",
-          "SubAccountID: ",
-          subAccountID.toString(),
-          ", ",
-          "AssetID: ",
-          bytes32ToString(assetID),
-          ", ",
-          "Expected: ",
-          _int64ToString(expectedLastAppliedFundingIndex),
-          ", Actual: ",
-          _int64ToString(lastAppliedFundingIndex)
-        )
-      )
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. "))
     );
-  }
-
-  function _int64ToString(int64 value) internal pure returns (string memory) {
-    return
-      value >= 0
-        ? string(abi.encodePacked("+", uint64(value).toString()))
-        : string(abi.encodePacked("-", uint64(-value).toString()));
   }
 
   function assertSubAccountSpotBalance(uint64 subAccountID, Currency currency, int64 expected) public view {
