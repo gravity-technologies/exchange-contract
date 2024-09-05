@@ -7,6 +7,7 @@ import "./api/WalletRecoveryContract.sol";
 import "./api/OracleContract.sol";
 import "./api/TransferContract.sol";
 import "./api/LiquidationContract.sol";
+import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchange is
@@ -16,7 +17,8 @@ contract GRVTExchange is
   WalletRecoveryContract,
   OracleContract,
   TransferContract,
-  LiquidationContract
+  LiquidationContract,
+  AssertionContract
 {
   function initialize() public initializer {
     __ReentrancyGuard_init();
