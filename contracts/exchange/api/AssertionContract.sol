@@ -2,7 +2,9 @@
 pragma solidity ^0.8.20;
 
 import "./RiskCheck.sol";
+import "../types/PositionMap.sol";
 import "./ConfigContract.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 struct SpotBalanceAssertion {
   Currency currency;
@@ -12,16 +14,6 @@ struct SpotBalanceAssertion {
 struct RecoveryAddressAssertion {
   address signer;
   address[] recoveryAddresses;
-}
-
-struct PositionAssertion {
-  bytes32 assetId;
-  int64 balance;
-  int64 lastAppliedFundingIndex;
-}
-
-struct PositionsMapAssertion {
-  PositionAssertion[] positions;
 }
 
 struct SignerAssertion {
@@ -50,14 +42,15 @@ struct SubAccountAssertion {
   Currency quoteCurrency;
   int64 lastAppliedFundingTimestamp;
   SpotBalanceAssertion[] spotBalances;
-  PositionsMapAssertion options;
-  PositionsMapAssertion futures;
-  PositionsMapAssertion perps;
+  Position[] options;
+  Position[] futures;
+  Position[] perps;
   SignerAssertion[] signers;
 }
 
 contract AssertionContract is ConfigContract, RiskCheck {
   using BIMath for BI;
+  using Strings for uint64;
 
   function assertIsAllAccountExists(address[] calldata accountIDs, bool expected) public view {
     bool result = isAllAccountExists(accountIDs);
@@ -156,7 +149,23 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertSubAccountValue(uint64 subAccountID, int64 expected) public view {
     int64 value = getSubAccountValue(subAccountID);
-    require(value == expected, "AssertionContract: subAccountValue assertion failed");
+    if (value != expected) {
+      revert(
+        string(
+          abi.encodePacked(
+            "AssertionContract: subAccountValue mismatch. ",
+            "SubAccountID: ",
+            subAccountID.toString(),
+            ", ",
+            "Expected: ",
+            _int64ToString(expected),
+            ", ",
+            "Actual: ",
+            _int64ToString(value)
+          )
+        )
+      );
+    }
   }
 
   function assertSubAccountPosition(
@@ -167,12 +176,52 @@ contract AssertionContract is ConfigContract, RiskCheck {
     int64 expectedLastAppliedFundingIndex
   ) public view {
     (bool found, int64 balance, int64 lastAppliedFundingIndex) = getSubAccountPosition(subAccountID, assetID);
-    require(
-      found == expectedFound &&
-        balance == expectedBalance &&
-        lastAppliedFundingIndex == expectedLastAppliedFundingIndex,
-      "AssertionContract: subAccountPosition assertion failed"
-    );
+
+    if (found != expectedFound) {
+      revert(
+        string(
+          abi.encodePacked(
+            "AssertionContract: subAccountPosition 'found' mismatch. Expected: ",
+            expectedFound ? "true" : "false",
+            ", Actual: ",
+            found ? "true" : "false"
+          )
+        )
+      );
+    }
+
+    if (balance != expectedBalance) {
+      revert(
+        string(
+          abi.encodePacked(
+            "AssertionContract: subAccountPosition 'balance' mismatch. Expected: ",
+            _int64ToString(expectedBalance),
+            ", Actual: ",
+            _int64ToString(balance)
+          )
+        )
+      );
+    }
+
+    if (lastAppliedFundingIndex != expectedLastAppliedFundingIndex) {
+      revert(
+        string(
+          abi.encodePacked(
+            "AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. Expected: ",
+            _int64ToString(expectedLastAppliedFundingIndex),
+            ", Actual: ",
+            _int64ToString(lastAppliedFundingIndex)
+          )
+        )
+      );
+    }
+  }
+
+  function _int64ToString(int64 value) internal pure returns (string memory) {
+    return
+      value >= 0
+        ? string(abi.encodePacked("+", uint64(value).toString()))
+        : string(abi.encodePacked("-", uint64(-value).toString()));
   }
 
   function assertSubAccountSpotBalance(uint64 subAccountID, Currency currency, int64 expected) public view {
@@ -183,8 +232,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
   function assertAccount(AccountAssertion calldata assertion) public view {
     Account storage account = state.accounts[assertion.id];
 
-    require(assertion.id != 0, "id == 0 in account assertion");
-    require(account.id != 0, "account not found");
+    require(assertion.id != address(0), "id == 0 in account assertion");
+    require(account.id != address(0), "account not found");
     require(account.id == assertion.id, "UnexpectedAccount ID");
     require(account.multiSigThreshold == assertion.multiSigThreshold, "MultiSigThreshold mismatch");
     require(account.adminCount == assertion.adminCount, "AdminCount mismatch");
@@ -231,7 +280,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     }
   }
 
-  function assertSubAccount(SubAccountAssertion calldata assertion) public view {
+  function assertSubAccount(SubAccountAssertion calldata assertion, bool requireFullPositionMap) public view {
     SubAccount storage subAccount = state.subAccounts[assertion.id];
 
     require(assertion.id != 0, "id == 0 in SubAccount assertion");
@@ -254,9 +303,9 @@ contract AssertionContract is ConfigContract, RiskCheck {
       );
     }
 
-    assertPositionsMap(subAccount.options, assertion.options, "Options");
-    assertPositionsMap(subAccount.futures, assertion.futures, "Futures");
-    assertPositionsMap(subAccount.perps, assertion.perps, "Perps");
+    assertPositionsMap(subAccount.options, assertion.options, "Options", requireFullPositionMap);
+    assertPositionsMap(subAccount.futures, assertion.futures, "Futures", requireFullPositionMap);
+    assertPositionsMap(subAccount.perps, assertion.perps, "Perps", requireFullPositionMap);
 
     for (uint i = 0; i < assertion.signers.length; i++) {
       require(
@@ -268,22 +317,22 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertPositionsMap(
     PositionsMap storage posMap,
-    PositionsMapAssertion memory assertion,
-    string memory mapName
+    Position[] memory assertion,
+    string memory mapName,
+    bool requireFullPositionMap
   ) internal view {
-    require(
-      posMap.keys.length == assertion.positions.length,
-      string(abi.encodePacked(mapName, " PositionsMap length mismatch"))
-    );
-
-    for (uint i = 0; i < assertion.positions.length; i++) {
-      Position storage pos = posMap.values[assertion.positions[i].assetId];
+    if (requireFullPositionMap) {
       require(
-        pos.balance == assertion.positions[i].balance,
-        string(abi.encodePacked(mapName, " Position balance mismatch"))
+        posMap.keys.length == assertion.length,
+        string(abi.encodePacked(mapName, " PositionsMap length mismatch"))
       );
+    }
+
+    for (uint i = 0; i < assertion.length; i++) {
+      Position storage pos = posMap.values[assertion[i].id];
+      require(pos.balance == assertion[i].balance, string(abi.encodePacked(mapName, " Position balance mismatch")));
       require(
-        pos.lastAppliedFundingIndex == assertion.positions[i].lastAppliedFundingIndex,
+        pos.lastAppliedFundingIndex == assertion[i].lastAppliedFundingIndex,
         string(abi.encodePacked(mapName, " Position lastAppliedFundingIndex mismatch"))
       );
     }
