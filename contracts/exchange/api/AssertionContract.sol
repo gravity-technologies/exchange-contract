@@ -24,6 +24,11 @@ struct PositionsMapAssertion {
   PositionAssertion[] positions;
 }
 
+struct SignerAssertion {
+  address signer;
+  uint64 permission;
+}
+
 struct AccountAssertion {
   address id;
   uint64 multiSigThreshold;
@@ -33,8 +38,7 @@ struct AccountAssertion {
   RecoveryAddressAssertion[] recoveryAddresses;
   address[] onboardedWithdrawalAddresses;
   address[] onboardedTransferAccounts;
-  address[] signers;
-  uint64[] signerPermissions;
+  SignerAssertion[] signers;
 }
 
 struct SubAccountAssertion {
@@ -49,8 +53,7 @@ struct SubAccountAssertion {
   PositionsMapAssertion options;
   PositionsMapAssertion futures;
   PositionsMapAssertion perps;
-  address[] signers;
-  uint64[] signerPermissions;
+  SignerAssertion[] signers;
 }
 
 contract AssertionContract is ConfigContract, RiskCheck {
@@ -177,10 +180,12 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(balance == expected, "AssertionContract: subAccountSpotBalance assertion failed");
   }
 
-  function assertAccount(address accountId, AccountAssertion calldata assertion) public view {
-    Account storage account = state.accounts[accountId];
+  function assertAccount(AccountAssertion calldata assertion) public view {
+    Account storage account = state.accounts[assertion.id];
 
-    require(account.id == assertion.id, "Account ID mismatch");
+    require(assertion.id != 0, "id == 0 in account assertion");
+    require(account.id != 0, "account not found");
+    require(account.id == assertion.id, "UnexpectedAccount ID");
     require(account.multiSigThreshold == assertion.multiSigThreshold, "MultiSigThreshold mismatch");
     require(account.adminCount == assertion.adminCount, "AdminCount mismatch");
     require(
@@ -219,14 +224,19 @@ contract AssertionContract is ConfigContract, RiskCheck {
     }
 
     for (uint i = 0; i < assertion.signers.length; i++) {
-      require(account.signers[assertion.signers[i]] == assertion.signerPermissions[i], "Signer permission mismatch");
+      require(
+        account.signers[assertion.signers[i].signer] == assertion.signers[i].permission,
+        "Signer permission mismatch"
+      );
     }
   }
 
-  function assertSubAccount(uint64 subAccountId, SubAccountAssertion calldata assertion) public view {
-    SubAccount storage subAccount = state.subAccounts[subAccountId];
+  function assertSubAccount(SubAccountAssertion calldata assertion) public view {
+    SubAccount storage subAccount = state.subAccounts[assertion.id];
 
-    require(subAccount.id == assertion.id, "SubAccount ID mismatch");
+    require(assertion.id != 0, "id == 0 in SubAccount assertion");
+    require(subAccount.id != 0, "SubAccount not found");
+    require(subAccount.id == assertion.id, "Unexpected SubAccount ID");
     require(subAccount.adminCount == assertion.adminCount, "AdminCount mismatch");
     require(subAccount.signerCount == assertion.signerCount, "SignerCount mismatch");
     require(subAccount.accountID == assertion.accountID, "AccountID mismatch");
@@ -249,7 +259,10 @@ contract AssertionContract is ConfigContract, RiskCheck {
     assertPositionsMap(subAccount.perps, assertion.perps, "Perps");
 
     for (uint i = 0; i < assertion.signers.length; i++) {
-      require(subAccount.signers[assertion.signers[i]] == assertion.signerPermissions[i], "Signer permission mismatch");
+      require(
+        subAccount.signers[assertion.signers[i].signer] == assertion.signers[i].permission,
+        "Signer permission mismatch"
+      );
     }
   }
 
