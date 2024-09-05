@@ -147,7 +147,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertSubAccountValue(uint64 subAccountID, int64 expected) public view {
     int64 value = getSubAccountValue(subAccountID);
-    require(value == expected, string(abi.encodePacked("AssertionContract: subAccountValue mismatch. ")));
+    require(value == expected, string(abi.encodePacked("AssertionContract: subAccountValue mismatch.")));
   }
 
   function assertSubAccountPosition(
@@ -161,17 +161,17 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
     require(
       found == expectedFound,
-      string(abi.encodePacked("AssertionContract: subAccountPosition 'found' mismatch. "))
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'found' mismatch."))
     );
 
     require(
       balance == expectedBalance,
-      string(abi.encodePacked("AssertionContract: subAccountPosition 'balance' mismatch. "))
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'balance' mismatch."))
     );
 
     require(
       lastAppliedFundingIndex == expectedLastAppliedFundingIndex,
-      string(abi.encodePacked("AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch. "))
+      string(abi.encodePacked("AssertionContract: subAccountPosition 'lastAppliedFundingIndex' mismatch."))
     );
   }
 

@@ -474,4 +474,404 @@ contract AssertionContractTest is Test {
 
     assertionContract.assertSubAccountValue(testSubAccount, expectedBalance * 2);
   }
+
+  function testAssertIsAllAccountExistsFail() public {
+    address[] memory accounts = new address[](2);
+    accounts[0] = testAccount;
+    accounts[1] = address(0x5678);
+
+    AccountAssertion memory account1 = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: new SpotBalanceAssertion[](0),
+      recoveryAddresses: new RecoveryAddressAssertion[](0),
+      onboardedWithdrawalAddresses: new address[](0),
+      onboardedTransferAccounts: new address[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setAccount(account1);
+
+    vm.expectRevert("AssertionContract: isAllAccountExists assertion failed");
+    assertionContract.assertIsAllAccountExists(accounts, true);
+  }
+
+  function testAssertAccountSpotBalanceFail() public {
+    Currency currency = Currency.ETH;
+    int64 expectedBalance = 1000;
+    int64 actualBalance = 500;
+
+    SpotBalanceAssertion[] memory spotBalances = new SpotBalanceAssertion[](1);
+    spotBalances[0] = SpotBalanceAssertion({currency: currency, balance: actualBalance});
+
+    AccountAssertion memory account = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: spotBalances,
+      recoveryAddresses: new RecoveryAddressAssertion[](0),
+      onboardedWithdrawalAddresses: new address[](0),
+      onboardedTransferAccounts: new address[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setAccount(account);
+
+    vm.expectRevert("AssertionContract: accountSpotBalance assertion failed");
+    assertionContract.assertAccountSpotBalance(testAccount, currency, expectedBalance);
+  }
+
+  function testAssertIsRecoveryAddressFail() public {
+    address signer = address(0x9876);
+    address recoveryAddress = address(0xABCD);
+    address wrongRecoveryAddress = address(0xABCC);
+
+    RecoveryAddressAssertion[] memory recoveryAddresses = new RecoveryAddressAssertion[](1);
+    recoveryAddresses[0] = RecoveryAddressAssertion({signer: signer, recoveryAddresses: new address[](1)});
+    recoveryAddresses[0].recoveryAddresses[0] = recoveryAddress;
+
+    AccountAssertion memory account = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: new SpotBalanceAssertion[](0),
+      recoveryAddresses: recoveryAddresses,
+      onboardedWithdrawalAddresses: new address[](0),
+      onboardedTransferAccounts: new address[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setAccount(account);
+
+    vm.expectRevert("AssertionContract: isRecoveryAddress assertion failed");
+    assertionContract.assertIsRecoveryAddress(testAccount, signer, wrongRecoveryAddress, true);
+  }
+
+  function testAssertIsOnboardedWithdrawalAddressFail() public {
+    address withdrawalAddress = address(0xABCD);
+    address wrongWithdrawalAddress = address(0xABCC);
+
+    address[] memory onboardedWithdrawalAddresses = new address[](1);
+    onboardedWithdrawalAddresses[0] = withdrawalAddress;
+
+    AccountAssertion memory account = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: new SpotBalanceAssertion[](0),
+      recoveryAddresses: new RecoveryAddressAssertion[](0),
+      onboardedWithdrawalAddresses: onboardedWithdrawalAddresses,
+      onboardedTransferAccounts: new address[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setAccount(account);
+
+    vm.expectRevert("AssertionContract: isOnboardedWithdrawalAddress assertion failed");
+    assertionContract.assertIsOnboardedWithdrawalAddress(testAccount, wrongWithdrawalAddress, true);
+  }
+
+  function testAssertAccountOnboardedTransferAccountFail() public {
+    address transferAccount = address(0xDEF0);
+    address wrongTransferAccount = address(0xABCD);
+
+    address[] memory onboardedTransferAccounts = new address[](1);
+    onboardedTransferAccounts[0] = transferAccount;
+
+    AccountAssertion memory account = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: new SpotBalanceAssertion[](0),
+      recoveryAddresses: new RecoveryAddressAssertion[](0),
+      onboardedWithdrawalAddresses: new address[](0),
+      onboardedTransferAccounts: onboardedTransferAccounts,
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setAccount(account);
+
+    vm.expectRevert("AssertionContract: accountOnboardedTransferAccount assertion failed");
+    assertionContract.assertAccountOnboardedTransferAccount(testAccount, wrongTransferAccount, true);
+  }
+
+  function testAssertSignerPermissionFail() public {
+    address signer = address(0xDEF0);
+    uint64 expectedPermission = 2;
+    uint64 actualPermission = 1;
+
+    SignerAssertion[] memory signers = new SignerAssertion[](1);
+    signers[0] = SignerAssertion({signer: signer, permission: actualPermission});
+
+    AccountAssertion memory account = AccountAssertion({
+      id: testAccount,
+      multiSigThreshold: 1,
+      adminCount: 1,
+      subAccounts: new uint64[](0),
+      spotBalances: new SpotBalanceAssertion[](0),
+      recoveryAddresses: new RecoveryAddressAssertion[](0),
+      onboardedWithdrawalAddresses: new address[](0),
+      onboardedTransferAccounts: new address[](0),
+      signers: signers
+    });
+
+    assertionContract.setAccount(account);
+
+    vm.expectRevert("AssertionContract: signerPermission assertion failed");
+    assertionContract.assertSignerPermission(testAccount, signer, expectedPermission);
+  }
+
+  function testAssertSessionValueFail() public {
+    address sessionKey = address(0xFEDC);
+    address expectedSigner = address(0xCBA9);
+    address actualSigner = address(0xABCD);
+    int64 expectedExpiry = 1234567890;
+
+    assertionContract.setSession(sessionKey, actualSigner, expectedExpiry);
+
+    vm.expectRevert("AssertionContract: sessionValue assertion failed");
+    assertionContract.assertSessionValue(sessionKey, expectedSigner, expectedExpiry);
+  }
+
+  function testAssertConfig2DFail() public {
+    ConfigID id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
+    bytes32 subKey = bytes32("test_subkey");
+    bytes32 expectedValue = bytes32("expected_value");
+    bytes32 actualValue = bytes32("actual_value");
+
+    ConfigValue memory configValue = ConfigValue({isSet: true, val: actualValue});
+
+    assertionContract.setConfig2DValue(id, subKey, configValue);
+
+    vm.expectRevert("AssertionContract: config2D assertion failed");
+    assertionContract.assertConfig2D(id, subKey, expectedValue);
+  }
+
+  function testAssertConfig1DIsSetFail() public {
+    ConfigID id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
+
+    ConfigValue memory configValue = ConfigValue({isSet: false, val: bytes32(0)});
+
+    assertionContract.setConfig1DValue(id, configValue);
+
+    vm.expectRevert("AssertionContract: config1DIsSet assertion failed");
+    assertionContract.assertConfig1DIsSet(id, true);
+  }
+
+  function testAssertConfig2DIsSetFail() public {
+    ConfigID id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
+
+    ConfigValue memory configValue = ConfigValue({isSet: false, val: bytes32(0)});
+
+    assertionContract.setConfig2DValue(id, DEFAULT_CONFIG_ENTRY, configValue);
+
+    vm.expectRevert("AssertionContract: config2DIsSet assertion failed");
+    assertionContract.assertConfig2DIsSet(id, true);
+  }
+
+  function testAssertConfig1DFail() public {
+    ConfigID id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
+    bytes32 expectedValue = bytes32("expected_value");
+    bytes32 actualValue = bytes32("actual_value");
+
+    ConfigValue memory configValue = ConfigValue({isSet: true, val: actualValue});
+
+    assertionContract.setConfig1DValue(id, configValue);
+
+    vm.expectRevert("AssertionContract: config1D assertion failed");
+    assertionContract.assertConfig1D(id, expectedValue);
+  }
+
+  function testAssertSubAccSignerPermissionFail() public {
+    address signer = address(0xDEF0);
+    uint64 expectedPermission = 2;
+    uint64 actualPermission = 1;
+
+    SignerAssertion[] memory signers = new SignerAssertion[](1);
+    signers[0] = SignerAssertion({signer: signer, permission: actualPermission});
+
+    SubAccountAssertion memory subAccount = SubAccountAssertion({
+      id: testSubAccount,
+      adminCount: 1,
+      signerCount: 1,
+      accountID: testAccount,
+      marginType: MarginType.SIMPLE_CROSS_MARGIN,
+      quoteCurrency: Currency.USDC,
+      lastAppliedFundingTimestamp: 0,
+      spotBalances: new SpotBalanceAssertion[](0),
+      options: new Position[](0),
+      futures: new Position[](0),
+      perps: new Position[](0),
+      signers: signers
+    });
+
+    assertionContract.setSubAccount(subAccount);
+
+    vm.expectRevert("AssertionContract: subAccSignerPermission assertion failed");
+    assertionContract.assertSubAccSignerPermission(testSubAccount, signer, expectedPermission);
+  }
+
+  function testAssertFundingIndexFail() public {
+    bytes32 assetID = bytes32("BTC-USD");
+    int64 expectedIndex = 1000000;
+    int64 actualIndex = 500000;
+
+    assertionContract.setFundingIndex(assetID, actualIndex);
+
+    vm.expectRevert("AssertionContract: fundingIndex assertion failed");
+    assertionContract.assertFundingIndex(assetID, expectedIndex);
+  }
+
+  function testAssertMarkPriceFail() public {
+    bytes32 assetID = assetToID(
+      Asset({kind: Kind.SPOT, underlying: Currency.BTC, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+    );
+    uint64 expectedPrice = 50000 * 1e9; // 50,000 USD with 9 decimals
+    uint64 actualPrice = 49000 * 1e9; // 49,000 USD with 9 decimals
+
+    assertionContract.setMarkPrice(assetID, actualPrice);
+
+    vm.expectRevert("AssertionContract: markPrice assertion failed");
+    assertionContract.assertMarkPrice(assetID, expectedPrice, true);
+  }
+
+  function testAssertSettlementPriceFail() public {
+    bytes32 assetID = bytes32("BTC-USD");
+    uint64 expectedValue = 49000 * 1e9; // 49,000 USD with 9 decimals
+    uint64 actualValue = 48000 * 1e9; // 48,000 USD with 9 decimals
+    bool expectedIsSet = true;
+
+    assertionContract.setSettlementPrice(assetID, actualValue, expectedIsSet);
+
+    vm.expectRevert("AssertionContract: settlementPrice assertion failed");
+    assertionContract.assertSettlementPrice(assetID, expectedValue, expectedIsSet);
+  }
+
+  function testAssertInterestRateFail() public {
+    bytes32 assetID = bytes32("BTC-USD");
+    int32 expectedRate = 500; // 5% with 2 decimals
+    int32 actualRate = 400; // 4% with 2 decimals
+
+    assertionContract.setInterestRate(assetID, actualRate);
+
+    vm.expectRevert("AssertionContract: interestRate assertion failed");
+    assertionContract.assertInterestRate(assetID, expectedRate);
+  }
+
+  function testAssertSubAccountPositionFail() public {
+    uint64 subAccountID = testSubAccount;
+    bytes32 assetID = assetToID(
+      Asset({kind: Kind.PERPS, underlying: Currency.BTC, quote: Currency.USDT, expiration: 0, strikePrice: 0})
+    );
+    bool expectedFound = true;
+    int64 expectedBalance = 100 * 1e8; // 100 contracts with 8 decimals
+    int64 actualBalance = 50 * 1e8; // 50 contracts with 8 decimals
+    int64 expectedLastAppliedFundingIndex = 1000000;
+    int64 actualLastAppliedFundingIndex = 500000;
+
+    Position[] memory positions = new Position[](1);
+    positions[0] = Position({
+      id: assetID,
+      balance: actualBalance,
+      lastAppliedFundingIndex: actualLastAppliedFundingIndex
+    });
+
+    SubAccountAssertion memory subAccount = SubAccountAssertion({
+      id: subAccountID,
+      adminCount: 1,
+      signerCount: 1,
+      accountID: testAccount,
+      marginType: MarginType.SIMPLE_CROSS_MARGIN,
+      quoteCurrency: Currency.USDC,
+      lastAppliedFundingTimestamp: 0,
+      spotBalances: new SpotBalanceAssertion[](0),
+      options: new Position[](0),
+      futures: new Position[](0),
+      perps: positions,
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setSubAccount(subAccount);
+
+    vm.expectRevert("AssertionContract: subAccountPosition 'balance' mismatch.");
+    assertionContract.assertSubAccountPosition(
+      subAccountID,
+      assetID,
+      expectedFound,
+      expectedBalance,
+      expectedLastAppliedFundingIndex
+    );
+  }
+
+  function testAssertSubAccountSpotBalanceFail() public {
+    Currency currency = Currency.USDT;
+    int64 expectedBalance = 2000 * 1e6; // 2,000 USDT with 6 decimals
+    int64 actualBalance = 1000 * 1e6; // 1,000 USDT with 6 decimals
+
+    SpotBalanceAssertion[] memory spotBalances = new SpotBalanceAssertion[](1);
+    spotBalances[0] = SpotBalanceAssertion({currency: currency, balance: actualBalance});
+
+    SubAccountAssertion memory subAccount = SubAccountAssertion({
+      id: testSubAccount,
+      adminCount: 1,
+      signerCount: 1,
+      accountID: testAccount,
+      marginType: MarginType.SIMPLE_CROSS_MARGIN,
+      quoteCurrency: Currency.USDT,
+      lastAppliedFundingTimestamp: 0,
+      spotBalances: spotBalances,
+      options: new Position[](0),
+      futures: new Position[](0),
+      perps: new Position[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setSubAccount(subAccount);
+
+    vm.expectRevert("AssertionContract: subAccountSpotBalance assertion failed");
+    assertionContract.assertSubAccountSpotBalance(testSubAccount, currency, expectedBalance);
+  }
+
+  function testAssertSubAccountValueFail() public {
+    Currency currency = Currency.USDT;
+    int64 balance = 2000 * 1e6; // 2,000 USDT with 6 decimals
+    int64 expectedValue = 4000 * 1e6; // 4,000 USD with 6 decimals
+    int64 actualValue = 3000 * 1e6; // 3,000 USD with 6 decimals
+
+    SpotBalanceAssertion[] memory spotBalances = new SpotBalanceAssertion[](1);
+    spotBalances[0] = SpotBalanceAssertion({currency: currency, balance: balance});
+
+    bytes32 assetID = assetToID(
+      Asset({kind: Kind.SPOT, underlying: Currency.USDT, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+    );
+    uint64 price = 1500000000; // 1.5 USD/USDT with 9 decimals
+
+    assertionContract.setMarkPrice(assetID, price);
+
+    SubAccountAssertion memory subAccount = SubAccountAssertion({
+      id: testSubAccount,
+      adminCount: 1,
+      signerCount: 1,
+      accountID: testAccount,
+      marginType: MarginType.SIMPLE_CROSS_MARGIN,
+      quoteCurrency: Currency.USDT,
+      lastAppliedFundingTimestamp: 0,
+      spotBalances: spotBalances,
+      options: new Position[](0),
+      futures: new Position[](0),
+      perps: new Position[](0),
+      signers: new SignerAssertion[](0)
+    });
+
+    assertionContract.setSubAccount(subAccount);
+
+    vm.expectRevert("AssertionContract: subAccountValue mismatch.");
+    assertionContract.assertSubAccountValue(testSubAccount, expectedValue);
+  }
 }
