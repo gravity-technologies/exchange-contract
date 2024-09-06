@@ -187,6 +187,22 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
 
     bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
+
+    if (legsLen > 1) {
+      bytes32[] memory seenAssetIDs = new bytes32[](legsLen);
+      uint seenCount = 0;
+
+      for (uint i; i < legsLen; ++i) {
+        OrderLeg calldata leg = legs[i];
+
+        for (uint j = 0; j < seenCount; ++j) {
+          require(seenAssetIDs[j] != leg.assetID, "Duplicate assetID in legs");
+        }
+        seenAssetIDs[seenCount] = leg.assetID;
+        seenCount++;
+      }
+    }
+
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       uint64 total = executedSize[leg.assetID] + tradeSizes[i];
