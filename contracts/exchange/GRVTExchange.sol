@@ -15,8 +15,7 @@ contract GRVTExchange is
   SubAccountContract,
   WalletRecoveryContract,
   OracleContract,
-  TransferContract,
-  LiquidationContract
+  TransferContract
 {
   function initialize() public initializer {
     __ReentrancyGuard_init();

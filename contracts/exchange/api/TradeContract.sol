@@ -4,13 +4,14 @@ pragma solidity ^0.8.20;
 import "./FundingAndSettlement.sol";
 import "./RiskCheck.sol";
 import "./ConfigContract.sol";
+import "./LiquidationContract.sol";
 import "./signature/generated/TradeSig.sol";
 import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
 
-abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
+abstract contract TradeContract is LiquidationContract {
   using BIMath for BI;
 
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
