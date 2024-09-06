@@ -30,6 +30,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens
   ) external {
+    require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
     require(!state.replay.executed[txHash], "replayed payload");
@@ -71,6 +72,7 @@ abstract contract TransferContract is TradeContract {
     uint64 numTokens,
     Signature calldata sig
   ) external nonReentrant {
+    require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
 
@@ -157,6 +159,7 @@ abstract contract TransferContract is TradeContract {
     uint64 numTokens,
     Signature calldata sig
   ) external {
+    require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------

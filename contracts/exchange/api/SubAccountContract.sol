@@ -28,8 +28,8 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
-    require(quoteCurrency != Currency.UNSPECIFIED, "invalid quote currency");
-    require(marginType != MarginType.UNSPECIFIED, "invalid margin type");
+    require(quoteCurrency == Currency.USDT, "invalid quote currency");
+    require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(acc.id != address(0), "account does not exist");
     require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
@@ -69,6 +69,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     MarginType marginType,
     Signature calldata sig
   ) external {
+    revert("not supported");
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
 

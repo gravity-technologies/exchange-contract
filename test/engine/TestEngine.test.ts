@@ -91,18 +91,16 @@ describe.only("API - TestEngine", function () {
     "TestCreateAccount.json",
     "TestDeposit.json",
     "TestFundingRate.json",
-    "TestInterestRate.json",
     "TestMarkPrice.json",
     "TestMatchFeeComputation.json",
     "TestMatchFundingAndSettlement.json",
     "TestMatchTradingComputation.json",
     "TestRecoverWallet.json",
     "TestSessionKey.json",
-    "TestSettlementPrice.json",
     "TestSubAccount.json",
     "TestTransfer.json",
     "TestWithdrawal.json",
-    "TestMatchLiquidateComputation.json"
+    "TestLiquidate.json",
   ]
   const testNames: string[] = [
     // "[NoFee, NoMargin] One Leg One Maker (Simple Buy and Close)",

@@ -57,6 +57,7 @@ contract OracleContract is ConfigContract {
   /// @param txID the transaction ID of the price tick
   /// @param prices the settlement prices
   function settlementPriceTick(int64 timestamp, uint64 txID, SettlementTick[] calldata prices) external {
+    revert("not supported");
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
     uint len = prices.length;
@@ -150,6 +151,7 @@ contract OracleContract is ConfigContract {
     PriceEntry[] calldata rates,
     Signature calldata sig
   ) external {
+    revert("not supported");
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------

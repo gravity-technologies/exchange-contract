@@ -148,7 +148,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
     for (uint i; i < legsLen; ++i) {
-      require(assetGetQuote(legs[i].assetID) == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
+      OrderLeg calldata leg = legs[i];
+      Currency quote = assetGetQuote(leg.assetID);
+      require(quote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
+      require(assetGetKind(leg.assetID) == Kind.PERPS, ERR_NOT_SUPPORTED);
+      require(quote == Currency.USDT, ERR_NOT_SUPPORTED);
     }
 
     // Check the order signature
