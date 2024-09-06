@@ -50,7 +50,6 @@ contract AccountContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
-    require(acc.id != address(0), "account does not exist");
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.adminCount, "invalid threshold");
 
     // ---------- Signature Verification -----------
@@ -85,7 +84,6 @@ contract AccountContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
-    require(acc.id != address(0), "account does not exist");
 
     // ---------- Signature Verification -----------
     bytes32[] memory hashes = new bytes32[](sigs.length);
