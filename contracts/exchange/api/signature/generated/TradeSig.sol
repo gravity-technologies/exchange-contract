@@ -35,24 +35,22 @@ bytes32 constant _LEG_H = keccak256(
 /// @param legs the order legs
 /// @return the hash of the order legs
 function hashOrderLegs(OrderLeg[] calldata legs) pure returns (bytes32) {
-  bytes memory legsEncoded;
   uint numLegs = legs.length;
+  bytes32[] memory hashedLegs = new bytes32[](numLegs);
   for (uint i; i < numLegs; ++i) {
     OrderLeg calldata leg = legs[i];
-    bytes32 legHash;
     //sort the limit price and ocoLimitPrice so that we can always use either 1 of the prices
     if (leg.limitPrice < leg.ocoLimitPrice) {
-      legHash = keccak256(
+      hashedLegs[i] = keccak256(
         abi.encode(_LEG_H, leg.assetID, leg.size, leg.limitPrice, leg.ocoLimitPrice, leg.isBuyingAsset)
       );
     } else {
-      legHash = keccak256(
+      hashedLegs[i] = keccak256(
         abi.encode(_LEG_H, leg.assetID, leg.size, leg.ocoLimitPrice, leg.limitPrice, leg.isBuyingAsset)
       );
     }
-    legsEncoded = abi.encodePacked(legsEncoded, legHash);
   }
-  return keccak256(legsEncoded);
+  return keccak256(abi.encodePacked(hashedLegs));
 }
 
 bytes32 constant _LIQUIDATION_ORDER_H = keccak256(
