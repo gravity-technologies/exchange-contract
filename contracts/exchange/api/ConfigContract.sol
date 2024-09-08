@@ -107,6 +107,18 @@ contract ConfigContract is BaseContract {
     return (uint64(uint256(c.val)), c.isSet);
   }
 
+  function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
+    SubAccount storage sub;
+    (uint64 subID, bool isSubConfigured) = _getUintConfig(key);
+    sub = state.subAccounts[subID];
+
+    if (!isSubConfigured) {
+      return (sub, false);
+    }
+
+    return (sub, sub.id != 0);
+  }
+
   function _getUintConfig2D(ConfigID key, bytes32 subKey) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config2DValues[key][subKey];
     if (!c.isSet) {
