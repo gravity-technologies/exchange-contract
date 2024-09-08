@@ -10,12 +10,6 @@ enum MarginType {
   PORTFOLIO_CROSS_MARGIN
 }
 
-enum AccountRecoveryType {
-  UNSPECIFIED,
-  GUARDIAN,
-  SUB_ACCOUNT_SIGNERS
-}
-
 enum TimeInForce {
   UNSPECIFIED,
   GOOD_TILL_TIME,
