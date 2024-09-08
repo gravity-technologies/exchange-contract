@@ -102,7 +102,6 @@ describe.only("API - TestEngine", function () {
     "TestSubAccount.json",
     "TestTransfer.json",
     "TestWithdrawal.json",
-    "TestLiquidate.json",
     "TestMatchLiquidateComputation.json"
   ]
   const testNames: string[] = [
