@@ -197,6 +197,9 @@ abstract contract TradeContract is LiquidationContract {
     // Check that the fee paid is within the cap
     int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
     if (order.isLiquidation) {
+      // Liquidation Fee:
+      // 0.25% = 25 bps on option index notional
+      // 0.70% = 70 bps otherwise
       int32 liquidationFee = isOption ? int32(2500) : int32(7000);
       if (feeCapRate < liquidationFee) {
         feeCapRate = liquidationFee;
