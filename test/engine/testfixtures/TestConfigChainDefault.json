@@ -28,137 +28,9 @@
             "expectations": [
                {
                   "expect": {
-                     "key": "SM_FUTURES_INITIAL_MARGIN",
+                     "key": "SIMPLE_CROSS_FUTURES_INITIAL_MARGIN",
                      "sub_key": "0x05",
                      "value": "0x4e20"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_FUTURES_MAINTENANCE_MARGIN",
-                     "sub_key": "0x05",
-                     "value": "0x2710"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_FUTURES_VARIABLE_MARGIN",
-                     "sub_key": "0x05",
-                     "value": "0x32"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_FUTURES_VARIABLE_MARGIN",
-                     "sub_key": "0x04",
-                     "value": "0x04"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_OPTIONS_INITIAL_MARGIN_HIGH",
-                     "sub_key": "0x05",
-                     "value": "0x0249f0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_OPTIONS_INITIAL_MARGIN_LOW",
-                     "sub_key": "0x05",
-                     "value": "0x0186a0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "SM_OPTIONS_MAINTENANCE_MARGIN",
-                     "sub_key": "0x05",
-                     "value": "0x0124f8"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_SPOT_MOVE",
-                     "sub_key": "0x05",
-                     "value": "0x030d40"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_VOL_MOVE_UP",
-                     "sub_key": "0x05",
-                     "value": "0x06ddd0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_VOL_MOVE_DOWN",
-                     "sub_key": "0x05",
-                     "value": "0x06ddd0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_SPOT_MOVE_EXTREME",
-                     "sub_key": "0x05",
-                     "value": "0x0927c0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_EXTREME_MOVE_DISCOUNT",
-                     "sub_key": "0x05",
-                     "value": "0x0a3930"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_SHORT_TERM_VEGA_POWER",
-                     "sub_key": "0x05",
-                     "value": "0x0493e0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_LONG_TERM_VEGA_POWER",
-                     "sub_key": "0x05",
-                     "value": "0x01fbd0"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_INITIAL_MARGIN_FACTOR",
-                     "sub_key": "0x05",
-                     "value": "0x13d620"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_FUTURES_CONTINGENCY_MARGIN",
-                     "sub_key": "0x05",
-                     "value": "0x1770"
-                  },
-                  "name": "ExConfig2D"
-               },
-               {
-                  "expect": {
-                     "key": "PM_OPTIONS_CONTINGENCY_MARGIN",
-                     "sub_key": "0x05",
-                     "value": "0x2710"
                   },
                   "name": "ExConfig2D"
                },
@@ -203,7 +75,7 @@
                },
                {
                   "expect": {
-                     "key": "ADMIN_LIQUIDATION_SUB_ACCOUNT_ID",
+                     "key": "INSURANCE_FUND_SUB_ACCOUNT_ID",
                      "value": "0x00"
                   },
                   "name": "ExConfig"
