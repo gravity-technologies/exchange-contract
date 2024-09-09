@@ -54,15 +54,11 @@ contract ConfigContract is BaseContract {
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
+  uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
-
-  // function _intToConfig(int64 v) internal pure returns (bytes32) {
-  //   return bytes32(uint256(uint64(v)));
-  // }
-
   function _configToInt(bytes32 v) internal pure returns (int64) {
     return int64(uint64(uint256(v)));
   }
@@ -71,11 +67,6 @@ contract ConfigContract is BaseContract {
     ConfigValue storage c = state.config1DValues[key];
     return (int64(uint64(uint256(c.val))), c.isSet);
   }
-
-  // function _getIntConfig2D(ConfigID key, bytes32 subKey) internal view returns (int64, bool) {
-  //   (uint64 val, bool isSet) = _getUintConfig2D(key, subKey);
-  //   return (int64(val), isSet);
-  // }
 
   function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
     return bytes32(uint256(uint32(v)));
@@ -140,18 +131,6 @@ contract ConfigContract is BaseContract {
     return (c.val, c.isSet);
   }
 
-  // function _boolToConfig(bool v) internal pure returns (bytes32) {
-  //   return v ? TRUE_BYTES32 : FALSE_BYTES32;
-  // }
-
-  // function _configToBool(bytes32 v) internal pure returns (bool) {
-  //   return v == TRUE_BYTES32;
-  // }
-
-  // function _getBoolConfig(ConfigID key) internal view returns (bool) {
-  //   return state.config1DValues[key].val == TRUE_BYTES32;
-  // }
-
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
@@ -159,10 +138,6 @@ contract ConfigContract is BaseContract {
   function _addressToConfig(address v) internal pure returns (bytes32) {
     return bytes32(uint256(uint160(v)));
   }
-
-  // function _configToAddress(bytes32 v) internal pure returns (address) {
-  //   return address(uint160(uint256(v)));
-  // }
 
   function _currencyToConfig(Currency v) internal pure returns (bytes32) {
     return bytes32(uint256(uint(v)));
@@ -254,6 +229,7 @@ contract ConfigContract is BaseContract {
 
     // For 1D config settings, subKey must be 0
     // For 2D config, there's no such restriction
+    // 2D configs are always placed at odd indices in the enum. See ConfigID
     bool is2DConfig = uint256(typ) % 2 == 0;
     require(is2DConfig || subKey == 0, "invalid 1D subKey");
 
@@ -262,7 +238,6 @@ contract ConfigContract is BaseContract {
       int64 lockEndTime = setting.schedules[subKey].lockEndTime;
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
-    // 2D configs are always placed at odd indices in the enum. See ConfigID
     ConfigValue storage config = is2DConfig ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
@@ -279,7 +254,9 @@ contract ConfigContract is BaseContract {
 
     Rule[] storage rules = state.configSettings[key].rules;
     // If there are no rules for the config setting, return 0 (no lock duration)
-    if (rules.length == 0) return 0;
+    if (rules.length == 0) {
+      return 0;
+    }
 
     // These config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
@@ -391,139 +368,51 @@ contract ConfigContract is BaseContract {
 
     bytes32 btc = _currencyToConfig(Currency.BTC);
     bytes32 eth = _currencyToConfig(Currency.ETH);
-
-    // This is a special value that represents an empty value for a config
-    // bytes32 emptyValue = bytes32(uint256(0));
+    Rule[] storage rules;
+    ConfigID id;
 
     ///////////////////////////////////////////////////////////////////
-    /// Simple Margin
+    /// Simple Cross Margin
     ///////////////////////////////////////////////////////////////////
-
-    // SM_FUTURES_INITIAL_MARGIN
-    ConfigID id = ConfigID.SM_FUTURES_INITIAL_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
+    uint hi = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12);
+    for (uint i = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01); i <= hi; i++) {
+      settings[ConfigID(i)].typ = ConfigType.BYTE322D;
+    }
+    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01;
     mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(10_0000, 75);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(100_0000, 75);
+
+    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_02;
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(50_0000, 125);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(500_0000, 125);
+
+    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_03;
+    settings[id].typ = ConfigType.BYTE322D;
+    v2d = values2D[id];
+    v2d[btc].isSet = true;
+    v2d[btc].val = _getMaintenanceMarginBytes32(100_0000, 175);
+    v2d[eth].isSet = true;
+    v2d[eth].val = _getMaintenanceMarginBytes32(1000_0000, 175);
+
+    // SIMPLE_CROSS_FUTURES_INITIAL_MARGIN
+    id = ConfigID.SIMPLE_CROSS_FUTURES_INITIAL_MARGIN;
+    settings[id].typ = ConfigType.CENTIBEEP2D;
+    v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(2 * ONE_PERCENT);
-    Rule[] storage rules = settings[id].rules;
-    rules.push(Rule(0, 0, uint64(int64((100 * ONE_HUNDRED_PERCENT)))));
-    rules.push(Rule(int64(ONE_HOUR_NANOS), uint64(int64((10 * ONE_BEEP))), 0));
-    rules.push(Rule(int64(4 * ONE_HOUR_NANOS), uint64(int64((1 * ONE_PERCENT))), 0));
-    rules.push(Rule(int64(24 * ONE_HOUR_NANOS), uint64(int64((10 * ONE_PERCENT))), 0));
-    rules.push(Rule(int64(7 * 24 * ONE_HOUR_NANOS), uint64(int64((1 * ONE_HUNDRED_PERCENT))), 0));
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
-    // SM_FUTURES_MAINTENANCE_MARGIN
-    id = ConfigID.SM_FUTURES_MAINTENANCE_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(ONE_PERCENT);
-
-    // SM_FUTURES_VARIABLE_MARGIN
-    id = ConfigID.SM_FUTURES_VARIABLE_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(50 * ONE_CENTIBEEP);
-    v2d[btc].isSet = true;
-    v2d[btc].val = _centiBeepToConfig(50 * ONE_CENTIBEEP);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _centiBeepToConfig(4 * ONE_CENTIBEEP);
-
-    // SM_OPTIONS_INITIAL_MARGIN_HIGH
-    id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_HIGH;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(15 * ONE_PERCENT);
-
-    // SM_OPTIONS_INITIAL_MARGIN_LOW
-    id = ConfigID.SM_OPTIONS_INITIAL_MARGIN_LOW;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(10 * ONE_PERCENT);
-
-    // SM_OPTIONS_MAINTENANCE_MARGIN
-    id = ConfigID.SM_OPTIONS_MAINTENANCE_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(750 * ONE_BEEP);
-
-    ///////////////////////////////////////////////////////////////////
-    /// Portfolio Margin
-    ///////////////////////////////////////////////////////////////////
-
-    // PM_SPOT_MOVE
-    id = ConfigID.PM_SPOT_MOVE;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(20 * ONE_PERCENT);
-
-    // PM_VOL_MOVE_DOWN
-    id = ConfigID.PM_VOL_MOVE_DOWN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(45 * ONE_PERCENT);
-
-    // PM_VOL_MOVE_UP
-    id = ConfigID.PM_VOL_MOVE_UP;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(45 * ONE_PERCENT);
-
-    // PM_SPOT_MOVE_EXTREME
-    id = ConfigID.PM_SPOT_MOVE_EXTREME;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(60 * ONE_PERCENT);
-
-    // PM_EXTREME_MOVE_DISCOUNT
-    id = ConfigID.PM_EXTREME_MOVE_DISCOUNT;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(67 * ONE_PERCENT);
-
-    // PM_SHORT_TERM_VEGA_POWER
-    id = ConfigID.PM_SHORT_TERM_VEGA_POWER;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(30 * ONE_PERCENT);
-
-    // PM_LONG_TERM_VEGA_POWER
-    id = ConfigID.PM_LONG_TERM_VEGA_POWER;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(13 * ONE_PERCENT);
-
-    // PM_INITIAL_MARGIN_FACTOR
-    id = ConfigID.PM_INITIAL_MARGIN_FACTOR;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(130 * ONE_PERCENT);
-
-    // PM_FUTURES_CONTINGENCY_MARGIN
-    id = ConfigID.PM_FUTURES_CONTINGENCY_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(60 * ONE_BEEP);
-
-    // PM_OPTIONS_CONTINGENCY_MARGIN
-    id = ConfigID.PM_OPTIONS_CONTINGENCY_MARGIN;
-    settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(ONE_PERCENT);
+    bytes32 addr;
 
     ///////////////////////////////////////////////////////////////////
     /// ADMIN addresses. Commented out because they are empty for now
@@ -531,8 +420,6 @@ contract ConfigContract is BaseContract {
     DefaultAddress memory defaultAddresses = _getDefaultAddresses();
 
     // ADMIN_RECOVERY_ADDRESS
-    bytes32 addr;
-
     id = ConfigID.ADMIN_RECOVERY_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     addr = _addressToConfig(defaultAddresses.Recovery);
@@ -564,44 +451,22 @@ contract ConfigContract is BaseContract {
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
 
+    ///////////////////////////////////////////////////////////////////
+    /// Smart Contract Addresses
+    ///////////////////////////////////////////////////////////////////
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
 
-    id = ConfigID.MAINTENANCE_MARGIN_TIER_01;
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(10_0000, 75);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(100_0000, 75);
-
-    id = ConfigID.MAINTENANCE_MARGIN_TIER_02;
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(50_0000, 125);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(500_0000, 125);
-
-    id = ConfigID.MAINTENANCE_MARGIN_TIER_03;
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(100_0000, 175);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(1000_0000, 175);
-
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
 
-    // ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
-    id = ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID;
+    // INSURANCE_FUND_SUB_ACCOUNT_ID
+    id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
-    // values1D[id].val = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -613,6 +478,8 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(5 * ONE_PERCENT);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // FUNDING_RATE_LOW
     id = ConfigID.FUNDING_RATE_LOW;
@@ -620,53 +487,55 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-5 * ONE_PERCENT);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Fee settings
     ///////////////////////////////////////////////////////////////////
 
-    // FUTURE_MAKER_FEE_MINIMUM
-    id = ConfigID.FUTURE_MAKER_FEE_MINIMUM;
+    // FUTURES_MAKER_FEE_MINIMUM
+    id = ConfigID.FUTURES_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-30 * ONE_CENTIBEEP);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
-    // FUTURE_TAKER_FEE_MINIMUM
-    id = ConfigID.FUTURE_TAKER_FEE_MINIMUM;
+    // FUTURES_TAKER_FEE_MINIMUM
+    id = ConfigID.FUTURES_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(140 * ONE_CENTIBEEP);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
-    // OPTION_MAKER_FEE_MINIMUM
-    id = ConfigID.OPTION_MAKER_FEE_MINIMUM;
+    // OPTIONS_MAKER_FEE_MINIMUM
+    id = ConfigID.OPTIONS_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-30 * ONE_CENTIBEEP);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
-    // OPTION_TAKER_FEE_MINIMUM
-    id = ConfigID.OPTION_TAKER_FEE_MINIMUM;
+    // OPTIONS_TAKER_FEE_MINIMUM
+    id = ConfigID.OPTIONS_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     v2d = values2D[id];
     v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
     v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(120 * ONE_CENTIBEEP);
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     id = ConfigID.WITHDRAWAL_FEE;
     settings[id].typ = ConfigType.UINT;
     values1D[id].isSet = true;
     values1D[id].val = _uintToConfig(DEFAULT_WITHDRAWAL_FEE_USD * _getBalanceMultiplier(Currency.USD));
-
-    // MAINTENANCE MARGIN TIERS
-    uint hi = uint(ConfigID.MAINTENANCE_MARGIN_TIER_12);
-    for (uint i = uint(ConfigID.MAINTENANCE_MARGIN_TIER_01); i <= hi; i++) {
-      settings[ConfigID(i)].typ = ConfigType.BYTE322D;
-    }
-
-    // INSURANCE FUND ID
-    id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
-    settings[id].typ = ConfigType.UINT2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;

@@ -242,60 +242,47 @@ enum ConfigType {
   BYTE322D
 }
 
-// See https://docs.google.com/spreadsheets/d/1MEp2BMtBjkdfTn7WXc_egh5ucc1UK8v6ibNWUuzW6AI/edit#gid=0 for the most up to date list of configs
 enum ConfigID {
   UNSPECIFIED, // 0
-  // SIMPLE MARGIN CONFIGS
-  SM_FUTURES_INITIAL_MARGIN, // 1
-  SM_FUTURES_MAINTENANCE_MARGIN, // 2
-  SM_FUTURES_VARIABLE_MARGIN, // 3
-  SM_OPTIONS_INITIAL_MARGIN_HIGH, // 4
-  SM_OPTIONS_INITIAL_MARGIN_LOW, // 5
-  SM_OPTIONS_MAINTENANCE_MARGIN, // 6
-  // PORTFOLIO MARGIN CONFIGS
-  PM_SPOT_MOVE, // 7
-  PM_VOL_MOVE_UP, // 8
-  PM_VOL_MOVE_DOWN, // 9
-  PM_SPOT_MOVE_EXTREME, // 10
-  PM_EXTREME_MOVE_DISCOUNT, // 11
-  PM_SHORT_TERM_VEGA_POWER, // 12
-  PM_LONG_TERM_VEGA_POWER, // 13
-  PM_INITIAL_MARGIN_FACTOR, // 14
-  PM_FUTURES_CONTINGENCY_MARGIN, // 15
-  PM_OPTIONS_CONTINGENCY_MARGIN, // 16
-  // ADMIN
-  ADMIN_RECOVERY_ADDRESS, // 17
-  ORACLE_ADDRESS, // 18
-  CONFIG_ADDRESS, // 19
-  ADMIN_FEE_SUB_ACCOUNT_ID, // 20 the sub account that collects fees
-  ADMIN_LIQUIDATION_SUB_ACCOUNT_ID, // 21
-  // Funding
-  FUNDING_RATE_HIGH, // 22
-  FUNDING_RATE_LOW, // 23
-  MARKET_DATA_ADDRESS, // 24
-  FUTURE_MAKER_FEE_MINIMUM, // 25
-  FUTURE_TAKER_FEE_MINIMUM, // 26
-  OPTION_MAKER_FEE_MINIMUM, // 27
-  OPTION_TAKER_FEE_MINIMUM, // 28
-  ERC20_ADDRESSES, // 29
-  L2_SHARED_BRIDGE_ADDRESS, // 30
-  MAINTENANCE_MARGIN_TIER_01, // 31
-  MAINTENANCE_MARGIN_TIER_02, // 32
-  MAINTENANCE_MARGIN_TIER_03, // 33
-  MAINTENANCE_MARGIN_TIER_04, // 34
-  MAINTENANCE_MARGIN_TIER_05, // 35
-  MAINTENANCE_MARGIN_TIER_06, // 36
-  MAINTENANCE_MARGIN_TIER_07, // 37
-  MAINTENANCE_MARGIN_TIER_08, // 38
-  MAINTENANCE_MARGIN_TIER_09, // 39
-  MAINTENANCE_MARGIN_TIER_10, // 40
-  MAINTENANCE_MARGIN_TIER_11, // 41
-  MAINTENANCE_MARGIN_TIER_12, // 42
-  WITHDRAWAL_FEE, // 43
-  // Liquidation
-  INSURANCE_FUND_SUB_ACCOUNT_ID, // 44
-  // Bridging Partners Accounts can transfer and withdraw to any address
-  BRIDGING_PARTNER_ADDRESSES // 45
+  // Admin Wallets
+  ADMIN_RECOVERY_ADDRESS, // 1, no timelock
+  ORACLE_ADDRESS, // 2, no timelock
+  CONFIG_ADDRESS, // 3, no timelock
+  MARKET_DATA_ADDRESS, // 4, no timelock
+  // Admin Sub Accounts
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, no timelock
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, no timelock
+  // Funding Configs
+  FUNDING_RATE_HIGH, // 7, has timelock
+  FUNDING_RATE_LOW, // 8, has timelock
+  // Trading Fee Configs
+  FUTURES_MAKER_FEE_MINIMUM, // 9, has timelock
+  FUTURES_TAKER_FEE_MINIMUM, // 10, has timelock
+  OPTIONS_MAKER_FEE_MINIMUM, // 11, has timelock
+  OPTIONS_TAKER_FEE_MINIMUM, // 12, has timelock
+  // ERC20 addresses
+  ERC20_ADDRESSES, // 13, no timelock
+  L2_SHARED_BRIDGE_ADDRESS, // 14, no timelock
+  // Simple Cross Maintenance Margin tiers
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01, // 15, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_02, // 16, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_03, // 17, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_04, // 18, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_05, // 19, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_06, // 20, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_07, // 21, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_08, // 22, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_09, // 23, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_10, // 24, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_11, // 25, has timelock
+  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12, // 26, has timelock
+  // Simple cross futures initial margin. This config is not used in the contract (since initial margin is only computed offchain),
+  // but it is important to keep it here to maintain the correct configID ordinals
+  SIMPLE_CROSS_FUTURES_INITIAL_MARGIN, // 27, has timelock
+  // Withdrawal Fee Configs
+  WITHDRAWAL_FEE, // 28, has timelock
+  // Bridging partner accounts can transfer from and withdraw to any address
+  BRIDGING_PARTNER_ADDRESSES // 29, no timelock
 }
 
 struct ConfigValue {

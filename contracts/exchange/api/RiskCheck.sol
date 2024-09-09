@@ -25,9 +25,7 @@ contract RiskCheck is BaseContract, ConfigContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   function _requireValidMargin(SubAccount storage sub, bool isLiquidation, bool beforeTrade) internal view {
-    (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(
-      ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID
-    );
+    (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
 
     // Insurance Fund can Trade when under MM, and in Negative Equity
     if (liquidationSubConfigured && sub.id == liquidationSubID) {
@@ -121,8 +119,8 @@ contract RiskCheck is BaseContract, ConfigContract {
   ) private view returns (MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory) {
     bytes32 currencyConfig = _currencyToConfig(currency);
     MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory configs;
-    uint hi = uint(ConfigID.MAINTENANCE_MARGIN_TIER_12);
-    uint lo = uint(ConfigID.MAINTENANCE_MARGIN_TIER_01);
+    uint hi = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12);
+    uint lo = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01);
     for (uint i = lo; i <= hi; i++) {
       (bytes32 mmBytes32, bool found) = _getByte32Config2D(ConfigID(i), currencyConfig);
       if (!found) {

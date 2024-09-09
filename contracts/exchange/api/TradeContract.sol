@@ -167,7 +167,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // - order's signer has trade permission
     SubAccount storage permSub = sub;
     if (order.isLiquidation) {
-      (permSub, ) = _getSubAccountFromUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
+      (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
     }
 
     require(
@@ -251,7 +251,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   function _getFeeSubAccount(bool isLiquidation) private view returns (SubAccount storage, bool) {
     if (isLiquidation) {
-      return _getSubAccountFromUintConfig(ConfigID.ADMIN_LIQUIDATION_SUB_ACCOUNT_ID);
+      return _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
     } else {
       return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     }
