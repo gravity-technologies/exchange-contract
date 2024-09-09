@@ -298,6 +298,11 @@ enum ConfigID {
   BRIDGING_PARTNER_ADDRESSES // 45
 }
 
+struct MarginTier {
+  uint32 bracketStart;
+  uint32 maintenanceMarginRate;
+}
+
 struct ConfigValue {
   // true if the config is set, false otherwise
   bool isSet;

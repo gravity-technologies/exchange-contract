@@ -6,6 +6,17 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
+struct MarginTierBI {
+  BI bracketStart;
+  BI maintenanceMarginRate;
+}
+
+
+// The bit mask for the least significant 32 bits
+uint256 constant LSB_32_MASK = 0xFFFFFFFF;
+// The bit mask for the least significant 24 bits, used for Kind, Underlying, Quote encoding in determining the insurance fund subaccount ID
+bytes32 constant KUQ_MASK = bytes32(uint256(0xFFFFFF));
+
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
 ///  - (1) retrieving the current value for a config type
@@ -44,6 +55,8 @@ import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 ///
 ///////////////////////////////////////////////////////////////////
 contract ConfigContract is BaseContract {
+  using BIMath for BI;
+
   // --------------- Constants ---------------
   int32 private constant ONE_CENTIBEEP = 1;
   int32 private constant ONE_BEEP = 100;
@@ -54,6 +67,9 @@ contract ConfigContract is BaseContract {
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
+  bytes32 internal immutable UNUSED_MARGIN_TIER_VALUE =
+    _getMaintenanceMarginBytes32(type(uint32).max, type(uint32).max);
+  uint256 internal constant MAX_M_MARGIN_TIERS = 12;
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -206,6 +222,8 @@ contract ConfigContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
 
+    _requireConfigIDUpdatableViaGenericAPI(key);
+
     // ---------- Signature Verification -----------
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
@@ -242,6 +260,8 @@ contract ConfigContract is BaseContract {
   ) external {
     _setSequence(timestamp, txID);
 
+    _requireConfigIDUpdatableViaGenericAPI(key);
+
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
 
     // ---------- Signature Verification -----------
@@ -269,6 +289,209 @@ contract ConfigContract is BaseContract {
 
     // Must delete the schedule after the config is set (to prevent replays)
     delete setting.schedules[subKey];
+  }
+
+  function scheduleCurrencyMarginTiers(
+    int64 timestamp,
+    uint64 txID,
+    Currency currency,
+    MarginTier[] calldata marginTiers,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    _requireValidCurrencyMarginTiers(marginTiers);
+
+    // ---------- Signature Verification -----------
+    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
+
+    _preventReplay(hashScheduleCurrencyMarginTiers(currency, marginTiers, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    ConfigSetting storage setting = state.configSettings[_currencyMarginTiersTimelockKey()];
+    ConfigSchedule storage sched = setting.schedules[_currencyToConfig(currency)];
+    sched.lockEndTime = timestamp + _getCurrencyMarginTiersLockDuration(currency, marginTiers);
+  }
+
+  function setCurrencyMarginTiers(
+    int64 timestamp,
+    uint64 txID,
+    Currency currency,
+    MarginTier[] calldata marginTiers,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    _requireValidCurrencyMarginTiers(marginTiers);
+
+    // ---------- Signature Verification -----------
+    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
+
+    _preventReplay(hashSetCurrencyMarginTiers(currency, marginTiers, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    ConfigSetting storage setting = state.configSettings[_currencyMarginTiersTimelockKey()];
+
+    int64 lockDuration = _getCurrencyMarginTiersLockDuration(currency, marginTiers);
+    if (lockDuration > 0) {
+      int64 lockEndTime = setting.schedules[_currencyToConfig(currency)].lockEndTime;
+      require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
+    }
+
+    // set config
+    for (uint i = 0; i < marginTiers.length; i++) {
+      ConfigValue storage config = state.config2DValues[ConfigID(uint(ConfigID.MAINTENANCE_MARGIN_TIER_01) + i)][
+        _currencyToConfig(currency)
+      ];
+      config.isSet = true;
+      config.val = _getMaintenanceMarginBytes32(marginTiers[i].bracketStart, marginTiers[i].maintenanceMarginRate);
+    }
+
+    for (uint i = marginTiers.length; i < _currencyMarginTiersCount(); i++) {
+      ConfigValue storage config = state.config2DValues[ConfigID(uint(ConfigID.MAINTENANCE_MARGIN_TIER_01) + i)][
+        _currencyToConfig(currency)
+      ];
+      config.isSet = true;
+      config.val = UNUSED_MARGIN_TIER_VALUE;
+    }
+
+    delete setting.schedules[_currencyToConfig(currency)];
+  }
+
+  function _getMaintenanceMargin(
+    BI memory size,
+    MarginTierBI[MAX_M_MARGIN_TIERS] memory configs
+  ) internal pure returns (BI memory) {
+    BI memory margin = BI(0, 0);
+    BI memory prevStart = BI(0, 0);
+    BI memory prevRate = configs[0].maintenanceMarginRate;
+    BI memory bracketSize = BI(0, 0);
+
+    for (uint i = 0; i < configs.length; i++) {
+      if (size.cmp(configs[i].bracketStart) <= 0) {
+        bracketSize = size.sub(prevStart);
+        margin = margin.add(bracketSize.mul(prevRate));
+        return margin;
+      }
+
+      bracketSize = configs[i].bracketStart.sub(prevStart);
+      margin = margin.add(bracketSize.mul(prevRate));
+
+      prevStart = configs[i].bracketStart;
+      prevRate = configs[i].maintenanceMarginRate;
+    }
+
+    // Handle the last bracket
+    BI memory lastBracketSize = size.sub(prevStart);
+    margin = margin.add(lastBracketSize.mul(prevRate));
+
+    return margin;
+  }
+
+  function _getCurrenciesWithMMConfig() internal view returns (Currency[] memory) {
+    Currency[] memory currencies = new Currency[](2);
+    currencies[0] = Currency.BTC;
+    currencies[1] = Currency.ETH;
+    return currencies;
+  }
+
+  function _getMMConfigCurrencyIndex(Currency currency) internal view returns (uint) {
+    Currency[] memory currencies = _getCurrenciesWithMMConfig();
+    for (uint i = 0; i < currencies.length; i++) {
+      if (currencies[i] == currency) {
+        return i;
+      }
+    }
+    revert("Currency not found in maintenance margin config");
+  }
+
+  /**
+   * @dev Returns the maintenance margin config for all currency
+   * @return The maintenance margin config for all currency, indexed by (currency_enum_value - ETH_enum_value)
+   */
+  function _getAllMarginTierBI() internal view returns (MarginTierBI[MAX_M_MARGIN_TIERS][] memory) {
+    Currency[] memory currencies = _getCurrenciesWithMMConfig();
+
+    MarginTierBI[MAX_M_MARGIN_TIERS][] memory configs = new MarginTierBI[MAX_M_MARGIN_TIERS][](currencies.length);
+
+
+    // Add the maintenance margin config for each currency
+    for (uint i = 0; i < currencies.length; i++) {
+      configs[i] = _getMarginTierBIByCurrency(currencies[i]);
+    }
+    return configs;
+  }
+
+  /**
+   * @dev Returns the maintenance margin config for a given currency
+   * Each maintenance margin tier config value is stored as a bytes32 value
+   * The encoding of that value is as follows, where size and ratio are fixed point numbers with 4 decimals:
+   * +-------------------------------+
+   * |    Size    |       Ratio      |
+   * |  (32 bits) |      (32 bits)   |
+   * +--------------------------------+
+   *
+   * @param currency The currency to get the maintenance margin config for
+   * @return The maintenance margin config for the currency
+   */
+  function _getMarginTierBIByCurrency(
+    Currency currency
+  ) private view returns (MarginTierBI[MAX_M_MARGIN_TIERS] memory) {
+    bytes32 currencyConfig = _currencyToConfig(currency);
+    MarginTierBI[MAX_M_MARGIN_TIERS] memory configs;
+    uint hi = uint(ConfigID.MAINTENANCE_MARGIN_TIER_12);
+    uint lo = uint(ConfigID.MAINTENANCE_MARGIN_TIER_01);
+    for (uint i = lo; i <= hi; i++) {
+      (bytes32 mmBytes32, bool found) = _getByte32Config2D(ConfigID(i), currencyConfig);
+      if (!found) {
+        break;
+      }
+      uint256 mm = uint256(mmBytes32);
+      configs[i - lo].bracketStart = BI(int256(uint256((mm >> 224) & LSB_32_MASK)), 4);
+      configs[i - lo].maintenanceMarginRate = BI(int256(uint256((mm >> 160) & LSB_32_MASK)), 4);
+    }
+    return configs;
+  }
+
+  function _requireConfigIDUpdatableViaGenericAPI(ConfigID key) private view {
+    require(!_isConfigIDCurrencyMarginTier(key), "config ID not updatable via generic API");
+  }
+
+  function _requireValidCurrencyMarginTiers(MarginTier[] calldata marginTiers) private pure {
+    require(marginTiers.length > 0, "empty margin tiers");
+    require(marginTiers.length <= _currencyMarginTiersCount(), "too many margin tiers");
+
+    require(marginTiers[0].bracketStart == 0, "first bracket must start at 0");
+
+    uint32 prevBracketStart = marginTiers[0].bracketStart;
+    uint32 prevMaintenanceMarginRate = marginTiers[0].maintenanceMarginRate;
+
+    for (uint i = 1; i < marginTiers.length; i++) {
+      require(marginTiers[i].bracketStart > prevBracketStart, "brackets not increasing");
+      require(marginTiers[i].maintenanceMarginRate > prevMaintenanceMarginRate, "margin rates not increasing");
+
+      prevBracketStart = marginTiers[i].bracketStart;
+      prevMaintenanceMarginRate = marginTiers[i].maintenanceMarginRate;
+    }
+  }
+
+  function _currencyMarginTiersTimelockKey() private pure returns (ConfigID) {
+    return ConfigID.MAINTENANCE_MARGIN_TIER_01;
+  }
+
+  function _currencyMarginTiersCount() private pure returns (uint256) {
+    return uint256(ConfigID.MAINTENANCE_MARGIN_TIER_12) - uint256(ConfigID.MAINTENANCE_MARGIN_TIER_01) + 1;
+  }
+
+  function _isConfigIDCurrencyMarginTier(ConfigID key) private pure returns (bool) {
+    return key >= ConfigID.MAINTENANCE_MARGIN_TIER_01 && key <= ConfigID.MAINTENANCE_MARGIN_TIER_12;
+  }
+
+  function _getCurrencyMarginTiersLockDuration(
+    Currency currency,
+    MarginTier[] calldata marginTiers
+  ) private view returns (int64) {
+    return 2 * 7 * 24 * ONE_HOUR_NANOS;
   }
 
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
@@ -374,8 +597,11 @@ contract ConfigContract is BaseContract {
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }
 
-  function _getMaintenanceMarginBytes32(uint32 volume, uint32 ratio) internal pure returns (bytes32) {
-    return bytes32((uint(volume) << 224) | (uint(ratio) << 160));
+  function _getMaintenanceMarginBytes32(
+    uint32 bracketStart,
+    uint32 maintenanceMarginRate
+  ) internal pure returns (bytes32) {
+    return bytes32((uint(bracketStart) << 224) | (uint(maintenanceMarginRate) << 160));
   }
 
   ///////////////////////////////////////////////////////////////////
