@@ -170,7 +170,7 @@ abstract contract TransferContract is TradeContract {
     // ------- End of Signature Verification -------
 
     int64 numTokensSigned = int64(numTokens);
-    require(numTokensSigned >= 0, "invalid transfer amount");
+    require(numTokensSigned > 0, "invalid transfer amount");
     // 1. Same account
     if (fromAccID == toAccID) {
       require(fromSubID != toSubID, "self transfer");
