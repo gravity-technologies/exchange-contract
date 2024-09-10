@@ -117,16 +117,13 @@ contract OracleContract is ConfigContract {
 
       // Funding rate must be within the configured range
       // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
-      // Funding (9.2): Applying a cap (or floor)
-      // Applying in both MD and SM: MD for reporting clamped rate, SM for trustless guarantees
-      // Funding Rate = Max( Min(Funding Rate, 5%), -5%)
       bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
       require(highFound, "fundingHigh not found");
       (int64 fundingLow, bool lowFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_LOW, subKey);
       require(lowFound, "fundingLow not found");
       int64 newFunding = int64(prices[i].value);
-      require(newFunding >= fundingLow && newFunding <= fundingHigh, "price out of range");
+      require(newFunding >= fundingLow && newFunding <= fundingHigh, "funding index out of range");
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
