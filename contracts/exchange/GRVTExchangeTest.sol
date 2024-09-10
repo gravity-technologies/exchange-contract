@@ -1,11 +1,29 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
-import "./GRVTExchange.sol";
-import "./util/BIMath.sol";
+import "./api/AccountContract.sol";
+import "./api/SubAccountContract.sol";
+import "./api/WalletRecoveryContract.sol";
+import "./api/OracleContract.sol";
+import "./api/TransferContract.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract GRVTExchangeTest is GRVTExchange {
+contract GRVTExchangeTest is
+  Initializable,
+  AccountContract,
+  SubAccountContract,
+  WalletRecoveryContract,
+  OracleContract,
+  TransferContract
+{
   using BIMath for BI;
+
+  function initialize() public initializer {
+    __ReentrancyGuard_init();
+
+    // Initialize the config default values and timelock rules
+    _setDefaultConfigSettings();
+  }
 
   struct AccountResult {
     address id;

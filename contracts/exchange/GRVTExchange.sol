@@ -16,6 +16,11 @@ contract GRVTExchange is
   OracleContract,
   TransferContract
 {
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
   function initialize() public initializer {
     __ReentrancyGuard_init();
 
