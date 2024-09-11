@@ -17,7 +17,8 @@ uint256 constant MAX_M_MARGIN_TIERS = 12;
 // The bit mask for the least significant 32 bits
 uint256 constant LSB_32_MASK = 0xFFFFFFFF;
 
-// The bit mask for the least significant 24 bits, used for Kind, Underlying, Quote encoding in determining the insurance fund subaccount ID
+// Only support BTC, ETH for now
+uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
 
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
@@ -116,7 +117,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
       BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory charge = _calculateSimpleCrossMaintenanceMargin(mt, sizeBI);
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceBI(id))
       totalCharge = totalCharge.add(charge);
     }
 

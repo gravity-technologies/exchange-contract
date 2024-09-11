@@ -216,6 +216,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         "maker cannot be IOC/FOK"
       );
       require(!order.isMarket, "maker cannot be market order");
+    } else {
+      require(!order.postOnly, "taker cannot be post only");
     }
 
     // Check that quote asset is the same as subaccount quote asset
@@ -226,9 +228,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       Currency assetQuote = assetGetQuote(leg.assetID);
+      Currency underlying = assetGetUnderlying(leg.assetID);
       require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
       require(assetGetKind(leg.assetID) == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
+      require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
     }
 
     // Check the order signature
@@ -350,6 +354,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Step 1: Retrieve position
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
+      int64 posBalance = pos.balance;
+
+      if (order.reduceOnly) {
+        require(posBalance != 0, "failed reduce only: no position");
+        // If the position is in the same direction as the trade, return an error
+        bool isLong = posBalance > 0;
+        // Require the trade side must be opposite to the current position side
+        require(leg.isBuyingAsset != isLong, "failed reduce only");
+        uint64 posBalanceAbs = uint64(posBalance < 0 ? -posBalance : posBalance);
+        // Trade shouldn't reduce the position size by more than the current position size (ie crossing 0)
+        require(matchSizes[i] <= posBalanceAbs, "failed reduce only");
+      }
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {

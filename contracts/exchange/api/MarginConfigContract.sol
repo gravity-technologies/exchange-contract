@@ -126,8 +126,8 @@ contract MarginConfigContract is ConfigContract {
     for (uint i = 0; i < fromMt.tiers.length; i++) {
       if (
         BIMath.cmp(
-          _calculateSimpleCrossMaintenanceMargin(toMt, fromMt.tiers[i].bracketStart),
-          _calculateSimpleCrossMaintenanceMargin(fromMt, fromMt.tiers[i].bracketStart)
+          _calculateSimpleCrossMMSize(toMt, fromMt.tiers[i].bracketStart),
+          _calculateSimpleCrossMMSize(fromMt, fromMt.tiers[i].bracketStart)
         ) > 0
       ) {
         return true;
@@ -136,8 +136,8 @@ contract MarginConfigContract is ConfigContract {
     for (uint i = 0; i < toMt.tiers.length; i++) {
       if (
         BIMath.cmp(
-          _calculateSimpleCrossMaintenanceMargin(toMt, toMt.tiers[i].bracketStart),
-          _calculateSimpleCrossMaintenanceMargin(fromMt, toMt.tiers[i].bracketStart)
+          _calculateSimpleCrossMMSize(toMt, toMt.tiers[i].bracketStart),
+          _calculateSimpleCrossMMSize(fromMt, toMt.tiers[i].bracketStart)
         ) > 0
       ) {
         return true;
@@ -148,10 +148,7 @@ contract MarginConfigContract is ConfigContract {
     return BIMath.cmp(toMt.tiers[toMt.tiers.length - 1].rate, fromMt.tiers[fromMt.tiers.length - 1].rate) > 0;
   }
 
-  function _calculateSimpleCrossMaintenanceMargin(
-    ListMarginTiersBI memory mt,
-    BI memory size
-  ) internal pure returns (BI memory) {
+  function _calculateSimpleCrossMMSize(ListMarginTiersBI memory mt, BI memory size) internal pure returns (BI memory) {
     if (mt.tiers.length == 0) {
       return BI(0, 0);
     }
