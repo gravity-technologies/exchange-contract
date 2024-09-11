@@ -24,11 +24,11 @@ contract MarginConfigContract is ConfigContract {
     _preventReplay(hashScheduleSimpleCrossMaintenanceMarginTiers(kud, tiers, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    ListMarginTiersBI memory ListMarginTiersBI = _convertToListMarginTiersBI(kud, tiers);
+    ListMarginTiersBI memory tiersBI = _convertToListMarginTiersBI(kud, tiers);
 
     state.simpleCrossMaintenanceMarginTimelockEndTime[kud] =
       timestamp +
-      _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, ListMarginTiersBI);
+      _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, tiersBI);
   }
 
   function setSimpleCrossMaintenanceMarginTiers(
@@ -52,15 +52,15 @@ contract MarginConfigContract is ConfigContract {
     _preventReplay(hashSetSimpleCrossMaintenanceMarginTiers(kud, tiers, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    ListMarginTiersBI memory ListMarginTiersBI = _convertToListMarginTiersBI(kud, tiers);
+    ListMarginTiersBI memory tiersBI = _convertToListMarginTiersBI(kud, tiers);
 
-    int64 lockDuration = _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, ListMarginTiersBI);
+    int64 lockDuration = _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, tiersBI);
     if (lockDuration > 0) {
       int64 lockEndTime = state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
 
-    state.simpleCrossMaintenanceMarginTiers[kud] = ListMarginTiersBI;
+    state.simpleCrossMaintenanceMarginTiers[kud] = tiersBI;
     delete state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
   }
 
