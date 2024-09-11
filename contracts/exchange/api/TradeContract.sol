@@ -229,10 +229,15 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       OrderLeg calldata leg = legs[i];
       Currency assetQuote = assetGetQuote(leg.assetID);
       Currency underlying = assetGetUnderlying(leg.assetID);
+      Kind kind = assetGetKind(leg.assetID);
       require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
-      require(assetGetKind(leg.assetID) == Kind.PERPS, ERR_NOT_SUPPORTED);
+      require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
       require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
+      int64 expiry = assetGetExpiration(leg.assetID);
+      if (kind == Kind.FUTURES || kind == Kind.CALL || kind == Kind.PUT) {
+        require(expiry > timestamp, "asset expired");
+      }
     }
 
     // Check the order signature
