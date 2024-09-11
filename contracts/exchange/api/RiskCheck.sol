@@ -19,6 +19,9 @@ uint256 constant LSB_32_MASK = 0xFFFFFFFF;
 // The bit mask for the least significant 24 bits, used for Kind, Underlying, Quote encoding in determining the insurance fund subaccount ID
 bytes32 constant KUQ_MASK = bytes32(uint256(0xFFFFFF));
 
+// Only support BTC, ETH for now
+uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
+
 contract RiskCheck is BaseContract, ConfigContract {
   using BIMath for BI;
 
@@ -89,16 +92,12 @@ contract RiskCheck is BaseContract, ConfigContract {
     view
     returns (MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory)
   {
-    uint numCurrencies = uint(Currency.BTC) - uint(Currency.ETH) + 1;
-
     MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory configs = new MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][](
-      numCurrencies
+      NUM_SUPPORTED_UNDERLYINGS
     );
-
     // Add the maintenance margin config for each currency
-    for (uint i = 0; i < numCurrencies; i++) {
-      configs[i] = _getMaintenanceMarginConfigByCurrency(Currency(i + uint(Currency.ETH)));
-    }
+    configs[0] = _getMaintenanceMarginConfigByCurrency(Currency.ETH);
+    configs[1] = _getMaintenanceMarginConfigByCurrency(Currency.BTC);
     return configs;
   }
 
@@ -158,17 +157,21 @@ contract RiskCheck is BaseContract, ConfigContract {
    */
   function _getMaintenanceMarginRatio(
     BI memory size,
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory configs
-  ) internal pure returns (BI memory) {
-    uint idx = configs.length - 1;
+    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory configs,
+    Currency underlying
+  ) private pure returns (BI memory) {
+    require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
+    uint configIdx = underlying == Currency.ETH ? 0 : 1;
+    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory tiers = configs[configIdx];
 
-    for (uint i = 0; i < configs.length; i++) {
-      if (size.cmp(configs[i].size) < 0) {
-        idx = i;
+    uint tierIdx = tiers.length - 1;
+    for (uint i = 0; i < tiers.length; i++) {
+      if (size.cmp(tiers[i].size) < 0) {
+        tierIdx = i;
         break;
       }
     }
-    return configs[idx].ratio;
+    return tiers[tierIdx].ratio;
   }
 
   /**
@@ -187,14 +190,13 @@ contract RiskCheck is BaseContract, ConfigContract {
     uint numPerps = keys.length;
     for (uint i = 0; i < numPerps; i++) {
       bytes32 id = keys[i];
-      Currency underlyingCurrency = assetGetUnderlying(id);
+      Currency underlying = assetGetUnderlying(id);
       int64 size = values[id].balance;
       if (size < 0) {
         size = -size;
       }
-      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(underlyingCurrency));
-      uint mmConfigIdx = uint(underlyingCurrency) - uint(Currency.ETH);
-      BI memory ratio = _getMaintenanceMarginRatio(sizeBI, mmConfigs[mmConfigIdx]);
+      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(underlying));
+      BI memory ratio = _getMaintenanceMarginRatio(sizeBI, mmConfigs, underlying);
       // The charge for a perpetual positions = (Size) * (Mark Price) * (Maintenance Ratio)
       BI memory charge = ratio.mul(_requireMarkPriceBI(id)).mul(sizeBI);
       totalCharge = totalCharge.add(charge);
