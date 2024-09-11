@@ -118,10 +118,18 @@ struct State {
   mapping(bytes32 => MarginTiersBI) simpleCrossMaintenanceMarginTiers;
   // Stores the timelock end time for the simple cross margin tiers on a per KUQ(kind, underlying, quote) basis
   mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
+  // Temporary storage for trade validation. This should always be cleared after each trade
+  mapping(bytes32 => TmpLegData) _tmpTakerLegs;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
   uint256[49] __gap;
+}
+
+struct TmpLegData {
+  bool isBuyingAsset;
+  bool isSet;
+  uint64 limitPrice;
 }
 
 struct Account {
