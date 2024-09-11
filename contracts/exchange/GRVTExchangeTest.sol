@@ -195,7 +195,7 @@ contract GRVTExchangeTest is
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
     uint64 uDec = _getBalanceDecimal(assetGetUnderlying(kuq));
-    MarginTiersBI memory tiers = state.simpleCrossMaintenanceMarginTiers[kuq];
+    ListMarginTiersBI memory tiers = state.simpleCrossMaintenanceMarginTiers[kuq];
     MarginTier[] memory result = new MarginTier[](tiers.tiers.length);
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({

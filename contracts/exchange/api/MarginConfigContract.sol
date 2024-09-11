@@ -24,11 +24,11 @@ contract MarginConfigContract is ConfigContract {
     _preventReplay(hashScheduleSimpleCrossMaintenanceMarginTiers(kud, tiers, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    MarginTiersBI memory marginTiersBI = _convertToMarginTiersBI(kud, tiers);
+    ListMarginTiersBI memory ListMarginTiersBI = _convertToListMarginTiersBI(kud, tiers);
 
     state.simpleCrossMaintenanceMarginTimelockEndTime[kud] =
       timestamp +
-      _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, marginTiersBI);
+      _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, ListMarginTiersBI);
   }
 
   function setSimpleCrossMaintenanceMarginTiers(
@@ -52,15 +52,15 @@ contract MarginConfigContract is ConfigContract {
     _preventReplay(hashSetSimpleCrossMaintenanceMarginTiers(kud, tiers, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    MarginTiersBI memory marginTiersBI = _convertToMarginTiersBI(kud, tiers);
+    ListMarginTiersBI memory ListMarginTiersBI = _convertToListMarginTiersBI(kud, tiers);
 
-    int64 lockDuration = _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, marginTiersBI);
+    int64 lockDuration = _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, ListMarginTiersBI);
     if (lockDuration > 0) {
       int64 lockEndTime = state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
 
-    state.simpleCrossMaintenanceMarginTiers[kud] = marginTiersBI;
+    state.simpleCrossMaintenanceMarginTiers[kud] = ListMarginTiersBI;
     delete state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
   }
 
@@ -82,10 +82,10 @@ contract MarginConfigContract is ConfigContract {
     }
   }
 
-  function _convertToMarginTiersBI(
+  function _convertToListMarginTiersBI(
     bytes32 kud,
     MarginTier[] calldata tiers
-  ) internal pure returns (MarginTiersBI memory) {
+  ) internal pure returns (ListMarginTiersBI memory) {
     MarginTierBI[] memory biTiers = new MarginTierBI[](tiers.length);
 
     for (uint i = 0; i < tiers.length; i++) {
@@ -95,14 +95,14 @@ contract MarginConfigContract is ConfigContract {
       });
     }
 
-    return MarginTiersBI({kud: kud, tiers: biTiers});
+    return ListMarginTiersBI({kud: kud, tiers: biTiers});
   }
 
   function _getSimpleCrossMaintenanceMarginTiersLockDuration(
     bytes32 kud,
-    MarginTiersBI memory toMt
+    ListMarginTiersBI memory toMt
   ) private view returns (int64) {
-    MarginTiersBI memory fromMt = state.simpleCrossMaintenanceMarginTiers[kud];
+    ListMarginTiersBI memory fromMt = state.simpleCrossMaintenanceMarginTiers[kud];
 
     if (fromMt.tiers.length == 0) {
       return 0;
@@ -115,8 +115,8 @@ contract MarginConfigContract is ConfigContract {
   }
 
   function _isMarginRequirementIncreasedAtSomeSize(
-    MarginTiersBI memory fromMt,
-    MarginTiersBI memory toMt
+    ListMarginTiersBI memory fromMt,
+    ListMarginTiersBI memory toMt
   ) private pure returns (bool) {
     if (fromMt.tiers.length == 0 || toMt.tiers.length == 0) {
       return false;
@@ -149,7 +149,7 @@ contract MarginConfigContract is ConfigContract {
   }
 
   function _calculateSimpleCrossMaintenanceMargin(
-    MarginTiersBI memory mt,
+    ListMarginTiersBI memory mt,
     BI memory size
   ) internal pure returns (BI memory) {
     if (mt.tiers.length == 0) {

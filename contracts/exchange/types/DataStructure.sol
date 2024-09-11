@@ -115,7 +115,7 @@ struct State {
   // Latest Transaction ID
   uint64 lastTxID;
   // Stores the maintenance margin tiers for simple cross margin on a per KUQ(kind, underlying, quote) basis
-  mapping(bytes32 => MarginTiersBI) simpleCrossMaintenanceMarginTiers;
+  mapping(bytes32 => ListMarginTiersBI) simpleCrossMaintenanceMarginTiers;
   // Stores the timelock end time for the simple cross margin tiers on a per KUQ(kind, underlying, quote) basis
   mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
   // Temporary storage for trade validation. This should always be cleared after each trade
@@ -312,7 +312,7 @@ struct MarginTierBI {
   BI rate;
 }
 
-struct MarginTiersBI {
+struct ListMarginTiersBI {
   bytes32 kud;
   MarginTierBI[] tiers;
 }
