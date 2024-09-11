@@ -117,7 +117,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
       BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceBI(id))
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceBI(id));
       totalCharge = totalCharge.add(charge);
     }
 
