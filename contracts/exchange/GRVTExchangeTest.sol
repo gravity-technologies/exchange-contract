@@ -209,4 +209,9 @@ contract GRVTExchangeTest is
   function getSimpleCrossMaintenanceMarginTimelockEndTime(bytes32 kuq) public view returns (int64) {
     return state.simpleCrossMaintenanceMarginTimelockEndTime[kuq];
   }
+
+  function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return _getSubMaintenanceMargin(sub);
+  }
 }
