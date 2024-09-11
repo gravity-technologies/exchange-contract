@@ -159,10 +159,12 @@ contract RiskCheck is BaseContract, ConfigContract {
     BI memory size,
     MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory configs
   ) internal pure returns (BI memory) {
-    uint idx = 0;
-    for (uint i = 1; i < configs.length; i++) {
+    uint idx = configs.length - 1;
+
+    for (uint i = 0; i < configs.length; i++) {
       if (size.cmp(configs[i].size) < 0) {
         idx = i;
+        break;
       }
     }
     return configs[idx].ratio;
