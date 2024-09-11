@@ -31,6 +31,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     ///////////////////////////////////////////////////////////////////////////
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
+    SubAccount storage takerSub = _requireSubAccount(trade.takerOrder.subAccountID);
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
@@ -86,7 +87,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         makerSpotDelta,
         makerTradeNotional,
         makerOptionIndexNotional,
-        makerMatch.feeCharged
+        makerMatch.feeCharged,
+        takerSub
       );
     }
 
@@ -101,7 +103,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       takerSpotDelta,
       takerTradeNotional,
       takerOptionIndexNotional,
-      trade.feeCharged
+      trade.feeCharged,
+      takerSub
     );
   }
 
@@ -113,12 +116,23 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory spotDelta,
     BI memory tradeNotional,
     BI memory optionIndexNotional,
-    int64[] memory feePerLegs
+    int64[] memory feePerLegs,
+    SubAccount storage takerSub
   ) internal {
-    SubAccount storage sub = _requireSubAccount(order.subAccountID);
+    SubAccount storage sub = isMakerOrder ? _requireSubAccount(order.subAccountID) : takerSub;
     int64 totalFee = _getTotalFee(feePerLegs);
 
-    _verifyOrderFull(timestamp, sub, order, tradeSizes, isMakerOrder, tradeNotional, optionIndexNotional, totalFee);
+    _verifyOrderFull(
+      timestamp,
+      sub,
+      takerSub,
+      order,
+      tradeSizes,
+      isMakerOrder,
+      tradeNotional,
+      optionIndexNotional,
+      totalFee
+    );
 
     // Fund and settle the subaccount before checking total value
     _fundAndSettle(sub);
@@ -131,7 +145,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   function _verifyOrderFull(
     int64 timestamp,
-    SubAccount storage sub,
+    SubAccount storage sub, // the sub account that created the order
+    SubAccount storage takerSub,
     Order calldata order,
     uint64[] memory tradeSizes,
     bool isMakerOrder,
@@ -140,19 +155,29 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 totalFee
   ) internal {
     // Arrange from cheapest to most expensive verification
+    Currency subQuote = sub.quoteCurrency;
+
+    if (isMakerOrder) {
+      require(subQuote == takerSub.quoteCurrency, ERR_MISMATCH_QUOTE_CURRENCY);
+      require(sub.id != takerSub.id, "self trade");
+      require(
+        order.timeInForce != TimeInForce.IMMEDIATE_OR_CANCEL && order.timeInForce != TimeInForce.FILL_OR_KILL,
+        "maker cannot be IOC/FOK"
+      );
+      require(!order.isMarket, "maker cannot be market order");
+    }
 
     // Check that quote asset is the same as subaccount quote asset
-    Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
 
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
-      Currency quote = assetGetQuote(leg.assetID);
-      require(quote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
+      Currency assetQuote = assetGetQuote(leg.assetID);
+      require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
       require(assetGetKind(leg.assetID) == Kind.PERPS, ERR_NOT_SUPPORTED);
-      require(quote == Currency.USDT, ERR_NOT_SUPPORTED);
+      require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
     }
 
     // Check the order signature
