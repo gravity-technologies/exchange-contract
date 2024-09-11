@@ -16,6 +16,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
     _setSequence(timestamp, txID);
 
+    _verifyMatch(trade);
+
     Order calldata takerOrder = trade.takerOrder;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint64[] memory takerMatchedSizes = new uint64[](takerLegs.length);
@@ -108,6 +110,55 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     );
   }
 
+  /// @notice Verifies the match between 1 taker and multiple maker orders.
+  /// @dev For individual order validation, see _verifyOrderFull.
+  ///      This function only verifies the invariant of the trade.
+  /// @param trade The trade details to be verified.
+  function _verifyMatch(Trade calldata trade) private {
+    Order calldata takerOrder = trade.takerOrder;
+
+    // Store the temporary storage for trade validation. This should always be cleared after each trade
+    uint takerLegsLen = takerOrder.legs.length;
+    OrderLeg[] calldata takerLegs = takerOrder.legs;
+    for (uint i = 0; i < takerLegsLen; ++i) {
+      OrderLeg calldata leg = takerLegs[i];
+      state._tmpTakerLegs[leg.assetID] = TmpLegData({
+        limitPrice: leg.limitPrice,
+        isBuyingAsset: leg.isBuyingAsset,
+        isSet: true
+      });
+    }
+
+    // Verify that the taker order legs are not matched to a worse price than the limit price
+    for (uint i = 0; i < trade.makerOrders.length; ++i) {
+      MakerTradeMatch calldata tradeMatch = trade.makerOrders[i];
+      Order calldata makerOrder = tradeMatch.makerOrder;
+      uint numLegs = makerOrder.legs.length;
+      for (uint j = 0; j < numLegs; ++j) {
+        OrderLeg calldata makerLeg = makerOrder.legs[j];
+        uint64[] calldata matchedSizes = tradeMatch.matchedSize;
+        require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
+        TmpLegData storage takerLeg = state._tmpTakerLegs[makerLeg.assetID];
+
+        require(takerLeg.isSet || matchedSizes[j] == 0, "matched against non-existent taker leg");
+        require(takerLeg.isBuyingAsset != makerLeg.isBuyingAsset, "matched same side");
+
+        if (!takerOrder.isMarket) {
+          require(
+            (takerLeg.isBuyingAsset && takerLeg.limitPrice >= makerLeg.limitPrice) ||
+              (!takerLeg.isBuyingAsset && takerLeg.limitPrice <= makerLeg.limitPrice),
+            "taker matched with bad price"
+          );
+        }
+      }
+    }
+
+    // Clear the temporary storage
+    for (uint i = 0; i < takerLegsLen; ++i) {
+      delete (state._tmpTakerLegs[takerLegs[i].assetID]);
+    }
+  }
+
   function _verifyAndExecuteOrder(
     int64 timestamp,
     Order calldata order,
@@ -118,7 +169,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory optionIndexNotional,
     int64[] memory feePerLegs,
     SubAccount storage takerSub
-  ) internal {
+  ) private {
     SubAccount storage sub = isMakerOrder ? _requireSubAccount(order.subAccountID) : takerSub;
     int64 totalFee = _getTotalFee(feePerLegs);
 
@@ -153,7 +204,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     BI memory tradeNotional,
     BI memory optionIndexNotional,
     int64 totalFee
-  ) internal {
+  ) private {
     // Arrange from cheapest to most expensive verification
     Currency subQuote = sub.quoteCurrency;
 
@@ -288,7 +339,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] memory matchSizes,
     BI memory spotDelta,
     int64 fee
-  ) internal {
+  ) private {
     Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
 
@@ -323,7 +374,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     sub.spotBalances[subQuote] = newSpotBalance;
   }
 
-  function removePos(SubAccount storage sub, bytes32 assetID) internal {
+  function removePos(SubAccount storage sub, bytes32 assetID) private {
     Kind kind = assetGetKind(assetID);
     if (kind == Kind.PERPS) {
       remove(sub.perps, assetID);
