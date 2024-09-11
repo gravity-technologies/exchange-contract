@@ -28,6 +28,8 @@ import {
   ExSimpleCrossMaintenanceMarginTiers,
   ExSimpleCrossMaintenanceMarginTimelockEndTime,
   ExSimpleCrossMaintenanceMarginTiersNoTimelock,
+  ExSubAccountMaintMargin,
+  ExOnboardedTransferAccount,
   Expectation,
 } from "./TestEngineTypes"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
@@ -95,6 +97,10 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSimpleCrossMaintenanceMarginTimelockEndTime(contract, expectation.expect as ExSimpleCrossMaintenanceMarginTimelockEndTime)
     case "ExSimpleCrossMaintenanceMarginTiersNoTimelock":
       return expectSimpleCrossMaintenanceMarginTiersNoTimelock(contract, expectation.expect as ExSimpleCrossMaintenanceMarginTiersNoTimelock)
+    case "ExSubAccountMaintMargin":
+      return expectSubAccountMaintenanceMargin(contract, expectation.expect as ExSubAccountMaintMargin)
+    case "ExOnboardedTransferAccount":
+      return expectOnboardedTransferAccount(contract, expectation.expect as ExOnboardedTransferAccount)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -350,4 +356,14 @@ async function expectSimpleCrossMaintenanceMarginTimelockEndTime(contract: Contr
 async function expectSimpleCrossMaintenanceMarginTiersNoTimelock(contract: Contract, expectations: ExSimpleCrossMaintenanceMarginTiersNoTimelock) {
   expect(await contract.getSimpleCrossMaintenanceMarginTimelockEndTime("0x" + expectations.kuq))
     .to.be.equal(0);
+}
+
+async function expectSubAccountMaintenanceMargin(contract: Contract, expectations: ExSubAccountMaintMargin) {
+  expect(await contract.getSubAccountMaintenanceMargin(BigInt(expectations.sub_account_id)))
+    .to.be.equal(expectations.maint_margin);
+}
+
+async function expectOnboardedTransferAccount(contract: Contract, expectations: ExOnboardedTransferAccount) {
+  const isOnboarded = await contract.getAccountOnboardedTransferAccount(expectations.account_id, expectations.transfer_account);
+  expect(isOnboarded).to.be.true;
 }
