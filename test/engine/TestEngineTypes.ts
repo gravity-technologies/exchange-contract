@@ -187,6 +187,25 @@ export interface ExConfig2DNotSet {
   key: string
 }
 
+export interface ExSimpleCrossMaintenanceMarginTiers {
+  kuq: string
+  tiers: MarginTier[]
+}
+
+export interface MarginTier {
+  bracket_start: string
+  rate: string
+}
+
+export interface ExSimpleCrossMaintenanceMarginTimelockEndTime {
+  kuq: string
+  timelock_end_time: string
+}
+
+export interface ExSimpleCrossMaintenanceMarginTiersNoTimelock {
+  kuq: string
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -212,6 +231,9 @@ export interface Expectation {
   | ExAccountRecoveryAddresses
   | ExNotAccountRecoveryAddresses
   | ExAccountSpot
+  | ExSimpleCrossMaintenanceMarginTiers
+  | ExSimpleCrossMaintenanceMarginTimelockEndTime
+  | ExSimpleCrossMaintenanceMarginTiersNoTimelock
 }
 
 export function parseTestsFromFile(filePath: string): TestCase[] {

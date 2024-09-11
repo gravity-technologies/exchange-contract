@@ -366,42 +366,13 @@ contract ConfigContract is BaseContract {
     mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
     mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
 
-    bytes32 btc = _currencyToConfig(Currency.BTC);
-    bytes32 eth = _currencyToConfig(Currency.ETH);
     Rule[] storage rules;
     ConfigID id;
 
     ///////////////////////////////////////////////////////////////////
     /// Simple Cross Margin
     ///////////////////////////////////////////////////////////////////
-    uint hi = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12);
-    for (uint i = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01); i <= hi; i++) {
-      settings[ConfigID(i)].typ = ConfigType.BYTE322D;
-    }
-    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01;
     mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(10_0000, 75);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(100_0000, 75);
-
-    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_02;
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(50_0000, 125);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(500_0000, 125);
-
-    id = ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_03;
-    settings[id].typ = ConfigType.BYTE322D;
-    v2d = values2D[id];
-    v2d[btc].isSet = true;
-    v2d[btc].val = _getMaintenanceMarginBytes32(100_0000, 175);
-    v2d[eth].isSet = true;
-    v2d[eth].val = _getMaintenanceMarginBytes32(1000_0000, 175);
 
     // SIMPLE_CROSS_FUTURES_INITIAL_MARGIN
     id = ConfigID.SIMPLE_CROSS_FUTURES_INITIAL_MARGIN;
