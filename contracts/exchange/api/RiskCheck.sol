@@ -140,6 +140,7 @@ contract RiskCheck is BaseContract, ConfigContract {
    * @return True if the subaccount is below the maintenance margin, false otherwise.
    */
   function isAboveMaintenanceMargin(SubAccount storage subAccount) internal view returns (bool) {
+    require(subAccount.marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     uint usdDecimals = _getBalanceDecimal(Currency.USD);
 
     int64 subAccountValue = _getSubAccountUsdValue(subAccount).toInt64(usdDecimals);
