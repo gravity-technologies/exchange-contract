@@ -19,14 +19,14 @@ enum TimeInForce {
 }
 
 enum Kind {
-  UNSPECIFIED,
-  PERPS,
-  FUTURES,
-  CALL,
-  PUT,
-  SPOT,
-  SETTLEMENT,
-  RATE
+  UNSPECIFIED, // 0
+  PERPS, // 1
+  FUTURES, // 2
+  CALL, // 3
+  PUT, // 4
+  SPOT, // 5
+  SETTLEMENT, // 6
+  RATE // 7
 }
 
 enum Currency {
