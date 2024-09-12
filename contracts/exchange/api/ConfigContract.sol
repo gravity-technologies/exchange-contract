@@ -415,18 +415,26 @@ contract ConfigContract is BaseContract {
     // ADMIN_RECOVERY_ADDRESS
     id = ConfigID.ADMIN_RECOVERY_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
@@ -444,6 +452,8 @@ contract ConfigContract is BaseContract {
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -497,5 +507,7 @@ contract ConfigContract is BaseContract {
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
   }
 }
