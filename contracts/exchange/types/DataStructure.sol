@@ -257,13 +257,13 @@ enum ConfigType {
 enum ConfigID {
   UNSPECIFIED, // 0
   // Admin Wallets
-  ADMIN_RECOVERY_ADDRESS, // 1, no timelock
-  ORACLE_ADDRESS, // 2, no timelock
-  CONFIG_ADDRESS, // 3, no timelock
-  MARKET_DATA_ADDRESS, // 4, no timelock
+  ADMIN_RECOVERY_ADDRESS, // 1, has timelock
+  ORACLE_ADDRESS, // 2, has timelock
+  CONFIG_ADDRESS, // 3, has timelock
+  MARKET_DATA_ADDRESS, // 4, has timelock
   // Admin Sub Accounts
-  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, no timelock
-  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, no timelock
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, has timelock
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, has timelock
   // Funding Configs
   FUNDING_RATE_HIGH, // 7, has timelock
   FUNDING_RATE_LOW, // 8, has timelock

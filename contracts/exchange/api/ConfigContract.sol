@@ -336,7 +336,8 @@ contract ConfigContract is BaseContract {
   /// (which is the `maximal rule`) is returned
   ///
   function _getIntConfigLockDuration(ConfigID key, int64 oldVal, int64 newVal) private view returns (int64) {
-    if (newVal == oldVal) return 0; // No change in value, no lock duration
+    // No change in value, no lock duration
+    if (newVal == oldVal) return 0;
 
     Rule[] storage rules = state.configSettings[key].rules;
     uint rulesLen = rules.length;
@@ -344,7 +345,7 @@ contract ConfigContract is BaseContract {
     if (newVal < oldVal) {
       for (uint i; i < rulesLen; ++i)
         if (uint64(oldVal - newVal) <= rules[i].deltaNegative) return rules[i].lockDuration;
-    } else if (newVal > oldVal) {
+    } else {
       for (uint i; i < rulesLen; ++i)
         if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
     }
@@ -397,6 +398,8 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
@@ -405,6 +408,8 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
@@ -413,6 +418,8 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
@@ -421,23 +428,33 @@ contract ConfigContract is BaseContract {
     v2d = values2D[id];
     v2d[addr].isSet = true;
     v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
     ///////////////////////////////////////////////////////////////////
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -511,6 +528,8 @@ contract ConfigContract is BaseContract {
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
   }
 
   struct DefaultAddress {
