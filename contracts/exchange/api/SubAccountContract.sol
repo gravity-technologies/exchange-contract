@@ -196,11 +196,9 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
     // ------- End of Signature Verification -------
 
-    Session storage session = state.sessions[sessionKey];
+    require(state.sessions[sessionKey].expiry == 0, "session key already exists");
 
-    require(session.expiry == 0, "session key already exists");
-
-    session = Session(sig.signer, cappedExpiry);
+    state.sessions[sessionKey] = Session(sig.signer, cappedExpiry);
   }
 
   /// @notice Removing signature verification only makes session keys safer.
