@@ -72,9 +72,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      bytes32 assetWithUSDQuote = assetSetQuote(pos.id, Currency.USD);
-      BI memory markPrice = _requireMarkPriceBI(assetWithUSDQuote);
-      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetWithUSDQuote));
+      BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
+      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(int256(pos.balance), uDec);
       total = total.add(balance.mul(markPrice));
     }
@@ -117,7 +116,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
       BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceBI(id));
+      BI memory markPrice = _requireMarkPriceInUsdBI(id);
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(markPrice);
       totalCharge = totalCharge.add(charge);
     }
 
