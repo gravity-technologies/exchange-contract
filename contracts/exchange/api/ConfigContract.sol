@@ -62,7 +62,7 @@ contract ConfigContract is BaseContract {
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return SafeCast.toInt64(int256(uint(v)));
+    return int64(SafeCast.toUint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
@@ -75,8 +75,9 @@ contract ConfigContract is BaseContract {
     return bytes32(uint256(uint32(v)));
   }
 
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToCentibeep(bytes32 v) internal pure returns (int32) {
-    return SafeCast.toInt32(int256(uint(v)));
+    return int32(SafeCast.toUint32(uint256(v)));
   }
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
