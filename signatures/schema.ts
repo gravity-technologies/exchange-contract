@@ -398,7 +398,6 @@ export const OrderSchema = {
       { name: "assetID", type: "uint256" },
       { name: "contractSize", type: "uint64" },
       { name: "limitPrice", type: "uint64" },
-      { name: "ocoLimitPrice", type: "uint64" },
       { name: "isBuyingContract", type: "bool" },
     ],
   },

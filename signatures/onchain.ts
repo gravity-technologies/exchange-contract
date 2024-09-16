@@ -281,7 +281,6 @@ export type Order = {
   isMarket: boolean
   timeInForce: number
   limitPrice: string
-  ocoLimitPrice: string
   takerFeePercentageCap: string
   makerFeePercentageCap: string
   postOnly: boolean
@@ -302,7 +301,6 @@ export type OrderLeg = {
   derivative: string
   contractSize: string
   limitPrice: string
-  ocoLimitPrice: string
   isBuyingContract: boolean
 }
 

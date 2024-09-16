@@ -372,11 +372,6 @@ struct OrderLeg {
   // The limit price of the order leg, expressed in USD Price.
   // This is the total amount of base currency to pay/receive for all legs.
   uint64 limitPrice;
-  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE AND IsOCO = TRUE
-  // If a OCO order is specified, this must contain the other limit price
-  // User must sign both limit prices, and activator is free to swap them depending on which trigger is activated
-  // The smart contract will always validate both limit prices, by arranging them in ascending order
-  uint64 ocoLimitPrice;
   // Specifies if the order leg is a buy or sell
   bool isBuyingAsset;
 }
