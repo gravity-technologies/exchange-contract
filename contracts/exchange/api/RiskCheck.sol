@@ -55,7 +55,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       if (balance == 0) {
         continue;
       }
-      BI memory balanceBI = BI(int256(balance), _getBalanceDecimal(i));
+      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
       bytes32 spotID = _getSpotAssetID(i);
       totalValue = totalValue.add(balanceBI.mul(_requireMarkPriceBI(spotID)));
     }
@@ -72,9 +72,10 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
-      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
-      BI memory balance = BI(int256(pos.balance), uDec);
+      bytes32 assetWithUSDQuote = assetSetQuote(pos.id, Currency.USD);
+      BI memory markPrice = _requireMarkPriceInUsdBI(assetWithUSDQuote);
+      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetWithUSDQuote));
+      BI memory balance = BI(pos.balance, uDec);
       total = total.add(balance.mul(markPrice));
     }
     return total;
@@ -93,7 +94,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     int64 subAccountValue = _getSubAccountUsdValue(subAccount).toInt64(usdDecimals);
     uint64 maintenanceMargin = _getSubMaintenanceMargin(subAccount);
 
-    return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
+    return subAccountValue >= 0 && subAccountValue >= SafeCast.toInt64(int(uint(maintenanceMargin)));
   }
 
   /**
@@ -115,9 +116,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       }
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
-      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory markPrice = _requireMarkPriceInUsdBI(id);
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(markPrice);
+      BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(id)));
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceInUsdBI(id));
       totalCharge = totalCharge.add(charge);
     }
 

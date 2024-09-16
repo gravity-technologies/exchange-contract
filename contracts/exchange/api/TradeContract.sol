@@ -315,7 +315,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     if (isOption) {
       totalFeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
-      BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
+      BI memory premiumCapFee = _bpsToDecimal(125000); // 12.5% premium cap
 
       if (totalFeeCap > 0) {
         totalFeeCap = _min(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
@@ -367,16 +367,16 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         bool isLong = posBalance > 0;
         // Require the trade side must be opposite to the current position side
         require(leg.isBuyingAsset != isLong, "failed reduce only");
-        uint64 posBalanceAbs = uint64(posBalance < 0 ? -posBalance : posBalance);
+        uint64 posBalanceAbs = SafeCast.toUint64(uint(int(posBalance < 0 ? -posBalance : posBalance)));
         // Trade shouldn't reduce the position size by more than the current position size (ie crossing 0)
         require(matchSizes[i] <= posBalanceAbs, "failed reduce only");
       }
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {
-        pos.balance += int64(matchSizes[i]);
+        pos.balance += SafeCast.toInt64(int(uint(matchSizes[i])));
       } else {
-        pos.balance -= int64(matchSizes[i]);
+        pos.balance -= SafeCast.toInt64(int(uint(matchSizes[i])));
       }
 
       // Step 3: Remove position if empty
@@ -410,7 +410,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
     int64 totalFee;
     uint len = feePerLegs.length;
-    for (uint i; i < len; ++i) totalFee += int64(feePerLegs[i]);
+    for (uint i; i < len; ++i) totalFee += feePerLegs[i];
     return totalFee;
   }
 
@@ -429,6 +429,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
-    return BI(int256(bps), 6);
+    return BI(bps, 6);
   }
 }

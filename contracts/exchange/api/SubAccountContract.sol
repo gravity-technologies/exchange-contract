@@ -188,7 +188,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
   ) external {
     _setSequence(timestamp, txID);
 
-    require(int64(keyExpiry) > timestamp, "invalid expiry");
+    require(keyExpiry > timestamp, "invalid expiry");
     // Cap the expiry to timestamp + maxSessionDurationInSec
     int64 cappedExpiry = _min(keyExpiry, timestamp + _MAX_SESSION_DURATION_NANO);
 
