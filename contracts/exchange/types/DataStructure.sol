@@ -251,9 +251,7 @@ enum ConfigType {
   UINT,
   UINT2D,
   CENTIBEEP,
-  CENTIBEEP2D,
-  BYTE32,
-  BYTE322D
+  CENTIBEEP2D
 }
 
 enum ConfigID {
