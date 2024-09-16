@@ -72,9 +72,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      bytes32 assetWithUSDQuote = assetSetQuote(pos.id, Currency.USD);
-      BI memory markPrice = _requireMarkPriceInUsdBI(assetWithUSDQuote);
-      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetWithUSDQuote));
+      BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
+      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(pos.balance, uDec);
       total = total.add(balance.mul(markPrice));
     }
