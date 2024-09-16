@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "../common/Error.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 struct BI {
   int256 val;
@@ -76,7 +77,7 @@ library BIMath {
     } else {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
-    return int64(uint64(uint(c)));
+    return SafeCast.toInt64(c);
   }
 
   function toUint64(BI memory a, uint decimals) internal pure returns (uint64) {
@@ -89,7 +90,7 @@ library BIMath {
     } else {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
-    return uint64(uint256(c));
+    return SafeCast.toUint64(uint256(c));
   }
 }
 
