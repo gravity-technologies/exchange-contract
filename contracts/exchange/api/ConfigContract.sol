@@ -68,12 +68,15 @@ contract ConfigContract is BaseContract {
     return (_configToInt(c.val), c.isSet);
   }
 
-  function _configToCentibeep(bytes32 v) internal pure returns (int32) {
-    return SafeCast.toInt32(SafeCast.toInt256(uint(v)));
+  // unsafe casting here is expected
+  function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
+    return bytes32(uint256(uint32(v)));
   }
 
-  function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
-    return bytes32(SafeCast.toUint256(int256(v)));
+  // unsafe casting here is expected
+  function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
+    ConfigValue storage c = state.config1DValues[key];
+    return (int32(uint32(uint256(c.val))), c.isSet);
   }
 
   function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
