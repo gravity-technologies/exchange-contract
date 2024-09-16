@@ -76,7 +76,7 @@ contract ConfigContract is BaseContract {
   }
 
   function _configToCentibeep(bytes32 v) internal pure returns (int32) {
-    return int32(uint32(uint256(v)));
+    return SafeCast.toInt32(int256(uint(v)));
   }
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
