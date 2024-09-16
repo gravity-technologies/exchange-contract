@@ -41,6 +41,7 @@ abstract contract TransferContract is TradeContract {
     // the token required for deposit
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
+    require(numTokensSigned >= 0, "invalid deposit amount");
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
@@ -82,6 +83,7 @@ abstract contract TransferContract is TradeContract {
     require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
+    require(numTokensSigned >= 0, "invalid withdrawal amount");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
@@ -168,6 +170,7 @@ abstract contract TransferContract is TradeContract {
     // ------- End of Signature Verification -------
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
+    require(numTokensSigned > 0, "invalid transfer amount");
 
     // 1. Same account
     if (fromAccID == toAccID) {
