@@ -196,7 +196,8 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
     // ------- End of Signature Verification -------
 
-    // Overwrite any existing session key
+    require(state.sessions[sessionKey].expiry == 0, "session key already exists");
+
     state.sessions[sessionKey] = Session(sig.signer, cappedExpiry);
   }
 

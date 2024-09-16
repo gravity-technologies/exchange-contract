@@ -159,15 +159,16 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   }
 
   function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
-    uint idx = uint(currency);
-
-    require(idx != 0, ERR_UNSUPPORTED_CURRENCY);
+    if (currency == Currency.BTC || currency == Currency.ETH) {
+      return 9;
+    }
 
     // USDT, USDC, USD
-    if (idx < 4) return 6;
+    if (currency == Currency.USDT || currency == Currency.USDC || currency == Currency.USD) {
+      return 6;
+    }
 
-    // ETH, BTC
-    return 9;
+    revert(ERR_UNSUPPORTED_CURRENCY);
   }
 
   function _getBalanceMultiplier(Currency currency) internal pure returns (uint64) {

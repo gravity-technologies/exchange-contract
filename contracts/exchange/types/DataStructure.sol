@@ -20,14 +20,14 @@ enum TimeInForce {
 }
 
 enum Kind {
-  UNSPECIFIED,
-  PERPS,
-  FUTURES,
-  CALL,
-  PUT,
-  SPOT,
-  SETTLEMENT,
-  RATE
+  UNSPECIFIED, // 0
+  PERPS, // 1
+  FUTURES, // 2
+  CALL, // 3
+  PUT, // 4
+  SPOT, // 5
+  SETTLEMENT, // 6
+  RATE // 7
 }
 
 enum Currency {
@@ -395,47 +395,4 @@ struct SettlementTick {
   int256 value;
   bool isFinal;
   Signature signature;
-}
-
-enum LiquidationType {
-  UNDEFINED, // 0
-  LIQUIDATE, // 1
-  AUTO_DELEVERAGE // 2
-}
-
-/**
- * @dev Represents a list of liquidation orders, which is used to liquidate a subaccount.
- */
-struct Liquidate {
-  uint64 liquidatedSubAccountID;
-  uint64 initiatorSubAccountID;
-  LiquidationOrder[] orders;
-  LiquidationType liquidationType;
-}
-
-/**
- * @dev Represents a liquidation order, which is used to liquidate a subaccount.
- *
- * Counterparty of the liquidation trade. MM stands for maintenance margin.
- *
- * +----------------------------+-------------------------------+-------------------------------------+
- * |         passive            |           initiator           |            What it means?           |
- * +----------------------------+-------------------------------+-------------------------------------+
- * | Some subaccount below MM   | Insurance fund                | Full liquidation                    |
- * +----------------------------+-------------------------------+-------------------------------------+
- * | Some subaccount above MM   | Insurance fund                | ADL to get money into the insurance |
- * |                            |                               | fund                                |
- * +----------------------------+-------------------------------+-------------------------------------+
- * | Some subaccount below MM   | backstop liquidity provider   | Liquidation to the backstop         |
- * |                            |                               | liquidity provider                  |
- * +----------------------------+-------------------------------+-------------------------------------+
- * | Some subaccount below MM   | Some subaccount above MM      | Partial liquidation                 |
- * +----------------------------+-------------------------------+-------------------------------------+
- */
-struct LiquidationOrder {
-  uint64 subAccountID; ///< The initiator of the liquidation trade
-  OrderLeg[] legs; ///< The legs of the trade
-  uint64 liquidationFees; ///< The fee associated with the liquidation order
-  Currency feeCurrency; ///< The currency of the fee
-  Signature signature; ///< The signature of the initiator
 }

@@ -43,14 +43,3 @@ function hashOrderLegs(OrderLeg[] calldata legs) pure returns (bytes32) {
   }
   return keccak256(abi.encodePacked(hashedLegs));
 }
-
-bytes32 constant _LIQUIDATION_ORDER_H = keccak256(
-  "LiquidationOrder(uint64 subAccountID,OrderLeg[] legs,uint32 nonce,int64 expiration)OrderLeg(uint256 assetID,uint64 contractSize,uint64 limitPrice,uint64 ocoLimitPrice,bool isBuyingContract)"
-);
-
-function hashLiquidationOrder(LiquidationOrder calldata o) pure returns (bytes32) {
-  return
-    keccak256(
-      abi.encode(_LIQUIDATION_ORDER_H, o.subAccountID, hashOrderLegs(o.legs), o.signature.nonce, o.signature.expiration)
-    );
-}
