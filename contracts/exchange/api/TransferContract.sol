@@ -242,7 +242,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    isAboveMaintenanceMargin(fromSub);
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
@@ -266,7 +266,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    isAboveMaintenanceMargin(fromSub);
     toSub.spotBalances[currency] += numTokens;
   }
 }
