@@ -102,11 +102,12 @@ contract BIMathTest is Test {
     want = BI(5, 1);
     assertEq(c.cmp(want), 0);
 
-    // Test Case 5: Division by zero
-    a = BI(1, 0);
-    b = BI(0, 0);
-    vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
-    a.div(b);
+    // Test Case 5: Withdrawal fee
+    a = BI(25_000_000, 6); // Represents 25.0
+    b = BI(60_000_000_000_000, 9); // Represents 60000.0
+    c = a.div(b);
+    want = BI(416_666, 9); // Expected result: 0.000416
+    assertEq(c.cmp(want), 0);
 
     // Test Case 6: Negative numerator
     a = BI(-5_000_000_000, 9); // Represents -5.0
@@ -133,7 +134,7 @@ contract BIMathTest is Test {
     a = BI(1, 0); // Represents 1
     b = BI(1, 18); // Represents 1e-18
     c = a.div(b);
-    want = BI(1_000_000_000_000_000_000, 18); // Expected result: 1e18
+    want = BI(1_000_000_000_000_000_000, 0); // Expected result: 1e18
     assertEq(c.cmp(want), 0);
 
     // Test Case 10: Zero numerator
@@ -171,12 +172,11 @@ contract BIMathTest is Test {
     want = BI(1_000_000_000_000_000_000, 18); // Expected result: 1e9
     assertEq(c.cmp(want), 0);
 
-    // Test Case 15: Withdrawal fee
-    a = BI(25_000_000, 6); // Represents 25.0
-    b = BI(60_000_000_000_000, 9); // Represents 60000.0
-    c = a.div(b);
-    want = BI(416_666, 9); // Expected result: 0.000416
-    assertEq(c.cmp(want), 0);
+    // Test Case 15: Division by zero
+    a = BI(1, 0);
+    b = BI(0, 0);
+    vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
+    a.div(b);
   }
 
   function testScale() public {
