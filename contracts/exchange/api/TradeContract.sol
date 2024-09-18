@@ -140,7 +140,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
         TmpLegData storage takerLeg = state._tmpTakerLegs[makerLeg.assetID];
 
-        require(takerLeg.isSet || matchedSizes[j] == 0, "matched against non-existent taker leg");
+        if (!takerLeg.isSet) {
+          require(matchedSizes[j] == 0, "matched against non-existent taker leg");
+          continue;
+        }
         require(takerLeg.isBuyingAsset != makerLeg.isBuyingAsset, "matched same side");
 
         if (!takerOrder.isMarket) {
