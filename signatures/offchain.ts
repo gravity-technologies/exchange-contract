@@ -1,5 +1,5 @@
-import { Wallet } from "ethers";
-import { domain, EIP712Domain, PrimaryType } from "./schema";
+import { Wallet } from "ethers"
+import { domain, EIP712Domain, PrimaryType } from "./schema"
 
 function getRegisterWalletMessage(address: string, nonce: number) {
   return `Welcome to GRVT!
@@ -12,18 +12,17 @@ Wallet address:
 ${address}
 
 Nonce:
-${nonce}`;
+${nonce}`
 }
 
 export async function signRegisterWalletMessage(privateKey: string, address: string, nonce: number): Promise<string> {
   // Create a wallet instance from the private key
-  const wallet = new Wallet(privateKey);
-  console.log(wallet);
+  const wallet = new Wallet(privateKey)
+  console.log(wallet)
 
   // Sign the message
-  const signature = await wallet.signMessage(getRegisterWalletMessage(address, nonce));
-  console.log(signature);
+  const signature = await wallet.signMessage(getRegisterWalletMessage(address, nonce))
+  console.log(signature)
 
-  return signature;
+  return signature
 }
-

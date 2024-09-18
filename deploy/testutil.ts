@@ -1,4 +1,3 @@
-
 export const L2TokenInfo: {
   [key: string]: {
     l1Token: string
