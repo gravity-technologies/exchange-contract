@@ -29,6 +29,15 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
     require(timestamp >= state.timestamp, "invalid timestamp");
+    require(state.lastTxID != 0, "tx before initializeConfig");
+    require(txID == state.lastTxID + 1, "invalid txID");
+    state.timestamp = timestamp;
+    state.lastTxID = txID;
+  }
+
+  function _setSequenceInitializeConfig(int64 timestamp, uint64 txID) internal {
+    require(timestamp >= state.timestamp, "invalid timestamp");
+    require(state.lastTxID == 0, "initializeConfig called after first tx");
     require(txID == state.lastTxID + 1, "invalid txID");
     state.timestamp = timestamp;
     state.lastTxID = txID;

@@ -120,6 +120,8 @@ struct State {
   mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
   // Temporary storage for trade validation. This should always be cleared after each trade
   mapping(bytes32 => TmpLegData) _tmpTakerLegs;
+  // This is the address that is used to initialize the config. Provided in initialize()
+  address initializeConfigSigner;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -240,6 +242,12 @@ struct Session {
 }
 
 // --------------- Config --------------
+struct InitializeConfigItem {
+  ConfigID key;
+  bytes32 subKey;
+  bytes32 value;
+}
+
 enum ConfigType {
   UNSPECIFIED,
   BOOL,

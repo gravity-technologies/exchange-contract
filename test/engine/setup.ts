@@ -19,7 +19,8 @@ async function deployContracts() {
   const deployOptions = { wallet: deployerWallet, silent: true, noVerify: true }
 
   const exchangeContract = await deployContract("GRVTExchangeTest", [], deployOptions)
-  await exchangeContract.initialize()
+  const rtfTestInitializeConfigSigner = "0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D"
+  await exchangeContract.initialize(rtfTestInitializeConfigSigner)
 
   return exchangeContract
 }
