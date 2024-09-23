@@ -41,7 +41,7 @@ abstract contract TransferContract is TradeContract {
     // the token required for deposit
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
-    require(numTokensSigned >= 0, "invalid deposit amount");
+    require(numTokensSigned > 0, "invalid deposit amount");
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
@@ -83,7 +83,7 @@ abstract contract TransferContract is TradeContract {
     require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
-    require(numTokensSigned >= 0, "invalid withdrawal amount");
+    require(numTokensSigned > 0, "invalid withdrawal amount");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
@@ -127,7 +127,7 @@ abstract contract TransferContract is TradeContract {
     IERC20MetadataUpgradeable token = IERC20MetadataUpgradeable(ta);
     uint8 erc20TokenDec = token.decimals();
     int256 erc20Amount = BI(numTokens, _getBalanceDecimal(currency)).scale(erc20TokenDec).toInt256(erc20TokenDec);
-    require(erc20Amount >= 0, "invalid amount");
+    require(erc20Amount > 0, "invalid amount");
     return SafeCast.toUint256(erc20Amount);
   }
 
@@ -243,7 +243,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
@@ -267,7 +267,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
     toSub.spotBalances[currency] += numTokens;
   }
 }

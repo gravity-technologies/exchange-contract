@@ -214,4 +214,8 @@ contract GRVTExchangeTest is
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return _getSubMaintenanceMargin(sub);
   }
+
+  function getTimestamp() public view returns (int64) {
+    return state.timestamp;
+  }
 }

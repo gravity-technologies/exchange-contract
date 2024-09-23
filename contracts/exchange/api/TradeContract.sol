@@ -140,7 +140,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
         TmpLegData storage takerLeg = state._tmpTakerLegs[makerLeg.assetID];
 
-        require(takerLeg.isSet || matchedSizes[j] == 0, "matched against non-existent taker leg");
+        if (!takerLeg.isSet) {
+          require(matchedSizes[j] == 0, "matched against non-existent taker leg");
+          continue;
+        }
         require(takerLeg.isBuyingAsset != makerLeg.isBuyingAsset, "matched same side");
 
         if (!takerOrder.isMarket) {
@@ -285,7 +288,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
-      uint64 total = executedSize[leg.assetID] + tradeSizes[i];
+      uint64 legExecutedSize = executedSize[leg.assetID];
+      if (order.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL) {
+        require(legExecutedSize == 0, "prior match for IOC order");
+      }
+      uint64 total = legExecutedSize + tradeSizes[i];
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
       executedSize[leg.assetID] = total;
     }
