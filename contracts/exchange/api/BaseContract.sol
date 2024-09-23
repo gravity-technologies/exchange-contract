@@ -8,9 +8,12 @@ import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-contract BaseContract is ReentrancyGuardUpgradeable {
+contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   State internal state;
+
+  bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
 
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");

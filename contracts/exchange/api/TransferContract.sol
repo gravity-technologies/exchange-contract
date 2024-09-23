@@ -29,7 +29,7 @@ abstract contract TransferContract is TradeContract {
     address accountID,
     Currency currency,
     uint64 numTokens
-  ) external {
+  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
@@ -71,7 +71,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external nonReentrant {
+  ) external nonReentrant onlyRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
@@ -158,7 +158,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
