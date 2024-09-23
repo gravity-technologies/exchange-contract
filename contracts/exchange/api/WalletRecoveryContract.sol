@@ -21,7 +21,7 @@ contract WalletRecoveryContract is BaseContract {
     address accID,
     address recoveryAddress,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
@@ -48,7 +48,7 @@ contract WalletRecoveryContract is BaseContract {
     address accID,
     address recoveryAddress,
     Signature calldata sig
-  ) external {
+  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
 
@@ -77,7 +77,7 @@ contract WalletRecoveryContract is BaseContract {
     address oldSigner,
     address newSigner,
     Signature calldata recoverySignerSig
-  ) external {
+  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accID);
     require(acc.signers[newSigner] == 0, "new signer already exists");

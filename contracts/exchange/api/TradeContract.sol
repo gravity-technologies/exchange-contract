@@ -13,7 +13,7 @@ import "../util/Asset.sol";
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
-  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
+  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     _verifyMatch(trade);
