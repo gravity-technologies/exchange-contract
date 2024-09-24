@@ -374,7 +374,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         bool isLong = posBalance > 0;
         // Require the trade side must be opposite to the current position side
         require(leg.isBuyingAsset != isLong, "failed reduce only");
-        uint64 posBalanceAbs = SafeCast.toUint64(uint(int(posBalance < 0 ? -posBalance : posBalance)));
+        // unsafe cast because absolute value of posBalance is always non-negative
+        uint64 posBalanceAbs = uint64(posBalance < 0 ? -posBalance : posBalance);
         // Trade shouldn't reduce the position size by more than the current position size (ie crossing 0)
         require(matchSizes[i] <= posBalanceAbs, "failed reduce only");
       }
