@@ -59,22 +59,31 @@ contract ConfigContract is BaseContract {
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
+
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return int64(uint64(uint256(v)));
+    return int64(SafeCast.toUint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int64(uint64(uint256(c.val))), c.isSet);
+    return (_configToInt(c.val), c.isSet);
   }
 
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
     return bytes32(uint256(uint32(v)));
   }
 
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
+  function _configToCentibeep(bytes32 v) internal pure returns (int32) {
+    return int32(SafeCast.toUint32(uint256(v)));
+  }
+
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int32(uint32(uint256(c.val))), c.isSet);
+    return (_configToCentibeep(c.val), c.isSet);
   }
 
   function _getCentibeepConfig2D(ConfigID key, bytes32 subKey) internal view returns (int32, bool) {
@@ -82,7 +91,7 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (int32(uint32(uint256(c.val))), c.isSet);
+    return (_configToCentibeep(c.val), c.isSet);
   }
 
   function _uintToConfig(uint64 v) internal pure returns (bytes32) {
@@ -90,12 +99,12 @@ contract ConfigContract is BaseContract {
   }
 
   function _configToUint(bytes32 v) internal pure returns (uint64) {
-    return uint64(uint256(v));
+    return SafeCast.toUint64(uint(v));
   }
 
   function _getUintConfig(ConfigID key) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (uint64(uint256(c.val)), c.isSet);
+    return (_configToUint(c.val), c.isSet);
   }
 
   function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
@@ -115,7 +124,7 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (uint64(uint256(c.val)), c.isSet);
+    return (_configToUint(c.val), c.isSet);
   }
 
   function _getByte32Config(ConfigID key) internal view returns (bytes32, bool) {
@@ -135,18 +144,22 @@ contract ConfigContract is BaseContract {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
 
-  function _addressToConfig(address v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint160(v)));
+  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
   }
 
-  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint(v)));
+  function _addressToConfig(address v) internal pure returns (bytes32) {
+    return bytes32(uint(uint160(v)));
   }
 
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
+  function _configToAddress(bytes32 v) internal pure returns (address) {
+    return address(SafeCast.toUint160(uint(v)));
+  }
+
   function _getAddressConfig(ConfigID key) internal view returns (address, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (address(uint160(uint256(c.val))), c.isSet);
+    return (_configToAddress(c.val), c.isSet);
   }
 
   function _getAddressConfig2D(ConfigID key, bytes32 subKey) internal view returns (address, bool) {
@@ -154,7 +167,7 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (address(uint160(uint256(c.val))), c.isSet);
+    return (_configToAddress(c.val), c.isSet);
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -305,12 +318,12 @@ contract ConfigContract is BaseContract {
     }
     if (typ == ConfigType.CENTIBEEP) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig(key);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
       return 0;
     }
     if (typ == ConfigType.CENTIBEEP2D) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
       return 0;
     }
     if (typ == ConfigType.UINT) {
@@ -374,10 +387,12 @@ contract ConfigContract is BaseContract {
 
     if (newVal < oldVal) {
       for (uint i; i < rulesLen; ++i)
-        if (uint64(oldVal - newVal) <= rules[i].deltaNegative) return rules[i].lockDuration;
+        if (SafeCast.toUint64(SafeCast.toUint256(int(oldVal - newVal))) <= rules[i].deltaNegative)
+          return rules[i].lockDuration;
     } else {
       for (uint i; i < rulesLen; ++i)
-        if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
+        if (SafeCast.toUint64(SafeCast.toUint256(int(newVal - oldVal))) <= rules[i].deltaPositive)
+          return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }

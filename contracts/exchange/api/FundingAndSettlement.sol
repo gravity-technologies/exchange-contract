@@ -35,7 +35,7 @@ contract FundingAndSettlement is BaseContract {
       bytes32 assetID = keys[i];
       int64 latestFundingIndex = fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
-      int256 fundingIndexChange = int256(latestFundingIndex - perp.lastAppliedFundingIndex);
+      int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
       if (fundingIndexChange == 0) {
         continue;
       }
@@ -58,7 +58,7 @@ contract FundingAndSettlement is BaseContract {
 
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
     uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
-    BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
+    BI memory newSubBalance = BI(sub.spotBalances[sub.quoteCurrency], qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
     uint posLen = posKeys.length;

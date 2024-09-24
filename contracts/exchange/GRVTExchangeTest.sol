@@ -204,7 +204,7 @@ contract GRVTExchangeTest is
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({
         bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
-        rate: uint32(tiers.tiers[i].rate.toUint64(BASIS_POINTS_DECIMALS))
+        rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(BASIS_POINTS_DECIMALS)))
       });
     }
     return result;

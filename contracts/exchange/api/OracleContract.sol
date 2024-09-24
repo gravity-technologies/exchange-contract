@@ -52,7 +52,7 @@ contract OracleContract is ConfigContract {
       int64 expiry = assetGetExpiration(assetID);
       require(expiry == 0 || expiry >= timestamp, "invalid expiry");
 
-      marks[assetID] = uint64(uint256(prices[i].value));
+      marks[assetID] = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
     }
   }
 
@@ -85,7 +85,7 @@ contract OracleContract is ConfigContract {
       // IMPT: This is an extremely important check to prevent settlement price from being updated
       // Given that we do lazy settlement, we need to ensure that the settlement price is not updated
       // Otherwise, we can end up in scenarios where everyone's settlements don't check out.
-      uint64 newPrice = uint64(uint256(entry.value));
+      uint64 newPrice = SafeCast.toUint64(SafeCast.toUint256(entry.value));
       SettlementPriceEntry storage oldSettlementPrice = settlements[assetID];
       require(!oldSettlementPrice.isSet || newPrice == oldSettlementPrice.value, "settlemente price changed");
       require(entry.isFinal, "settlement price not final");
@@ -131,7 +131,7 @@ contract OracleContract is ConfigContract {
       require(highFound, "fundingHigh not found");
       (int64 fundingLow, bool lowFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_LOW, subKey);
       require(lowFound, "fundingLow not found");
-      int64 newFunding = int64(prices[i].value);
+      int64 newFunding = SafeCast.toInt64(prices[i].value);
       require(newFunding >= fundingLow && newFunding <= fundingHigh, "funding index out of range");
 
       // Update
@@ -177,7 +177,7 @@ contract OracleContract is ConfigContract {
       int64 expiry = assetGetExpiration(assetID);
       require(expiry == 0 || expiry >= timestamp, ERR_INVALID_PRICE_UPDATE);
 
-      interest[rates[i].assetID] = int32(rates[i].value);
+      interest[rates[i].assetID] = SafeCast.toInt32(rates[i].value);
     }
   }
 
