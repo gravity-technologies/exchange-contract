@@ -25,6 +25,11 @@ import {
   ExAccountSpot,
   ExConfigNotSet,
   ExConfig2DNotSet,
+  ExSimpleCrossMaintenanceMarginTiers,
+  ExSimpleCrossMaintenanceMarginTimelockEndTime,
+  ExSimpleCrossMaintenanceMarginTiersNoTimelock,
+  ExSubAccountMaintMargin,
+  ExOnboardedTransferAccount,
   Expectation,
 } from "./TestEngineTypes"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
@@ -86,6 +91,16 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectConfigNotSet(contract, expectation.expect as ExConfigNotSet)
     case "ExConfig2DNotSet":
       return expectConfig2DNotSet(contract, expectation.expect as ExConfig2DNotSet)
+    case "ExSimpleCrossMaintenanceMarginTiers":
+      return expectSimpleCrossMaintenanceMarginTiers(contract, expectation.expect as ExSimpleCrossMaintenanceMarginTiers)
+    case "ExSimpleCrossMaintenanceMarginTimelockEndTime":
+      return expectSimpleCrossMaintenanceMarginTimelockEndTime(contract, expectation.expect as ExSimpleCrossMaintenanceMarginTimelockEndTime)
+    case "ExSimpleCrossMaintenanceMarginTiersNoTimelock":
+      return expectSimpleCrossMaintenanceMarginTiersNoTimelock(contract, expectation.expect as ExSimpleCrossMaintenanceMarginTiersNoTimelock)
+    case "ExSubAccountMaintMargin":
+      return expectSubAccountMaintenanceMargin(contract, expectation.expect as ExSubAccountMaintMargin)
+    case "ExOnboardedTransferAccount":
+      return expectOnboardedTransferAccount(contract, expectation.expect as ExOnboardedTransferAccount)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -322,4 +337,33 @@ async function expectConfig2DNotSet(contract: Contract, expectations: ExConfig2D
     ConfigIDToEnum[expectations.key]
   )
   expect(isSet).to.be.false;
+}
+
+async function expectSimpleCrossMaintenanceMarginTiers(contract: Contract, expectations: ExSimpleCrossMaintenanceMarginTiers) {
+  const tiers = await contract.getSimpleCrossMaintenanceMarginTiers("0x" + expectations.kuq);
+  const convertedTiers = tiers.map((tier: { bracketStart: BigNumber; rate: number }) => ({
+    bracket_start: tier.bracketStart.toString(),
+    rate: tier.rate
+  }));
+  expect(convertedTiers).to.deep.equal(expectations.tiers);
+}
+
+async function expectSimpleCrossMaintenanceMarginTimelockEndTime(contract: Contract, expectations: ExSimpleCrossMaintenanceMarginTimelockEndTime) {
+  expect(await contract.getSimpleCrossMaintenanceMarginTimelockEndTime("0x" + expectations.kuq))
+    .to.be.equal(expectations.timelock_end_time);
+}
+
+async function expectSimpleCrossMaintenanceMarginTiersNoTimelock(contract: Contract, expectations: ExSimpleCrossMaintenanceMarginTiersNoTimelock) {
+  expect(await contract.getSimpleCrossMaintenanceMarginTimelockEndTime("0x" + expectations.kuq))
+    .to.be.equal(0);
+}
+
+async function expectSubAccountMaintenanceMargin(contract: Contract, expectations: ExSubAccountMaintMargin) {
+  expect(await contract.getSubAccountMaintenanceMargin(BigInt(expectations.sub_account_id)))
+    .to.be.equal(expectations.maint_margin);
+}
+
+async function expectOnboardedTransferAccount(contract: Contract, expectations: ExOnboardedTransferAccount) {
+  const isOnboarded = await contract.getAccountOnboardedTransferAccount(expectations.account_id, expectations.transfer_account);
+  expect(isOnboarded).to.be.true;
 }

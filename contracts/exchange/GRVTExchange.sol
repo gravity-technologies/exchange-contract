@@ -6,6 +6,7 @@ import "./api/SubAccountContract.sol";
 import "./api/WalletRecoveryContract.sol";
 import "./api/OracleContract.sol";
 import "./api/TransferContract.sol";
+import "./api/MarginConfigContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchange is

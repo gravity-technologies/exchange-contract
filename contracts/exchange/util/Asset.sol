@@ -11,6 +11,8 @@ struct Asset {
   uint64 strikePrice;
 }
 
+bytes32 constant KUQ_MASK = bytes32(uint256(0xFFFFFF));
+
 /// @dev Parse the assetID into its components
 ///
 /// LSB                                                                                                            MSB
@@ -54,12 +56,20 @@ function assetGetExpiration(bytes32 assetID) pure returns (int64) {
   return int64(int(uint(assetID >> 32)));
 }
 
-// function assetGetStrikePrice(bytes32 assetID) pure returns (uint64) {
-//   return uint64(uint(assetID >> 96));
-// }
+function assetGetStrikePrice(bytes32 assetID) pure returns (uint64) {
+  return uint64(uint(assetID >> 96));
+}
+
+function assetIsKUQ(bytes32 assetID) pure returns (bool) {
+  return (assetID & ~KUQ_MASK) == 0;
+}
 
 bytes32 constant quoteMask = bytes32(~(uint(0xFF) << 16));
 
 function assetSetQuote(bytes32 assetID, Currency quote) pure returns (bytes32) {
   return (assetID & quoteMask) | (bytes32(uint(quote)) << 16);
+}
+
+function assetGetKUQ(bytes32 assetID) pure returns (bytes32) {
+  return assetID & KUQ_MASK;
 }

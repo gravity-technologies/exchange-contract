@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./PositionMap.sol";
+import "../util/BIMath.sol";
 
 enum MarginType {
   UNSPECIFIED,
@@ -55,6 +56,7 @@ function currencyIsValid(Currency iter) pure returns (bool) {
 
 uint constant PRICE_DECIMALS = 9;
 uint constant CENTIBEEP_DECIMALS = 6;
+uint constant BASIS_POINTS_DECIMALS = 4;
 int constant TIME_FACTOR = 480;
 
 uint64 constant AccountPermAdmin = 1 << 1;
@@ -112,6 +114,10 @@ struct State {
   int64 timestamp;
   // Latest Transaction ID
   uint64 lastTxID;
+  // Stores the maintenance margin tiers for simple cross margin on a per KUQ(kind, underlying, quote) basis
+  mapping(bytes32 => ListMarginTiersBI) simpleCrossMaintenanceMarginTiers;
+  // Stores the timelock end time for the simple cross margin tiers on a per KUQ(kind, underlying, quote) basis
+  mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
   // Temporary storage for trade validation. This should always be cleared after each trade
   mapping(bytes32 => TmpLegData) _tmpTakerLegs;
   // This empty reserved space is put in place to allow future versions to add new
@@ -245,9 +251,7 @@ enum ConfigType {
   UINT,
   UINT2D,
   CENTIBEEP,
-  CENTIBEEP2D,
-  BYTE32,
-  BYTE322D
+  CENTIBEEP2D
 }
 
 enum ConfigID {
@@ -271,26 +275,13 @@ enum ConfigID {
   // ERC20 addresses
   ERC20_ADDRESSES, // 13, no timelock
   L2_SHARED_BRIDGE_ADDRESS, // 14, no timelock
-  // Simple Cross Maintenance Margin tiers
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01, // 15, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_02, // 16, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_03, // 17, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_04, // 18, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_05, // 19, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_06, // 20, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_07, // 21, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_08, // 22, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_09, // 23, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_10, // 24, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_11, // 25, has timelock
-  SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12, // 26, has timelock
   // Simple cross futures initial margin. This config is not used in the contract (since initial margin is only computed offchain),
   // but it is important to keep it here to maintain the correct configID ordinals
-  SIMPLE_CROSS_FUTURES_INITIAL_MARGIN, // 27, has timelock
+  SIMPLE_CROSS_FUTURES_INITIAL_MARGIN, // 15, has timelock
   // Withdrawal Fee Configs
-  WITHDRAWAL_FEE, // 28, has timelock
+  WITHDRAWAL_FEE, // 16, has timelock
   // Bridging partner accounts can transfer from and withdraw to any address
-  BRIDGING_PARTNER_ADDRESSES // 29, no timelock
+  BRIDGING_PARTNER_ADDRESSES // 17, no timelock
 }
 
 struct ConfigValue {
@@ -307,6 +298,21 @@ struct ConfigSetting {
   ConfigTimelockRule[] rules;
   // the schedules where we can change this config.
   mapping(bytes32 => ConfigSchedule) schedules;
+}
+
+struct MarginTier {
+  uint64 bracketStart;
+  uint32 rate;
+}
+
+struct MarginTierBI {
+  BI bracketStart;
+  BI rate;
+}
+
+struct ListMarginTiersBI {
+  bytes32 kud;
+  MarginTierBI[] tiers;
 }
 
 // --------------- Trade --------------
@@ -364,11 +370,6 @@ struct OrderLeg {
   // The limit price of the order leg, expressed in USD Price.
   // This is the total amount of base currency to pay/receive for all legs.
   uint64 limitPrice;
-  // ONLY APPLICABLE WHEN TimeInForce = GTT / IOC AND IsMarket = FALSE AND IsOCO = TRUE
-  // If a OCO order is specified, this must contain the other limit price
-  // User must sign both limit prices, and activator is free to swap them depending on which trigger is activated
-  // The smart contract will always validate both limit prices, by arranging them in ascending order
-  uint64 ocoLimitPrice;
   // Specifies if the order leg is a buy or sell
   bool isBuyingAsset;
 }

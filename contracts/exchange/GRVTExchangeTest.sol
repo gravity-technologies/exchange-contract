@@ -192,4 +192,26 @@ contract GRVTExchangeTest is
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return sub.spotBalances[currency];
   }
+
+  function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
+    uint64 uDec = _getBalanceDecimal(assetGetUnderlying(kuq));
+    ListMarginTiersBI memory tiers = state.simpleCrossMaintenanceMarginTiers[kuq];
+    MarginTier[] memory result = new MarginTier[](tiers.tiers.length);
+    for (uint i = 0; i < tiers.tiers.length; i++) {
+      result[i] = MarginTier({
+        bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
+        rate: uint32(tiers.tiers[i].rate.toUint64(BASIS_POINTS_DECIMALS))
+      });
+    }
+    return result;
+  }
+
+  function getSimpleCrossMaintenanceMarginTimelockEndTime(bytes32 kuq) public view returns (int64) {
+    return state.simpleCrossMaintenanceMarginTimelockEndTime[kuq];
+  }
+
+  function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return _getSubMaintenanceMargin(sub);
+  }
 }

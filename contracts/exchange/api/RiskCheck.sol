@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "./BaseContract.sol";
-import "./ConfigContract.sol";
+import "./MarginConfigContract.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
@@ -16,13 +16,11 @@ struct MaintenanceMarginConfig {
 uint256 constant MAX_M_MARGIN_TIERS = 12;
 // The bit mask for the least significant 32 bits
 uint256 constant LSB_32_MASK = 0xFFFFFFFF;
-// The bit mask for the least significant 24 bits, used for Kind, Underlying, Quote encoding in determining the insurance fund subaccount ID
-bytes32 constant KUQ_MASK = bytes32(uint256(0xFFFFFF));
 
 // Only support BTC, ETH for now
 uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
 
-contract RiskCheck is BaseContract, ConfigContract {
+contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
 
   error InvalidTotalValue(uint64 subAccountID, int256 value);
@@ -74,62 +72,12 @@ contract RiskCheck is BaseContract, ConfigContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      bytes32 assetWithUSDQuote = assetSetQuote(pos.id, Currency.USD);
-      BI memory markPrice = _requireMarkPriceBI(assetWithUSDQuote);
-      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetWithUSDQuote));
+      BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
+      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
       BI memory balance = BI(int256(pos.balance), uDec);
       total = total.add(balance.mul(markPrice));
     }
     return total;
-  }
-
-  /**
-   * @dev Returns the maintenance margin config for all currency
-   * @return The maintenance margin config for all currency, indexed by (currency_enum_value - ETH_enum_value)
-   */
-  function _getAllMaintenanceMarginConfig()
-    private
-    view
-    returns (MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory)
-  {
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory configs = new MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][](
-      NUM_SUPPORTED_UNDERLYINGS
-    );
-    // Add the maintenance margin config for each currency
-    configs[0] = _getMaintenanceMarginConfigByCurrency(Currency.ETH);
-    configs[1] = _getMaintenanceMarginConfigByCurrency(Currency.BTC);
-    return configs;
-  }
-
-  /**
-   * @dev Returns the maintenance margin config for a given currency
-   * Each maintenance margin tier config value is stored as a bytes32 value
-   * The encoding of that value is as follows, where size and ratio are fixed point numbers with 4 decimals:
-   * +-------------------------------+
-   * |    Size    |       Ratio      |
-   * |  (32 bits) |      (32 bits)   |
-   * +--------------------------------+
-   *
-   * @param currency The currency to get the maintenance margin config for
-   * @return The maintenance margin config for the currency
-   */
-  function _getMaintenanceMarginConfigByCurrency(
-    Currency currency
-  ) private view returns (MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory) {
-    bytes32 currencyConfig = _currencyToConfig(currency);
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory configs;
-    uint hi = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_12);
-    uint lo = uint(ConfigID.SIMPLE_CROSS_MAINTENANCE_MARGIN_TIER_01);
-    for (uint i = lo; i <= hi; i++) {
-      (bytes32 mmBytes32, bool found) = _getByte32Config2D(ConfigID(i), currencyConfig);
-      if (!found) {
-        break;
-      }
-      uint256 mm = uint256(mmBytes32);
-      configs[i - lo].size = BI(int256(uint256((mm >> 224) & LSB_32_MASK)), 4);
-      configs[i - lo].ratio = BI(int256(uint256((mm >> 160) & LSB_32_MASK)), 4);
-    }
-    return configs;
   }
 
   /**
@@ -149,32 +97,6 @@ contract RiskCheck is BaseContract, ConfigContract {
   }
 
   /**
-   * @dev Find the maintenance margin ratio for a given position size. The maintenance margin ratio is a sorted array according to the position size.
-   * To find the maintenance margin ratio, we iterate through the maintenance margin tiers and find the first tier where the size is greater than or equal to the tier size.
-   * @param size The position size.
-   * @param configs The maintenance margin configurations.
-   * @return The maintenance margin ratio, in BI format.
-   */
-  function _getMaintenanceMarginRatio(
-    BI memory size,
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory configs,
-    Currency underlying
-  ) private pure returns (BI memory) {
-    require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
-    uint configIdx = underlying == Currency.ETH ? 0 : 1;
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS] memory tiers = configs[configIdx];
-
-    uint tierIdx = tiers.length - 1;
-    for (uint i = 0; i < tiers.length; i++) {
-      if (size.cmp(tiers[i].size) < 0) {
-        tierIdx = i;
-        break;
-      }
-    }
-    return tiers[tierIdx].ratio;
-  }
-
-  /**
    * @dev Returns the maintenance margin for a subaccount.
    * @param subAccount The subaccount to check.
    * @return The maintenance margin.
@@ -182,23 +104,20 @@ contract RiskCheck is BaseContract, ConfigContract {
   function _getSubMaintenanceMargin(SubAccount storage subAccount) internal view returns (uint64) {
     BI memory totalCharge = BI(0, 0);
 
-    // Load the maintenance margin config for each currency up front to save cost from repeated lookups
-    MaintenanceMarginConfig[MAX_M_MARGIN_TIERS][] memory mmConfigs = _getAllMaintenanceMarginConfig();
-
     bytes32[] storage keys = subAccount.perps.keys;
     mapping(bytes32 => Position) storage values = subAccount.perps.values;
     uint numPerps = keys.length;
     for (uint i = 0; i < numPerps; i++) {
       bytes32 id = keys[i];
-      Currency underlying = assetGetUnderlying(id);
       int64 size = values[id].balance;
       if (size < 0) {
         size = -size;
       }
-      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(underlying));
-      BI memory ratio = _getMaintenanceMarginRatio(sizeBI, mmConfigs, underlying);
-      // The charge for a perpetual positions = (Size) * (Mark Price) * (Maintenance Ratio)
-      BI memory charge = ratio.mul(_requireMarkPriceBI(id)).mul(sizeBI);
+      bytes32 kuq = assetGetKUQ(id);
+      ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
+      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
+      BI memory markPrice = _requireMarkPriceInUsdBI(id);
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(markPrice);
       totalCharge = totalCharge.add(charge);
     }
 

@@ -110,7 +110,6 @@ export interface OrderLeg {
   assetID: string // uint256
   contractSize: number
   limitPrice: number
-  ocoLimitPrice: number
   isBuyingContract: boolean
 }
 

@@ -181,6 +181,12 @@ contract BaseContract is ReentrancyGuardUpgradeable {
     return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
   }
 
+  function _requireMarkPriceInUsdBI(bytes32 assetID) internal view returns (BI memory) {
+    bytes32 assetWithUSDQuote = assetSetQuote(assetID, Currency.USD);
+    BI memory markPrice = _requireMarkPriceBI(assetWithUSDQuote);
+    return markPrice;
+  }
+
   // Price utils
   function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
