@@ -8,6 +8,7 @@ import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 contract BaseContract is ReentrancyGuardUpgradeable {
   State internal state;
@@ -214,7 +215,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return (0, false);
     }
 
-    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (SafeCast.toUint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
   }
 
   function _getIndexPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
@@ -238,7 +239,7 @@ contract BaseContract is ReentrancyGuardUpgradeable {
       return (0, false);
     }
 
-    return (uint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (SafeCast.toUint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
   }
 
   function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
