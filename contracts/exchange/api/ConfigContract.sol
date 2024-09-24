@@ -66,7 +66,7 @@ contract ConfigContract is BaseContract {
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return int64(uint64(uint256(v)));
+    return int64(SafeCast.toUint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
