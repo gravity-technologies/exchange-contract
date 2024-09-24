@@ -186,7 +186,7 @@ abstract contract TransferContract is TradeContract {
       }
     } else {
       // 2. Different accounts
-      require(fromSubID == 0 && toSubID == 0, "transfer between sub accounts of different accounts");
+      require(fromSubID == 0 && toSubID == 0, "subs transfer, diff acccounts");
       _transferMainToMain(fromAccID, toAccID, currency, numTokensSigned, sig);
     }
   }
@@ -201,7 +201,7 @@ abstract contract TransferContract is TradeContract {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
-    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
+    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "bad external transfer address");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
