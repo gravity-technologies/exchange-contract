@@ -31,6 +31,10 @@ import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 ///    To read this we need only the (key) of the config
 ///  - The value of 2D config is stored in `config2DValues` mapping.
 ///    To read this we need both the (key, subKey) of the config
+///  - ConfigEntry's are represented as bytes32, which can be converted to other types
+///    using the conversion functions defined below. They are interpreted by looking only
+///    at the lower n bytes necessary for the type(e.g. n=8 for uint64), and any upper bytes
+///    are ignored. This is why unsafe casting is used in the conversion functions
 ///
 /// Changing config
 ///  - Every config change is timelocked. The timelock duration is determined
@@ -62,7 +66,7 @@ contract ConfigContract is BaseContract {
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return int64(SafeCast.toUint64(uint256(v)));
+    return int64(uint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
@@ -77,7 +81,7 @@ contract ConfigContract is BaseContract {
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToCentibeep(bytes32 v) internal pure returns (int32) {
-    return int32(SafeCast.toUint32(uint256(v)));
+    return int32(uint32(uint256(v)));
   }
 
   // unsafe casting here is expected, as the byte32 value represents an signed integer
@@ -99,7 +103,7 @@ contract ConfigContract is BaseContract {
   }
 
   function _configToUint(bytes32 v) internal pure returns (uint64) {
-    return SafeCast.toUint64(uint(v));
+    return uint64(uint(v));
   }
 
   function _getUintConfig(ConfigID key) internal view returns (uint64, bool) {
@@ -154,7 +158,7 @@ contract ConfigContract is BaseContract {
 
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
   function _configToAddress(bytes32 v) internal pure returns (address) {
-    return address(SafeCast.toUint160(uint(v)));
+    return address(uint160(uint(v)));
   }
 
   function _getAddressConfig(ConfigID key) internal view returns (address, bool) {
