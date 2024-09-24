@@ -95,7 +95,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     int64 subAccountValue = _getSubAccountUsdValue(subAccount).toInt64(usdDecimals);
     uint64 maintenanceMargin = _getSubMaintenanceMargin(subAccount);
 
-    return subAccountValue >= 0 && subAccountValue >= SafeCast.toInt64(int(uint(maintenanceMargin)));
+    return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
   }
 
   /**
