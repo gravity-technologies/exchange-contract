@@ -57,7 +57,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       if (balance == 0) {
         continue;
       }
-      BI memory balanceBI = BI(int256(balance), _getBalanceDecimal(i));
+      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
       bytes32 spotID = _getSpotAssetID(i);
       totalValue = totalValue.add(balanceBI.mul(_requireMarkPriceBI(spotID)));
     }
@@ -76,7 +76,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       Position storage pos = values[keys[i]];
       BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
       uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
-      BI memory balance = BI(int256(pos.balance), uDec);
+      BI memory balance = BI(pos.balance, uDec);
       total = total.add(balance.mul(markPrice));
     }
     return total;
@@ -117,9 +117,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       }
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
-      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory markPrice = _requireMarkPriceInUsdBI(id);
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(markPrice);
+      BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(id)));
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireMarkPriceInUsdBI(id));
       totalCharge = totalCharge.add(charge);
     }
 

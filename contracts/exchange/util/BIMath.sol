@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "../common/Error.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 struct BI {
   int256 val;
@@ -44,8 +45,8 @@ library BIMath {
   }
 
   function scale(BI memory a, uint256 d) internal pure returns (BI memory) {
-    if (a.dec > d) return BI(a.val / int256(10 ** (a.dec - d)), d);
-    return BI(a.val * int256(10 ** (d - a.dec)), d);
+    if (a.dec > d) return BI(a.val / SafeCast.toInt256(10 ** (a.dec - d)), d);
+    return BI(a.val * SafeCast.toInt256(10 ** (d - a.dec)), d);
   }
 
   function cmp(BI memory a, BI memory b) internal pure returns (int256) {
@@ -79,7 +80,7 @@ library BIMath {
     } else {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
-    return int64(uint64(uint(c)));
+    return SafeCast.toInt64(c);
   }
 
   function toUint64(BI memory a, uint decimals) internal pure returns (uint64) {
@@ -92,10 +93,6 @@ library BIMath {
     } else {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
-    return uint64(uint256(c));
+    return SafeCast.toUint64(SafeCast.toUint256(c));
   }
-}
-
-function bpsToDecimal(int bps) pure returns (BI memory) {
-  return BI(int256(bps), 6);
 }
