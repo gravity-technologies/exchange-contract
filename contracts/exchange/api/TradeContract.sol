@@ -305,8 +305,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    // Check that the fee paid is within the cap
-    int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    // Check that the fee paid is within the cap of 20 bps
+    int32 feeCapRate = 2000;
     if (order.isLiquidation) {
       // Liquidation Fee:
       // 0.25% = 25 bps on option index notional

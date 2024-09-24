@@ -19,7 +19,7 @@ export interface TestStep {
   tx_data: string
 
   // The expected result of running the transaction
-  ret: string
+  error: string
 
   // List of expectations to be executed after the transaction is executed
   expectations: Expectation[]
@@ -217,31 +217,31 @@ export interface ExOnboardedTransferAccount {
 export interface Expectation {
   name: string
   expect:
-    | ExNumAccounts
-    | ExAccountSigners
-    | ExAccountMultiSigThreshold
-    | ExAccountWithdrawalAddresses
-    | ExSessionKeys
-    | ExConfig1D
-    | ExConfig2D
-    | ExConfigSchedule
-    | ExConfigScheduleAbsent
-    | ExSubAccountSigners
-    | ExSubAccountMarginType
-    | ExFundingIndex
-    | ExFundingTime
-    | ExMarkPrice
-    | ExInterestRate
-    | ExSubAccountValue
-    | ExSubAccountPosition
-    | ExSubAccountSpot
-    | ExSettlementPrice
-    | ExAccountRecoveryAddresses
-    | ExNotAccountRecoveryAddresses
-    | ExAccountSpot
-    | ExSimpleCrossMaintenanceMarginTiers
-    | ExSimpleCrossMaintenanceMarginTimelockEndTime
-    | ExSimpleCrossMaintenanceMarginTiersNoTimelock
-    | ExSubAccountMaintMargin
-    | ExOnboardedTransferAccount
+  | ExNumAccounts
+  | ExAccountSigners
+  | ExAccountMultiSigThreshold
+  | ExAccountWithdrawalAddresses
+  | ExSessionKeys
+  | ExConfig1D
+  | ExConfig2D
+  | ExConfigSchedule
+  | ExConfigScheduleAbsent
+  | ExSubAccountSigners
+  | ExSubAccountMarginType
+  | ExFundingIndex
+  | ExFundingTime
+  | ExMarkPrice
+  | ExInterestRate
+  | ExSubAccountValue
+  | ExSubAccountPosition
+  | ExSubAccountSpot
+  | ExSettlementPrice
+  | ExAccountRecoveryAddresses
+  | ExNotAccountRecoveryAddresses
+  | ExAccountSpot
+  | ExSimpleCrossMaintenanceMarginTiers
+  | ExSimpleCrossMaintenanceMarginTimelockEndTime
+  | ExSimpleCrossMaintenanceMarginTiersNoTimelock
+  | ExSubAccountMaintMargin
+  | ExOnboardedTransferAccount
 }

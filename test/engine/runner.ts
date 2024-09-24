@@ -42,7 +42,7 @@ async function executeTestStep(
 
   try {
     const resp = await w1.sendTransaction(tx)
-    if (step.ret !== "") {
+    if (step.error !== "") {
       await expectToThrowAsync(resp.wait())
     } else {
       await resp.wait()
