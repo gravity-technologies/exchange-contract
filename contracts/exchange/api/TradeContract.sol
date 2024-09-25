@@ -13,6 +13,14 @@ import "../util/Asset.sol";
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
+  int32 internal constant TRADE_FEE_CAP_RATE_BPS = 2000;
+  // Liquidation Fee:
+  // 0.25% = 25 bps on option index notional
+  // 0.70% = 70 bps otherwise
+  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OPTION = 2500;
+  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
+  int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
+
   function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external onlyRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
@@ -305,16 +313,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    // Check that the fee paid is within the cap
-    int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    // Check that the fee paid is within the cap of 20 bps
+    int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
     if (order.isLiquidation) {
-      // Liquidation Fee:
-      // 0.25% = 25 bps on option index notional
-      // 0.70% = 70 bps otherwise
-      int32 liquidationFee = isOption ? int32(2500) : int32(7000);
-      if (feeCapRate < liquidationFee) {
-        feeCapRate = liquidationFee;
-      }
+      feeCapRate = isOption ? LIQUIDATION_FEE_CAP_RATE_BPS_OPTION : LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
     }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
 
@@ -322,7 +324,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     if (isOption) {
       totalFeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
-      BI memory premiumCapFee = _bpsToDecimal(125000); // 12.5% premium cap
+      BI memory premiumCapFee = _bpsToDecimal(PREMIUM_CAP_RATE_BPS);
 
       if (totalFeeCap > 0) {
         totalFeeCap = _min(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));

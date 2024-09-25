@@ -347,11 +347,6 @@ struct Order {
   // Exchange only supports (GTT, IOC, FOK)
   // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
   TimeInForce timeInForce;
-  // The taker fee percentage cap signed by the order.
-  // This is the maximum taker fee percentage the order sender is willing to pay for the order.
-  int32 takerFeePercentageCap;
-  // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
-  int32 makerFeePercentageCap;
   /// @dev No logic in contract related to this field
   // If True, Order must be a maker order. It has to fill the orderbook instead of match it.
   // If False, Order can be either a maker or taker order.
