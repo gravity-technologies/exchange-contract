@@ -27,7 +27,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -65,7 +65,7 @@ contract OracleContract is ConfigContract {
     int64 timestamp,
     uint64 txID,
     SettlementTick[] calldata prices
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     revert("not supported");
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
@@ -109,7 +109,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -156,7 +156,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata rates,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     revert("not supported");
     _setSequence(timestamp, txID);
 

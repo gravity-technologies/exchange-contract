@@ -183,7 +183,7 @@ contract ConfigContract is BaseContract {
     uint64 txID,
     InitializeConfigItem[] calldata items,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequenceInitializeConfig(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -240,7 +240,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -270,7 +270,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");

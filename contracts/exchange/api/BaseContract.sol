@@ -18,6 +18,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
 
+  modifier onlyTxOriginRole(bytes32 role) {
+    _checkRole(role, tx.origin);
+    _;
+  }
+
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
