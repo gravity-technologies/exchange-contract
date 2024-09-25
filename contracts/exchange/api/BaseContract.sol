@@ -18,6 +18,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
 
+  /// @dev Check if the caller is the tx.origin
+  /// this is applied to all exchange transaction functions.
+  /// we use this custom modifier to check tx.origin instead of msg.sender
+  /// as in onlyRule for these reasons:
+  /// 1. we might submit exchange transactions through an intermediate contract, e.g. multicall
+  /// 2. the wallet that has CHAIN_SUBMITTER_ROLE is a single-purpose wallet that
+  ///    only submits transactions to the exchange contract, and we control all
+  ///    contracts on the private L2. This means it's unlikely for the CHAIN_SUBMITTER_ROLE
+  ///    to be tricked into submitting exchange transactions inadventently.
   modifier onlyTxOriginRole(bytes32 role) {
     _checkRole(role, tx.origin);
     _;
