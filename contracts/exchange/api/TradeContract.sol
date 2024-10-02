@@ -74,7 +74,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           takerSpotDelta = takerSpotDelta.sub(notional);
         }
         if (_isOption(leg.assetID)) {
-          (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
+          (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
           require(found, ERR_NOT_FOUND);
 
           BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));

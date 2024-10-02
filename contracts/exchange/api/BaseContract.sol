@@ -12,6 +12,8 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
+  using BIMath for BI;
+
   State internal state;
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
@@ -188,30 +190,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 
-  function _requireMarkPriceBI(bytes32 assetID) internal view returns (BI memory) {
-    (uint64 markPrice, bool found) = _getMarkPrice9Decimals(assetID);
+  function _requireAssetPriceBI(bytes32 assetID) internal view returns (BI memory) {
+    (uint64 markPrice, bool found) = _getAssetPrice9Dec(assetID);
     require(found, "mark price not found");
     return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
   }
 
-  function _requireMarkPriceInUsdBI(bytes32 assetID) internal view returns (BI memory) {
+  function _requireAssetPriceInUsdBI(bytes32 assetID) internal view returns (BI memory) {
     bytes32 assetWithUSDQuote = assetSetQuote(assetID, Currency.USD);
-    BI memory markPrice = _requireMarkPriceBI(assetWithUSDQuote);
+    BI memory markPrice = _requireAssetPriceBI(assetWithUSDQuote);
     return markPrice;
   }
 
   // Price utils
-  function _getMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getQuoteMarkPrice9Decimals(assetGetUnderlying(assetID));
+      return _getSpotPrice9Dec(assetGetUnderlying(assetID));
     }
 
     Currency quote = assetGetQuote(assetID);
     // Only derivatives remaining
-    (uint64 underlyingPrice, bool found) = _getUnderlyingMarkPrice9Decimals(assetID);
+    (uint64 underlyingPrice, bool found) = _getUnderlyingAssetPrice9Dec(assetID);
     if (!found) {
       return (0, false);
     }
@@ -222,15 +224,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     // Otherwise, we have to convert to USDT/USDC price
-    (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
 
-    return (SafeCast.toUint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (SafeCast.toUint64((uint(underlyingPrice) * (PRICE_MULTIPLIER)) / uint(quotePrice)), true);
   }
 
-  function _getIndexPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getIndexPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
     Currency underlying = assetGetUnderlying(assetID);
@@ -238,28 +240,52 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getQuoteMarkPrice9Decimals(underlying);
+      return _getSpotPrice9Dec(underlying);
     }
 
-    (uint64 underlyingPrice, bool found) = _getQuoteMarkPrice9Decimals(underlying);
+    (uint64 underlyingPrice, bool found) = _getSpotPrice9Dec(underlying);
     if (!found) {
       return (0, false);
     }
 
-    (uint64 quotePrice, bool quoteFound) = _getQuoteMarkPrice9Decimals(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
 
-    return (SafeCast.toUint64((uint(underlyingPrice) * (10 ** PRICE_DECIMALS)) / uint(quotePrice)), true);
+    return (SafeCast.toUint64((uint(underlyingPrice) * (PRICE_MULTIPLIER)) / uint(quotePrice)), true);
   }
 
-  function _getUnderlyingMarkPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getUnderlyingAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     uint64 price = state.prices.mark[assetSetQuote(assetID, Currency.USD)];
     return (price, price != 0);
   }
 
-  function _getQuoteMarkPrice9Decimals(Currency currency) internal view returns (uint64, bool) {
+  /// @dev Get the spot price of one currency in terms of another
+  /// @param spot The currency to get the price for
+  /// @param quote The quote currency
+  /// @return The price of spot in terms of quote
+  function _getSpotPriceInQuote(Currency spot, Currency quote) internal view returns (BI memory) {
+    if (spot == quote) {
+      return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
+    }
+
+    return _getSpotPriceBI(spot).div(_getSpotPriceBI(quote));
+  }
+
+  /// @dev Get the spot price of a currency in terms of USD
+  /// @param spot The currency to get the price for
+  /// @return The price of the currency in USD
+  function _getSpotPriceBI(Currency spot) internal view returns (BI memory) {
+    (uint64 price, bool ok) = _getSpotPrice9Dec(spot);
+    require(ok, "mark price not found");
+    return BI(int256(uint(price)), PRICE_DECIMALS);
+  }
+
+  /// @dev Get the spot price of a currency with 9 decimal places
+  /// @param currency The currency to get the price for
+  /// @return price The price of the currency, ok Whether the price was found
+  function _getSpotPrice9Dec(Currency currency) internal view returns (uint64, bool) {
     uint64 price = state.prices.mark[_getSpotAssetID(currency)];
     return (price, price != 0);
   }

@@ -91,7 +91,7 @@ contract MarginConfigContract is ConfigContract {
     for (uint i = 0; i < tiers.length; i++) {
       biTiers[i] = MarginTierBI({
         bracketStart: BI(int256(uint256(tiers[i].bracketStart)), _getBalanceDecimal(assetGetUnderlying(kud))),
-        rate: BI(int256(uint256(tiers[i].rate)), BASIS_POINTS_DECIMALS)
+        rate: BI(int256(uint256(tiers[i].rate)), CENTIBEEP_DECIMALS)
       });
     }
 

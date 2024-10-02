@@ -92,7 +92,7 @@ abstract contract TransferContract is TradeContract {
     int64 withdrawalFeeCharged = 0;
     (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (feeSubAccIdSet) {
-      BI memory spotMarkPrice = _requireMarkPriceBI(_getSpotAssetID(currency));
+      BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
       uint64 tokenDec = _getBalanceDecimal(currency);
       withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
       _requireSubAccount(feeSubAccId).spotBalances[currency] += withdrawalFeeCharged;

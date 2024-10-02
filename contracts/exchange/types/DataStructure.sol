@@ -55,8 +55,8 @@ function currencyIsValid(Currency iter) pure returns (bool) {
 }
 
 uint constant PRICE_DECIMALS = 9;
+uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
-uint constant BASIS_POINTS_DECIMALS = 4;
 int constant TIME_FACTOR = 480;
 
 uint64 constant AccountPermAdmin = 1 << 1;

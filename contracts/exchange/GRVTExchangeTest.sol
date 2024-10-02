@@ -164,7 +164,7 @@ contract GRVTExchangeTest is
   }
 
   function getMarkPrice(bytes32 assetID) public view returns (uint64, bool) {
-    return _getMarkPrice9Decimals(assetID);
+    return _getAssetPrice9Dec(assetID);
   }
 
   function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
@@ -179,7 +179,7 @@ contract GRVTExchangeTest is
   function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     uint64 quoteDecimals = _getBalanceDecimal(sub.quoteCurrency);
-    return _getSubAccountUsdValue(sub).toInt64(quoteDecimals);
+    return _getSubAccountValueInQuote(sub).toInt64(quoteDecimals);
   }
 
   function getSubAccountPosition(
@@ -204,7 +204,7 @@ contract GRVTExchangeTest is
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({
         bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
-        rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(BASIS_POINTS_DECIMALS)))
+        rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
       });
     }
     return result;
