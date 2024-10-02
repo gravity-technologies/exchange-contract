@@ -128,7 +128,7 @@ contract OracleContract is ConfigContract {
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
-      BI memory markPrice = _requireMarkPriceBI(entry.assetID);
+      BI memory markPrice = _requireAssetPriceBI(entry.assetID);
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
       int64 delta = markPrice.mul(BI(entry.value, CENTIBEEP_DECIMALS)).div(BI(TIME_FACTOR, 0)).toInt64(PRICE_DECIMALS);
       fundings[entry.assetID] += delta;
