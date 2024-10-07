@@ -13,7 +13,19 @@ import "../util/Asset.sol";
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
-  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
+  int32 internal constant TRADE_FEE_CAP_RATE_BPS = 2000;
+  // Liquidation Fee:
+  // 0.25% = 25 bps on option index notional
+  // 0.70% = 70 bps otherwise
+  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OPTION = 2500;
+  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
+  int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
+
+  function tradeDeriv(
+    int64 timestamp,
+    uint64 txID,
+    Trade calldata trade
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     _verifyMatch(trade);
@@ -66,7 +78,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           takerSpotDelta = takerSpotDelta.sub(notional);
         }
         if (_isOption(leg.assetID)) {
-          (uint64 indexPrice, bool found) = _getIndexPrice9Decimals(leg.assetID);
+          (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
           require(found, ERR_NOT_FOUND);
 
           BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
@@ -140,7 +152,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
         TmpLegData storage takerLeg = state._tmpTakerLegs[makerLeg.assetID];
 
-        require(takerLeg.isSet || matchedSizes[j] == 0, "matched against non-existent taker leg");
+        if (!takerLeg.isSet) {
+          require(matchedSizes[j] == 0, "matched against non-existent taker leg");
+          continue;
+        }
         require(takerLeg.isBuyingAsset != makerLeg.isBuyingAsset, "matched same side");
 
         if (!takerOrder.isMarket) {
@@ -285,7 +300,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
-      uint64 total = executedSize[leg.assetID] + tradeSizes[i];
+      uint64 legExecutedSize = executedSize[leg.assetID];
+      if (order.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL) {
+        require(legExecutedSize == 0, "prior match for IOC order");
+      }
+      uint64 total = legExecutedSize + tradeSizes[i];
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
       executedSize[leg.assetID] = total;
     }
@@ -298,16 +317,10 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    // Check that the fee paid is within the cap
-    int32 feeCapRate = isMakerOrder ? order.makerFeePercentageCap : order.takerFeePercentageCap;
+    // Check that the fee paid is within the cap of 20 bps
+    int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
     if (order.isLiquidation) {
-      // Liquidation Fee:
-      // 0.25% = 25 bps on option index notional
-      // 0.70% = 70 bps otherwise
-      int32 liquidationFee = isOption ? int32(2500) : int32(7000);
-      if (feeCapRate < liquidationFee) {
-        feeCapRate = liquidationFee;
-      }
+      feeCapRate = isOption ? LIQUIDATION_FEE_CAP_RATE_BPS_OPTION : LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
     }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
 
@@ -315,7 +328,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     if (isOption) {
       totalFeeCap = _calculateBaseFee(optionIndexNotional, feeCapRateBI, qDec);
-      BI memory premiumCapFee = bpsToDecimal(125000); // 12.5% premium cap
+      BI memory premiumCapFee = _bpsToDecimal(PREMIUM_CAP_RATE_BPS);
 
       if (totalFeeCap > 0) {
         totalFeeCap = _min(totalFeeCap, _calculateBaseFee(tradeNotional, premiumCapFee, qDec));
@@ -367,6 +380,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         bool isLong = posBalance > 0;
         // Require the trade side must be opposite to the current position side
         require(leg.isBuyingAsset != isLong, "failed reduce only");
+        // unsafe cast because absolute value of posBalance is always non-negative
         uint64 posBalanceAbs = uint64(posBalance < 0 ? -posBalance : posBalance);
         // Trade shouldn't reduce the position size by more than the current position size (ie crossing 0)
         require(matchSizes[i] <= posBalanceAbs, "failed reduce only");
@@ -374,9 +388,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {
-        pos.balance += int64(matchSizes[i]);
+        pos.balance += SafeCast.toInt64(int(uint(matchSizes[i])));
       } else {
-        pos.balance -= int64(matchSizes[i]);
+        pos.balance -= SafeCast.toInt64(int(uint(matchSizes[i])));
       }
 
       // Step 3: Remove position if empty
@@ -410,7 +424,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
     int64 totalFee;
     uint len = feePerLegs.length;
-    for (uint i; i < len; ++i) totalFee += int64(feePerLegs[i]);
+    for (uint i; i < len; ++i) totalFee += feePerLegs[i];
     return totalFee;
   }
 
@@ -429,6 +443,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   }
 
   function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
-    return BI(int256(bps), 6);
+    return BI(bps, 6);
   }
 }

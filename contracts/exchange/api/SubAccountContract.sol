@@ -7,7 +7,7 @@ import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 
 contract SubAccountContract is BaseContract, FundingAndSettlement {
-  int64 private constant _MAX_SESSION_DURATION_NANO = 24 * 60 * 60 * 1e9; // 24 hours
+  int64 private constant _MAX_SESSION_DURATION_NANO = 31 * 24 * 60 * 60 * 1e9; // 31 days
 
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
@@ -25,7 +25,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     Currency quoteCurrency,
     MarginType marginType,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
     require(quoteCurrency == Currency.USDT, "invalid quote currency");
@@ -68,7 +68,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     uint64 subAccID,
     MarginType marginType,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     revert("not supported");
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
@@ -104,7 +104,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     address signer,
     uint64 permissions,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     // subaccount, account exist
     // has permission
     // new signer permission is valid, and is a subset of current signer permission
@@ -135,7 +135,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     uint64 subAccID,
     address signer,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     SubAccount storage sub = _requireSubAccount(subAccID);
 
@@ -185,10 +185,10 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     address sessionKey,
     int64 keyExpiry,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
-    require(int64(keyExpiry) > timestamp, "invalid expiry");
+    require(keyExpiry > timestamp, "invalid expiry");
     // Cap the expiry to timestamp + maxSessionDurationInSec
     int64 cappedExpiry = _min(keyExpiry, timestamp + _MAX_SESSION_DURATION_NANO);
 
@@ -208,7 +208,11 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID of the transaction
   /// @param signer The address of the signer
-  function removeSessionKey(int64 timestamp, uint64 txID, address signer) external {
+  function removeSessionKey(
+    int64 timestamp,
+    uint64 txID,
+    address signer
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     delete state.sessions[signer];
   }

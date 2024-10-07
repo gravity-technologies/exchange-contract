@@ -35,19 +35,21 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
     if (isLiquidation && beforeTrade) {
       require(!isAboveMaintenanceMargin(sub), "subaccount liquidated is above maintenance margin");
+    } else if (isLiquidation && !beforeTrade) {
+      _requireNonNegativeValue(sub);
     } else {
-      _requireNonNegativeUsdValue(sub);
+      require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
     }
   }
 
-  function _requireNonNegativeUsdValue(SubAccount storage sub) internal view {
-    require(_getSubAccountUsdValue(sub).val >= 0, "invalid total value");
+  function _requireNonNegativeValue(SubAccount storage sub) internal view {
+    require(_getSubAccountValueInQuote(sub).val >= 0, "invalid total value");
   }
 
-  /// @dev Get the total value of a sub account in quote currency decimal
-  function _getSubAccountUsdValue(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getPositionsUsdValue(sub.perps).add(_getPositionsUsdValue(sub.futures)).add(
-      _getPositionsUsdValue(sub.options)
+  /// @dev Get the total value of a sub account in quote currency
+  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
+      _getPositionsValueInQuote(sub.options)
     );
 
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
@@ -55,16 +57,16 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       if (balance == 0) {
         continue;
       }
-      BI memory balanceBI = BI(int256(balance), _getBalanceDecimal(i));
-      bytes32 spotID = _getSpotAssetID(i);
-      totalValue = totalValue.add(balanceBI.mul(_requireMarkPriceBI(spotID)));
+      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
+      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, sub.quoteCurrency);
+      totalValue = totalValue.add(balanceBI.mul(spotPriceInQuote));
     }
 
     return totalValue;
   }
 
-  /// @dev Get the total value of a position collections
-  function _getPositionsUsdValue(PositionsMap storage positions) internal view returns (BI memory) {
+  /// @dev Get the total value of a position collections in quote currency
+  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
     BI memory total;
     bytes32[] storage keys = positions.keys;
     mapping(bytes32 => Position) storage values = positions.values;
@@ -72,10 +74,12 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint count = keys.length;
     for (uint i; i < count; ++i) {
       Position storage pos = values[keys[i]];
-      BI memory markPrice = _requireMarkPriceInUsdBI(pos.id);
-      uint64 uDec = _getBalanceDecimal(assetGetUnderlying(pos.id));
-      BI memory balance = BI(int256(pos.balance), uDec);
-      total = total.add(balance.mul(markPrice));
+      bytes32 assetID = pos.id;
+      Currency underlying = assetGetUnderlying(assetID);
+      uint64 uDec = _getBalanceDecimal(underlying);
+      BI memory balance = BI(pos.balance, uDec);
+      BI memory assetPrice = _requireAssetPriceBI(assetID);
+      total = total.add(balance.mul(assetPrice));
     }
     return total;
   }
@@ -90,7 +94,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     require(subAccount.marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     uint usdDecimals = _getBalanceDecimal(Currency.USD);
 
-    int64 subAccountValue = _getSubAccountUsdValue(subAccount).toInt64(usdDecimals);
+    int64 subAccountValue = _getSubAccountValueInQuote(subAccount).toInt64(usdDecimals);
     uint64 maintenanceMargin = _getSubMaintenanceMargin(subAccount);
 
     return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
@@ -115,12 +119,14 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       }
       bytes32 kuq = assetGetKUQ(id);
       ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
-      BI memory sizeBI = BI(int256(size), _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory markPrice = _requireMarkPriceInUsdBI(id);
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(markPrice);
+      BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(id)));
+      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireAssetPriceInUsdBI(id));
       totalCharge = totalCharge.add(charge);
     }
 
-    return totalCharge.toUint64(_getBalanceDecimal(Currency.USD));
+    BI memory quotePrice = _getSpotPriceBI(subAccount.quoteCurrency);
+    uint64 qDec = _getBalanceDecimal(Currency.USD);
+
+    return totalCharge.div(quotePrice).toUint64(qDec);
   }
 }

@@ -33,7 +33,12 @@ contract OracleContract is ConfigContract {
   /// @param txID the transaction ID of the price tick
   /// @param prices the prices of the assets
   /// @param sig the signature of the price tick
-  function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) external {
+  function markPriceTick(
+    int64 timestamp,
+    uint64 txID,
+    PriceEntry[] calldata prices,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequenceMarkPriceTick(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -58,7 +63,7 @@ contract OracleContract is ConfigContract {
       int64 expiry = assetGetExpiration(assetID);
       require(expiry == 0 || expiry >= timestamp, "invalid expiry");
 
-      marks[assetID] = uint64(uint256(prices[i].value));
+      marks[assetID] = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
     }
   }
 
@@ -67,7 +72,11 @@ contract OracleContract is ConfigContract {
   /// @param timestamp the timestamp of the price tick
   /// @param txID the transaction ID of the price tick
   /// @param prices the settlement prices
-  function settlementPriceTick(int64 timestamp, uint64 txID, SettlementTick[] calldata prices) external {
+  function settlementPriceTick(
+    int64 timestamp,
+    uint64 txID,
+    SettlementTick[] calldata prices
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     revert("not supported");
     _setSequence(timestamp, txID);
     mapping(bytes32 => SettlementPriceEntry) storage settlements = state.prices.settlement;
@@ -87,7 +96,7 @@ contract OracleContract is ConfigContract {
       // IMPT: This is an extremely important check to prevent settlement price from being updated
       // Given that we do lazy settlement, we need to ensure that the settlement price is not updated
       // Otherwise, we can end up in scenarios where everyone's settlements don't check out.
-      uint64 newPrice = uint64(uint256(entry.value));
+      uint64 newPrice = SafeCast.toUint64(SafeCast.toUint256(entry.value));
       SettlementPriceEntry storage oldSettlementPrice = settlements[assetID];
       require(!oldSettlementPrice.isSet || newPrice == oldSettlementPrice.value, "settlemente price changed");
       require(entry.isFinal, "settlement price not final");
@@ -111,7 +120,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata prices,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -133,13 +142,13 @@ contract OracleContract is ConfigContract {
       require(highFound, "fundingHigh not found");
       (int64 fundingLow, bool lowFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_LOW, subKey);
       require(lowFound, "fundingLow not found");
-      int64 newFunding = int64(prices[i].value);
+      int64 newFunding = SafeCast.toInt64(prices[i].value);
       require(newFunding >= fundingLow && newFunding <= fundingHigh, "funding index out of range");
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
-      BI memory markPrice = _requireMarkPriceBI(entry.assetID);
+      BI memory markPrice = _requireAssetPriceBI(entry.assetID);
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
       int64 delta = markPrice.mul(BI(entry.value, CENTIBEEP_DECIMALS)).div(BI(TIME_FACTOR, 0)).toInt64(PRICE_DECIMALS);
       fundings[entry.assetID] += delta;
@@ -158,7 +167,7 @@ contract OracleContract is ConfigContract {
     uint64 txID,
     PriceEntry[] calldata rates,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     revert("not supported");
     _setSequence(timestamp, txID);
 
@@ -179,7 +188,7 @@ contract OracleContract is ConfigContract {
       int64 expiry = assetGetExpiration(assetID);
       require(expiry == 0 || expiry >= timestamp, ERR_INVALID_PRICE_UPDATE);
 
-      interest[rates[i].assetID] = int32(rates[i].value);
+      interest[rates[i].assetID] = SafeCast.toInt32(rates[i].value);
     }
   }
 

@@ -14,7 +14,12 @@ export function GetCreateAccountHash(accountID: string, nonce: number, expiratio
   }
 }
 
-export function GetSetAccountMultiSigThresholdHash(accountID: string, multiSigThreshold: number, nonce: number, expiration: BigInt) {
+export function GetSetAccountMultiSigThresholdHash(
+  accountID: string,
+  multiSigThreshold: number,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.SetAccountMultiSigThreshold,
     message: {
@@ -26,7 +31,13 @@ export function GetSetAccountMultiSigThresholdHash(accountID: string, multiSigTh
   }
 }
 
-export function GetAddAccountSignerHash(accountID: string, signer: string, permissions: number, nonce: number, expiration: BigInt) {
+export function GetAddAccountSignerHash(
+  accountID: string,
+  signer: string,
+  permissions: number,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.AddAccountSigner,
     message: {
@@ -51,7 +62,12 @@ export function GetRemoveAccountSignerHash(accountID: string, signer: string, no
   }
 }
 
-export function GetAddWithdrawalAddressHash(accountID: string, withdrawalAddress: string, nonce: number, expiration: BigInt) {
+export function GetAddWithdrawalAddressHash(
+  accountID: string,
+  withdrawalAddress: string,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.AddWithdrawalAddress,
     message: {
@@ -63,7 +79,12 @@ export function GetAddWithdrawalAddressHash(accountID: string, withdrawalAddress
   }
 }
 
-export function GetRemoveWithdrawalAddressHash(accountID: string, withdrawalAddress: string, nonce: number, expiration: BigInt) {
+export function GetRemoveWithdrawalAddressHash(
+  accountID: string,
+  withdrawalAddress: string,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.RemoveWithdrawalAddress,
     message: {
@@ -75,7 +96,12 @@ export function GetRemoveWithdrawalAddressHash(accountID: string, withdrawalAddr
   }
 }
 
-export function GetAddTransferAccountHash(accountID: string, transferSubAccount: string, nonce: number, expiration: BigInt) {
+export function GetAddTransferAccountHash(
+  accountID: string,
+  transferSubAccount: string,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.AddTransferAccount,
     message: {
@@ -87,7 +113,12 @@ export function GetAddTransferAccountHash(accountID: string, transferSubAccount:
   }
 }
 
-export function GetRemoveTransferAccountHash(accountID: string, transferSubAccount: string, nonce: number, expiration: BigInt) {
+export function GetRemoveTransferAccountHash(
+  accountID: string,
+  transferSubAccount: string,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.RemoveTransferAccount,
     message: {
@@ -99,7 +130,13 @@ export function GetRemoveTransferAccountHash(accountID: string, transferSubAccou
   }
 }
 
-export function GetRecoverAddressHash(accountID: string, oldSigner: string, newSigner: string, nonce: number, expiration: BigInt) {
+export function GetRecoverAddressHash(
+  accountID: string,
+  oldSigner: string,
+  newSigner: string,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.RecoverAddress,
     message: {
@@ -134,7 +171,12 @@ export function GetCreateSubAccountHash(
   }
 }
 
-export function GetSetSubAccountMarginTypeHash(subAccountID: number, marginType: number, nonce: number, expiration: BigInt) {
+export function GetSetSubAccountMarginTypeHash(
+  subAccountID: number,
+  marginType: number,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.SetSubAccountMarginType,
     message: {
@@ -146,7 +188,13 @@ export function GetSetSubAccountMarginTypeHash(subAccountID: number, marginType:
   }
 }
 
-export function GetAddSubAccountSignerHash(subAccountID: number, signer: string, permissions: number, nonce: number, expiration: BigInt) {
+export function GetAddSubAccountSignerHash(
+  subAccountID: number,
+  signer: string,
+  permissions: number,
+  nonce: number,
+  expiration: BigInt
+) {
   return {
     ...Type.AddSubAccountSigner,
     message: {

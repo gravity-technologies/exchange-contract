@@ -29,7 +29,7 @@ abstract contract TransferContract is TradeContract {
     address accountID,
     Currency currency,
     uint64 numTokens
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
@@ -40,8 +40,8 @@ abstract contract TransferContract is TradeContract {
     // and token transfer will fail if `fromEthAddress` haven't successfully bridged in
     // the token required for deposit
 
-    int64 numTokensSigned = int64(numTokens);
-    require(numTokensSigned >= 0, "invalid deposit amount");
+    int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
+    require(numTokensSigned > 0, "invalid deposit amount");
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
@@ -71,7 +71,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external nonReentrant {
+  ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
@@ -82,8 +82,8 @@ abstract contract TransferContract is TradeContract {
     bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
     require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
-    int64 numTokensSigned = int64(numTokens);
-    require(numTokensSigned >= 0, "invalid withdrawal amount");
+    int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
+    require(numTokensSigned > 0, "invalid withdrawal amount");
 
     // ---------- Signature Verification -----------
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
@@ -92,10 +92,10 @@ abstract contract TransferContract is TradeContract {
     int64 withdrawalFeeCharged = 0;
     (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
     if (feeSubAccIdSet) {
-      BI memory spotMarkPrice = _requireMarkPriceBI(_getSpotAssetID(currency));
+      BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
       uint64 tokenDec = _getBalanceDecimal(currency);
       withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
-      _requireSubAccount(feeSubAccId).spotBalances[currency] += int64(withdrawalFeeCharged);
+      _requireSubAccount(feeSubAccId).spotBalances[currency] += withdrawalFeeCharged;
     }
 
     require(numTokensSigned <= acc.spotBalances[currency], "insufficient balance");
@@ -119,7 +119,7 @@ abstract contract TransferContract is TradeContract {
     if (!feeSet) {
       return BI(0, 0);
     }
-    return BI(int(int64(fee)), _getBalanceDecimal(Currency.USD));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
@@ -127,8 +127,8 @@ abstract contract TransferContract is TradeContract {
     IERC20MetadataUpgradeable token = IERC20MetadataUpgradeable(ta);
     uint8 erc20TokenDec = token.decimals();
     int256 erc20Amount = BI(numTokens, _getBalanceDecimal(currency)).scale(erc20TokenDec).toInt256(erc20TokenDec);
-    require(erc20Amount >= 0, "invalid amount");
-    return uint256(erc20Amount);
+    require(erc20Amount > 0, "invalid amount");
+    return SafeCast.toUint256(erc20Amount);
   }
 
   function getCurrencyERC20Address(Currency currency) private view returns (address) {
@@ -158,7 +158,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
@@ -169,8 +169,9 @@ abstract contract TransferContract is TradeContract {
     );
     // ------- End of Signature Verification -------
 
-    int64 numTokensSigned = int64(numTokens);
+    int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
     require(numTokensSigned > 0, "invalid transfer amount");
+
     // 1. Same account
     if (fromAccID == toAccID) {
       require(fromSubID != toSubID, "self transfer");
@@ -186,7 +187,7 @@ abstract contract TransferContract is TradeContract {
       }
     } else {
       // 2. Different accounts
-      require(fromSubID == 0 && toSubID == 0, "transfer between sub accounts of different accounts");
+      require(fromSubID == 0 && toSubID == 0, "subs transfer, diff acccounts");
       _transferMainToMain(fromAccID, toAccID, currency, numTokensSigned, sig);
     }
   }
@@ -201,7 +202,7 @@ abstract contract TransferContract is TradeContract {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
-    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
+    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "bad external transfer address");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
@@ -242,7 +243,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
@@ -266,7 +267,7 @@ abstract contract TransferContract is TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    _requireNonNegativeUsdValue(fromSub);
+    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
     toSub.spotBalances[currency] += numTokens;
   }
 }

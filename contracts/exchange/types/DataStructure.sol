@@ -55,6 +55,7 @@ function currencyIsValid(Currency iter) pure returns (bool) {
 }
 
 uint constant PRICE_DECIMALS = 9;
+uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
 uint constant BASIS_POINTS_DECIMALS = 4;
 int constant TIME_FACTOR = 480;
@@ -120,6 +121,8 @@ struct State {
   mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
   // Temporary storage for trade validation. This should always be cleared after each trade
   mapping(bytes32 => TmpLegData) _tmpTakerLegs;
+  // This is the address that is used to initialize the config. Provided in initialize()
+  address initializeConfigSigner;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
@@ -240,6 +243,12 @@ struct Session {
 }
 
 // --------------- Config --------------
+struct InitializeConfigItem {
+  ConfigID key;
+  bytes32 subKey;
+  bytes32 value;
+}
+
 enum ConfigType {
   UNSPECIFIED,
   BOOL,
@@ -257,13 +266,13 @@ enum ConfigType {
 enum ConfigID {
   UNSPECIFIED, // 0
   // Admin Wallets
-  ADMIN_RECOVERY_ADDRESS, // 1, no timelock
-  ORACLE_ADDRESS, // 2, no timelock
-  CONFIG_ADDRESS, // 3, no timelock
-  MARKET_DATA_ADDRESS, // 4, no timelock
+  ADMIN_RECOVERY_ADDRESS, // 1, has timelock
+  ORACLE_ADDRESS, // 2, has timelock
+  CONFIG_ADDRESS, // 3, has timelock
+  MARKET_DATA_ADDRESS, // 4, has timelock
   // Admin Sub Accounts
-  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, no timelock
-  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, no timelock
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, has timelock
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, has timelock
   // Funding Configs
   FUNDING_RATE_HIGH, // 7, has timelock
   FUNDING_RATE_LOW, // 8, has timelock
@@ -273,15 +282,15 @@ enum ConfigID {
   OPTIONS_MAKER_FEE_MINIMUM, // 11, has timelock
   OPTIONS_TAKER_FEE_MINIMUM, // 12, has timelock
   // ERC20 addresses
-  ERC20_ADDRESSES, // 13, no timelock
-  L2_SHARED_BRIDGE_ADDRESS, // 14, no timelock
+  ERC20_ADDRESSES, // 13, has timelock
+  L2_SHARED_BRIDGE_ADDRESS, // 14, has timelock
   // Simple cross futures initial margin. This config is not used in the contract (since initial margin is only computed offchain),
   // but it is important to keep it here to maintain the correct configID ordinals
   SIMPLE_CROSS_FUTURES_INITIAL_MARGIN, // 15, has timelock
   // Withdrawal Fee Configs
   WITHDRAWAL_FEE, // 16, has timelock
   // Bridging partner accounts can transfer from and withdraw to any address
-  BRIDGING_PARTNER_ADDRESSES // 17, no timelock
+  BRIDGING_PARTNER_ADDRESSES // 17, has timelock
 }
 
 struct ConfigValue {
@@ -339,11 +348,6 @@ struct Order {
   // Exchange only supports (GTT, IOC, FOK)
   // RFQ Maker only supports (GTT, AON), RFQ Taker only supports (FOK)
   TimeInForce timeInForce;
-  // The taker fee percentage cap signed by the order.
-  // This is the maximum taker fee percentage the order sender is willing to pay for the order.
-  int32 takerFeePercentageCap;
-  // Same as TakerFeePercentageCap, but for the maker fee. Negative for maker rebates
-  int32 makerFeePercentageCap;
   /// @dev No logic in contract related to this field
   // If True, Order must be a maker order. It has to fill the orderbook instead of match it.
   // If False, Order can be either a maker or taker order.

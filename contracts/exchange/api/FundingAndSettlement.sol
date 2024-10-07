@@ -35,7 +35,7 @@ contract FundingAndSettlement is BaseContract {
       bytes32 assetID = keys[i];
       int64 latestFundingIndex = fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
-      int256 fundingIndexChange = int256(latestFundingIndex - perp.lastAppliedFundingIndex);
+      int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
       if (fundingIndexChange == 0) {
         continue;
       }
@@ -58,7 +58,7 @@ contract FundingAndSettlement is BaseContract {
 
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
     uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
-    BI memory newSubBalance = BI(int64(sub.spotBalances[sub.quoteCurrency]), qdec);
+    BI memory newSubBalance = BI(sub.spotBalances[sub.quoteCurrency], qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
     uint posLen = posKeys.length;
@@ -96,7 +96,7 @@ contract FundingAndSettlement is BaseContract {
       return (entry.value, true);
     }
 
-    (uint64 settlementPrice, bool found) = _getSettlementPrice9Decimals(assetID);
+    (uint64 settlementPrice, bool found) = _getSettlementPrice9Dec(assetID);
     if (!found) {
       return (0, false);
     }
@@ -104,14 +104,14 @@ contract FundingAndSettlement is BaseContract {
     return (settlementPrice, true);
   }
 
-  function _getSettlementPrice9Decimals(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getSettlementPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
     if (kind == Kind.SPOT || kind == Kind.PERPS) {
       return (0, false);
     }
 
     Asset memory asset = parseAssetID(assetID);
-    (uint64 fPrice, bool found) = _getFutureSettlementPrice9Decimals(asset.underlying, asset.quote, asset.expiration);
+    (uint64 fPrice, bool found) = _getFutureSettlementPrice9Dec(asset.underlying, asset.quote, asset.expiration);
     if (!found) {
       return (0, false);
     }
@@ -131,16 +131,16 @@ contract FundingAndSettlement is BaseContract {
     return (0, false);
   }
 
-  function _getFutureSettlementPrice9Decimals(
+  function _getFutureSettlementPrice9Dec(
     Currency underlying,
     Currency quote,
     int64 expiry
   ) private view returns (uint64, bool) {
-    (uint64 uPrice, bool underlyingFound) = _getCurrencySettlementPrice9Decimals(underlying, expiry);
+    (uint64 uPrice, bool underlyingFound) = _getCurrencySettlementPrice9Dec(underlying, expiry);
     if (!underlyingFound) {
       return (0, false);
     }
-    (uint64 qPrice, bool quoteFound) = _getCurrencySettlementPrice9Decimals(quote, expiry);
+    (uint64 qPrice, bool quoteFound) = _getCurrencySettlementPrice9Dec(quote, expiry);
     if (!quoteFound) {
       return (0, false);
     }
@@ -151,7 +151,7 @@ contract FundingAndSettlement is BaseContract {
     );
   }
 
-  function _getCurrencySettlementPrice9Decimals(Currency currency, int64 expiry) private view returns (uint64, bool) {
+  function _getCurrencySettlementPrice9Dec(Currency currency, int64 expiry) private view returns (uint64, bool) {
     Asset memory asset = Asset({
       kind: Kind.SETTLEMENT,
       underlying: currency,

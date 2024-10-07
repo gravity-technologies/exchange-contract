@@ -6,6 +6,7 @@ import "./api/SubAccountContract.sol";
 import "./api/WalletRecoveryContract.sol";
 import "./api/OracleContract.sol";
 import "./api/TransferContract.sol";
+import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchangeTest is
@@ -14,15 +15,20 @@ contract GRVTExchangeTest is
   SubAccountContract,
   WalletRecoveryContract,
   OracleContract,
-  TransferContract
+  TransferContract,
+  AssertionContract
 {
   using BIMath for BI;
 
-  function initialize() public initializer {
+  function initialize(address admin, address chainSubmitter, address initializeConfigSigner) public initializer {
     __ReentrancyGuard_init();
 
-    // Initialize the config default values and timelock rules
+    // Initialize the config timelock rules
     _setDefaultConfigSettings();
+    state.initializeConfigSigner = initializeConfigSigner;
+
+    _setupRole(DEFAULT_ADMIN_ROLE, admin);
+    _setupRole(CHAIN_SUBMITTER_ROLE, chainSubmitter);
   }
 
   struct AccountResult {
@@ -160,7 +166,7 @@ contract GRVTExchangeTest is
   }
 
   function getMarkPrice(bytes32 assetID) public view returns (uint64, bool) {
-    return _getMarkPrice9Decimals(assetID);
+    return _getAssetPrice9Dec(assetID);
   }
 
   function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
@@ -175,7 +181,7 @@ contract GRVTExchangeTest is
   function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     uint64 quoteDecimals = _getBalanceDecimal(sub.quoteCurrency);
-    return _getSubAccountUsdValue(sub).toInt64(quoteDecimals);
+    return _getSubAccountValueInQuote(sub).toInt64(quoteDecimals);
   }
 
   function getSubAccountPosition(
@@ -200,7 +206,7 @@ contract GRVTExchangeTest is
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({
         bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
-        rate: uint32(tiers.tiers[i].rate.toUint64(BASIS_POINTS_DECIMALS))
+        rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
       });
     }
     return result;
@@ -213,5 +219,9 @@ contract GRVTExchangeTest is
   function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return _getSubMaintenanceMargin(sub);
+  }
+
+  function getTimestamp() public view returns (int64) {
+    return state.timestamp;
   }
 }

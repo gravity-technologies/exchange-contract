@@ -13,12 +13,25 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
   .addParam("l2OperatorPrivateKey", "l2OperatorPrivateKey")
   .addParam("governance", "governance")
   .addParam("bridgeHub", "bridgeHub")
+  .addParam("initializeConfigSigner", "initializeConfigSigner")
+  .addParam("admin", "admin")
+  .addParam("chainSubmitter", "chainSubmitter")
   .addParam("l1SharedBridge", "l1SharedBridge")
   .addParam("chainId", "chainId")
   .addParam("saltPreImage", "saltPreImage")
   .setAction(async (taskArgs, hre) => {
-    const { l1DeployerPrivateKey, l2OperatorPrivateKey, governance, bridgeHub, l1SharedBridge, chainId, saltPreImage } =
-      taskArgs
+    const {
+      l1DeployerPrivateKey,
+      l2OperatorPrivateKey,
+      governance,
+      bridgeHub,
+      l1SharedBridge,
+      initializeConfigSigner,
+      admin,
+      chainSubmitter,
+      chainId,
+      saltPreImage,
+    } = taskArgs
 
     const { l1Provider, l2Provider } = createProviders(hre.config.networks, hre.network)
     const l2Operator = new L2Wallet(l2OperatorPrivateKey!, l2Provider)
@@ -40,7 +53,11 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     // TODO: maintain local state of deployed contracts and information required for proofs
 
     const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
-    const tupInstance = await l2Deployer.deploy(tupArtifact, [exchangeImpl.address, ADDRESS_ONE, "0x"])
+    const tupInstance = await l2Deployer.deploy(tupArtifact, [
+      exchangeImpl.address,
+      ADDRESS_ONE,
+      new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner]),
+    ])
     const tupCodehash = hashBytecode(tupArtifact.bytecode)
 
     const exchangeImplConstructorData = ethers.utils.arrayify("0x")
@@ -57,7 +74,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
         [
           expectedExchangeImplAddress,
           applyL1ToL2Alias(governance),
-          new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", []),
+          new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner]),
         ]
       )
     )

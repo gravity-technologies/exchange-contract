@@ -14,7 +14,7 @@ contract MarginConfigContract is ConfigContract {
     bytes32 kud,
     MarginTier[] calldata tiers,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     _requireValidMarginTiers(tiers);
 
@@ -37,7 +37,7 @@ contract MarginConfigContract is ConfigContract {
     bytes32 kud,
     MarginTier[] calldata tiers,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     require(assetIsKUQ(kud), "must be KUQ");
 
@@ -91,7 +91,7 @@ contract MarginConfigContract is ConfigContract {
     for (uint i = 0; i < tiers.length; i++) {
       biTiers[i] = MarginTierBI({
         bracketStart: BI(int256(uint256(tiers[i].bracketStart)), _getBalanceDecimal(assetGetUnderlying(kud))),
-        rate: BI(int256(uint256(tiers[i].rate)), BASIS_POINTS_DECIMALS)
+        rate: BI(int256(uint256(tiers[i].rate)), CENTIBEEP_DECIMALS)
       });
     }
 

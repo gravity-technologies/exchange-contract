@@ -31,6 +31,10 @@ import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 ///    To read this we need only the (key) of the config
 ///  - The value of 2D config is stored in `config2DValues` mapping.
 ///    To read this we need both the (key, subKey) of the config
+///  - ConfigEntry's are represented as bytes32, which can be converted to other types
+///    using the conversion functions defined below. They are interpreted by looking only
+///    at the lower n bytes necessary for the type(e.g. n=8 for uint64), and any upper bytes
+///    are ignored. This is why unsafe casting is used in the conversion functions
 ///
 /// Changing config
 ///  - Every config change is timelocked. The timelock duration is determined
@@ -59,22 +63,31 @@ contract ConfigContract is BaseContract {
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
   ///////////////////////////////////////////////////////////////////
+
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _configToInt(bytes32 v) internal pure returns (int64) {
-    return int64(uint64(uint256(v)));
+    return int64(SafeCast.toUint64(uint256(v)));
   }
 
   function _getIntConfig(ConfigID key) internal view returns (int64, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int64(uint64(uint256(c.val))), c.isSet);
+    return (_configToInt(c.val), c.isSet);
   }
 
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _centiBeepToConfig(int32 v) internal pure returns (bytes32) {
     return bytes32(uint256(uint32(v)));
   }
 
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
+  function _configToCentibeep(bytes32 v) internal pure returns (int32) {
+    return int32(uint32(uint256(v)));
+  }
+
+  // unsafe casting here is expected, as the byte32 value represents an signed integer
   function _getCentibeepConfig(ConfigID key) internal view returns (int32, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (int32(uint32(uint256(c.val))), c.isSet);
+    return (_configToCentibeep(c.val), c.isSet);
   }
 
   function _getCentibeepConfig2D(ConfigID key, bytes32 subKey) internal view returns (int32, bool) {
@@ -82,7 +95,7 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (int32(uint32(uint256(c.val))), c.isSet);
+    return (_configToCentibeep(c.val), c.isSet);
   }
 
   function _uintToConfig(uint64 v) internal pure returns (bytes32) {
@@ -90,12 +103,12 @@ contract ConfigContract is BaseContract {
   }
 
   function _configToUint(bytes32 v) internal pure returns (uint64) {
-    return uint64(uint256(v));
+    return uint64(uint(v));
   }
 
   function _getUintConfig(ConfigID key) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (uint64(uint256(c.val)), c.isSet);
+    return (_configToUint(c.val), c.isSet);
   }
 
   function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
@@ -115,7 +128,7 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (uint64(uint256(c.val)), c.isSet);
+    return (_configToUint(c.val), c.isSet);
   }
 
   function _getByte32Config(ConfigID key) internal view returns (bytes32, bool) {
@@ -135,18 +148,22 @@ contract ConfigContract is BaseContract {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
 
-  function _addressToConfig(address v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint160(v)));
+  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
   }
 
-  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
-    return bytes32(uint256(uint(v)));
+  function _addressToConfig(address v) internal pure returns (bytes32) {
+    return bytes32(uint(uint160(v)));
   }
 
   // https://ethereum.stackexchange.com/questions/50914/convert-bytes32-to-address
+  function _configToAddress(bytes32 v) internal pure returns (address) {
+    return address(uint160(uint(v)));
+  }
+
   function _getAddressConfig(ConfigID key) internal view returns (address, bool) {
     ConfigValue storage c = state.config1DValues[key];
-    return (address(uint160(uint256(c.val))), c.isSet);
+    return (_configToAddress(c.val), c.isSet);
   }
 
   function _getAddressConfig2D(ConfigID key, bytes32 subKey) internal view returns (address, bool) {
@@ -154,12 +171,57 @@ contract ConfigContract is BaseContract {
     if (!c.isSet) {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
-    return (address(uint160(uint256(c.val))), c.isSet);
+    return (_configToAddress(c.val), c.isSet);
   }
 
   ///////////////////////////////////////////////////////////////////
   /// Config APIs
   ///////////////////////////////////////////////////////////////////
+
+  function initializeConfig(
+    int64 timestamp,
+    uint64 txID,
+    InitializeConfigItem[] calldata items,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequenceInitializeConfig(timestamp, txID);
+
+    // ---------- Signature Verification -----------
+    require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
+    _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    for (uint256 i = 0; i < items.length; i++) {
+      ConfigID key = items[i].key;
+      bytes32 subKey = items[i].subKey;
+      bytes32 value = items[i].value;
+
+      ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
+      _setConfigValue(key, subKey, value, setting);
+    }
+  }
+
+  function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
+    ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
+    config.isSet = true;
+    config.val = value;
+  }
+
+  function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
+    ConfigSetting storage setting = state.configSettings[key];
+    ConfigType typ = setting.typ;
+    require(typ != ConfigType.UNSPECIFIED, "config not found 404");
+
+    // For 1D config settings, subKey must be 0
+    // For 2D config, there's no such restriction
+    // 2D configs are always placed at odd indices in the enum. See ConfigID
+    require(_is2DConfig(setting) || subKey == 0, "invalid 1D subKey");
+    return setting;
+  }
+
+  function _is2DConfig(ConfigSetting storage settings) internal view returns (bool) {
+    return uint256(settings.typ) % 2 == 0;
+  }
 
   /// @notice Schedule a config update. Afterwards, the timestamp at
   /// which the config is enforce is updated. This must be followed by a call
@@ -178,7 +240,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     // ---------- Signature Verification -----------
@@ -187,13 +249,7 @@ contract ConfigContract is BaseContract {
     _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    ConfigSetting storage setting = state.configSettings[key];
-    require(setting.typ != ConfigType.UNSPECIFIED, "404");
-    // For 1D config settings, subKey must be 0
-    // For 2D config, there's no such restriction
-    bool is2DConfig = uint256(setting.typ) % 2 == 0;
-    require(is2DConfig || subKey == 0, "invalid subKey");
-
+    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
     ConfigSchedule storage sched = setting.schedules[subKey];
     sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
   }
@@ -214,7 +270,7 @@ contract ConfigContract is BaseContract {
     bytes32 subKey,
     bytes32 value,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
@@ -223,24 +279,15 @@ contract ConfigContract is BaseContract {
     _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    ConfigSetting storage setting = state.configSettings[key];
-    ConfigType typ = setting.typ;
-    require(typ != ConfigType.UNSPECIFIED, "config not found 404");
-
-    // For 1D config settings, subKey must be 0
-    // For 2D config, there's no such restriction
-    // 2D configs are always placed at odd indices in the enum. See ConfigID
-    bool is2DConfig = uint256(typ) % 2 == 0;
-    require(is2DConfig || subKey == 0, "invalid 1D subKey");
+    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
 
     int64 lockDuration = _getLockDuration(key, subKey, value);
     if (lockDuration > 0) {
       int64 lockEndTime = setting.schedules[subKey].lockEndTime;
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
-    ConfigValue storage config = is2DConfig ? state.config2DValues[key][subKey] : state.config1DValues[key];
-    config.isSet = true;
-    config.val = value;
+
+    _setConfigValue(key, subKey, value, setting);
 
     // Must delete the schedule after the config is set (to prevent replays)
     delete setting.schedules[subKey];
@@ -275,12 +322,12 @@ contract ConfigContract is BaseContract {
     }
     if (typ == ConfigType.CENTIBEEP) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig(key);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
       return 0;
     }
     if (typ == ConfigType.CENTIBEEP2D) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), int64(_configToInt(newVal)));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
       return 0;
     }
     if (typ == ConfigType.UINT) {
@@ -310,7 +357,8 @@ contract ConfigContract is BaseContract {
   /// @param oldVal the old value
   /// @param newVal the new value
   function _getUintConfigLockDuration(ConfigID key, uint64 oldVal, uint64 newVal) private view returns (int64) {
-    if (newVal == oldVal) return 0; // No change in value, no lock duration
+    // No change in value, no lock duration
+    if (newVal == oldVal) return 0;
 
     Rule[] storage rules = state.configSettings[key].rules;
     uint rulesLen = rules.length;
@@ -343,10 +391,12 @@ contract ConfigContract is BaseContract {
 
     if (newVal < oldVal) {
       for (uint i; i < rulesLen; ++i)
-        if (uint64(oldVal - newVal) <= rules[i].deltaNegative) return rules[i].lockDuration;
-    } else if (newVal > oldVal) {
+        if (SafeCast.toUint64(SafeCast.toUint256(int(oldVal - newVal))) <= rules[i].deltaNegative)
+          return rules[i].lockDuration;
+    } else {
       for (uint i; i < rulesLen; ++i)
-        if (uint64(newVal - oldVal) <= rules[i].deltaPositive) return rules[i].lockDuration;
+        if (SafeCast.toUint64(SafeCast.toUint256(int(newVal - oldVal))) <= rules[i].deltaPositive)
+          return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
   }
@@ -363,81 +413,73 @@ contract ConfigContract is BaseContract {
   function _setDefaultConfigSettings() internal {
     mapping(ConfigID => ConfigSetting) storage settings = state.configSettings;
 
-    mapping(ConfigID => ConfigValue) storage values1D = state.config1DValues;
-    mapping(ConfigID => mapping(bytes32 => ConfigValue)) storage values2D = state.config2DValues;
-
     Rule[] storage rules;
     ConfigID id;
 
     ///////////////////////////////////////////////////////////////////
     /// Simple Cross Margin
     ///////////////////////////////////////////////////////////////////
-    mapping(bytes32 => ConfigValue) storage v2d = values2D[id];
 
     // SIMPLE_CROSS_FUTURES_INITIAL_MARGIN
     id = ConfigID.SIMPLE_CROSS_FUTURES_INITIAL_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(2 * ONE_PERCENT);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     bytes32 addr;
 
     ///////////////////////////////////////////////////////////////////
-    /// ADMIN addresses. Commented out because they are empty for now
+    /// ADMIN addresses
     ///////////////////////////////////////////////////////////////////
-    DefaultAddress memory defaultAddresses = _getDefaultAddresses();
 
     // ADMIN_RECOVERY_ADDRESS
     id = ConfigID.ADMIN_RECOVERY_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
-    addr = _addressToConfig(defaultAddresses.Recovery);
-    v2d = values2D[id];
-    v2d[addr].isSet = true;
-    v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
-    addr = _addressToConfig(defaultAddresses.Oracle);
-    v2d = values2D[id];
-    v2d[addr].isSet = true;
-    v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
-    addr = _addressToConfig(defaultAddresses.Config);
-    v2d = values2D[id];
-    v2d[addr].isSet = true;
-    v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
-    addr = _addressToConfig(defaultAddresses.MarketData);
-    v2d = values2D[id];
-    v2d[addr].isSet = true;
-    v2d[addr].val = TRUE_BYTES32;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
     ///////////////////////////////////////////////////////////////////
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -446,18 +488,12 @@ contract ConfigContract is BaseContract {
     // FUNDING_RATE_HIGH
     id = ConfigID.FUNDING_RATE_HIGH;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(5 * ONE_PERCENT);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // FUNDING_RATE_LOW
     id = ConfigID.FUNDING_RATE_LOW;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-5 * ONE_PERCENT);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
@@ -468,66 +504,36 @@ contract ConfigContract is BaseContract {
     // FUTURES_MAKER_FEE_MINIMUM
     id = ConfigID.FUTURES_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-30 * ONE_CENTIBEEP);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // FUTURES_TAKER_FEE_MINIMUM
     id = ConfigID.FUTURES_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(140 * ONE_CENTIBEEP);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // OPTIONS_MAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(-30 * ONE_CENTIBEEP);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // OPTIONS_TAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
-    v2d = values2D[id];
-    v2d[DEFAULT_CONFIG_ENTRY].isSet = true;
-    v2d[DEFAULT_CONFIG_ENTRY].val = _centiBeepToConfig(120 * ONE_CENTIBEEP);
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     id = ConfigID.WITHDRAWAL_FEE;
     settings[id].typ = ConfigType.UINT;
-    values1D[id].isSet = true;
-    values1D[id].val = _uintToConfig(DEFAULT_WITHDRAWAL_FEE_USD * _getBalanceMultiplier(Currency.USD));
     rules = settings[id].rules;
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
-  }
-
-  struct DefaultAddress {
-    address Config;
-    address Oracle;
-    address MarketData;
-    address Recovery;
-  }
-
-  function _getDefaultAddresses() private pure returns (DefaultAddress memory) {
-    // This is for dev environment
-    return
-      DefaultAddress({
-        Config: 0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D,
-        Oracle: 0x47ebFBAda4d85Dac6b9018C0CE75774556A8243f,
-        MarketData: 0x215ec976846B3C68daedf93bA35d725A0E2c98e3,
-        Recovery: 0x84b3Bc75232C9F880c79EFCc5d98e8C6E44f95Ae
-      });
+    rules = settings[id].rules;
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
   }
 }
