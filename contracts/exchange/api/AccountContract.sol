@@ -17,7 +17,7 @@ contract AccountContract is BaseContract {
     uint64 txID,
     address accountID,
     Signature calldata sig
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     Account storage acc = state.accounts[accountID];
@@ -52,7 +52,7 @@ contract AccountContract is BaseContract {
     uint8 multiSigThreshold,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
     require(multiSigThreshold > 0 && multiSigThreshold <= acc.adminCount, "invalid threshold");
@@ -86,7 +86,7 @@ contract AccountContract is BaseContract {
     uint64 permissions,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -128,7 +128,7 @@ contract AccountContract is BaseContract {
     address signer,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -166,7 +166,7 @@ contract AccountContract is BaseContract {
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -197,7 +197,7 @@ contract AccountContract is BaseContract {
     address withdrawalAddress,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 
@@ -226,7 +226,7 @@ contract AccountContract is BaseContract {
     address transferAccountID,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(transferAccountID != address(0), "invalid transfer account");
 
     _setSequence(timestamp, txID);
@@ -250,7 +250,7 @@ contract AccountContract is BaseContract {
     address transferAccountID,
     uint32 nonce,
     Signature[] calldata sigs
-  ) external onlyRole(CHAIN_SUBMITTER_ROLE) {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(accountID);
 

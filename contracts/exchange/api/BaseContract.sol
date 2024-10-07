@@ -18,6 +18,20 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
 
+  /// @dev Check if the tx.origin has a specific role.
+  /// This is applied to all exchange transaction functions.
+  /// We use this custom modifier to check tx.origin instead of msg.sender
+  /// as in onlyRole for these reasons:
+  /// 1. we might submit exchange transactions through an intermediate contract, e.g. multicall
+  /// 2. the wallet that has CHAIN_SUBMITTER_ROLE is a single-purpose wallet that
+  ///    only submits transactions to the exchange contract, and we control all
+  ///    contracts on the private L2. This means it's unlikely for the CHAIN_SUBMITTER_ROLE
+  ///    to be tricked into submitting exchange transactions inadventently.
+  modifier onlyTxOriginRole(bytes32 role) {
+    _checkRole(role, tx.origin);
+    _;
+  }
+
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
