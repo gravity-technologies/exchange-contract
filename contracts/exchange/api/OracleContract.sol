@@ -16,6 +16,17 @@ contract OracleContract is ConfigContract {
   /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
   int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
 
+  /// @dev set the system timestamp and last transactionID.
+  /// Require timestamp and the transactionID to increase
+  /// This is in contrast to _setSequence in BaseContract, where the transactionID to be in sequence without any gap
+  /// This is because a mark price tick can be skipped if superceded before being used.
+  function _setSequenceMarkPriceTick(int64 timestamp, uint64 txID) private {
+    require(timestamp >= state.timestamp, "invalid timestamp");
+    require(txID > state.lastTxID, "invalid txID");
+    state.timestamp = timestamp;
+    state.lastTxID = txID;
+  }
+
   /// @dev Update the oracle mark prices for spot, futures, and options
   ///
   /// @param timestamp the timestamp of the price tick
@@ -23,7 +34,7 @@ contract OracleContract is ConfigContract {
   /// @param prices the prices of the assets
   /// @param sig the signature of the price tick
   function markPriceTick(int64 timestamp, uint64 txID, PriceEntry[] calldata prices, Signature calldata sig) external {
-    _setSequence(timestamp, txID);
+    _setSequenceMarkPriceTick(timestamp, txID);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
