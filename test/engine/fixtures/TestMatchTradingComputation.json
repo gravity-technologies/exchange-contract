@@ -516,7 +516,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -536,7 +536,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -614,7 +614,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -634,7 +634,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -712,7 +712,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -732,7 +732,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -810,7 +810,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -830,7 +830,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -1371,7 +1371,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -1391,7 +1391,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -1469,7 +1469,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -1489,7 +1489,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -1567,7 +1567,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -1587,7 +1587,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -1665,7 +1665,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -1685,7 +1685,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -2226,7 +2226,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -2246,7 +2246,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -2324,7 +2324,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -2344,7 +2344,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -2422,7 +2422,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -2442,7 +2442,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -2520,7 +2520,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -2540,7 +2540,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -3081,7 +3081,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -3101,7 +3101,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -3179,7 +3179,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -3199,7 +3199,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -3277,7 +3277,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -3297,7 +3297,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -3375,7 +3375,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -3395,7 +3395,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -3936,7 +3936,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -3956,7 +3956,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -4034,7 +4034,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -4054,7 +4054,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -4132,7 +4132,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -4152,7 +4152,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -4230,7 +4230,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -4250,7 +4250,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -4791,7 +4791,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -4811,7 +4811,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -4889,7 +4889,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -4909,7 +4909,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -4987,7 +4987,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -5007,7 +5007,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -5085,7 +5085,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -5105,7 +5105,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -5646,7 +5646,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -5666,7 +5666,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -5744,7 +5744,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -5764,7 +5764,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -5842,7 +5842,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -5862,7 +5862,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -5940,7 +5940,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -5960,7 +5960,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -6501,7 +6501,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -6521,7 +6521,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -6599,7 +6599,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -6619,7 +6619,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -6697,7 +6697,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -6717,7 +6717,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -6795,7 +6795,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -6815,7 +6815,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -7356,7 +7356,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -7376,7 +7376,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -7454,7 +7454,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -7474,7 +7474,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -7552,7 +7552,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -7572,7 +7572,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -7650,7 +7650,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -7670,7 +7670,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -8381,7 +8381,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -8401,7 +8401,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -8479,7 +8479,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -8499,7 +8499,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -8577,7 +8577,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -8597,7 +8597,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -8675,7 +8675,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -8695,7 +8695,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -9406,7 +9406,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -9426,7 +9426,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -9504,7 +9504,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -9524,7 +9524,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -9602,7 +9602,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -9622,7 +9622,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -9700,7 +9700,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -9720,7 +9720,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -10466,7 +10466,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -10486,7 +10486,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -10564,7 +10564,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -10584,7 +10584,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -10662,7 +10662,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -10682,7 +10682,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -10760,7 +10760,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -10780,7 +10780,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -11526,7 +11526,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -11546,7 +11546,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -11624,7 +11624,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -11644,7 +11644,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -11722,7 +11722,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -11742,7 +11742,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -11820,7 +11820,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -11840,7 +11840,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -12381,7 +12381,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -12401,7 +12401,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -12479,7 +12479,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -12499,7 +12499,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -12577,7 +12577,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -12597,7 +12597,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -12675,7 +12675,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -12695,7 +12695,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -13236,7 +13236,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -13256,7 +13256,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -13334,7 +13334,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -13354,7 +13354,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -13432,7 +13432,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -13452,7 +13452,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -13530,7 +13530,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -13550,7 +13550,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -14091,7 +14091,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -14111,7 +14111,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -14189,7 +14189,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -14209,7 +14209,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -14287,7 +14287,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -14307,7 +14307,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -14385,7 +14385,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -14405,7 +14405,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -14840,7 +14840,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -14860,7 +14860,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -14938,7 +14938,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -14958,7 +14958,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -15036,7 +15036,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -15056,7 +15056,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -15134,7 +15134,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -15154,7 +15154,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -15695,7 +15695,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -15715,7 +15715,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -15793,7 +15793,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -15813,7 +15813,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -15891,7 +15891,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -15911,7 +15911,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -15989,7 +15989,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -16009,7 +16009,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -16550,7 +16550,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -16570,7 +16570,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -16648,7 +16648,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -16668,7 +16668,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -16746,7 +16746,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -16766,7 +16766,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -16844,7 +16844,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -16864,7 +16864,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -17405,7 +17405,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -17425,7 +17425,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -17503,7 +17503,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -17523,7 +17523,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -17601,7 +17601,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -17621,7 +17621,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -17699,7 +17699,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -17719,7 +17719,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -18260,7 +18260,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -18280,7 +18280,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -18358,7 +18358,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -18378,7 +18378,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -18456,7 +18456,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -18476,7 +18476,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -18554,7 +18554,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -18574,7 +18574,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -19115,7 +19115,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -19135,7 +19135,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -19213,7 +19213,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -19233,7 +19233,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -19311,7 +19311,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -19331,7 +19331,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -19409,7 +19409,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -19429,7 +19429,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -19970,7 +19970,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -19990,7 +19990,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -20068,7 +20068,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -20088,7 +20088,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -20166,7 +20166,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -20186,7 +20186,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -20264,7 +20264,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -20284,7 +20284,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -20825,7 +20825,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -20845,7 +20845,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -20923,7 +20923,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -20943,7 +20943,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -21021,7 +21021,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -21041,7 +21041,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -21119,7 +21119,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -21139,7 +21139,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -21680,7 +21680,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -21700,7 +21700,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -21778,7 +21778,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -21798,7 +21798,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -21876,7 +21876,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -21896,7 +21896,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -21974,7 +21974,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -21994,7 +21994,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -22535,7 +22535,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -22555,7 +22555,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -22633,7 +22633,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -22653,7 +22653,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -22731,7 +22731,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -22751,7 +22751,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -22829,7 +22829,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -22849,7 +22849,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -23390,7 +23390,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -23410,7 +23410,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -23488,7 +23488,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -23508,7 +23508,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -23586,7 +23586,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -23606,7 +23606,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -23684,7 +23684,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -23704,7 +23704,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -24245,7 +24245,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -24265,7 +24265,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -24343,7 +24343,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -24363,7 +24363,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -24441,7 +24441,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -24461,7 +24461,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -24539,7 +24539,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -24559,7 +24559,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -25100,7 +25100,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -25120,7 +25120,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -25198,7 +25198,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -25218,7 +25218,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -25296,7 +25296,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -25316,7 +25316,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -25394,7 +25394,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -25414,7 +25414,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -25979,7 +25979,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -25999,7 +25999,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -26077,7 +26077,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -26097,7 +26097,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -26175,7 +26175,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -26195,7 +26195,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -26273,7 +26273,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -26293,7 +26293,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -26858,7 +26858,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -26878,7 +26878,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -26956,7 +26956,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -26976,7 +26976,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -27054,7 +27054,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -27074,7 +27074,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -27152,7 +27152,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -27172,7 +27172,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -27737,7 +27737,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -27757,7 +27757,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -27835,7 +27835,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -27855,7 +27855,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -27933,7 +27933,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -27953,7 +27953,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -28031,7 +28031,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -28051,7 +28051,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -28616,7 +28616,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -28636,7 +28636,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -28714,7 +28714,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -28734,7 +28734,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -28812,7 +28812,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -28832,7 +28832,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -28910,7 +28910,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -28930,7 +28930,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -29471,7 +29471,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -29491,7 +29491,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -29569,7 +29569,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -29589,7 +29589,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -29667,7 +29667,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -29687,7 +29687,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -29765,7 +29765,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -29785,7 +29785,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -30448,7 +30448,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -30468,7 +30468,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -30546,7 +30546,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -30566,7 +30566,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -30644,7 +30644,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -30664,7 +30664,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -30742,7 +30742,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -30762,7 +30762,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -31425,7 +31425,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -31445,7 +31445,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -31523,7 +31523,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -31543,7 +31543,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -31621,7 +31621,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -31641,7 +31641,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -31719,7 +31719,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -31739,7 +31739,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -32402,7 +32402,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -32422,7 +32422,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -32500,7 +32500,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -32520,7 +32520,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -32598,7 +32598,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -32618,7 +32618,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -32696,7 +32696,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -32716,7 +32716,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -33257,7 +33257,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -33277,7 +33277,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -33355,7 +33355,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -33375,7 +33375,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -33453,7 +33453,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -33473,7 +33473,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -33551,7 +33551,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -33571,7 +33571,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -34112,7 +34112,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -34132,7 +34132,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -34210,7 +34210,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -34230,7 +34230,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -34308,7 +34308,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -34328,7 +34328,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -34406,7 +34406,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -34426,7 +34426,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -34967,7 +34967,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -34987,7 +34987,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -35065,7 +35065,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -35085,7 +35085,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -35163,7 +35163,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -35183,7 +35183,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -35261,7 +35261,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -35281,7 +35281,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -35822,7 +35822,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -35842,7 +35842,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -35920,7 +35920,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -35940,7 +35940,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -36018,7 +36018,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -36038,7 +36038,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -36116,7 +36116,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -36136,7 +36136,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -36677,7 +36677,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -36697,7 +36697,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -36775,7 +36775,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -36795,7 +36795,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -36873,7 +36873,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -36893,7 +36893,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -36971,7 +36971,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -36991,7 +36991,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -37532,7 +37532,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -37552,7 +37552,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -37630,7 +37630,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -37650,7 +37650,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -37728,7 +37728,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -37748,7 +37748,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -37826,7 +37826,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -37846,7 +37846,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -38387,7 +38387,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -38407,7 +38407,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -38485,7 +38485,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -38505,7 +38505,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -38583,7 +38583,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -38603,7 +38603,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -38681,7 +38681,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -38701,7 +38701,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -39242,7 +39242,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -39262,7 +39262,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -39340,7 +39340,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -39360,7 +39360,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -39438,7 +39438,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -39458,7 +39458,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -39536,7 +39536,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -39556,7 +39556,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -40090,7 +40090,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -40110,7 +40110,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -40188,7 +40188,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -40208,7 +40208,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -40286,7 +40286,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -40306,7 +40306,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -40384,7 +40384,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -40404,7 +40404,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -41312,7 +41312,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -41332,7 +41332,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -41410,7 +41410,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -41430,7 +41430,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -41508,7 +41508,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -41528,7 +41528,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -41606,7 +41606,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -41626,7 +41626,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -42380,7 +42380,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -42400,7 +42400,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -42478,7 +42478,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -42498,7 +42498,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -42576,7 +42576,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -42596,7 +42596,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -42674,7 +42674,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -42694,7 +42694,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -43448,7 +43448,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -43468,7 +43468,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -43546,7 +43546,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -43566,7 +43566,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -43644,7 +43644,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -43664,7 +43664,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -43742,7 +43742,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -43762,7 +43762,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -44670,7 +44670,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -44690,7 +44690,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -44768,7 +44768,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -44788,7 +44788,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -44866,7 +44866,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -44886,7 +44886,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -44964,7 +44964,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -44984,7 +44984,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -46676,7 +46676,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -46696,7 +46696,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -46774,7 +46774,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -46794,7 +46794,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -46872,7 +46872,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -46892,7 +46892,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -46970,7 +46970,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -46990,7 +46990,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -48682,7 +48682,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -48702,7 +48702,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -48780,7 +48780,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -48800,7 +48800,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -48878,7 +48878,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -48898,7 +48898,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -48976,7 +48976,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -48996,7 +48996,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -50111,7 +50111,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -50131,7 +50131,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -50209,7 +50209,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -50229,7 +50229,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -50307,7 +50307,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -50327,7 +50327,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -50405,7 +50405,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -50425,7 +50425,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -52560,7 +52560,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -52580,7 +52580,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -52658,7 +52658,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -52678,7 +52678,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -52756,7 +52756,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -52776,7 +52776,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -52854,7 +52854,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -52874,7 +52874,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -56539,7 +56539,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -56559,7 +56559,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -56637,7 +56637,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -56657,7 +56657,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -56735,7 +56735,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -56755,7 +56755,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -56833,7 +56833,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -56853,7 +56853,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -62558,7 +62558,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -62578,7 +62578,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -62656,7 +62656,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -62676,7 +62676,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -62754,7 +62754,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -62774,7 +62774,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -62852,7 +62852,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -62872,7 +62872,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
@@ -63473,7 +63473,7 @@
                "deposit": {
                   "tx_hash": "0xabbc90e0af3d6495e1e342e7492ba298eebc22909c470cb5e5046fca7ca36115",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000"
                }
             },
@@ -63493,7 +63493,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
                   "to_sub_account_id": "1",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0x75f1f8a7e8bbd32a7181f681b5bd751f5b7ba448",
@@ -63571,7 +63571,7 @@
                "deposit": {
                   "tx_hash": "0xfcd7c48e3f2c3c03267f22cdce70e7dfc8a88abf60a2b8ddc725a50133971cb2",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000"
                }
             },
@@ -63591,7 +63591,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
                   "to_sub_account_id": "2",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0xb3549d7d65063259ec0745f2da1daec49ea74263",
@@ -63669,7 +63669,7 @@
                "deposit": {
                   "tx_hash": "0x058e4f5886cbd455d26a575dc7d0eacf2288910b7e64f93572174ee974fbb260",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000"
                }
             },
@@ -63689,7 +63689,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
                   "to_sub_account_id": "3",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "30000000000",
                   "signature": {
                      "signer": "0xc6b7580a166a94da265765a5ebf9b8eb32ade209",
@@ -63767,7 +63767,7 @@
                "deposit": {
                   "tx_hash": "0xdc5878c8e2f31e61f4e2ddccb26575b942c068335fae667cc29bdc13eb6d4603",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000"
                }
             },
@@ -63787,7 +63787,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
                   "to_sub_account_id": "4",
-                  "token_currency": "USDT",
+                  "currency": "USDT",
                   "num_tokens": "999999999000000",
                   "signature": {
                      "signer": "0x70c21e7e0e0ff997418e929099fcf02c3a3276e6",
