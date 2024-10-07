@@ -29,7 +29,7 @@ abstract contract TransferContract is TradeContract {
     address accountID,
     Currency currency,
     uint64 numTokens
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
@@ -71,7 +71,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external nonReentrant {
+  ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
@@ -158,7 +158,7 @@ abstract contract TransferContract is TradeContract {
     Currency currency,
     uint64 numTokens,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(currency == Currency.USDT, "invalid currency");
     _setSequence(timestamp, txID);
 
@@ -187,7 +187,7 @@ abstract contract TransferContract is TradeContract {
       }
     } else {
       // 2. Different accounts
-      require(fromSubID == 0 && toSubID == 0, "transfer between sub accounts of different accounts");
+      require(fromSubID == 0 && toSubID == 0, "subs transfer, diff acccounts");
       _transferMainToMain(fromAccID, toAccID, currency, numTokensSigned, sig);
     }
   }
@@ -202,7 +202,7 @@ abstract contract TransferContract is TradeContract {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
-    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "invalid external transfer address");
+    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "bad external transfer address");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;

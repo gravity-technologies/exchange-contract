@@ -21,7 +21,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
   int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
 
-  function tradeDeriv(int64 timestamp, uint64 txID, Trade calldata trade) external {
+  function tradeDeriv(
+    int64 timestamp,
+    uint64 txID,
+    Trade calldata trade
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
     _verifyMatch(trade);

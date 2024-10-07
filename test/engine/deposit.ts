@@ -14,7 +14,7 @@ export function isDeposit(step: TestStep) {
 // fundExchangeAccount method on the L2StandardERC20 to transfer the
 // deposited amount to the exchange.
 export async function mockFinalizeDeposit(l2SharedBridgeAsL1Bridge: L2SharedBridge, deposit: DepositTxInfo) {
-  const currency = deposit.token_currency
+  const currency = deposit.currency
 
   const rawAmount = scaleBigInt(
     deposit.num_tokens,

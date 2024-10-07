@@ -8,12 +8,29 @@ import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 
-contract BaseContract is ReentrancyGuardUpgradeable {
+contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
 
   State internal state;
+
+  bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
+
+  /// @dev Check if the tx.origin has a specific role.
+  /// This is applied to all exchange transaction functions.
+  /// We use this custom modifier to check tx.origin instead of msg.sender
+  /// as in onlyRole for these reasons:
+  /// 1. we might submit exchange transactions through an intermediate contract, e.g. multicall
+  /// 2. the wallet that has CHAIN_SUBMITTER_ROLE is a single-purpose wallet that
+  ///    only submits transactions to the exchange contract, and we control all
+  ///    contracts on the private L2. This means it's unlikely for the CHAIN_SUBMITTER_ROLE
+  ///    to be tricked into submitting exchange transactions inadventently.
+  modifier onlyTxOriginRole(bytes32 role) {
+    _checkRole(role, tx.origin);
+    _;
+  }
 
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
@@ -32,6 +49,15 @@ contract BaseContract is ReentrancyGuardUpgradeable {
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
     require(timestamp >= state.timestamp, "invalid timestamp");
+    require(state.lastTxID != 0, "tx before initializeConfig");
+    require(txID == state.lastTxID + 1, "invalid txID");
+    state.timestamp = timestamp;
+    state.lastTxID = txID;
+  }
+
+  function _setSequenceInitializeConfig(int64 timestamp, uint64 txID) internal {
+    require(timestamp >= state.timestamp, "invalid timestamp");
+    require(state.lastTxID == 0, "initializeConfig called after first tx");
     require(txID == state.lastTxID + 1, "invalid txID");
     state.timestamp = timestamp;
     state.lastTxID = txID;

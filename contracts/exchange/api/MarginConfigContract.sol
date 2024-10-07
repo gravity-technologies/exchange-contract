@@ -14,7 +14,7 @@ contract MarginConfigContract is ConfigContract {
     bytes32 kud,
     MarginTier[] calldata tiers,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     _requireValidMarginTiers(tiers);
 
@@ -37,7 +37,7 @@ contract MarginConfigContract is ConfigContract {
     bytes32 kud,
     MarginTier[] calldata tiers,
     Signature calldata sig
-  ) external {
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     require(assetIsKUQ(kud), "must be KUQ");
 

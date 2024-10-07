@@ -18,11 +18,15 @@ contract GRVTExchangeTest is
 {
   using BIMath for BI;
 
-  function initialize() public initializer {
+  function initialize(address admin, address chainSubmitter, address initializeConfigSigner) public initializer {
     __ReentrancyGuard_init();
 
-    // Initialize the config default values and timelock rules
+    // Initialize the config timelock rules
     _setDefaultConfigSettings();
+    state.initializeConfigSigner = initializeConfigSigner;
+
+    _setupRole(DEFAULT_ADMIN_ROLE, admin);
+    _setupRole(CHAIN_SUBMITTER_ROLE, chainSubmitter);
   }
 
   struct AccountResult {

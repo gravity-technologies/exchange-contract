@@ -1,10 +1,21 @@
 {
   "extends": "solhint:recommended",
   "rules": {
-    "compiler-version": ["error", "^0.8.19"],
+    "compiler-version": [
+      "error",
+      "^0.8.19"
+    ],
     "no-global-import": "off",
     "func-named-parameters": "off",
-    "explicit-types": ["off"],
-    "custom-errors": "off"
+    "explicit-types": [
+      "off"
+    ],
+    "custom-errors": "off",
+    "func-visibility": [
+      "warn",
+      {
+        "ignoreConstructors": true
+      }
+    ]
   }
 }
