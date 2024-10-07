@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.20;
 
 function addressExists(address[] memory arr, address targetAddress) pure returns (bool) {

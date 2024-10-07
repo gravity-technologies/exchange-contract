@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: UNLICENSED
 // Code generated, DO NOT EDIT.
 pragma solidity ^0.8.20;
 
