@@ -346,7 +346,6 @@ async function expectConfig2DNotSet(contract: Contract, expectations: ExConfig2D
   const isSet = await contract.config2DIsSet(ConfigIDToEnum[expectations.key])
   expect(isSet).to.be.false
 }
-
 async function expectSimpleCrossMaintenanceMarginTiers(
   contract: Contract,
   expectations: ExSimpleCrossMaintenanceMarginTiers
