@@ -6,7 +6,7 @@ import "./api/SubAccountContract.sol";
 import "./api/WalletRecoveryContract.sol";
 import "./api/OracleContract.sol";
 import "./api/TransferContract.sol";
-import "./api/MarginConfigContract.sol";
+import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchange is
@@ -15,7 +15,8 @@ contract GRVTExchange is
   SubAccountContract,
   WalletRecoveryContract,
   OracleContract,
-  TransferContract
+  TransferContract,
+  AssertionContract
 {
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {

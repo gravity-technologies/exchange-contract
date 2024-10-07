@@ -314,7 +314,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _getPositionCollection(SubAccount storage sub, Kind kind) internal view returns (PositionsMap storage) {
     if (kind == Kind.PERPS) return sub.perps;
     if (kind == Kind.FUTURES) return sub.futures;
-    return sub.options;
+    if (kind == Kind.CALL || kind == Kind.PUT) return sub.options;
+    revert("invalid asset kind");
   }
 
   function _getOrCreatePosition(SubAccount storage sub, bytes32 assetID) internal returns (Position storage) {
