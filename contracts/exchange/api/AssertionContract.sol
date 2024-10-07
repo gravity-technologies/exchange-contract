@@ -294,7 +294,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
       // Compare rate
       BI storage rate = tier.rate;
-      require(rate.toUint64(BASIS_POINTS_DECIMALS) == uint64(exTier.rate), "ex setSimpleCrossMMTierRate");
+      require(rate.toUint64(CENTIBEEP_DECIMALS) == uint64(exTier.rate), "ex setSimpleCrossMMTierRate");
     }
   }
 
