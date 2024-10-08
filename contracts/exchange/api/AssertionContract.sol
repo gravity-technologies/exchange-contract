@@ -8,6 +8,10 @@ import "./ConfigContract.sol";
 contract AssertionContract is ConfigContract, RiskCheck {
   using BIMath for BI;
 
+  function assertLastTxID(uint64 expectedLastTxID) external view {
+    require(state.lastTxID == expectedLastTxID, "ex lastTxID");
+  }
+
   // Assertions for Account Contract
   function assertCreateAccount(address accountID) external view {
     Account storage account = state.accounts[accountID];
@@ -140,6 +144,17 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   function assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) external view {
+    _assertSetConfig(key, subKey, expectedValue);
+  }
+
+  function assertInitializeConfig(InitializeConfigItem[] calldata items) external view {
+    for (uint i; i < items.length; ++i) {
+      InitializeConfigItem calldata item = items[i];
+      _assertSetConfig(item.key, item.subKey, item.value);
+    }
+  }
+
+  function _assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) internal view {
     ConfigSetting storage setting = state.configSettings[key];
     require(setting.schedules[subKey].lockEndTime == 0, "ex scheduleNotDeleted");
 
