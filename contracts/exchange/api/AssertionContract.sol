@@ -149,6 +149,13 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(config.val == expectedValue, "ex configValueMismatch");
   }
 
+  function assertInitializeConfig(InitializeConfigItem[] calldata items) external view {
+    for (uint i; i < items.length; ++i) {
+      InitializeConfigItem calldata item = items[i];
+      assertSetConfig(item.key, item.subKey, item.value);
+    }
+  }
+
   // Assertions for Transfer Contract
   function assertDeposit(address accountID, Currency currency, int64 expectedBalance) external view {
     Account storage account = state.accounts[accountID];
