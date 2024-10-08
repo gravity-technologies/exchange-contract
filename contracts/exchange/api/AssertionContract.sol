@@ -140,6 +140,17 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   function assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) external view {
+    _assertSetConfig(key, subKey, expectedValue);
+  }
+
+  function assertInitializeConfig(InitializeConfigItem[] calldata items) external view {
+    for (uint i; i < items.length; ++i) {
+      InitializeConfigItem calldata item = items[i];
+      _assertSetConfig(item.key, item.subKey, item.value);
+    }
+  }
+
+  function _assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) internal view {
     ConfigSetting storage setting = state.configSettings[key];
     require(setting.schedules[subKey].lockEndTime == 0, "ex scheduleNotDeleted");
 
@@ -147,13 +158,6 @@ contract AssertionContract is ConfigContract, RiskCheck {
     ConfigValue storage config = is2DConfig ? state.config2DValues[key][subKey] : state.config1DValues[key];
     require(config.isSet, "ex configNotSet");
     require(config.val == expectedValue, "ex configValueMismatch");
-  }
-
-  function assertInitializeConfig(InitializeConfigItem[] calldata items) external view {
-    for (uint i; i < items.length; ++i) {
-      InitializeConfigItem calldata item = items[i];
-      assertSetConfig(item.key, item.subKey, item.value);
-    }
   }
 
   // Assertions for Transfer Contract
