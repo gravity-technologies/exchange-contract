@@ -8,6 +8,10 @@ import "./ConfigContract.sol";
 contract AssertionContract is ConfigContract, RiskCheck {
   using BIMath for BI;
 
+  function assertLastTxID(uint64 expectedLastTxID) external view {
+    require(state.lastTxID == expectedLastTxID, "ex lastTxID");
+  }
+
   // Assertions for Account Contract
   function assertCreateAccount(address accountID) external view {
     Account storage account = state.accounts[accountID];
