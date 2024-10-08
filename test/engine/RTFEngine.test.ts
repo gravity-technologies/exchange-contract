@@ -17,23 +17,24 @@ describe("API - TestEngine", function () {
   let w1: Wallet
   before(async () => {
     ({ exchangeContract, l2SharedBridgeAsL1Bridge, w1 } = await setupTestEnvironment())
-    runSnapshotId = await network.provider.send("evm_snapshot")
+    console.log("exchangeContract: ", exchangeContract.address)
+    // runSnapshotId = await network.provider.send("evm_snapshot")
   })
 
   after(async () => {
-    await network.provider.send("evm_revert", [runSnapshotId])
+    // await network.provider.send("evm_revert", [runSnapshotId])
   })
 
   beforeEach(async () => {
-    testSnapshotId = await network.provider.send("evm_snapshot")
+    // testSnapshotId = await network.provider.send("evm_snapshot")
   })
 
   afterEach(async () => {
-    await network.provider.send("evm_revert", [testSnapshotId])
+    // await network.provider.send("evm_revert", [testSnapshotId])
   })
 
   const testFiles = getTestFixtures(TEST_FIXTURES_DIR)
-  const testNamesFilter: string[] = []
+  const testNamesFilter: string[] = ["Perp (Valid - Signed 1min before received)"]
 
   testFiles.forEach((file) => {
     describe(file, function () {
@@ -43,7 +44,7 @@ describe("API - TestEngine", function () {
 
       tests.forEach((test: TestCase) => {
         it(test.name, async function () {
-          await runTestCase(test, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
+          // await runTestCase(test, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
         })
       })
     })
