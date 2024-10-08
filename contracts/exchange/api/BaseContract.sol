@@ -39,9 +39,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
   bytes32 private immutable DOMAIN_HASH =
-    keccak256(
-      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
-    );
+    keccak256(abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 327));
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 

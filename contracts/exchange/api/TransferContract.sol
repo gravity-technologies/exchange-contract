@@ -57,9 +57,9 @@ abstract contract TransferContract is TradeContract {
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
     require(numTokensSigned > 0, "invalid deposit amount");
 
-    uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
+    // uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
-    getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
+    // getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
@@ -158,12 +158,12 @@ abstract contract TransferContract is TradeContract {
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
-    IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
+    // IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
 
-    uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
+    // uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
-    address erc20Address = getCurrencyERC20Address(currency);
-    l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
+    // address erc20Address = getCurrencyERC20Address(currency);
+    // l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
 
     return (erc20Address, erc20AmountToSend);
   }
