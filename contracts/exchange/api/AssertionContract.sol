@@ -260,31 +260,64 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   // Assertions for WalletRecovery Contract
-  function assertAddRecoveryAddress(address accountID, address signer, address recoveryAddress) external view {
-    Account storage account = state.accounts[accountID];
-    require(addressExists(account.recoveryAddresses[signer], recoveryAddress), "ex recoveryAddrNotAdded");
-  }
-
-  function assertRemoveRecoveryAddress(address accountID, address signer, address recoveryAddress) external view {
-    Account storage account = state.accounts[accountID];
-    require(!addressExists(account.recoveryAddresses[signer], recoveryAddress), "ex recoveryAddrNotRemoved");
-  }
-
-  function assertRecoverAddress(address accountID, address oldSigner, address newSigner) external view {
-    Account storage account = state.accounts[accountID];
-
-    require(account.signers[oldSigner] == 0, "ex oldSignerNotRemoved");
-    require(account.signers[newSigner] != 0, "ex newSignerNotAdded");
-
-    require(account.recoveryAddresses[oldSigner].length == 0, "ex oldRecoveryNotCleared");
-    require(account.recoveryAddresses[newSigner].length > 0, "ex newRecoveryNotSet");
-
-    for (uint i; i < account.subAccounts.length; ++i) {
-      uint64 subAccountID = account.subAccounts[i];
-      mapping(address => uint64) storage signers = state.subAccounts[subAccountID].signers;
-      require(signers[oldSigner] == 0, "ex oldSubSignerNotRemoved");
-      require(signers[newSigner] != 0, "ex newSubSignerNotAdded");
+  function assertAddRecoveryAddress(
+    address accountID,
+    address signer,
+    address[] calldata recoveryAddresses
+  ) external view {
+    Account storage acc = state.accounts[accountID];
+    require(acc.recoveryAddresses[signer].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
+    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
+      require(addressExists(acc.recoveryAddresses[signer], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
     }
+  }
+
+  function assertRemoveRecoveryAddress(
+    address accountID,
+    address signer,
+    address[] calldata recoveryAddresses
+  ) external view {
+    Account storage acc = state.accounts[accountID];
+    require(acc.recoveryAddresses[signer].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
+    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
+      require(addressExists(acc.recoveryAddresses[signer], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
+    }
+  }
+
+  function assertRecoverAddress(
+    address accID,
+    address oldSigner,
+    address newSigner,
+    uint64 mainAccountPermission,
+    uint64[] calldata subAccountIDs,
+    uint64[] calldata subAccountPermissions,
+    address[] calldata recoveryAddresses
+  ) external view {
+    Account storage acc = _requireAccount(accID);
+
+    // Assert account signer changes
+    require(acc.signers[newSigner] == mainAccountPermission, "ex newSignerNotAdded");
+    require(acc.signers[oldSigner] == 0, "ex oldSignerNotRemoved");
+
+    // Assert subAccount signer changes
+    require(subAccountIDs.length == acc.subAccounts.length, "ex subAccountIDs length");
+    require(subAccountIDs.length == subAccountPermissions.length, "ex subAccount permissions");
+
+    uint256 numSubAccs = acc.subAccounts.length;
+    for (uint256 i = 0; i < numSubAccs; i++) {
+      SubAccount storage subAcc = _requireSubAccount(subAccountIDs[i]);
+      require(subAcc.signers[newSigner] == subAccountPermissions[i], "ex newSigner subPermAdded");
+      require(subAcc.signers[oldSigner] == 0, "ex oldSigner subPermRemoved");
+    }
+
+    require(acc.recoveryAddresses[newSigner].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
+
+    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
+      require(addressExists(acc.recoveryAddresses[newSigner], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
+    }
+
+    require(acc.recoveryAddresses[oldSigner].length == 0, "ex oldSigner recovery addresses not cleared");
+    require(!addressExists(acc.recoveryAddresses[newSigner], newSigner), "ex newSigner still in recovery addresses");
   }
 
   struct MarginTierAssertion {
