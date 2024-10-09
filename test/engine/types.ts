@@ -25,6 +25,9 @@ export interface TestStep {
   expectations: Expectation[]
 
   tx: TxInfo | undefined
+
+  // The assertion data to be executed after the transaction is executed
+  assertion_data: string
 }
 
 export interface TxInfo {

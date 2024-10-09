@@ -59,7 +59,7 @@ export async function create2DeployFromL1NoFactoryDeps(
 ) {
   const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
 
-  const deployerSystemContracts = new Interface(hre.artifacts.readArtifactSync("IContractDeployer").abi)
+  const deployerSystemContracts = new Interface(hre.artifacts.readArtifactSync("lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer").abi)
   const bytecodeHash = hashBytecode(bytecode)
   const calldata = deployerSystemContracts.encodeFunctionData("create2", [create2Salt, bytecodeHash, constructor])
   gasPrice ??= await bridgehub.provider.getGasPrice()

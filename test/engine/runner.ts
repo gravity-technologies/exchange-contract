@@ -52,4 +52,19 @@ async function executeTestStep(
     console.error("Error sending transaction. Check the input payload:", e)
     throw e
   }
+
+  if (step.assertion_data !== "") {
+    const assertionTx = {
+      to: exchangeContract.address,
+      gasLimit: GAS_LIMIT,
+      data: step.assertion_data,
+    }
+    try {
+      const resp = await w1.sendTransaction(assertionTx)
+      await resp.wait()
+    } catch (e) {
+      console.error("Error sending assertion transaction. Check the input payload:", e)
+      throw e
+    }
+  }
 }
