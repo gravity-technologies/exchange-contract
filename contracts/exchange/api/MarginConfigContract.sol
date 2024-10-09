@@ -29,6 +29,9 @@ contract MarginConfigContract is ConfigContract {
     state.simpleCrossMaintenanceMarginTimelockEndTime[kud] =
       timestamp +
       _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, tiersBI);
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, kud, tiers));
   }
 
   function setSimpleCrossMaintenanceMarginTiers(
@@ -62,6 +65,9 @@ contract MarginConfigContract is ConfigContract {
 
     state.simpleCrossMaintenanceMarginTiers[kud] = tiersBI;
     delete state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, kud, tiers));
   }
 
   function _requireValidMarginTiers(MarginTier[] calldata marginTiers) private pure {

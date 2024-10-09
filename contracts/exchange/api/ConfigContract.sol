@@ -5,6 +5,15 @@ import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
+import {L2ContractHelper} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+
+struct ConfigProofMessage {
+  uint256 blockTimestamp;
+  uint256 configVersion;
+  bytes4 selector;
+  bytes data;
+}
+
 ///////////////////////////////////////////////////////////////////
 /// Config Contract supports
 ///  - (1) retrieving the current value for a config type
@@ -58,6 +67,8 @@ contract ConfigContract is BaseContract {
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
+
+  event ConfigUpdateMessageSent(uint256 configVersion, bytes4 selector, bytes data);
 
   ///////////////////////////////////////////////////////////////////
   /// Config Accessors
@@ -173,9 +184,36 @@ contract ConfigContract is BaseContract {
     return (_configToAddress(c.val), c.isSet);
   }
 
+  function _sendConfigProofMessageToL1(bytes memory data) internal {
+    L2ContractHelper.sendMessageToL1(
+      abi.encode(
+        ConfigProofMessage({
+          blockTimestamp: block.timestamp,
+          configVersion: state.configVersion,
+          selector: msg.sig,
+          data: data
+        })
+      )
+    );
+    emit ConfigUpdateMessageSent(state.configVersion, msg.sig, data);
+  }
+
   ///////////////////////////////////////////////////////////////////
   /// Config APIs
   ///////////////////////////////////////////////////////////////////
+
+  /**
+   * @dev Sends a message to L1 containing the latest config version.
+   * This function is used to prove that no config updates have occurred
+   * since the config operation with the version sent to L1.
+   * Note that the timestamp used is the block timestamp at the time of the call
+   * as opposed to cluster timestamp in other config update operations.
+   * This is sufficient to prove that no config updates have occurred before a certain
+   * L2 block timestamp.
+   */
+  function proveConfig() external {
+    _sendConfigProofMessageToL1("");
+  }
 
   function initializeConfig(
     int64 timestamp,
@@ -198,6 +236,9 @@ contract ConfigContract is BaseContract {
       ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
       _setConfigValue(key, subKey, value, setting);
     }
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, items));
   }
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
@@ -251,6 +292,9 @@ contract ConfigContract is BaseContract {
     ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
     ConfigSchedule storage sched = setting.schedules[subKey];
     sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
   }
 
   /// @notice Update a specific config. Performs check to ensure that the value
@@ -290,6 +334,9 @@ contract ConfigContract is BaseContract {
 
     // Must delete the schedule after the config is set (to prevent replays)
     delete setting.schedules[subKey];
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
   }
 
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
@@ -398,10 +445,6 @@ contract ConfigContract is BaseContract {
           return rules[i].lockDuration;
     }
     return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
-  }
-
-  function _getMaintenanceMarginBytes32(uint32 volume, uint32 ratio) internal pure returns (bytes32) {
-    return bytes32((uint(volume) << 224) | (uint(ratio) << 160));
   }
 
   ///////////////////////////////////////////////////////////////////
