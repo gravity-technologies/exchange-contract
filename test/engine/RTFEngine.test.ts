@@ -11,13 +11,14 @@ const TEST_FIXTURES_DIR = process.cwd() + "/test/engine/fixtures/"
 
 describe("API - TestEngine", function () {
   let exchangeContract: Contract
+  let multicallContract: Contract
   let l2SharedBridgeAsL1Bridge: L2SharedBridge
   let runSnapshotId: string
   let testSnapshotId: string
   let w1: Wallet
 
   before(async () => {
-    ({ exchangeContract, l2SharedBridgeAsL1Bridge, w1 } = await setupTestEnvironment())
+    ({ exchangeContract, multicallContract, l2SharedBridgeAsL1Bridge, w1 } = await setupTestEnvironment())
     runSnapshotId = await network.provider.send("evm_snapshot")
   })
 
@@ -44,7 +45,7 @@ describe("API - TestEngine", function () {
 
       tests.forEach((test: TestCase) => {
         it(test.name, async function () {
-          await runTestCase(test, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
+          await runTestCase(test, exchangeContract, multicallContract, w1, l2SharedBridgeAsL1Bridge)
         })
       })
     })

@@ -8,10 +8,10 @@ import { getDeployerWallet } from "../util"
 
 export async function setupTestEnvironment() {
   const w1 = getDeployerWallet()
-  const exchangeContract = await deployContracts()
+  const { exchangeContract, multicallContract } = await deployContracts()
   const l2SharedBridgeAsL1Bridge = await setupL2SharedBridge(exchangeContract)
 
-  return { exchangeContract, l2SharedBridgeAsL1Bridge, w1 }
+  return { exchangeContract, multicallContract, l2SharedBridgeAsL1Bridge, w1 }
 }
 
 async function deployContracts() {
@@ -19,6 +19,7 @@ async function deployContracts() {
   const deployOptions = { wallet: deployerWallet, silent: true, noVerify: true }
 
   const exchangeContract = await deployContract("GRVTExchangeTest", [], deployOptions)
+  const multicallContract = await deployContract("Multicall3", [], deployOptions)
   const rtfTestInitializeConfigSigner = "0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D"
 
   await exchangeContract.initialize(
@@ -28,7 +29,7 @@ async function deployContracts() {
     rtfTestInitializeConfigSigner
   )
 
-  return exchangeContract
+  return { exchangeContract, multicallContract }
 }
 
 async function setupL2SharedBridge(exchangeContract: ethers.Contract) {
