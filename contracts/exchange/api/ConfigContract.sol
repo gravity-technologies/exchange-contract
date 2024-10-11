@@ -351,6 +351,14 @@ contract ConfigContract is BaseContract {
       return 0;
     }
 
+    if (typ == ConfigType.BRIDGING_PARTNER_ADDRESSES) {
+      return newVal == TRUE_BYTES32 ? 0 : rules[0].lockDuration;
+    }
+
+    if (tpye == ConfigType.ORACLE_ADDRESS) {
+      return rules[0].lockDuration;
+    }
+
     // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
     if (typ == ConfigType.ADDRESS) {
@@ -492,19 +500,12 @@ contract ConfigContract is BaseContract {
     /// ADMIN addresses
     ///////////////////////////////////////////////////////////////////
 
-    // ADMIN_RECOVERY_ADDRESS
-    id = ConfigID.ADMIN_RECOVERY_ADDRESS;
-    settings[id].typ = ConfigType.BOOL2D;
-    rules = settings[id].rules;
-    // This config does not have timelock as they are controlled by GRVT
-    rules.push(Rule(0, 0, 0));
-
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
     // This config does not have timelock as they are controlled by GRVT
-    rules.push(Rule(0, 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
@@ -602,6 +603,6 @@ contract ConfigContract is BaseContract {
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(0, 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
   }
 }
