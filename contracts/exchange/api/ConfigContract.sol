@@ -351,10 +351,28 @@ contract ConfigContract is BaseContract {
       return 0;
     }
 
-    // These config types are not numerical and have a fixed lock duration
+    // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
-    if (typ == ConfigType.ADDRESS || typ == ConfigType.ADDRESS2D || typ == ConfigType.BOOL || typ == ConfigType.BOOL2D)
-      return rules[0].lockDuration;
+    if (typ == ConfigType.ADDRESS) {
+      (address oldVal, bool isSet) = _getAddressConfig(key);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.ADDRESS2D) {
+      (address oldVal, bool isSet) = _getAddressConfig2D(key, subKey);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL) {
+      bool oldVal = _getBoolConfig(key);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL2D) {
+      bool oldVal = _getBoolConfig2D(key, subKey);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
 
     if (typ == ConfigType.INT) {
       (int64 oldVal, bool isSet) = _getIntConfig(key);
@@ -478,25 +496,29 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ADMIN_RECOVERY_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as they are controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as they are controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as they are controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as they are controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
@@ -504,24 +526,28 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -576,6 +602,6 @@ contract ConfigContract is BaseContract {
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(0, 0, 0));
   }
 }
