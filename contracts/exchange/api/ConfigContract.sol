@@ -504,21 +504,21 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    // This config does not have timelock as they are controlled by GRVT
+    // This config does not have timelock as it is controlled by GRVT
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    // This config does not have timelock as they are controlled by GRVT
+    // This config does not have timelock as it is controlled by GRVT
     rules.push(Rule(0, 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    // This config does not have timelock as they are controlled by GRVT
+    // This config does not have timelock as it is controlled by GRVT
     rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
@@ -540,15 +540,15 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    // This config is immutable once set
-    rules.push(Rule(type(int64).max, 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    // This config is immutable once set
-    rules.push(Rule(type(int64).max, 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
