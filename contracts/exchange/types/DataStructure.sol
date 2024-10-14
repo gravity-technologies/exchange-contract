@@ -277,8 +277,8 @@ enum ConfigID {
   CONFIG_ADDRESS, // 3, no timelock to add or remove
   MARKET_DATA_ADDRESS, // 4, no timelock to add or remove
   // Admin Sub Accounts
-  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, is immutable once set
-  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, is immutable once set
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, no timelock
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, no timelock
   // Funding Configs
   FUNDING_RATE_HIGH, // 7, has timelock
   FUNDING_RATE_LOW, // 8, has timelock
