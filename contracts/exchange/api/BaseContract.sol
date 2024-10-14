@@ -14,6 +14,8 @@ import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol"
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
 import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 
+import "hardhat/console.sol";
+
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
 
@@ -78,6 +80,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
+    console.log("subAccID", subAccID);
+    console.log("sub.id", sub.id);
     require(sub.id != 0, "subaccount does not exist");
     return sub;
   }

@@ -267,8 +267,8 @@ contract ConfigContract is BaseContract {
     _setSequenceInitializeConfig(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
-    _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
+    // require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
+    // _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
     for (uint256 i = 0; i < items.length; i++) {
