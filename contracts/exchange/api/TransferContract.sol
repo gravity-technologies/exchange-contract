@@ -100,52 +100,67 @@ abstract contract TransferContract is TradeContract {
     bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
     require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
 
-    int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
-    require(numTokensSigned > 0, "invalid withdrawal amount");
-
     // ---------- Signature Verification -----------
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    acc.spotBalances[currency] -= numTokensSigned;
+    int64 amount = SafeCast.toInt64(int(uint(numTokens)));
+    require(amount > 0, "invalid withdrawal amount");
+    require(amount <= acc.spotBalances[currency], "insufficient balance");
 
-    int64 numTokenAfterFee = numTokensSigned;
+    acc.spotBalances[currency] -= amount;
 
-    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
-    if (isFeeSubAccIdSet) {
-      BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
-      uint64 tokenDec = _getBalanceDecimal(currency);
-      int64 withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
-      feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
-      numTokenAfterFee -= withdrawalFeeCharged;
-    }
+    int64 amountAfterSocializedLoss = _applySocializedLoss(amount);
+    int64 amountToSend = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
 
-    require(numTokensSigned <= acc.spotBalances[currency], "insufficient balance");
-    require(numTokenAfterFee > 0, "withdrawal amount too small");
+    state.totalSpotBalances[currency] -= amountToSend;
 
-    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
-    if (isInsuranceFundSet) {
-      _fundAndSettle(insuranceFund);
-    }
-    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(numTokenAfterFee))));
+    _withdrawToL1(currency, amountToSend, recipient);
 
-    int64 numTokensToSend = numTokenAfterFee;
-    if (socializedLossHaircutAmount > 0) {
-      insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
-      numTokensToSend -= socializedLossHaircutAmount;
-    }
+    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
+  }
 
-    state.totalSpotBalances[currency] -= numTokensToSend;
-
+  function _withdrawToL1(Currency currency, int64 amount, address recipient) private {
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
     IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
 
-    uint256 erc20WithdrawalAmount = scaleToERC20Amount(currency, numTokensToSend);
+    uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
-    l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20WithdrawalAmount);
+    l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
+  }
 
-    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
+  function _applySocializedLoss(int64 amount) private returns (int64) {
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (!isInsuranceFundSet) {
+      return amount;
+    }
+
+    _fundAndSettle(insuranceFund);
+    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(amount))));
+    if (socializedLossHaircutAmount > 0) {
+      insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
+    }
+
+    return amount - socializedLossHaircutAmount;
+  }
+
+  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64) {
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (!isFeeSubAccIdSet) {
+      return amount;
+    }
+
+    BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
+    uint64 tokenDec = _getBalanceDecimal(currency);
+    int64 withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
+
+    int64 amountAfterFee = amount - withdrawalFeeCharged;
+    feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
+
+    require(amountAfterFee > 0, "withdrawal amount too small");
+
+    return amountAfterFee;
   }
 
   function _getWithdrawalFee() private view returns (BI memory) {
