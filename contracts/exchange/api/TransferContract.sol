@@ -110,7 +110,7 @@ abstract contract TransferContract is TradeContract {
 
     acc.spotBalances[currency] -= amount;
 
-    int64 amountAfterSocializedLoss = _applySocializedLoss(amount);
+    int64 amountAfterSocializedLoss = _applySocializedLoss(amount, currency);
     int64 amountToSend = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
 
     state.totalSpotBalances[currency] -= amountToSend;
@@ -130,7 +130,7 @@ abstract contract TransferContract is TradeContract {
     l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
   }
 
-  function _applySocializedLoss(int64 amount) private returns (int64) {
+  function _applySocializedLoss(int64 amount, Currency currency) private returns (int64) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (!isInsuranceFundSet) {
       return amount;
