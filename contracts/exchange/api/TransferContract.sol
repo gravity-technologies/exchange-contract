@@ -64,6 +64,7 @@ abstract contract TransferContract is TradeContract {
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
+    state.totalSpotBalances[currency] += numTokensSigned;
 
     emit Deposit(accountID, txHash, currency, numTokens, txID);
   }
@@ -106,21 +107,35 @@ abstract contract TransferContract is TradeContract {
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    int64 withdrawalFeeCharged = 0;
-    (uint64 feeSubAccId, bool feeSubAccIdSet) = _getUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    if (feeSubAccIdSet) {
+    acc.spotBalances[currency] -= numTokensSigned;
+
+    int64 numTokenAfterFee = numTokensSigned;
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet) {
       BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
       uint64 tokenDec = _getBalanceDecimal(currency);
-      withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
-      _requireSubAccount(feeSubAccId).spotBalances[currency] += withdrawalFeeCharged;
+      int64 withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
+      feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
+      numTokenAfterFee -= withdrawalFeeCharged;
     }
 
     require(numTokensSigned <= acc.spotBalances[currency], "insufficient balance");
-    require(numTokensSigned > withdrawalFeeCharged, "withdrawal amount too small");
+    require(numTokenAfterFee > 0, "withdrawal amount too small");
 
-    acc.spotBalances[currency] -= numTokensSigned;
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet) {
+      _fundAndSettle(insuranceFund);
+    }
+    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(numTokenAfterFee))));
 
-    int64 numTokensToSend = numTokensSigned - withdrawalFeeCharged;
+    int64 numTokensToSend = numTokenAfterFee;
+    if (socializedLossHaircutAmount > 0) {
+      insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
+      numTokensToSend -= socializedLossHaircutAmount;
+    }
+
+    state.totalSpotBalances[currency] -= numTokensToSend;
 
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
@@ -138,7 +153,7 @@ abstract contract TransferContract is TradeContract {
     if (!feeSet) {
       return BI(0, 0);
     }
-    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USDT));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
