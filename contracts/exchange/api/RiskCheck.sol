@@ -43,25 +43,72 @@ contract RiskCheck is BaseContract, MarginConfigContract {
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
-    return state.totalSpotBalances[Currency.USDT];
+    return state.totalSpotBalances[Currency.USDT] - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
+  }
+
+  function _getTotalBridgingPartnerValueUSDT() internal view returns (int64) {
+    int64 totalValue = 0;
+    for (uint i = 0; i < state.bridgingPartners.length; i++) {
+      totalValue += state.accounts[state.bridgingPartners[i]].spotBalances[Currency.USDT];
+    }
+    return totalValue;
   }
 
   function _getTotalInternalValueUSDT() internal view returns (int64) {
     int64 totalValue = 0;
 
     uint dec = _getBalanceDecimal(Currency.USDT);
+    BI memory totalValueBI = BI(0, dec);
+
+    address[] memory internalAccountAddresses = _getAllInternalFundingAccounts();
+    for (uint i = 0; i < internalAccountAddresses.length; i++) {
+      if (internalAccountAddresses[i] == address(0)) {
+        break;
+      }
+      Account storage account = _requireAccount(internalAccountAddresses[i]);
+      totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
+    }
+
+    return totalValueBI.toInt64(dec);
+  }
+
+  function _getAllInternalFundingAccounts() internal view returns (address[] memory) {
+    uint numInternalAccounts = 0;
+    address[] memory accounts = new address[](2);
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
-      totalValue += _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
+      accounts[numInternalAccounts++] = insuranceFund.accountID;
     }
 
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (isFeeSubAccIdSet) {
-      totalValue += _getSubAccountValueInQuote(feeSubAcc).toInt64(dec);
+      address feeSubAccId = feeSubAcc.accountID;
+      bool accountExists = false;
+      for (uint i = 0; i < numInternalAccounts; i++) {
+        if (accounts[i] == feeSubAccId) {
+          accountExists = true;
+          break;
+        }
+      }
+      if (!accountExists) {
+        accounts[numInternalAccounts++] = feeSubAccId;
+      }
     }
 
-    // include bridging partner balances?
+    return accounts;
+  }
+
+  function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    BI memory totalValue = BI(account.spotBalances[Currency.USDT], dec);
+    uint256 numSubAccs = account.subAccounts.length;
+
+    for (uint256 i; i < numSubAccs; ++i) {
+      SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
+      totalValue = totalValue.add(_getSubAccountValueInQuote(subAcc));
+    }
 
     return totalValue;
   }
