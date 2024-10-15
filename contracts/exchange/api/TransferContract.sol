@@ -153,7 +153,7 @@ abstract contract TransferContract is TradeContract {
     if (!feeSet) {
       return BI(0, 0);
     }
-    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USDT));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
