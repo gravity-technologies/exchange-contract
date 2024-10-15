@@ -262,6 +262,18 @@ contract ConfigContract is BaseContract {
   }
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      address partnerAddress = _configToAddress(subKey);
+      Account storage partnerAccount = _requireAccount(partnerAddress);
+      require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
+      bool isAdding = value == TRUE_BYTES32;
+      if (isAdding) {
+        addAddress(state.bridgingPartners, partnerAddress);
+      } else {
+        removeAddress(state.bridgingPartners, partnerAddress, false);
+      }
+    }
+
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
