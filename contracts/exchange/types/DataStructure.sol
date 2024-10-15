@@ -131,6 +131,8 @@ struct State {
   bytes32 depositProxyProxyBytecodeHash;
   // Total spot balances for all accounts
   mapping(Currency => int64) totalSpotBalances;
+  // Bridging partners
+  address[] bridgingPartners;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
