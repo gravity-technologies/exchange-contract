@@ -24,6 +24,61 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
+  function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
+    int64 insuranceFundLossAmount = _getInsuranceFundLossAmount();
+    if (insuranceFundLossAmount <= 0) {
+      return 0;
+    }
+
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    int64 totalClientValue = _getTotalClientValueUSDT();
+    BI memory totalClientValueBI = BI(totalClientValue, dec);
+    BI memory insuranceFundLossAmountBI = BI(insuranceFundLossAmount, dec);
+
+    // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
+    BI memory withdrawAmountBI = BI(withdrawAmount, dec);
+    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountBI).div(totalClientValueBI);
+    return result.toUint64(dec);
+  }
+
+  function _getTotalClientValueUSDT() internal view returns (int64) {
+    return state.totalSpotBalances[Currency.USDT];
+  }
+
+  function _getTotalInternalValueUSDT() internal view returns (int64) {
+    int64 totalValue = 0;
+
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet) {
+      totalValue += _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
+    }
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet) {
+      totalValue += _getSubAccountValueInQuote(feeSubAcc).toInt64(dec);
+    }
+
+    // include bridging partner balances?
+
+    return totalValue;
+  }
+
+  function _getInsuranceFundLossAmount() internal view returns (int64) {
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet) {
+      int64 insuranceFundValue = _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
+      if (insuranceFundValue < 0) {
+        return -insuranceFundValue;
+      }
+    }
+    return 0;
+  }
+
   function _requireValidMargin(SubAccount storage sub, bool isLiquidation, bool beforeTrade) internal view {
     (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
 

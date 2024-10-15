@@ -121,6 +121,22 @@ contract ConfigContract is BaseContract {
     return (_configToUint(c.val), c.isSet);
   }
 
+  function _getTradingFeeSubAccount(bool isLiquidation) internal view returns (SubAccount storage, bool) {
+    if (isLiquidation) {
+      return _getInsuranceFundSubAccount();
+    } else {
+      return _getAdminFeeSubAccount();
+    }
+  }
+
+  function _getInsuranceFundSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+  }
+
+  function _getAdminFeeSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+  }
+
   function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
     SubAccount storage sub;
     (uint64 subID, bool isSubConfigured) = _getUintConfig(key);
