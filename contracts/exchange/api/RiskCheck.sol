@@ -80,7 +80,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       _addUniqueAddress(accounts, insuranceFund.accountID);
     }
 
-    // Add fee sub-account if set
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (isFeeSubAccIdSet) {
       _addUniqueAddress(accounts, feeSubAcc.accountID);
