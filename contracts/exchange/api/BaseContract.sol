@@ -72,6 +72,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return acc;
   }
 
+  function _requireAccountNoBalance(Account storage acc) internal view {
+    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      require(acc.spotBalances[i] == 0, "account has balance");
+    }
+  }
+
   function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
     require(sub.id != 0, "subaccount does not exist");
