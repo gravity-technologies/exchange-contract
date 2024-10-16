@@ -287,6 +287,7 @@ contract ConfigContract is BaseContract {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       address partnerAddress = _configToAddress(subKey);
       Account storage partnerAccount = _requireAccount(partnerAddress);
+      _requireAccountNoBalance(partnerAccount);
       require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
       bool isAdding = value == TRUE_BYTES32;
       if (isAdding) {
