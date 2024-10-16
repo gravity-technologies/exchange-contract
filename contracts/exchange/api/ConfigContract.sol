@@ -287,7 +287,7 @@ contract ConfigContract is BaseContract {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       _validateBridgingPartnerChange(_configToAddress(subKey), value == TRUE_BYTES32);
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
-      _validateInternalSubAccountChange(key, subKey, value);
+      _validateInternalSubAccountChange(_configToUint(value));
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
@@ -312,14 +312,8 @@ contract ConfigContract is BaseContract {
     }
   }
 
-  function _validateInternalSubAccountChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
-    (SubAccount storage existingSubAcc, bool isSubAccSet) = _getSubAccountFromUintConfig(key);
-    if (!isSubAccSet) {
-      // setting new value is always allowed
-      return;
-    }
-
-    SubAccount storage newSubAcc = _requireSubAccount(_configToUint(value));
+  function _validateInternalSubAccountChange(uint64 newSubAccountId) internal {
+    SubAccount storage newSubAcc = _requireSubAccount(newSubAccountId);
     if (_isInternalAccount(newSubAcc.accountID)) {
       // if the new subaccount is already under an internal account
       // this won't decrease the total client equity, therefore it's allowed
