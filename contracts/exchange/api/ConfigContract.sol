@@ -283,21 +283,6 @@ contract ConfigContract is BaseContract {
     _sendConfigProofMessageToL1(abi.encode(timestamp, items));
   }
 
-  function _validateInternalSubAccountConfigChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
-    (SubAccount storage existingSubAcc, bool isSubAccSet) = _getSubAccountFromUintConfig(key);
-    // always allow setting new value
-    if (!isSubAccSet) {
-      return;
-    }
-    SubAccount storage newSubAcc = _requireSubAccount(_configToUint(value));
-    // 2 subaccounts under the same account => no change in internal value => OK
-    if (existingSubAcc.accountID == newSubAcc.accountID) {
-      return;
-    }
-
-    require(_getTotalAccountValueUSDT(newSubAcc.accountID) == 0, "new account must have 0 value");
-  }
-
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       address partnerAddress = _configToAddress(subKey);
@@ -317,6 +302,30 @@ contract ConfigContract is BaseContract {
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
+  }
+
+  /// @notice Validates changes to internal subaccounts to prevent abuse of socialized loss rules
+  /// @dev This function ensures that changes to internal accounts (like fee accounts or insurance fund)
+  ///      don't allow circumvention of socialized loss mechanisms.
+  /// @param key The ConfigID of the internal account being changed (e.g., INSURANCE_FUND_SUB_ACCOUNT_ID or ADMIN_FEE_SUB_ACCOUNT_ID)
+  /// @param subKey Unused for this function, should be 0
+  /// @param value The new subaccount ID being set for the internal account
+  function _validateInternalSubAccountConfigChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
+    (SubAccount storage existingSubAcc, bool isSubAccSet) = _getSubAccountFromUintConfig(key);
+    if (!isSubAccSet) {
+      // setting new value is always allowed
+      return;
+    }
+
+    SubAccount storage newSubAcc = _requireSubAccount(_configToUint(value));
+    if (_isInternalAccount(newSubAcc.accountID)) {
+      // if the new subaccount is already under an internal account
+      // this won't decrease the total client equity, therefore it's allowed
+      return;
+    }
+
+    Account storage account = _requireAccount(newSubAcc.accountID);
+    require(_getTotalAccountValueUSDT(account) == 0, "new internal acc must have 0 value");
   }
 
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
