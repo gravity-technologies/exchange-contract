@@ -45,3 +45,13 @@ function signerHasPerm(
 ) view returns (bool) {
   return (signers[signerAddress] & perm) != 0;
 }
+
+function appendIfNotExists(address[] memory arr, uint size, address addr) returns (address[] memory, uint newSize) {
+  for (uint i = 0; i < size; i++) {
+    if (arr[i] == addr) {
+      return (arr, size);
+    }
+  }
+  arr[size] = addr;
+  return (arr, size + 1);
+}
