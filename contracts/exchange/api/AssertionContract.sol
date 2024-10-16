@@ -143,15 +143,25 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(sched.lockEndTime == expectedLockEndTime, "ex lockEndTime");
   }
 
-  function assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) external view {
+  function assertSetConfig(
+    ConfigID key,
+    bytes32 subKey,
+    bytes32 expectedValue,
+    address[] calldata bridgingPartners
+  ) external view {
     _assertSetConfig(key, subKey, expectedValue);
+    _assertSameAddresses(state.bridgingPartners, bridgingPartners);
   }
 
-  function assertInitializeConfig(InitializeConfigItem[] calldata items) external view {
+  function assertInitializeConfig(
+    InitializeConfigItem[] calldata items,
+    address[] calldata bridgingPartners
+  ) external view {
     for (uint i; i < items.length; ++i) {
       InitializeConfigItem calldata item = items[i];
       _assertSetConfig(item.key, item.subKey, item.value);
     }
+    _assertSameAddresses(state.bridgingPartners, bridgingPartners);
   }
 
   function _assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) internal view {
@@ -266,10 +276,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     address[] calldata recoveryAddresses
   ) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.recoveryAddresses[signer].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
-    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
-      require(addressExists(acc.recoveryAddresses[signer], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
-    }
+    _assertSameAddresses(acc.recoveryAddresses[signer], recoveryAddresses);
   }
 
   function assertRemoveRecoveryAddress(
@@ -278,10 +285,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     address[] calldata recoveryAddresses
   ) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.recoveryAddresses[signer].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
-    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
-      require(addressExists(acc.recoveryAddresses[signer], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
-    }
+    _assertSameAddresses(acc.recoveryAddresses[signer], recoveryAddresses);
   }
 
   function assertRecoverAddress(
@@ -310,14 +314,17 @@ contract AssertionContract is ConfigContract, RiskCheck {
       require(subAcc.signers[oldSigner] == 0, "ex oldSigner subPermRemoved");
     }
 
-    require(acc.recoveryAddresses[newSigner].length == recoveryAddresses.length, "ex recoveryAddrLenMismatch");
-
-    for (uint256 i = 0; i < recoveryAddresses.length; i++) {
-      require(addressExists(acc.recoveryAddresses[newSigner], recoveryAddresses[i]), "ex recoveryAddrNotAdded");
-    }
+    _assertSameAddresses(acc.recoveryAddresses[newSigner], recoveryAddresses);
 
     require(acc.recoveryAddresses[oldSigner].length == 0, "ex oldSigner recovery addresses not cleared");
     require(!addressExists(acc.recoveryAddresses[newSigner], newSigner), "ex newSigner still in recovery addresses");
+  }
+
+  function _assertSameAddresses(address[] storage arr1, address[] calldata arr2) internal view {
+    require(arr1.length == arr2.length, "ex array length mismatch");
+    for (uint256 i = 0; i < arr2.length; i++) {
+      require(addressExists(arr1, arr2[i]), "ex address not found in array");
+    }
   }
 
   struct MarginTierAssertion {
