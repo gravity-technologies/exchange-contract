@@ -73,30 +73,34 @@ contract RiskCheck is BaseContract, MarginConfigContract {
   }
 
   function _getAllInternalFundingAccounts() internal view returns (address[] memory) {
-    uint numInternalAccounts = 0;
     address[] memory accounts = new address[](2);
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
-      accounts[numInternalAccounts++] = insuranceFund.accountID;
+      _addUniqueAddress(accounts, insuranceFund.accountID);
     }
 
+    // Add fee sub-account if set
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (isFeeSubAccIdSet) {
-      address feeSubAccId = feeSubAcc.accountID;
-      bool accountExists = false;
-      for (uint i = 0; i < numInternalAccounts; i++) {
-        if (accounts[i] == feeSubAccId) {
-          accountExists = true;
-          break;
-        }
-      }
-      if (!accountExists) {
-        accounts[numInternalAccounts++] = feeSubAccId;
-      }
+      _addUniqueAddress(accounts, feeSubAcc.accountID);
     }
 
     return accounts;
+  }
+
+  function _addUniqueAddress(address[] memory addresses, address newAddress) private pure {
+    if (newAddress == address(0)) revert("Invalid address");
+
+    for (uint256 i = 0; i < addresses.length; i++) {
+      if (addresses[i] == address(0)) {
+        addresses[i] = newAddress;
+        return;
+      }
+      if (addresses[i] == newAddress) return;
+    }
+
+    revert("mem array is full");
   }
 
   function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
