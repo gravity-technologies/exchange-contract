@@ -97,8 +97,10 @@ abstract contract TransferContract is TradeContract {
     // Check if the signer has the permission to withdraw
     _requireAccountPermission(acc, sig.signer, AccountPermWithdraw);
 
-    bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
-    require(isBridgingPartner || acc.onboardedWithdrawalAddresses[recipient], "invalid withdrawal address");
+    require(
+      _isBridgingPartnerAccount(fromAccID) || acc.onboardedWithdrawalAddresses[recipient],
+      "invalid withdrawal address"
+    );
 
     // ---------- Signature Verification -----------
     _preventReplay(hashWithdrawal(fromAccID, recipient, currency, numTokens, sig.nonce, sig.expiration), sig);
@@ -250,8 +252,14 @@ abstract contract TransferContract is TradeContract {
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
-    bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(fromAccID));
-    require(isBridgingPartner || fromAcc.onboardedTransferAccounts[toAccID], "bad external transfer address");
+    require(
+      _isBridgingPartnerAccount(fromAccID) || fromAcc.onboardedTransferAccounts[toAccID],
+      "bad external transfer address"
+    );
+    require(
+      !(_isUserAccount(fromAccID) && !_isUserAccount(toAccID)),
+      "user account cannot transfer to non-user account"
+    );
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;

@@ -34,8 +34,7 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
     require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == address(0), "subaccount already exists");
-    bool isBridgingPartner = _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(accountID));
-    require(!isBridgingPartner, "bridging partners cannot have subaccount");
+    require(!_isBridgingPartnerAccount(accountID), "bridging partners cannot have subaccount");
 
     // requires that the user is an account admin
     require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
