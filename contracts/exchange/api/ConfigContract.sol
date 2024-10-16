@@ -218,6 +218,28 @@ contract ConfigContract is BaseContract {
     emit ConfigUpdateMessageSent(state.configVersion, msg.sig, data);
   }
 
+  function _isUserAccount(address account) internal view returns (bool) {
+    return !_isBridgingPartnerAccount(account) && !_isInternalAccount(account);
+  }
+
+  function _isBridgingPartnerAccount(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(account));
+  }
+
+  function _isInternalAccount(address account) internal view returns (bool) {
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet && insuranceFund.accountID == account) {
+      return true;
+    }
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet && feeSubAcc.accountID == account) {
+      return true;
+    }
+
+    return false;
+  }
+
   ///////////////////////////////////////////////////////////////////
   /// Config APIs
   ///////////////////////////////////////////////////////////////////
