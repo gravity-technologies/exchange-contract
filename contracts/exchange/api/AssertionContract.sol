@@ -175,9 +175,15 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   // Assertions for Transfer Contract
-  function assertDeposit(address accountID, Currency currency, int64 expectedBalance) external view {
+  function assertDeposit(
+    address accountID,
+    Currency currency,
+    int64 expectedBalance,
+    int64 expectedTotalSpotBalance
+  ) external view {
     Account storage account = state.accounts[accountID];
     require(account.spotBalances[currency] == expectedBalance, "ex depositBalance");
+    require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
   }
 
   function assertWithdraw(
@@ -185,12 +191,18 @@ contract AssertionContract is ConfigContract, RiskCheck {
     Currency currency,
     int64 expectedBalance,
     uint64 feeSubAccId,
-    int64 expectedFeeBalance
+    int64 expectedFeeBalance,
+    uint64 insuranceFundSubAccId,
+    int64 expectedInsuranceFundBalance,
+    int64 expectedTotalSpotBalance
   ) external view {
     Account storage account = state.accounts[fromAccID];
     require(account.spotBalances[currency] == expectedBalance, "ex withdrawBalance");
     SubAccount storage feeSubAcc = state.subAccounts[feeSubAccId];
     require(feeSubAcc.spotBalances[currency] == expectedFeeBalance, "ex feeBalance");
+    SubAccount storage insuranceFundSubAcc = state.subAccounts[insuranceFundSubAccId];
+    require(insuranceFundSubAcc.spotBalances[currency] == expectedInsuranceFundBalance, "ex insuranceFundBalance");
+    require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
   }
 
   function assertTransfer(
