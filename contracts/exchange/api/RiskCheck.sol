@@ -102,20 +102,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     revert("mem array is full");
   }
 
-  function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
-
-    BI memory totalValue = BI(account.spotBalances[Currency.USDT], dec);
-    uint256 numSubAccs = account.subAccounts.length;
-
-    for (uint256 i; i < numSubAccs; ++i) {
-      SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
-      totalValue = totalValue.add(_getSubAccountValueInQuote(subAcc));
-    }
-
-    return totalValue;
-  }
-
   function _getInsuranceFundLossAmount() internal view returns (int64) {
     uint dec = _getBalanceDecimal(Currency.USDT);
 
@@ -148,44 +134,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   function _requireNonNegativeValue(SubAccount storage sub) internal view {
     require(_getSubAccountValueInQuote(sub).val >= 0, "invalid total value");
-  }
-
-  /// @dev Get the total value of a sub account in quote currency
-  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
-      _getPositionsValueInQuote(sub.options)
-    );
-
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      int64 balance = sub.spotBalances[i];
-      if (balance == 0) {
-        continue;
-      }
-      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
-      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, sub.quoteCurrency);
-      totalValue = totalValue.add(balanceBI.mul(spotPriceInQuote));
-    }
-
-    return totalValue;
-  }
-
-  /// @dev Get the total value of a position collections in quote currency
-  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
-    BI memory total;
-    bytes32[] storage keys = positions.keys;
-    mapping(bytes32 => Position) storage values = positions.values;
-
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
-      Position storage pos = values[keys[i]];
-      bytes32 assetID = pos.id;
-      Currency underlying = assetGetUnderlying(assetID);
-      uint64 uDec = _getBalanceDecimal(underlying);
-      BI memory balance = BI(pos.balance, uDec);
-      BI memory assetPrice = _requireAssetPriceBI(assetID);
-      total = total.add(balance.mul(assetPrice));
-    }
-    return total;
   }
 
   /**

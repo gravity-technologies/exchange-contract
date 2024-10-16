@@ -283,6 +283,21 @@ contract ConfigContract is BaseContract {
     _sendConfigProofMessageToL1(abi.encode(timestamp, items));
   }
 
+  function _validateInternalSubAccountConfigChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
+    (SubAccount storage existingSubAcc, bool isSubAccSet) = _getSubAccountFromUintConfig(key);
+    // always allow setting new value
+    if (!isSubAccSet) {
+      return;
+    }
+    SubAccount storage newSubAcc = _requireSubAccount(_configToUint(value));
+    // 2 subaccounts under the same account => no change in internal value => OK
+    if (existingSubAcc.accountID == newSubAcc.accountID) {
+      return;
+    }
+
+    require(_getTotalAccountValueUSDT(newSubAcc.accountID) == 0, "new account must have 0 value");
+  }
+
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       address partnerAddress = _configToAddress(subKey);
@@ -295,6 +310,8 @@ contract ConfigContract is BaseContract {
       } else {
         removeAddress(state.bridgingPartners, partnerAddress, false);
       }
+    } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
+      _validateInternalSubAccountConfigChange(key, subKey, value);
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
