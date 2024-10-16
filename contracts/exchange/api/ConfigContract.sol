@@ -285,18 +285,9 @@ contract ConfigContract is BaseContract {
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
-      address partnerAddress = _configToAddress(subKey);
-      Account storage partnerAccount = _requireAccount(partnerAddress);
-      _requireAccountNoBalance(partnerAccount);
-      require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
-      bool isAdding = value == TRUE_BYTES32;
-      if (isAdding) {
-        addAddress(state.bridgingPartners, partnerAddress);
-      } else {
-        removeAddress(state.bridgingPartners, partnerAddress, false);
-      }
+      _validateBridgingPartnerChange(_configToAddress(subKey), value == TRUE_BYTES32);
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
-      _validateInternalSubAccountConfigChange(key, subKey, value);
+      _validateInternalSubAccountChange(key, subKey, value);
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
@@ -304,13 +295,24 @@ contract ConfigContract is BaseContract {
     config.val = value;
   }
 
-  /// @notice Validates changes to internal subaccounts to prevent abuse of socialized loss rules
-  /// @dev This function ensures that changes to internal accounts (like fee accounts or insurance fund)
-  ///      don't allow circumvention of socialized loss mechanisms.
-  /// @param key The ConfigID of the internal account being changed (e.g., INSURANCE_FUND_SUB_ACCOUNT_ID or ADMIN_FEE_SUB_ACCOUNT_ID)
-  /// @param subKey Unused for this function, should be 0
-  /// @param value The new subaccount ID being set for the internal account
-  function _validateInternalSubAccountConfigChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
+  function _validateBridgingPartnerChange(address partnerAddress, bool isAdding) internal {
+    Account storage acc = state.accounts[partnerAddress];
+    if (acc.id == address(0)) {
+      // setting acc to a non-existent account is allowed because the account
+      // may be created in the future, and newly created account has 0 value
+      return;
+    }
+    Account storage partnerAccount = _requireAccount(partnerAddress);
+    _requireAccountNoBalance(partnerAccount);
+    require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
+    if (isAdding) {
+      addAddress(state.bridgingPartners, partnerAddress);
+    } else {
+      removeAddress(state.bridgingPartners, partnerAddress, false);
+    }
+  }
+
+  function _validateInternalSubAccountChange(ConfigID key, bytes32 subKey, bytes32 value) internal {
     (SubAccount storage existingSubAcc, bool isSubAccSet) = _getSubAccountFromUintConfig(key);
     if (!isSubAccSet) {
       // setting new value is always allowed
