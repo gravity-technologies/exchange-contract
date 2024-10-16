@@ -56,6 +56,8 @@ struct ConfigProofMessage {
 ///
 ///////////////////////////////////////////////////////////////////
 contract ConfigContract is BaseContract {
+  using BIMath for BI;
+
   // --------------- Constants ---------------
   int32 private constant ONE_CENTIBEEP = 1;
   int32 private constant ONE_BEEP = 100;
@@ -321,7 +323,10 @@ contract ConfigContract is BaseContract {
     }
 
     Account storage account = _requireAccount(newSubAcc.accountID);
-    require(_getTotalAccountValueUSDT(account) == 0, "new internal acc must have 0 value");
+    require(
+      _getTotalAccountValueUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      "new internal acc must have 0 value"
+    );
   }
 
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
