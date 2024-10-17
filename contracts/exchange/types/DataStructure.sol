@@ -267,13 +267,13 @@ enum ConfigType {
 enum ConfigID {
   UNSPECIFIED, // 0
   // Admin Wallets
-  ADMIN_RECOVERY_ADDRESS, // 1, has timelock
+  DEPRECATED_1, // 1, no timelock to add or remove
   ORACLE_ADDRESS, // 2, has timelock
-  CONFIG_ADDRESS, // 3, has timelock
-  MARKET_DATA_ADDRESS, // 4, has timelock
+  CONFIG_ADDRESS, // 3, no timelock to add or remove
+  MARKET_DATA_ADDRESS, // 4, no timelock to add or remove
   // Admin Sub Accounts
-  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, has timelock
-  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, has timelock
+  ADMIN_FEE_SUB_ACCOUNT_ID, // 5, no timelock
+  INSURANCE_FUND_SUB_ACCOUNT_ID, // 6, no timelock
   // Funding Configs
   FUNDING_RATE_HIGH, // 7, has timelock
   FUNDING_RATE_LOW, // 8, has timelock
@@ -283,15 +283,15 @@ enum ConfigID {
   OPTIONS_MAKER_FEE_MINIMUM, // 11, has timelock
   OPTIONS_TAKER_FEE_MINIMUM, // 12, has timelock
   // ERC20 addresses
-  ERC20_ADDRESSES, // 13, has timelock
-  L2_SHARED_BRIDGE_ADDRESS, // 14, has timelock
+  ERC20_ADDRESSES, // 13, no timelock to add, is immutable once set
+  L2_SHARED_BRIDGE_ADDRESS, // 14, no timelock to add, is immutable once set
   // Simple cross futures initial margin. This config is not used in the contract (since initial margin is only computed offchain),
   // but it is important to keep it here to maintain the correct configID ordinals
   SIMPLE_CROSS_FUTURES_INITIAL_MARGIN, // 15, has timelock
   // Withdrawal Fee Configs
   WITHDRAWAL_FEE, // 16, has timelock
   // Bridging partner accounts can transfer from and withdraw to any address
-  BRIDGING_PARTNER_ADDRESSES // 17, has timelock
+  BRIDGING_PARTNER_ADDRESSES // 17, no timelock on add, has timelock on remove
 }
 
 struct ConfigValue {
