@@ -11,6 +11,22 @@ import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/tok
 abstract contract TransferContract is TradeContract {
   using BIMath for BI;
 
+  event Withdrawal(
+    address indexed fromAccount,
+    address indexed recipient, // the recipient of the withdrawal on L1
+    Currency currency,
+    uint64 numTokens,
+    uint64 txID
+  );
+
+  event Deposit(
+    address indexed toAccount,
+    bytes32 indexed bridgeMintHash, // the hash of the BridgeMint event on L2
+    Currency currency,
+    uint64 numTokens,
+    uint64 txID
+  );
+
   /**
    * @notice Deposit collateral into a sub account
    *
@@ -49,6 +65,8 @@ abstract contract TransferContract is TradeContract {
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
     state.totalSpotBalances[currency] += numTokensSigned;
+
+    emit Deposit(accountID, txHash, currency, numTokens, txID);
   }
 
   /**
@@ -100,6 +118,8 @@ abstract contract TransferContract is TradeContract {
     state.totalSpotBalances[currency] -= amountToSend;
 
     _withdrawToL1(currency, amountToSend, recipient);
+
+    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
   }
 
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private {
