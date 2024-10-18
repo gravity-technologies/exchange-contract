@@ -218,6 +218,45 @@ export interface ExOnboardedTransferAccount {
   transfer_account: string
 }
 
+export interface ExExchangeCurrencyBalance {
+  currency: string
+  balance: string
+}
+
+export interface ExSubAccountSpotReal {
+  sub_account_id: string
+  currency: string
+  balance: string
+}
+
+export interface ExSubAccountPositionOptional {
+  position: {
+    event_time: string
+    sub_account_id: string
+    instrument: Asset
+    size: string
+    notional: string
+    entry_price: string
+    exit_price: string
+    mark_price: string
+    unrealized_pnl: string
+    realized_pnl: string
+    total_pnl: string
+    roi: number
+    quote_index_price: string
+  }
+}
+
+export interface ExInsuranceFundLoss {
+  amount: string
+  currency: string
+}
+
+export interface ExTotalClientEquity {
+  amount: string
+  currency: string
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -248,4 +287,9 @@ export interface Expectation {
   | ExSimpleCrossMaintenanceMarginTiersNoTimelock
   | ExSubAccountMaintMargin
   | ExOnboardedTransferAccount
+  | ExExchangeCurrencyBalance
+  | ExSubAccountSpotReal
+  | ExSubAccountPositionOptional
+  | ExInsuranceFundLoss
+  | ExTotalClientEquity
 }
