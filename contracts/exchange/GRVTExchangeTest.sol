@@ -239,11 +239,6 @@ contract GRVTExchangeTest is
     return state.totalSpotBalances[currency];
   }
 
-  function getSubAccountSpotBalanceReal(uint64 subAccountID, Currency currency) public view returns (int64) {
-    SubAccount storage sub = _requireSubAccount(subAccountID);
-    return sub.spotBalances[currency];
-  }
-
   function getInsuranceFundLoss(Currency currency) public view returns (int64) {
     require(currency == Currency.USDT, "Invalid currency");
     return _getInsuranceFundLossAmount();
