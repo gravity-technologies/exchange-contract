@@ -2,10 +2,11 @@ pragma solidity ^0.8.20;
 
 import "./FundingAndSettlement.sol";
 import "./BaseContract.sol";
+import "./ConfigContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 
-contract SubAccountContract is BaseContract, FundingAndSettlement {
+contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlement {
   int64 private constant _MAX_SESSION_DURATION_NANO = 31 * 24 * 60 * 60 * 1e9; // 31 days
 
   /// @notice Create a subaccount
@@ -33,6 +34,7 @@ contract SubAccountContract is BaseContract, FundingAndSettlement {
     require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
     require(sub.accountID == address(0), "subaccount already exists");
+    require(!_isBridgingPartnerAccount(accountID), "bridging partners cannot have subaccount");
 
     // requires that the user is an account admin
     require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");

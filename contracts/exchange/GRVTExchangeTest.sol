@@ -223,4 +223,18 @@ contract GRVTExchangeTest is
   function getTimestamp() public view returns (int64) {
     return state.timestamp;
   }
+
+  function getExchangeCurrencyBalance(Currency currency) public view returns (int64) {
+    return state.totalSpotBalances[currency];
+  }
+
+  function getInsuranceFundLoss(Currency currency) public view returns (int64) {
+    require(currency == Currency.USDT, "Invalid currency");
+    return _getInsuranceFundLossAmount();
+  }
+
+  function getTotalClientEquity(Currency currency) public view returns (int64) {
+    require(currency == Currency.USDT, "Invalid currency");
+    return _getTotalClientValueUSDT();
+  }
 }
