@@ -125,9 +125,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
     if (isLiquidation && beforeTrade) {
       require(!isAboveMaintenanceMargin(sub), "subaccount liquidated is above maintenance margin");
-    } else if (isLiquidation && !beforeTrade) {
-      _requireNonNegativeValue(sub);
-    } else {
+    } else if (!isLiquidation && !beforeTrade) {
       require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
     }
   }

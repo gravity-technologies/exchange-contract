@@ -358,13 +358,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = sub.spotBalances[subQuote] + calcResult.spotDelta.toInt64(qDec);
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
     if (isFeeCharged) {
-      newSpotBalance -= fee;
       feeSub.spotBalances[subQuote] += fee;
+      sub.spotBalances[subQuote] += calcResult.spotDelta.toInt64(qDec) - fee;
+    } else {
+      sub.spotBalances[subQuote] += calcResult.spotDelta.toInt64(qDec);
     }
-    sub.spotBalances[subQuote] = newSpotBalance;
   }
 
   function removePos(SubAccount storage sub, bytes32 assetID) private {
