@@ -56,6 +56,8 @@ struct ConfigProofMessage {
 ///
 ///////////////////////////////////////////////////////////////////
 contract ConfigContract is BaseContract {
+  using BIMath for BI;
+
   // --------------- Constants ---------------
   int32 private constant ONE_CENTIBEEP = 1;
   int32 private constant ONE_BEEP = 100;
@@ -119,6 +121,22 @@ contract ConfigContract is BaseContract {
   function _getUintConfig(ConfigID key) internal view returns (uint64, bool) {
     ConfigValue storage c = state.config1DValues[key];
     return (_configToUint(c.val), c.isSet);
+  }
+
+  function _getTradingFeeSubAccount(bool isLiquidation) internal view returns (SubAccount storage, bool) {
+    if (isLiquidation) {
+      return _getInsuranceFundSubAccount();
+    } else {
+      return _getAdminFeeSubAccount();
+    }
+  }
+
+  function _getInsuranceFundSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+  }
+
+  function _getAdminFeeSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
   }
 
   function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
@@ -202,6 +220,28 @@ contract ConfigContract is BaseContract {
     emit ConfigUpdateMessageSent(state.configVersion, msg.sig, data);
   }
 
+  function _isUserAccount(address account) internal view returns (bool) {
+    return !_isBridgingPartnerAccount(account) && !_isInternalAccount(account);
+  }
+
+  function _isBridgingPartnerAccount(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(account));
+  }
+
+  function _isInternalAccount(address account) internal view returns (bool) {
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet && insuranceFund.accountID == account) {
+      return true;
+    }
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet && feeSubAcc.accountID == account) {
+      return true;
+    }
+
+    return false;
+  }
+
   ///////////////////////////////////////////////////////////////////
   /// Config APIs
   ///////////////////////////////////////////////////////////////////
@@ -246,9 +286,47 @@ contract ConfigContract is BaseContract {
   }
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      _validateBridgingPartnerChange(_configToAddress(subKey), value == TRUE_BYTES32);
+    } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
+      _validateInternalSubAccountChange(_configToUint(value));
+    }
+
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
+  }
+
+  function _validateBridgingPartnerChange(address partnerAddress, bool isAdding) internal {
+    Account storage acc = state.accounts[partnerAddress];
+    if (acc.id == address(0)) {
+      // setting acc to a non-existent account is allowed because the account
+      // may be created in the future, and newly created account has 0 value
+      return;
+    }
+    Account storage partnerAccount = _requireAccount(partnerAddress);
+    _requireAccountNoBalance(partnerAccount);
+    require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
+    if (isAdding) {
+      addAddress(state.bridgingPartners, partnerAddress);
+    } else {
+      removeAddress(state.bridgingPartners, partnerAddress, false);
+    }
+  }
+
+  function _validateInternalSubAccountChange(uint64 newSubAccountId) internal {
+    SubAccount storage newSubAcc = _requireSubAccount(newSubAccountId);
+    if (_isInternalAccount(newSubAcc.accountID)) {
+      // if the new subaccount is already under an internal account
+      // this won't decrease the total client equity, therefore it's allowed
+      return;
+    }
+
+    Account storage account = _requireAccount(newSubAcc.accountID);
+    require(
+      _getTotalAccountValueUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      "new internal acc must have 0 value"
+    );
   }
 
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {

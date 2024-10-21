@@ -24,6 +24,97 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
+  function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
+    int64 insuranceFundLossAmount = _getInsuranceFundLossAmount();
+    if (insuranceFundLossAmount <= 0) {
+      return 0;
+    }
+
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    int64 totalClientValue = _getTotalClientValueUSDT();
+    BI memory totalClientValueBI = BI(totalClientValue, dec);
+    BI memory insuranceFundLossAmountBI = BI(insuranceFundLossAmount, dec);
+
+    // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
+    BI memory withdrawAmountBI = BI(withdrawAmount, dec);
+    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountBI).div(totalClientValueBI);
+    return result.toUint64(dec);
+  }
+
+  function _getTotalClientValueUSDT() internal view returns (int64) {
+    return state.totalSpotBalances[Currency.USDT] - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
+  }
+
+  function _getTotalBridgingPartnerValueUSDT() internal view returns (int64) {
+    int64 totalValue = 0;
+    for (uint i = 0; i < state.bridgingPartners.length; i++) {
+      totalValue += state.accounts[state.bridgingPartners[i]].spotBalances[Currency.USDT];
+    }
+    return totalValue;
+  }
+
+  function _getTotalInternalValueUSDT() internal view returns (int64) {
+    int64 totalValue = 0;
+
+    uint dec = _getBalanceDecimal(Currency.USDT);
+    BI memory totalValueBI = BI(0, dec);
+
+    address[] memory internalAccountAddresses = _getAllInternalFundingAccounts();
+    for (uint i = 0; i < internalAccountAddresses.length; i++) {
+      if (internalAccountAddresses[i] == address(0)) {
+        break;
+      }
+      Account storage account = _requireAccount(internalAccountAddresses[i]);
+      totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
+    }
+
+    return totalValueBI.toInt64(dec);
+  }
+
+  function _getAllInternalFundingAccounts() internal view returns (address[] memory) {
+    address[] memory accounts = new address[](2);
+
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet) {
+      _addUniqueAddress(accounts, insuranceFund.accountID);
+    }
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet) {
+      _addUniqueAddress(accounts, feeSubAcc.accountID);
+    }
+
+    return accounts;
+  }
+
+  function _addUniqueAddress(address[] memory addresses, address newAddress) private pure {
+    if (newAddress == address(0)) revert("Invalid address");
+
+    for (uint256 i = 0; i < addresses.length; i++) {
+      if (addresses[i] == address(0)) {
+        addresses[i] = newAddress;
+        return;
+      }
+      if (addresses[i] == newAddress) return;
+    }
+
+    revert("mem array is full");
+  }
+
+  function _getInsuranceFundLossAmount() internal view returns (int64) {
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet) {
+      int64 insuranceFundValue = _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
+      if (insuranceFundValue < 0) {
+        return -insuranceFundValue;
+      }
+    }
+    return 0;
+  }
+
   function _requireValidMargin(SubAccount storage sub, bool isLiquidation, bool beforeTrade) internal view {
     (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
 
@@ -34,53 +125,13 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
     if (isLiquidation && beforeTrade) {
       require(!isAboveMaintenanceMargin(sub), "subaccount liquidated is above maintenance margin");
-    } else if (isLiquidation && !beforeTrade) {
-      _requireNonNegativeValue(sub);
-    } else {
+    } else if (!isLiquidation && !beforeTrade) {
       require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
     }
   }
 
   function _requireNonNegativeValue(SubAccount storage sub) internal view {
     require(_getSubAccountValueInQuote(sub).val >= 0, "invalid total value");
-  }
-
-  /// @dev Get the total value of a sub account in quote currency
-  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
-      _getPositionsValueInQuote(sub.options)
-    );
-
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      int64 balance = sub.spotBalances[i];
-      if (balance == 0) {
-        continue;
-      }
-      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
-      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, sub.quoteCurrency);
-      totalValue = totalValue.add(balanceBI.mul(spotPriceInQuote));
-    }
-
-    return totalValue;
-  }
-
-  /// @dev Get the total value of a position collections in quote currency
-  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
-    BI memory total;
-    bytes32[] storage keys = positions.keys;
-    mapping(bytes32 => Position) storage values = positions.values;
-
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
-      Position storage pos = values[keys[i]];
-      bytes32 assetID = pos.id;
-      Currency underlying = assetGetUnderlying(assetID);
-      uint64 uDec = _getBalanceDecimal(underlying);
-      BI memory balance = BI(pos.balance, uDec);
-      BI memory assetPrice = _requireAssetPriceBI(assetID);
-      total = total.add(balance.mul(assetPrice));
-    }
-    return total;
   }
 
   /**

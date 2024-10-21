@@ -346,14 +346,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     return notional.mul(fee).toInt64(qDec);
   }
 
-  function _getFeeSubAccount(bool isLiquidation) private view returns (SubAccount storage, bool) {
-    if (isLiquidation) {
-      return _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
-    } else {
-      return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
-    }
-  }
-
   function _executeOrder(
     SubAccount storage sub,
     Order calldata order,
@@ -399,13 +391,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     // Step 4: Update subaccount spot balance, deducting fees
-    int64 newSpotBalance = sub.spotBalances[subQuote] + spotDelta.toInt64(qDec);
-    (SubAccount storage feeSub, bool isFeeCharged) = _getFeeSubAccount(order.isLiquidation);
+    (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
     if (isFeeCharged) {
-      newSpotBalance -= fee;
       feeSub.spotBalances[subQuote] += fee;
+      sub.spotBalances[subQuote] += spotDelta.toInt64(qDec) - fee;
+    } else {
+      sub.spotBalances[subQuote] += spotDelta.toInt64(qDec);
     }
-    sub.spotBalances[subQuote] = newSpotBalance;
   }
 
   function removePos(SubAccount storage sub, bytes32 assetID) private {

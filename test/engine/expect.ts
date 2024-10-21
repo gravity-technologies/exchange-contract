@@ -31,6 +31,11 @@ import {
   ExSubAccountMaintMargin,
   ExOnboardedTransferAccount,
   Expectation,
+  ExExchangeCurrencyBalance,
+  ExSubAccountSpotReal,
+  ExSubAccountPositionOptional,
+  ExInsuranceFundLoss,
+  ExTotalClientEquity,
 } from "./types"
 import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
@@ -116,6 +121,17 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSubAccountMaintenanceMargin(contract, expectation.expect as ExSubAccountMaintMargin)
     case "ExOnboardedTransferAccount":
       return expectOnboardedTransferAccount(contract, expectation.expect as ExOnboardedTransferAccount)
+    case "ExExchangeCurrencyBalance":
+      return expectExchangeCurrencyBalance(contract, expectation.expect as ExExchangeCurrencyBalance)
+    case "ExSubAccountSpotReal":
+      console.log(`⚠️ ${expectation.name} is not check on contract because calculation logic is not in contract ⚠️ `)
+      break;
+    case "ExSubAccountPositionOptional":
+      return expectSubAccountPositionOptional(contract, expectation.expect as ExSubAccountPositionOptional)
+    case "ExInsuranceFundLoss":
+      return expectInsuranceFundLoss(contract, expectation.expect as ExInsuranceFundLoss)
+    case "ExTotalClientEquity":
+      return expectTotalClientEquity(contract, expectation.expect as ExTotalClientEquity)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -387,6 +403,43 @@ async function expectOnboardedTransferAccount(contract: Contract, expectations: 
     expectations.transfer_account
   )
   expect(isOnboarded).to.be.true
+}
+
+async function expectExchangeCurrencyBalance(contract: Contract, expectations: ExExchangeCurrencyBalance) {
+  const balance = await contract.getExchangeCurrencyBalance(CurrencyToEnum[expectations.currency])
+  expect(big(expectations.balance)).to.equal(big(balance))
+}
+
+// this refers to the subaccount's spot balance in API
+async function expectSubAccountSpotReal(contract: Contract, expectations: ExSubAccountSpotReal) {
+  expect(expectations.currency).to.equal("USDT")
+  const value = await contract.getSubAccountValue(BigInt(expectations.sub_account_id))
+  expect(big(expectations.balance)).to.equal(big(value))
+}
+
+async function expectSubAccountPositionOptional(contract: Contract, expectations: ExSubAccountPositionOptional) {
+  let assetID = big(toAssetID(expectations.position.instrument))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  const [found, balance] = await contract.getSubAccountPosition(
+    BigInt(expectations.position.sub_account_id),
+    assetIDHex
+  )
+
+  if (found) {
+    expect(big(expectations.position.size)).to.equal(big(balance))
+  } else {
+    expect(expectations.position.size).to.equal("0")
+  }
+}
+
+async function expectInsuranceFundLoss(contract: Contract, expectations: ExInsuranceFundLoss) {
+  const loss = await contract.getInsuranceFundLoss(CurrencyToEnum[expectations.currency])
+  expect(big(expectations.amount)).to.equal(big(loss))
+}
+
+async function expectTotalClientEquity(contract: Contract, expectations: ExTotalClientEquity) {
+  const equity = await contract.getTotalClientEquity(CurrencyToEnum[expectations.currency])
+  expect(big(expectations.amount)).to.equal(big(equity))
 }
 
 function big(s: any): BigNumber {
