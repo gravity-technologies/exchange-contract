@@ -271,8 +271,7 @@ enum ConfigType {
 
 enum ConfigID {
   UNSPECIFIED, // 0
-  // Admin Wallets
-  DEPRECATED_1, // 1, no timelock to add or remove
+  DEPRECATED_1, // 1
   ORACLE_ADDRESS, // 2, has timelock
   CONFIG_ADDRESS, // 3, no timelock to add or remove
   MARKET_DATA_ADDRESS, // 4, no timelock to add or remove
