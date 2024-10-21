@@ -118,6 +118,8 @@ abstract contract TransferContract is TradeContract {
     state.totalSpotBalances[currency] -= amountToSend;
 
     _withdrawToL1(currency, amountToSend, recipient);
+
+    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
   }
 
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private {
@@ -128,8 +130,6 @@ abstract contract TransferContract is TradeContract {
     uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
     l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
-
-    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
   }
 
   function _applySocializedLoss(int64 amount, Currency currency) private returns (int64) {
