@@ -154,6 +154,10 @@ contract ConfigContract is BaseContract {
     return (c.val, c.isSet);
   }
 
+  function _getBoolConfig(ConfigID key) internal view returns (bool) {
+    return state.config1DValues[key].val == TRUE_BYTES32;
+  }
+
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
@@ -351,11 +355,11 @@ contract ConfigContract is BaseContract {
       return 0;
     }
 
-    if (typ == ConfigType.BRIDGING_PARTNER_ADDRESSES) {
-      return newVal == TRUE_BYTES32 ? 0 : rules[0].lockDuration;
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      return newVal == TRUE_BYTES32 ? int64(0) : rules[0].lockDuration;
     }
 
-    if (tpye == ConfigType.ORACLE_ADDRESS) {
+    if (key == ConfigID.ORACLE_ADDRESS) {
       return rules[0].lockDuration;
     }
 
