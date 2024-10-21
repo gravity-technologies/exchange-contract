@@ -504,7 +504,6 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    // This config does not have timelock as it is controlled by GRVT
     rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
 
     // CONFIG_ADDRESS
