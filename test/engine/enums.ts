@@ -20,7 +20,7 @@ export const KindToEnum: { [kind: string]: number } = {
 
 export const ConfigIDToEnum: { [config: string]: number } = {
   UNSPECIFIED: 0,
-  ADMIN_RECOVERY_ADDRESS: 1,
+  DEPRECATED_1: 1,
   ORACLE_ADDRESS: 2,
   CONFIG_ADDRESS: 3,
   MARKET_DATA_ADDRESS: 4,

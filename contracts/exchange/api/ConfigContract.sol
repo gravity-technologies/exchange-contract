@@ -154,6 +154,10 @@ contract ConfigContract is BaseContract {
     return (c.val, c.isSet);
   }
 
+  function _getBoolConfig(ConfigID key) internal view returns (bool) {
+    return state.config1DValues[key].val == TRUE_BYTES32;
+  }
+
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
     return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
@@ -351,10 +355,36 @@ contract ConfigContract is BaseContract {
       return 0;
     }
 
-    // These config types are not numerical and have a fixed lock duration
-    // There should be only 1 timelock rule for these config types
-    if (typ == ConfigType.ADDRESS || typ == ConfigType.ADDRESS2D || typ == ConfigType.BOOL || typ == ConfigType.BOOL2D)
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      return newVal == TRUE_BYTES32 ? int64(0) : rules[0].lockDuration;
+    }
+
+    if (key == ConfigID.ORACLE_ADDRESS) {
       return rules[0].lockDuration;
+    }
+
+    // These 4 config types are not numerical and have a fixed lock duration
+    // There should be only 1 timelock rule for these config types
+    if (typ == ConfigType.ADDRESS) {
+      (address oldVal, bool isSet) = _getAddressConfig(key);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.ADDRESS2D) {
+      (address oldVal, bool isSet) = _getAddressConfig2D(key, subKey);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL) {
+      bool oldVal = _getBoolConfig(key);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL2D) {
+      bool oldVal = _getBoolConfig2D(key, subKey);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
 
     if (typ == ConfigType.INT) {
       (int64 oldVal, bool isSet) = _getIntConfig(key);
@@ -474,12 +504,6 @@ contract ConfigContract is BaseContract {
     /// ADMIN addresses
     ///////////////////////////////////////////////////////////////////
 
-    // ADMIN_RECOVERY_ADDRESS
-    id = ConfigID.ADMIN_RECOVERY_ADDRESS;
-    settings[id].typ = ConfigType.BOOL2D;
-    rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
-
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
@@ -490,13 +514,15 @@ contract ConfigContract is BaseContract {
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
@@ -504,24 +530,28 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
