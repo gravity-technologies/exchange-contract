@@ -5,8 +5,8 @@ import "./signature/generated/TransferSig.sol";
 import "../util/BIMath.sol";
 
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
-import {IL2TokenFundExchange} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2TokenFundExchange.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
+import {DepositProxy} from "../../DepositProxy.sol";
 
 abstract contract TransferContract is TradeContract {
   using BIMath for BI;
@@ -60,7 +60,7 @@ abstract contract TransferContract is TradeContract {
 
     uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
-    IL2TokenFundExchange(getCurrencyERC20Address(currency)).fundExchangeAccount(accountID, fundExchangeAmount);
+    getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;

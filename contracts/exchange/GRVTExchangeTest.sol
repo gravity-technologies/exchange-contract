@@ -19,7 +19,13 @@ contract GRVTExchangeTest is
 {
   using BIMath for BI;
 
-  function initialize(address admin, address chainSubmitter, address initializeConfigSigner) public initializer {
+  function initialize(
+    address admin,
+    address chainSubmitter,
+    address initializeConfigSigner,
+    address beaconOwner,
+    bytes32 depositProxyProxyBytecodeHash
+  ) public initializer {
     __ReentrancyGuard_init();
 
     // Initialize the config timelock rules
@@ -28,6 +34,11 @@ contract GRVTExchangeTest is
 
     _setupRole(DEFAULT_ADMIN_ROLE, admin);
     _setupRole(CHAIN_SUBMITTER_ROLE, chainSubmitter);
+
+    address depositProxy = address(new DepositProxy{salt: bytes32(0)}());
+    state.depositProxyBeacon = new UpgradeableBeacon{salt: bytes32(0)}(depositProxy);
+    state.depositProxyBeacon.transferOwnership(beaconOwner);
+    state.depositProxyProxyBytecodeHash = depositProxyProxyBytecodeHash;
   }
 
   struct AccountResult {

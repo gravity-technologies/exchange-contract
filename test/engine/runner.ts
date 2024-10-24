@@ -37,7 +37,7 @@ async function executeTestStep(
   }
 
   if (isDeposit(step)) {
-    await mockFinalizeDeposit(l2SharedBridgeAsL1Bridge, step.tx!.deposit!)
+    await mockFinalizeDeposit(l2SharedBridgeAsL1Bridge, step.tx!.deposit!, exchangeContract)
   }
 
   try {

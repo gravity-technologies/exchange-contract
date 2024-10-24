@@ -17,6 +17,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
   .addParam("admin", "admin")
   .addParam("chainSubmitter", "chainSubmitter")
   .addParam("l1SharedBridge", "l1SharedBridge")
+  .addParam("depositProxyBeaconOwner", "depositProxyBeaconOwner")
   .addParam("chainId", "chainId")
   .addParam("saltPreImage", "saltPreImage")
   .setAction(async (taskArgs, hre) => {
@@ -26,6 +27,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
       governance,
       bridgeHub,
       l1SharedBridge,
+      depositProxyBeaconOwner,
       initializeConfigSigner,
       admin,
       chainSubmitter,
@@ -49,14 +51,23 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     const exchangeImpl = await l2Deployer.deploy(exchangeArtifact, [])
     const exchangeCodehash = hashBytecode(exchangeArtifact.bytecode)
 
-    // TODO: add balance check
-    // TODO: maintain local state of deployed contracts and information required for proofs
+    const beaconArtifact = await l2Deployer.loadArtifact("UpgradeableBeacon")
+    const beaconInstance = await l2Deployer.deploy(beaconArtifact, [exchangeImpl.address])
+    const beaconCodehash = hashBytecode(beaconArtifact.bytecode)
 
+    const beaconProxyArtifact = await l2Deployer.loadArtifact("BeaconProxy")
+    await l2Deployer.deploy(beaconProxyArtifact, [
+      beaconInstance.address,
+      "0x",
+    ])
+    const beaconProxyCodehash = hashBytecode(beaconProxyArtifact.bytecode)
+
+    const exchangeInitializeData = new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner, depositProxyBeaconOwner, beaconProxyCodehash])
     const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
-    const tupInstance = await l2Deployer.deploy(tupArtifact, [
+    await l2Deployer.deploy(tupArtifact, [
       exchangeImpl.address,
       ADDRESS_ONE,
-      new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner]),
+      exchangeInitializeData,
     ])
     const tupCodehash = hashBytecode(tupArtifact.bytecode)
 
@@ -74,7 +85,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
         [
           expectedExchangeImplAddress,
           applyL1ToL2Alias(governance),
-          new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner]),
+          exchangeInitializeData,
         ]
       )
     )
@@ -89,6 +100,8 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     console.log("L1 deployer address", l1Deployer.address)
     console.log("Exchange codehash: ", ethers.utils.hexlify(exchangeCodehash))
     console.log("TUP codehash: ", ethers.utils.hexlify(tupCodehash))
+    console.log("Beacon codehash: ", ethers.utils.hexlify(beaconCodehash))
+    console.log("Beacon proxy codehash: ", ethers.utils.hexlify(beaconProxyCodehash))
     console.log("Expected exchange impl address: ", expectedExchangeImplAddress)
     console.log("Expected exchange proxy address: ", expectedExchangeProxyAddress)
 
