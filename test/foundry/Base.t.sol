@@ -79,7 +79,7 @@ contract BaseTest is Test {
   function deployGRVTExchange() internal {
     grvtExchange = new GRVTExchange();
     // We don't use this way in prod. When we use the openzeppelin plugin - this is called internally
-    grvtExchange.initialize(address(0), address(0), address(0));
+    grvtExchange.initialize(address(0), address(0), address(0), address(0), bytes32(0));
     vm.label({account: address(grvtExchange), newLabel: "GRVTExchange"});
   }
 

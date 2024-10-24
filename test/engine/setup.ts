@@ -5,6 +5,10 @@ import { L2TokenInfo } from "../../deploy/testutil"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
 import { getDeployerWallet } from "../util"
+import { computeL2Create2Address } from "../../scripts/utils"
+import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
+import * as hre from "hardhat"
+import { hashBytecode } from "zksync-web3/build/src/utils"
 
 export async function setupTestEnvironment() {
   const w1 = getDeployerWallet()
@@ -21,11 +25,20 @@ async function deployContracts() {
   const exchangeContract = await deployContract("GRVTExchangeTest", [], deployOptions)
   const rtfTestInitializeConfigSigner = "0xA08Ee13480C410De20Ea3d126Ee2a7DaA2a30b7D"
 
+  const l2Deployer = new Deployer(hre, deployerWallet)
+  const beaconProxyArtifact = await l2Deployer.loadArtifact("BeaconProxy")
+
+  // just to register the bytecode
+  const beacon = await deployContract("UpgradeableBeacon", [exchangeContract.address], deployOptions)
+  await deployContract("BeaconProxy", [beacon.address, "0x"], deployOptions)
+
   await exchangeContract.initialize(
     deployerWallet.address,
     // deployer is also the chain submitter
     deployerWallet.address,
-    rtfTestInitializeConfigSigner
+    rtfTestInitializeConfigSigner,
+    deployerWallet.address,
+    hashBytecode(beaconProxyArtifact.bytecode)
   )
 
   return exchangeContract

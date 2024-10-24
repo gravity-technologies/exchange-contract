@@ -15,7 +15,6 @@ describe("API - TestEngine", function () {
   let runSnapshotId: string
   let testSnapshotId: string
   let w1: Wallet
-
   before(async () => {
     ({ exchangeContract, l2SharedBridgeAsL1Bridge, w1 } = await setupTestEnvironment())
     runSnapshotId = await network.provider.send("evm_snapshot")
