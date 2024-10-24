@@ -5,6 +5,7 @@ import { expectToThrowAsync } from "../util"
 import { validateExpectations } from "./expect"
 import { TestCase, TestStep } from "./types"
 import { isDeposit, mockFinalizeDeposit } from "./deposit"
+import { network } from "hardhat"
 
 const GAS_LIMIT = 2100000000
 
@@ -51,7 +52,10 @@ async function executeTestStep(
 
   if (step.assertion_data !== "") {
     try {
-      const normalGasEstimate = await w1.estimateGas(tx)
+      let snapshotId = await network.provider.send("evm_snapshot")
+      const normalGasEstimate = await w1.sendTransaction(tx).then(r => r.wait()).then(r => r.gasUsed)
+      await network.provider.send("evm_revert", [snapshotId])
+      snapshotId = await network.provider.send("evm_snapshot")
       const multicallWOAssertion = [
         {
           target: exchangeContract.address,
@@ -64,10 +68,13 @@ async function executeTestStep(
           callData: step.tx_data,
         }
       ]
-      const multicallWOAssertionGasEstimate = await w1.estimateGas({
+      const multicallWOAssertionGasEstimate = await w1.sendTransaction({
         to: multicallContract.address,
         data: multicallContract.interface.encodeFunctionData("aggregate3", [multicallWOAssertion]),
-      })
+        gasLimit: GAS_LIMIT,
+      }).then(r => r.wait()).then(r => r.gasUsed)
+      await network.provider.send("evm_revert", [snapshotId])
+      snapshotId = await network.provider.send("evm_snapshot")
       const multicallWithAssertion = [
         ...multicallWOAssertion,
         {
@@ -76,11 +83,12 @@ async function executeTestStep(
           callData: step.assertion_data,
         },
       ]
-      const multicallWithAssertionGasEstimate = await w1.estimateGas({
+      const multicallWithAssertionGasEstimate = await w1.sendTransaction({
         to: multicallContract.address,
         data: multicallContract.interface.encodeFunctionData("aggregate3", [multicallWithAssertion]),
-      })
-
+        gasLimit: GAS_LIMIT,
+      }).then(r => r.wait()).then(r => r.gasUsed)
+      await network.provider.send("evm_revert", [snapshotId])
       console.log(`GAS_BENCHMARK | ${step.tx!.type} | normal: ${normalGasEstimate} | multicallWOAssertion: ${multicallWOAssertionGasEstimate} | multicallWithAssertion: ${multicallWithAssertionGasEstimate} | ${testName} | txID: ${step.tx_id}`)
     } catch (e) {
       console.error("Error estimating gas for multicallWOAssertion. Check the input payload:", e)
