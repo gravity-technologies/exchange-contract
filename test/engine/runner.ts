@@ -12,7 +12,7 @@ export async function runTestCase(
   test: TestCase,
   exchangeContract: Contract,
   w1: Wallet,
-  l2SharedBridgeAsL1Bridge: L2SharedBridge
+  l2SharedBridgeAsL1Bridge: L2SharedBridge,
 ) {
   for (const step of test.steps ?? []) {
     await executeTestStep(step, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
@@ -23,7 +23,7 @@ async function executeTestStep(
   step: TestStep,
   exchangeContract: Contract,
   w1: Wallet,
-  l2SharedBridgeAsL1Bridge: L2SharedBridge
+  l2SharedBridgeAsL1Bridge: L2SharedBridge,
 ) {
   if (step.tx_data === "") {
     await validateExpectations(exchangeContract, step.expectations)
@@ -37,7 +37,7 @@ async function executeTestStep(
   }
 
   if (isDeposit(step)) {
-    await mockFinalizeDeposit(l2SharedBridgeAsL1Bridge, step.tx!.deposit!)
+    await mockFinalizeDeposit(l2SharedBridgeAsL1Bridge, step.tx!.deposit!, exchangeContract)
   }
 
   try {
