@@ -27,7 +27,7 @@ const config: HardhatUserConfig = {
       chainId: 260, // found using era_test_node run
     },
     grvtDev: {
-      url: "https://zkrpc-test.testnet.grvt.io/",
+      url: "https://zkrpc.zkstg.gravitymarkets.io/",
       ethNetwork: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       zksync: true,
       chainId: 327,
