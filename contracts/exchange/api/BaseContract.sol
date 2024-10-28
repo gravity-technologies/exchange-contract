@@ -9,6 +9,10 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import {DepositProxy} from "../../DepositProxy.sol";
+import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
+import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -186,6 +190,14 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return state.lastTxID;
   }
 
+  function getDepositProxyBytecodeHash() public view returns (bytes32) {
+    return state.depositProxyProxyBytecodeHash;
+  }
+
+  function getDepositProxyBeacon() public view returns (address) {
+    return address(state.depositProxyBeacon);
+  }
+
   function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
     if (currency == Currency.BTC || currency == Currency.ETH) {
       return 9;
@@ -336,5 +348,62 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     return pos;
+  }
+
+  /**
+   * @dev Deploys a new deposit proxy contract for a specific main account. To be called at account creation.
+   * @param account The account address to deploy the deposit proxy for
+   * @return The address of the newly deployed deposit proxy contract
+   * @notice This function:
+   * 1. Deploys a new beacon proxy contract as a beacon proxy with CREATE2
+   * 2. Initializes the proxy with the exchange contract address and account
+   */
+  function _deployDepositProxy(address account) internal returns (address) {
+    bytes32 salt = _getCreate2Salt(account);
+
+    address depositProxy = _deployBeaconProxy(salt);
+    DepositProxy(depositProxy).initialize(address(this), account);
+
+    return depositProxy;
+  }
+
+  function _getCreate2Salt(address accountID) internal pure returns (bytes32 salt) {
+    salt = bytes32(uint256(uint160(accountID)));
+  }
+
+  /**
+   * @dev Deploys a new beacon proxy contract using the system contract caller
+   * @param salt The CREATE2 salt used to determine the deployment address
+   * @return proxy The address of the newly deployed beacon proxy contract
+   * @notice This function deploys a proxy that points to the deposit proxy beacon with CREATE2
+   * @custom:security The deployment uses the zkSync Era system contract caller which:
+   * - Maintains deterministic addressing via CREATE2
+   * - Uses beacon proxy bytecode hash with bytecode already registered with the chain
+   * @custom:error Reverts if:
+   * - System call fails to deploy the contract
+   */
+  function _deployBeaconProxy(bytes32 salt) internal returns (address proxy) {
+    (bool success, bytes memory returndata) = SystemContractsCaller.systemCallWithReturndata(
+      uint32(gasleft()),
+      DEPLOYER_SYSTEM_CONTRACT,
+      0,
+      abi.encodeCall(
+        IContractDeployer.create2,
+        (salt, state.depositProxyProxyBytecodeHash, abi.encode(address(state.depositProxyBeacon), ""))
+      )
+    );
+
+    // The deployment should be successful and return the address of the proxy
+    require(success, "failed to deploy deposit proxy");
+    proxy = abi.decode(returndata, (address));
+  }
+
+  function getDepositProxy(address accountID) public view returns (DepositProxy) {
+    bytes32 constructorInputHash = keccak256(abi.encode(getDepositProxyBeacon(), ""));
+    bytes32 salt = _getCreate2Salt(accountID);
+    return
+      DepositProxy(
+        L2ContractHelper.computeCreate2Address(address(this), salt, getDepositProxyBytecodeHash(), constructorInputHash)
+      );
   }
 }

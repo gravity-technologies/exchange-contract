@@ -39,6 +39,7 @@ export interface DepositTxInfo {
   to_account_id: string
   token_currency: string
   num_tokens: string
+  currency: string
 }
 
 export interface ExNumAccounts {

@@ -1,4 +1,4 @@
-import { ethers } from "ethers"
+import { Contract, ethers } from "ethers"
 import { L2TokenInfo } from "../../deploy/testutil"
 import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridge"
 import { DepositTxInfo, TestStep } from "./types"
@@ -13,7 +13,11 @@ export function isDeposit(step: TestStep) {
 // transaction on Risk and the exchange contract, which calls the
 // fundExchangeAccount method on the L2StandardERC20 to transfer the
 // deposited amount to the exchange.
-export async function mockFinalizeDeposit(l2SharedBridgeAsL1Bridge: L2SharedBridge, deposit: DepositTxInfo) {
+export async function mockFinalizeDeposit(
+  l2SharedBridgeAsL1Bridge: L2SharedBridge,
+  deposit: DepositTxInfo,
+  exchangeContract: Contract,
+) {
   const currency = deposit.currency
 
   const rawAmount = scaleBigInt(
@@ -26,7 +30,7 @@ export async function mockFinalizeDeposit(l2SharedBridgeAsL1Bridge: L2SharedBrid
     await l2SharedBridgeAsL1Bridge.finalizeDeposit(
       // Depositor and l2Receiver can be any here
       deposit.to_account_id,
-      deposit.to_account_id,
+      await exchangeContract.getDepositProxy(deposit.to_account_id),
       L2TokenInfo[currency].l1Token,
       rawAmount,
       encodedTokenData(L2TokenInfo[currency].name, currency, L2TokenInfo[currency].erc20Decimals)
