@@ -8,6 +8,7 @@ import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
+import "hardhat/console.sol";
 
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;

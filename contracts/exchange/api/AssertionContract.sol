@@ -5,6 +5,8 @@ import "../types/PositionMap.sol";
 import "../types/DataStructure.sol";
 import "./ConfigContract.sol";
 
+import "hardhat/console.sol";
+
 contract AssertionContract is ConfigContract, RiskCheck {
   using BIMath for BI;
 
