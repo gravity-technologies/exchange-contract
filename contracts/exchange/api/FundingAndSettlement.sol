@@ -6,6 +6,8 @@ import "../util/Asset.sol";
 import "../util/BIMath.sol";
 import "./BaseContract.sol";
 
+import "hardhat/console.sol";
+
 contract FundingAndSettlement is BaseContract {
   using BIMath for BI;
 
@@ -16,6 +18,10 @@ contract FundingAndSettlement is BaseContract {
   }
 
   function _fundPerp(SubAccount storage sub) internal {
+    console.log("_fundPerp sub.id: ");
+    console.logUint(sub.id);
+    console.log("sub.lastAppliedFundingTimestamp: ");
+    console.logInt(sub.lastAppliedFundingTimestamp);
     // Skip Funding, since it has already been applied
     int64 fundingTime = state.prices.fundingTime;
     if (sub.lastAppliedFundingTimestamp == fundingTime) {
@@ -34,6 +40,14 @@ contract FundingAndSettlement is BaseContract {
       int64 latestFundingIndex = state.prices.fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
       int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
+      console.log("assetID: ");
+      console.logBytes32(assetID);
+      console.log("latestFundingIndex: ");
+      console.logInt(latestFundingIndex);
+      console.log("perp.lastAppliedFundingIndex: ");
+      console.logInt(perp.lastAppliedFundingIndex);
+      console.log("fundingIndexChange: ");
+      console.logInt(fundingIndexChange);
       if (fundingIndexChange == 0) {
         continue;
       }

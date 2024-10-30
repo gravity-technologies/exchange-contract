@@ -8,6 +8,7 @@ import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
+import "hardhat/console.sol";
 
 abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
@@ -330,6 +331,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
         removePos(sub, leg.assetID);
       }
     }
+
+    console.log("sub.id: ");
+    console.logUint(sub.id);
+    console.log("sub.spotBalances[subQuote](before): ");
+    console.logInt(sub.spotBalances[subQuote]);
+    console.log("calcResult.spotDelta: ");
+    console.logInt(calcResult.spotDelta.toInt64(qDec));
 
     // Step 4: Update subaccount spot balance, deducting fees
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
