@@ -133,6 +133,7 @@ struct State {
   // Total spot balances for all accounts
   mapping(Currency => int64) totalSpotBalances;
   // Bridging partners
+  // Number of bridging partners will be less than 10
   address[] bridgingPartners;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
