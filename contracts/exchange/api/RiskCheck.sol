@@ -111,8 +111,10 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
       int64 insuranceFundValue = _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
-      if (insuranceFundValue < 0) {
-        return -insuranceFundValue;
+      BI memory insuranceFundValueInQuoteBI = _getSubAccountValueInQuote(insuranceFund);
+      if (insuranceFundValueInQuoteBI.isNegative()) {
+        BI memory quotePriceInUSDT = _getSpotPriceInQuote(insuranceFund.quoteCurrency, Currency.USDT);
+        return -insuranceFundValueInQuoteBI.mul(quotePriceInUSDT).toInt64(dec);
       }
     }
     return 0;
