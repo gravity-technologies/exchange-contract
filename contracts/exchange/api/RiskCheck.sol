@@ -25,20 +25,20 @@ contract RiskCheck is BaseContract, MarginConfigContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
-    int64 insuranceFundLossAmount = _getInsuranceFundLossAmount();
-    if (insuranceFundLossAmount <= 0) {
+    int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
+    if (insuranceFundLossAmountUSDT <= 0) {
       return 0;
     }
 
     uint usdtDec = _getBalanceDecimal(Currency.USDT);
 
-    int64 totalClientValue = _getTotalClientValueUSDT();
-    BI memory totalClientValueBI = BI(totalClientValue, usdtDec);
-    BI memory insuranceFundLossAmountBI = BI(insuranceFundLossAmount, usdtDec);
+    int64 totalClientValueUSDT = _getTotalClientValueUSDT();
+    BI memory totalClientValueUSDTBI = BI(totalClientValueUSDT, usdtDec);
+    BI memory insuranceFundLossAmountUSDTBI = BI(insuranceFundLossAmountUSDT, usdtDec);
 
     // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
     BI memory withdrawAmountBI = BI(withdrawAmount, MAX_BALANCE_DECIMALS);
-    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountBI).div(totalClientValueBI);
+    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountUSDTBI).div(totalClientValueUSDTBI);
     return result.toUint64(MAX_BALANCE_DECIMALS);
   }
 
@@ -105,7 +105,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     revert("mem array is full");
   }
 
-  function _getInsuranceFundLossAmount() internal view returns (int64) {
+  function _getInsuranceFundLossAmountUSDT() internal view returns (int64) {
     uint dec = _getBalanceDecimal(Currency.USDT);
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
