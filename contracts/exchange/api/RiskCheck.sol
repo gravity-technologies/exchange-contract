@@ -113,8 +113,12 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       int64 insuranceFundValue = _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
       BI memory insuranceFundValueInQuoteBI = _getSubAccountValueInQuote(insuranceFund);
       if (insuranceFundValueInQuoteBI.isNegative()) {
-        BI memory quotePriceInUSDT = _getSpotPriceInQuote(insuranceFund.quoteCurrency, Currency.USDT);
-        return -insuranceFundValueInQuoteBI.mul(quotePriceInUSDT).toInt64(dec);
+        BI memory insuranceFundValueInUSDT = _convertCurrency(
+          insuranceFundValueInQuoteBI,
+          insuranceFund.quoteCurrency,
+          Currency.USDT
+        );
+        return -insuranceFundValueInUSDT.toInt64(dec);
       }
     }
     return 0;

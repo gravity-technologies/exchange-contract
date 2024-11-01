@@ -241,7 +241,7 @@ contract GRVTExchangeTest is
 
   function getInsuranceFundLoss(Currency currency) public view returns (int64) {
     require(currency == Currency.USDT, "Invalid currency");
-    return _getInsuranceFundLossAmount();
+    return _getInsuranceFundLossAmountUSDT();
   }
 
   function getTotalClientEquity(Currency currency) public view returns (int64) {

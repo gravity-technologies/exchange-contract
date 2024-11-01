@@ -304,6 +304,10 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return _getSpotPriceBI(spot).div(_getSpotPriceBI(quote));
   }
 
+  function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+    return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
+  }
+
   /// @dev Get the spot price of a currency in terms of USD
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
@@ -421,9 +425,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     for (uint256 i; i < account.subAccounts.length; ++i) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
       BI memory subValueInQuote = _getSubAccountValueInQuote(subAcc);
-      BI memory spotPriceInUSDT = _getSpotPriceInQuote(subAcc.quoteCurrency, Currency.USDT);
+      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
 
-      totalValue = totalValue.add(subValueInQuote.mul(spotPriceInUSDT));
+      totalValue = totalValue.add(subValueInUSDT);
     }
 
     return totalValue;
@@ -441,8 +445,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
         continue;
       }
       BI memory balanceBI = BI(balance, dec);
-      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, quoteCurrency);
-      total = total.add(balanceBI.mul(spotPriceInQuote));
+      BI memory balanceValueInQuote = _convertCurrency(balanceBI, i, quoteCurrency);
+      total = total.add(balanceValueInQuote);
     }
     return total;
   }
