@@ -30,33 +30,36 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       return 0;
     }
 
-    uint dec = _getBalanceDecimal(Currency.USDT);
+    uint usdtDec = _getBalanceDecimal(Currency.USDT);
 
     int64 totalClientValue = _getTotalClientValueUSDT();
-    BI memory totalClientValueBI = BI(totalClientValue, dec);
-    BI memory insuranceFundLossAmountBI = BI(insuranceFundLossAmount, dec);
+    BI memory totalClientValueBI = BI(totalClientValue, usdtDec);
+    BI memory insuranceFundLossAmountBI = BI(insuranceFundLossAmount, usdtDec);
 
     // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
-    BI memory withdrawAmountBI = BI(withdrawAmount, dec);
+    BI memory withdrawAmountBI = BI(withdrawAmount, MAX_BALANCE_DECIMALS);
     BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountBI).div(totalClientValueBI);
-    return result.toUint64(dec);
+    return result.toUint64(MAX_BALANCE_DECIMALS);
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
-    return state.totalSpotBalances[Currency.USDT] - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
+    BI memory totalSpotBalancesUSDTValueBI = _getBalanceValueInQuoteCurrencyBI(state.totalSpotBalances, Currency.USDT);
+    int64 totalSpotBalancesUSDTValue = totalSpotBalancesUSDTValueBI.toInt64(_getBalanceDecimal(Currency.USDT));
+    return totalSpotBalancesUSDTValue - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
   }
 
   function _getTotalBridgingPartnerValueUSDT() internal view returns (int64) {
-    int64 totalValue = 0;
+    uint dec = _getBalanceDecimal(Currency.USDT);
+    BI memory totalValueBI = BI(0, dec);
+
     for (uint i = 0; i < state.bridgingPartners.length; i++) {
-      totalValue += state.accounts[state.bridgingPartners[i]].spotBalances[Currency.USDT];
+      Account storage account = _requireAccount(state.bridgingPartners[i]);
+      totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
     }
-    return totalValue;
+    return totalValueBI.toInt64(dec);
   }
 
   function _getTotalInternalValueUSDT() internal view returns (int64) {
-    int64 totalValue = 0;
-
     uint dec = _getBalanceDecimal(Currency.USDT);
     BI memory totalValueBI = BI(0, dec);
 

@@ -416,14 +416,35 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
     uint dec = _getBalanceDecimal(Currency.USDT);
 
-    BI memory totalValue = BI(account.spotBalances[Currency.USDT], dec);
+    BI memory totalValue = _getBalanceValueInQuoteCurrencyBI(account.spotBalances, Currency.USDT);
 
     for (uint256 i; i < account.subAccounts.length; ++i) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
-      totalValue = totalValue.add(_getSubAccountValueInQuote(subAcc));
+      BI memory subValueInQuote = _getSubAccountValueInQuote(subAcc);
+      BI memory spotPriceInUSDT = _getSpotPriceInQuote(subAcc.quoteCurrency, Currency.USDT);
+
+      totalValue = totalValue.add(subValueInQuote.mul(spotPriceInUSDT));
     }
 
     return totalValue;
+  }
+
+  function _getBalanceValueInQuoteCurrencyBI(
+    mapping(Currency => int64) storage balances,
+    Currency quoteCurrency
+  ) internal view returns (BI memory) {
+    uint64 dec = _getBalanceDecimal(quoteCurrency);
+    BI memory total = BI(0, dec);
+    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      int64 balance = balances[i];
+      if (balance == 0) {
+        continue;
+      }
+      BI memory balanceBI = BI(balance, dec);
+      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, quoteCurrency);
+      total = total.add(balanceBI.mul(spotPriceInQuote));
+    }
+    return total;
   }
 
   /// @dev Get the total value of a sub account in quote currency
@@ -432,15 +453,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       _getPositionsValueInQuote(sub.options)
     );
 
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      int64 balance = sub.spotBalances[i];
-      if (balance == 0) {
-        continue;
-      }
-      BI memory balanceBI = BI(balance, _getBalanceDecimal(i));
-      BI memory spotPriceInQuote = _getSpotPriceInQuote(i, sub.quoteCurrency);
-      totalValue = totalValue.add(balanceBI.mul(spotPriceInQuote));
-    }
+    totalValue = totalValue.add(_getBalanceValueInQuoteCurrencyBI(sub.spotBalances, sub.quoteCurrency));
 
     return totalValue;
   }

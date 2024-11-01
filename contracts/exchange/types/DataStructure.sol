@@ -54,6 +54,7 @@ function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
+uint64 constant MAX_BALANCE_DECIMALS = 9;
 uint constant PRICE_DECIMALS = 9;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
