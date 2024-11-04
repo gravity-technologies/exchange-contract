@@ -417,6 +417,13 @@ async function expectSubAccountSpotReal(contract: Contract, expectations: ExSubA
   expect(big(expectations.balance)).to.equal(big(value))
 }
 
+function getBalanceDecimal(underlying: string) {
+  if (underlying == "BTC" || underlying == "ETH") {
+    return 9
+  }
+  return 6
+}
+
 async function expectSubAccountPositionOptional(contract: Contract, expectations: ExSubAccountPositionOptional) {
   let assetID = big(toAssetID(expectations.position.instrument))
   let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
@@ -426,7 +433,9 @@ async function expectSubAccountPositionOptional(contract: Contract, expectations
   )
 
   if (found) {
-    expect(big(expectations.position.size)).to.equal(big(balance))
+    expect(
+      Number(expectations.position.size) * 10 ** getBalanceDecimal(expectations.position.instrument.underlying)
+    ).to.equal(Number(balance))
   } else {
     expect(expectations.position.size).to.equal("0")
   }
