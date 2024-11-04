@@ -210,12 +210,12 @@ contract GRVTExchangeTest is
   }
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
-    uint64 uDec = _getBalanceDecimal(assetGetUnderlying(kuq));
+    uint64 qDec = _getBalanceDecimal(assetGetQuote(kuq));
     ListMarginTiersBI memory tiers = state.simpleCrossMaintenanceMarginTiers[kuq];
     MarginTier[] memory result = new MarginTier[](tiers.tiers.length);
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({
-        bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
+        bracketStart: tiers.tiers[i].bracketStart.toUint64(qDec),
         rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
       });
     }
