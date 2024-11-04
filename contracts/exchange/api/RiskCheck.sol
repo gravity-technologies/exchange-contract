@@ -171,21 +171,31 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     mapping(bytes32 => Position) storage values = subAccount.perps.values;
     uint numPerps = keys.length;
     for (uint i = 0; i < numPerps; i++) {
-      bytes32 id = keys[i];
-      int64 size = values[id].balance;
-      if (size < 0) {
-        size = -size;
-      }
-      bytes32 kuq = assetGetKUQ(id);
-      ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
-      BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(id)));
-      BI memory charge = _calculateSimpleCrossMMSize(mt, sizeBI).mul(_requireAssetPriceInUsdBI(id));
-      totalCharge = totalCharge.add(charge);
+      bytes32 asset = keys[i];
+      totalCharge = totalCharge.add(_getSimpleCrossFuturesMMUsd(asset, values[asset]));
     }
 
     BI memory quotePrice = _getSpotPriceBI(subAccount.quoteCurrency);
     uint64 qDec = _getBalanceDecimal(Currency.USD);
 
     return totalCharge.div(quotePrice).toUint64(qDec);
+  }
+
+  function _getSimpleCrossFuturesMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
+    BI memory markPrice = _requireAssetPriceBI(asset);
+
+    int64 size = position.balance;
+    if (size < 0) {
+      size = -size;
+    }
+    BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(asset)));
+
+    bytes32 kuq = assetGetKUQ(asset);
+    ListMarginTiersBI memory mt = state.simpleCrossMaintenanceMarginTiers[kuq];
+
+    BI memory mm = _getPositionMM(mt, sizeBI, markPrice);
+    BI memory qPrice = _getSpotPriceBI(assetGetQuote(asset));
+
+    return mm.mul(qPrice);
   }
 }
