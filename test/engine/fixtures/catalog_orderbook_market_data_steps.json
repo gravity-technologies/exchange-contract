@@ -1039,7 +1039,7 @@
       ]
    },
    {
-      "name": "Scenario: 2. Create order (With Matches)",
+      "name": "Scenario: 2. Create order (With Matches), SubAccount Position Checks",
       "steps": [
          {
             "time": "0",
@@ -2257,6 +2257,40 @@
             "expectations": [
                {
                   "expect": {
+                     "sub_account_id": "9646611240881097804",
+                     "num_positions": 1
+                  },
+                  "name": "ExNumSubAccountPositions"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "sub_account_id": "451668388525528739",
+                     "num_positions": 1
+                  },
+                  "name": "ExNumSubAccountPositions"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
@@ -2273,7 +2307,7 @@
                         "unrealized_pnl": "7500",
                         "realized_pnl": "0",
                         "total_pnl": "7500",
-                        "roi": "0.428571",
+                        "roi": "42.8571",
                         "quote_index_price": "0.8"
                      }
                   },
@@ -2307,7 +2341,7 @@
                         "unrealized_pnl": "-7500",
                         "realized_pnl": "0",
                         "total_pnl": "-7500",
-                        "roi": "-0.428571",
+                        "roi": "-42.8571",
                         "quote_index_price": "0.8"
                      }
                   },
@@ -2387,7 +2421,7 @@
       ]
    },
    {
-      "name": "Scenario: 3. Demonstrate Ticker & Open Orders checks in full",
+      "name": "Scenario: 3. Demonstrate Market Data & Trade Data checks in full",
       "steps": [
          {
             "time": "0",
