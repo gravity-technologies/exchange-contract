@@ -355,8 +355,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
       // Compare bracketStart
       BI storage bracketStart = tier.bracketStart;
-      uint decimals = _getBalanceDecimal(assetGetUnderlying(kud));
-      require(bracketStart.toUint64(decimals) == exTier.bracketStart, "ex setSimpleCrossMMTierBracket");
+      uint qDec = _getBalanceDecimal(assetGetQuote(kud));
+      require(bracketStart.toUint64(qDec) == exTier.bracketStart, "ex setSimpleCrossMMTierBracket");
 
       // Compare rate
       BI storage rate = tier.rate;
