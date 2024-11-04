@@ -154,9 +154,17 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint usdDecimals = _getBalanceDecimal(Currency.USD);
 
     int64 subAccountValue = _getSubAccountValueInQuote(subAccount).toInt64(usdDecimals);
-    uint64 maintenanceMargin = _getSubMaintenanceMargin(subAccount);
+    uint64 maintenanceMargin = _getMaintenanceMargin(subAccount);
 
     return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
+  }
+
+  function _getMaintenanceMargin(SubAccount storage subAccount) internal view returns (uint64) {
+    BI memory mmBI = _getSimpleCrossMMUsd(subAccount);
+    BI memory settleIndexPrice = _getSpotPriceBI(subAccount.quoteCurrency);
+
+    uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
+    return mmBI.div(settleIndexPrice).toUint64(qDec);
   }
 
   /**
@@ -164,7 +172,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
    * @param subAccount The subaccount to check.
    * @return The maintenance margin.
    */
-  function _getSubMaintenanceMargin(SubAccount storage subAccount) internal view returns (uint64) {
+  function _getSimpleCrossMMUsd(SubAccount storage subAccount) internal view returns (BI memory) {
     BI memory totalCharge = BI(0, 0);
 
     bytes32[] storage keys = subAccount.perps.keys;
@@ -176,9 +184,8 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     }
 
     BI memory quotePrice = _getSpotPriceBI(subAccount.quoteCurrency);
-    uint64 qDec = _getBalanceDecimal(Currency.USD);
 
-    return totalCharge.div(quotePrice).toUint64(qDec);
+    return totalCharge.div(quotePrice);
   }
 
   function _getSimpleCrossFuturesMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
