@@ -1338,7 +1338,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "100000000"
+                           "Size": "-80000000"
                         },
                         {
                            "Asset": {
@@ -1346,7 +1346,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "-80000000"
+                           "Size": "100000000"
                         }
                      ],
                      "pre_trade_initial_margin": ""
@@ -5268,7 +5268,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "-130000000"
+                           "Size": "110000000"
                         },
                         {
                            "Asset": {
@@ -5276,7 +5276,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "110000000"
+                           "Size": "-130000000"
                         }
                      ],
                      "pre_trade_initial_margin": ""
@@ -6807,7 +6807,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "-80000000"
+                           "Size": "100000000"
                         },
                         {
                            "Asset": {
@@ -6815,7 +6815,7 @@
                               "underlying": "BTC",
                               "quote": "USDT"
                            },
-                           "Size": "100000000"
+                           "Size": "-80000000"
                         }
                      ],
                      "pre_trade_initial_margin": ""

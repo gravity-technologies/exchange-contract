@@ -16101,6 +16101,120 @@
             "expectations": [
                {
                   "expect": {
+                     "sub_account_id": "9646611240881097804",
+                     "num_positions": 0
+                  },
+                  "name": "ExNumSubAccountPositions"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "sub_account_id": "451668388525528739",
+                     "num_positions": 0
+                  },
+                  "name": "ExNumSubAccountPositions"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "summary": {
+                        "event_time": "0",
+                        "sub_account_id": "9646611240881097804",
+                        "margin_type": "UNSPECIFIED",
+                        "settle_currency": "USDT",
+                        "unrealized_pnl": "",
+                        "total_equity": "5000000",
+                        "initial_margin": "800",
+                        "maintenance_margin": "",
+                        "available_balance": "",
+                        "spot_balances": null,
+                        "positions": null,
+                        "settle_index_price": ""
+                     },
+                     "open_orders": [
+                        {
+                           "Asset": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
+                           "Size": "1000000000"
+                        }
+                     ],
+                     "pre_trade_initial_margin": "0"
+                  },
+                  "name": "ExSubAccountSummaryOptional"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
+                     "summary": {
+                        "event_time": "0",
+                        "sub_account_id": "451668388525528739",
+                        "margin_type": "UNSPECIFIED",
+                        "settle_currency": "USDT",
+                        "unrealized_pnl": "",
+                        "total_equity": "5000000",
+                        "initial_margin": "800",
+                        "maintenance_margin": "",
+                        "available_balance": "",
+                        "spot_balances": null,
+                        "positions": null,
+                        "settle_index_price": ""
+                     },
+                     "open_orders": [
+                        {
+                           "Asset": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
+                           "Size": "-1000000000"
+                        }
+                     ],
+                     "pre_trade_initial_margin": "0"
+                  },
+                  "name": "ExSubAccountSummaryOptional"
+               }
+            ],
+            "assertion_data": ""
+         },
+         {
+            "time": "0",
+            "tx_id": "0",
+            "tx": null,
+            "tx_data": "",
+            "error": "",
+            "expectations": [
+               {
+                  "expect": {
                      "summary": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
