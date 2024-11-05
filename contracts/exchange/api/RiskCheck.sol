@@ -183,9 +183,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       totalCharge = totalCharge.add(_getSimpleCrossFuturesMMUsd(asset, values[asset]));
     }
 
-    BI memory quotePrice = _getSpotPriceBI(subAccount.quoteCurrency);
-
-    return totalCharge.div(quotePrice);
+    return totalCharge;
   }
 
   function _getSimpleCrossFuturesMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
