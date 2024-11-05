@@ -287,7 +287,7 @@ export interface Expectation {
   | ExSimpleCrossMaintenanceMarginTiersNoTimelock
   | ExSubAccountMaintMargin
   | ExOnboardedTransferAccount
-  | ExExchangeCurrencyBalance
+  | ExSubAccountSummaryOptional
   | ExSubAccountSpotReal
   | ExSubAccountPositionOptional
   | ExInsuranceFundLoss
