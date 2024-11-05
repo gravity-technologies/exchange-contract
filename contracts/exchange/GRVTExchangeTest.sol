@@ -204,6 +204,11 @@ contract GRVTExchangeTest is
     return (pos.id != 0x0, pos.balance, pos.lastAppliedFundingIndex);
   }
 
+  function getSubAccountPositionCount(uint64 subAccountID) public view returns (uint) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.perps.keys.length + sub.futures.keys.length + sub.options.keys.length;
+  }
+
   function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return sub.spotBalances[currency];

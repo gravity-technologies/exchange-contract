@@ -35,6 +35,7 @@ import {
   ExSubAccountSpotReal,
   ExSubAccountPositionOptional,
   ExSubAccountSummaryOptional,
+  ExNumSubAccountPositions,
   ExInsuranceFundLoss,
   ExTotalClientEquity,
 } from "./types"
@@ -135,6 +136,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectTotalClientEquity(contract, expectation.expect as ExTotalClientEquity)
     case "ExSubAccountSummaryOptional":
       return expectSubAccountSummaryOptional(contract, expectation.expect as ExSubAccountSummaryOptional)
+    case "ExNumSubAccountPositions":
+      return expectNumSubAccountPositions(contract, expectation.expect as ExNumSubAccountPositions)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -488,6 +491,11 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
       Number(expectations.summary.maintenance_margin) * 10 ** getBalanceDecimalFromEnum(sub.quoteCurrency)
     ).to.equal(Number(maintenanceMargin))
   }
+}
+
+async function expectNumSubAccountPositions(contract: Contract, expectations: ExNumSubAccountPositions) {
+  const numPositions = await contract.getSubAccountPositionCount(BigInt(expectations.sub_account_id))
+  expect(numPositions).to.equal(expectations.num_positions)
 }
 
 function big(s: any): BigNumber {
