@@ -38,7 +38,7 @@ import {
   ExInsuranceFundLoss,
   ExTotalClientEquity,
 } from "./types"
-import { ConfigIDToEnum, CurrencyToEnum } from "./enums"
+import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
 
 // These expectations are only in risk
@@ -465,7 +465,7 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
   let sub = await getSubAccountResult(contract, expectations.summary.sub_account_id)
 
   if (expectations.summary.margin_type != null && expectations.summary.margin_type != "UNSPECIFIED") {
-    expect(sub.marginType).to.equal(expectations.summary.margin_type)
+    expect(sub.marginType).to.equal(MarginTypeToEnum[expectations.summary.margin_type])
   }
 
   if (expectations.summary.settle_currency != null && expectations.summary.settle_currency != "UNSPECIFIED") {
