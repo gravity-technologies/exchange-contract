@@ -477,7 +477,9 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
     let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
     const [price, found] = await contract.getMarkPrice(assetIDHex)
     expect(found).to.be.true
-    expect(big(price)).to.equal(big(expectations.summary.settle_index_price))
+    expect(
+      Number(expectations.summary.settle_index_price) * 10 ** 9
+    ).to.equal(Number(price))
   }
 
   if (expectations.summary.maintenance_margin != null && expectations.summary.maintenance_margin != "") {
