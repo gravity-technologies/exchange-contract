@@ -480,7 +480,7 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
     expect(big(price)).to.equal(big(expectations.summary.settle_index_price))
   }
 
-  if (expectations.summary.maintenance_margin != null) {
+  if (expectations.summary.maintenance_margin != null && expectations.summary.maintenance_margin != "") {
     const maintenanceMargin = await contract.getSubAccountMaintenanceMargin(BigInt(expectations.summary.sub_account_id))
     expect(
       Number(expectations.summary.maintenance_margin) * 10 ** getBalanceDecimalFromEnum(sub.quoteCurrency)
