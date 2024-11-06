@@ -9,7 +9,7 @@ import {
   ExConfigSchedule,
   ExConfigScheduleAbsent,
   ExFundingIndex,
-  ExFundingTime,
+  ExFundingTimeDelta,
   ExInterestRate,
   ExMarkPrice,
   ExNumAccounts,
@@ -84,8 +84,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectMarkPrice(contract, expectation.expect as ExMarkPrice)
     case "ExInterestRate":
       return expectInterestRate(contract, expectation.expect as ExInterestRate)
-    case "ExFundingTime":
-      return expectFundingTime(contract, expectation.expect as ExFundingTime)
+    case "ExFundingTimeDelta":
+      return expectFundingTimeDelta(contract, expectation.expect as ExFundingTimeDelta)
     case "ExSubAccountValue":
       return expectSubAccountValue(contract, expectation.expect as ExSubAccountValue)
     case "ExSubAccountPosition":
@@ -168,9 +168,9 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
       expectations.signers[sessionKey].session_key
     )
     expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
-    const expectedAuthExpiry = expectations.signers[sessionKey].authorization_expiry
+    const expectedAuthExpiry = big(await contract.getTimestamp()).add(big(expectations.signers[sessionKey].authorization_expiry_delta))
     const actualAuthExpiry = actualAuthorizationExpiry
-    expect(big(actualAuthExpiry)).to.equal(big(expectedAuthExpiry))
+    expect(big(actualAuthExpiry)).to.equal(expectedAuthExpiry)
   }
 }
 
@@ -200,7 +200,8 @@ async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
   const lockEndTime = await contract.getConfigSchedule(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
-  expect(big(lockEndTime)).to.equal(big(expectations.lock_end))
+  const expectedLockEndTime = big(await contract.getTimestamp()).add(big(expectations.lock_end_delta))
+  expect(big(lockEndTime)).to.equal(expectedLockEndTime)
 }
 
 async function expectConfigScheduleAbsent(contract: Contract, expectations: ExConfigScheduleAbsent) {
@@ -229,7 +230,7 @@ async function expectFundingIndex(contract: Contract, expectations: ExFundingInd
   expect(big(fundingIndex)).to.equal(big(expectations.funding_rate ?? "0"))
 }
 
-async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
+async function expectFundingTimeDelta(contract: Contract, expectations: ExFundingTimeDelta) {
   const fundingTime = await contract.getFundingTime()
   const stateTimestamp = await contract.getTimestamp()
   expect(big(fundingTime).sub(big(stateTimestamp))).to.equal(big(expectations.funding_time_delta))

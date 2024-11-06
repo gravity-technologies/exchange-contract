@@ -62,7 +62,7 @@ contract ConfigContract is BaseContract {
   int32 private constant ONE_CENTIBEEP = 1;
   int32 private constant ONE_BEEP = 100;
   int32 private constant ONE_PERCENT = 10000;
-  int32 private constant ONE_HUNDRED_PERCENT = 1000000;
+  uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
   bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
@@ -476,12 +476,12 @@ contract ConfigContract is BaseContract {
     }
     if (typ == ConfigType.CENTIBEEP) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig(key);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToCentibeep(newVal));
       return 0;
     }
     if (typ == ConfigType.CENTIBEEP2D) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToCentibeep(newVal));
       return 0;
     }
     if (typ == ConfigType.UINT) {
@@ -547,12 +547,14 @@ contract ConfigContract is BaseContract {
       for (uint i; i < rulesLen; ++i)
         if (SafeCast.toUint64(SafeCast.toUint256(int(oldVal - newVal))) <= rules[i].deltaNegative)
           return rules[i].lockDuration;
-    } else {
+      return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
+    } else if (newVal > oldVal) {
       for (uint i; i < rulesLen; ++i)
         if (SafeCast.toUint64(SafeCast.toUint256(int(newVal - oldVal))) <= rules[i].deltaPositive)
           return rules[i].lockDuration;
+      return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
     }
-    return rules[rulesLen - 1].lockDuration; // Default to last timelock rule
+    return 0; // no change = no timelock
   }
 
   ///////////////////////////////////////////////////////////////////
@@ -639,13 +641,13 @@ contract ConfigContract is BaseContract {
     id = ConfigID.FUNDING_RATE_HIGH;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     // FUNDING_RATE_LOW
     id = ConfigID.FUNDING_RATE_LOW;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     ///////////////////////////////////////////////////////////////////
     /// Fee settings
@@ -655,35 +657,35 @@ contract ConfigContract is BaseContract {
     id = ConfigID.FUTURES_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     // FUTURES_TAKER_FEE_MINIMUM
     id = ConfigID.FUTURES_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     // OPTIONS_MAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     // OPTIONS_TAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     id = ConfigID.WITHDRAWAL_FEE;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
 
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
   }
 }
