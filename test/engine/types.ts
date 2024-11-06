@@ -74,7 +74,7 @@ export interface ExSubAccountMarginType {
 export interface SessionValue {
   main_signing_key: string
   session_key: string
-  authorization_expiry: string
+  authorization_expiry_delta: string
 }
 
 export interface ExSessionKeys {
@@ -90,7 +90,7 @@ export interface ExConfigSchedule {
   key: string
   sub_key: string
   value: string
-  lock_end: string
+  lock_end_delta: string
 }
 
 export interface ExConfigScheduleAbsent {

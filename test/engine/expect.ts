@@ -168,9 +168,9 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
       expectations.signers[sessionKey].session_key
     )
     expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
-    const expectedAuthExpiry = expectations.signers[sessionKey].authorization_expiry
+    const expectedAuthExpiry = big(await contract.getTimestamp()).add(big(expectations.signers[sessionKey].authorization_expiry_delta))
     const actualAuthExpiry = actualAuthorizationExpiry
-    expect(big(actualAuthExpiry)).to.equal(big(expectedAuthExpiry))
+    expect(big(actualAuthExpiry)).to.equal(expectedAuthExpiry)
   }
 }
 
@@ -200,7 +200,8 @@ async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
   const lockEndTime = await contract.getConfigSchedule(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
-  expect(big(lockEndTime)).to.equal(big(expectations.lock_end))
+  const expectedLockEndTime = big(await contract.getTimestamp()).add(big(expectations.lock_end_delta))
+  expect(big(lockEndTime)).to.equal(expectedLockEndTime)
 }
 
 async function expectConfigScheduleAbsent(contract: Contract, expectations: ExConfigScheduleAbsent) {

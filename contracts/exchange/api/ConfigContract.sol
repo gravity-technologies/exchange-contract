@@ -476,12 +476,12 @@ contract ConfigContract is BaseContract {
     }
     if (typ == ConfigType.CENTIBEEP) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig(key);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToCentibeep(newVal));
       return 0;
     }
     if (typ == ConfigType.CENTIBEEP2D) {
       (int32 oldVal, bool isSet) = _getCentibeepConfig2D(key, subKey);
-      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToInt(newVal));
+      if (isSet) return _getIntConfigLockDuration(key, int64(oldVal), _configToCentibeep(newVal));
       return 0;
     }
     if (typ == ConfigType.UINT) {
