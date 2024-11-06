@@ -1039,13 +1039,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -1599,13 +1592,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -2279,10 +2265,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "0"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b065b59aa00b0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000794415f855ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff610de6"
@@ -2956,10 +2941,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "-1"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b065b59aa00a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000794415f855ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff610de6"
@@ -3633,10 +3617,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "-60000000000"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b057bd53480b0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000794415f855ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff610de6"
@@ -4307,13 +4290,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -4984,13 +4960,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -5641,13 +5610,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -6297,13 +6259,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -6954,13 +6909,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -7611,13 +7559,6 @@
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
-               },
-               {
-                  "expect": {
-                     "FundingTime": "0",
-                     "funding_time_delta": "0"
-                  },
-                  "name": "ExFundingTime"
                }
             ],
             "assertion_data": ""
@@ -8291,10 +8232,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "0"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b065b59aa00b0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000794415f855ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff610de6"
@@ -8365,10 +8305,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "0"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b073ade1f80b0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000f2882bf0aafffffffffffffffffffffffffffffffffffffffffffffffffffffffffec21bcc"
@@ -9042,10 +8981,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "0"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": "0x8f1554e2000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000026b065b59aa00b0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000204010000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000794415f855ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff610de6"
@@ -9116,10 +9054,9 @@
                },
                {
                   "expect": {
-                     "FundingTime": "0",
                      "funding_time_delta": "0"
                   },
-                  "name": "ExFundingTime"
+                  "name": "ExFundingTimeDelta"
                }
             ],
             "assertion_data": ""

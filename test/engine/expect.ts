@@ -10,6 +10,7 @@ import {
   ExConfigScheduleAbsent,
   ExFundingIndex,
   ExFundingTime,
+  ExFundingTimeDelta,
   ExInterestRate,
   ExMarkPrice,
   ExNumAccounts,
@@ -86,6 +87,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectInterestRate(contract, expectation.expect as ExInterestRate)
     case "ExFundingTime":
       return expectFundingTime(contract, expectation.expect as ExFundingTime)
+    case "ExFundingTimeDelta":
+      return expectFundingTimeDelta(contract, expectation.expect as ExFundingTimeDelta)
     case "ExSubAccountValue":
       return expectSubAccountValue(contract, expectation.expect as ExSubAccountValue)
     case "ExSubAccountPosition":
@@ -231,6 +234,11 @@ async function expectFundingIndex(contract: Contract, expectations: ExFundingInd
 }
 
 async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
+  const fundingTime = await contract.getFundingTime()
+  expect(big(fundingTime)).to.equal(big(expectations.funding_time))
+}
+
+async function expectFundingTimeDelta(contract: Contract, expectations: ExFundingTimeDelta) {
   const fundingTime = await contract.getFundingTime()
   const stateTimestamp = await contract.getTimestamp()
   expect(big(fundingTime).sub(big(stateTimestamp))).to.equal(big(expectations.funding_time_delta))

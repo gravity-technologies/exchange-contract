@@ -123,6 +123,10 @@ export interface ExFundingIndex {
 }
 
 export interface ExFundingTime {
+  funding_time: string
+}
+
+export interface ExFundingTimeDelta {
   funding_time_delta: string
 }
 
