@@ -54,6 +54,7 @@ function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
+uint64 constant MAX_BALANCE_DECIMALS = 9;
 uint constant PRICE_DECIMALS = 9;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
@@ -129,6 +130,11 @@ struct State {
   UpgradeableBeacon depositProxyBeacon;
   // The bytecode hash of the deposit proxy
   bytes32 depositProxyProxyBytecodeHash;
+  // Total spot balances for all accounts
+  mapping(Currency => int64) totalSpotBalances;
+  // Bridging partners
+  // Number of bridging partners will be less than 10
+  address[] bridgingPartners;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps

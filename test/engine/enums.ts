@@ -7,6 +7,11 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   BTC: 5,
 }
 
+export const MarginTypeToEnum: { [cur: string]: number } = {
+  SIMPLE_CROSS_MARGIN: 2,
+  PORTFOLIO_CROSS_MARGIN: 3,
+}
+
 export const KindToEnum: { [kind: string]: number } = {
   UNSPECIFIED: 0,
   PERPETUAL: 1,

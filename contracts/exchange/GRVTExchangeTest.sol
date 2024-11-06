@@ -204,18 +204,23 @@ contract GRVTExchangeTest is
     return (pos.id != 0x0, pos.balance, pos.lastAppliedFundingIndex);
   }
 
+  function getSubAccountPositionCount(uint64 subAccountID) public view returns (uint) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.perps.keys.length + sub.futures.keys.length + sub.options.keys.length;
+  }
+
   function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return sub.spotBalances[currency];
   }
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
-    uint64 uDec = _getBalanceDecimal(assetGetUnderlying(kuq));
+    uint64 qDec = _getBalanceDecimal(assetGetQuote(kuq));
     ListMarginTiersBI memory tiers = state.simpleCrossMaintenanceMarginTiers[kuq];
     MarginTier[] memory result = new MarginTier[](tiers.tiers.length);
     for (uint i = 0; i < tiers.tiers.length; i++) {
       result[i] = MarginTier({
-        bracketStart: tiers.tiers[i].bracketStart.toUint64(uDec),
+        bracketStart: tiers.tiers[i].bracketStart.toUint64(qDec),
         rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
       });
     }
@@ -228,10 +233,24 @@ contract GRVTExchangeTest is
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return _getSubMaintenanceMargin(sub);
+    return _getMaintenanceMargin(sub);
   }
 
   function getTimestamp() public view returns (int64) {
     return state.timestamp;
+  }
+
+  function getExchangeCurrencyBalance(Currency currency) public view returns (int64) {
+    return state.totalSpotBalances[currency];
+  }
+
+  function getInsuranceFundLoss(Currency currency) public view returns (int64) {
+    require(currency == Currency.USDT, "Invalid currency");
+    return _getInsuranceFundLossAmountUSDT();
+  }
+
+  function getTotalClientEquity(Currency currency) public view returns (int64) {
+    require(currency == Currency.USDT, "Invalid currency");
+    return _getTotalClientValueUSDT();
   }
 }
