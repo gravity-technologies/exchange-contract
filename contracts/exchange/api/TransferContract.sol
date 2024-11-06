@@ -257,7 +257,7 @@ abstract contract TransferContract is TradeContract {
       "bad external transfer address"
     );
     require(
-      !(_isUserAccount(fromAccID) && !_isUserAccount(toAccID)),
+      !_isUserAccount(fromAccID) || _isUserAccount(toAccID),
       "user account cannot transfer to non-user account"
     );
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
