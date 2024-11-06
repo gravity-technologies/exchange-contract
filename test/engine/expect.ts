@@ -9,7 +9,6 @@ import {
   ExConfigSchedule,
   ExConfigScheduleAbsent,
   ExFundingIndex,
-  ExFundingTime,
   ExFundingTimeDelta,
   ExInterestRate,
   ExMarkPrice,
@@ -85,8 +84,6 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectMarkPrice(contract, expectation.expect as ExMarkPrice)
     case "ExInterestRate":
       return expectInterestRate(contract, expectation.expect as ExInterestRate)
-    case "ExFundingTime":
-      return expectFundingTime(contract, expectation.expect as ExFundingTime)
     case "ExFundingTimeDelta":
       return expectFundingTimeDelta(contract, expectation.expect as ExFundingTimeDelta)
     case "ExSubAccountValue":
@@ -231,11 +228,6 @@ async function expectFundingIndex(contract: Contract, expectations: ExFundingInd
   let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
   const fundingIndex = await contract.getFundingIndex(assetIDHex)
   expect(big(fundingIndex)).to.equal(big(expectations.funding_rate ?? "0"))
-}
-
-async function expectFundingTime(contract: Contract, expectations: ExFundingTime) {
-  const fundingTime = await contract.getFundingTime()
-  expect(big(fundingTime)).to.equal(big(expectations.funding_time))
 }
 
 async function expectFundingTimeDelta(contract: Contract, expectations: ExFundingTimeDelta) {

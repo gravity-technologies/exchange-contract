@@ -122,10 +122,6 @@ export interface ExFundingIndex {
   funding_rate: string
 }
 
-export interface ExFundingTime {
-  funding_time: string
-}
-
 export interface ExFundingTimeDelta {
   funding_time_delta: string
 }
@@ -302,7 +298,6 @@ export interface Expectation {
   | ExSubAccountSigners
   | ExSubAccountMarginType
   | ExFundingIndex
-  | ExFundingTime
   | ExMarkPrice
   | ExInterestRate
   | ExSubAccountValue
