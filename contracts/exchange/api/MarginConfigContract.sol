@@ -3,8 +3,11 @@ pragma solidity ^0.8.20;
 import "./ConfigContract.sol";
 import "../types/DataStructure.sol";
 import "./signature/generated/MarginSig.sol";
+import "../util/BIMath.sol";
 
 contract MarginConfigContract is ConfigContract {
+  using BIMath for BI;
+
   uint private constant MAX_M_MARGIN_TIERS = 12;
   int64 private constant SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS_LOCK_DURATION = 2 * 7 * 24 * ONE_HOUR_NANOS; // 2 weeks
 
@@ -96,7 +99,7 @@ contract MarginConfigContract is ConfigContract {
 
     for (uint i = 0; i < tiers.length; i++) {
       biTiers[i] = MarginTierBI({
-        bracketStart: BI(int256(uint256(tiers[i].bracketStart)), _getBalanceDecimal(assetGetUnderlying(kud))),
+        bracketStart: BI(int256(uint256(tiers[i].bracketStart)), _getBalanceDecimal(assetGetQuote(kud))),
         rate: BI(int256(uint256(tiers[i].rate)), CENTIBEEP_DECIMALS)
       });
     }
@@ -131,20 +134,14 @@ contract MarginConfigContract is ConfigContract {
     // Check at each bracket start
     for (uint i = 0; i < fromMt.tiers.length; i++) {
       if (
-        BIMath.cmp(
-          _calculateSimpleCrossMMSize(toMt, fromMt.tiers[i].bracketStart),
-          _calculateSimpleCrossMMSize(fromMt, fromMt.tiers[i].bracketStart)
-        ) > 0
+        BIMath.cmp(_blendedMM(toMt, fromMt.tiers[i].bracketStart), _blendedMM(fromMt, fromMt.tiers[i].bracketStart)) > 0
       ) {
         return true;
       }
     }
     for (uint i = 0; i < toMt.tiers.length; i++) {
       if (
-        BIMath.cmp(
-          _calculateSimpleCrossMMSize(toMt, toMt.tiers[i].bracketStart),
-          _calculateSimpleCrossMMSize(fromMt, toMt.tiers[i].bracketStart)
-        ) > 0
+        BIMath.cmp(_blendedMM(toMt, toMt.tiers[i].bracketStart), _blendedMM(fromMt, toMt.tiers[i].bracketStart)) > 0
       ) {
         return true;
       }
@@ -154,7 +151,16 @@ contract MarginConfigContract is ConfigContract {
     return BIMath.cmp(toMt.tiers[toMt.tiers.length - 1].rate, fromMt.tiers[fromMt.tiers.length - 1].rate) > 0;
   }
 
-  function _calculateSimpleCrossMMSize(ListMarginTiersBI memory mt, BI memory size) internal pure returns (BI memory) {
+  function _getPositionMM(
+    ListMarginTiersBI memory mt,
+    BI memory sizeBI,
+    BI memory markPriceBI
+  ) internal view returns (BI memory) {
+    BI memory notional = sizeBI.mul(markPriceBI);
+    return _blendedMM(mt, notional);
+  }
+
+  function _blendedMM(ListMarginTiersBI memory mt, BI memory notional) internal pure returns (BI memory) {
     if (mt.tiers.length == 0) {
       return BI(0, 0);
     }
@@ -165,8 +171,8 @@ contract MarginConfigContract is ConfigContract {
     BI memory bracketSize;
 
     for (uint i = 0; i < mt.tiers.length; i++) {
-      if (BIMath.cmp(size, mt.tiers[i].bracketStart) <= 0) {
-        bracketSize = BIMath.sub(size, prevStart);
+      if (BIMath.cmp(notional, mt.tiers[i].bracketStart) <= 0) {
+        bracketSize = BIMath.sub(notional, prevStart);
         margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
         return margin;
       }
@@ -178,7 +184,7 @@ contract MarginConfigContract is ConfigContract {
       prevRate = mt.tiers[i].rate;
     }
 
-    BI memory lastBracketSize = BIMath.sub(size, prevStart);
+    BI memory lastBracketSize = BIMath.sub(notional, prevStart);
     margin = BIMath.add(margin, BIMath.mul(lastBracketSize, prevRate));
 
     return margin;

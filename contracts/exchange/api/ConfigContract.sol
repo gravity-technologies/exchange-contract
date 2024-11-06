@@ -56,6 +56,8 @@ struct ConfigProofMessage {
 ///
 ///////////////////////////////////////////////////////////////////
 contract ConfigContract is BaseContract {
+  using BIMath for BI;
+
   // --------------- Constants ---------------
   int32 private constant ONE_CENTIBEEP = 1;
   int32 private constant ONE_BEEP = 100;
@@ -121,6 +123,22 @@ contract ConfigContract is BaseContract {
     return (_configToUint(c.val), c.isSet);
   }
 
+  function _getTradingFeeSubAccount(bool isLiquidation) internal view returns (SubAccount storage, bool) {
+    if (isLiquidation) {
+      return _getInsuranceFundSubAccount();
+    } else {
+      return _getAdminFeeSubAccount();
+    }
+  }
+
+  function _getInsuranceFundSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+  }
+
+  function _getAdminFeeSubAccount() internal view returns (SubAccount storage, bool) {
+    return _getSubAccountFromUintConfig(ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID);
+  }
+
   function _getSubAccountFromUintConfig(ConfigID key) internal view returns (SubAccount storage, bool) {
     SubAccount storage sub;
     (uint64 subID, bool isSubConfigured) = _getUintConfig(key);
@@ -152,6 +170,10 @@ contract ConfigContract is BaseContract {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
     return (c.val, c.isSet);
+  }
+
+  function _getBoolConfig(ConfigID key) internal view returns (bool) {
+    return state.config1DValues[key].val == TRUE_BYTES32;
   }
 
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
@@ -198,6 +220,28 @@ contract ConfigContract is BaseContract {
     emit ConfigUpdateMessageSent(state.configVersion, msg.sig, data);
   }
 
+  function _isUserAccount(address account) internal view returns (bool) {
+    return !_isBridgingPartnerAccount(account) && !_isInternalAccount(account);
+  }
+
+  function _isBridgingPartnerAccount(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(account));
+  }
+
+  function _isInternalAccount(address account) internal view returns (bool) {
+    (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
+    if (isInsuranceFundSet && insuranceFund.accountID == account) {
+      return true;
+    }
+
+    (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
+    if (isFeeSubAccIdSet && feeSubAcc.accountID == account) {
+      return true;
+    }
+
+    return false;
+  }
+
   ///////////////////////////////////////////////////////////////////
   /// Config APIs
   ///////////////////////////////////////////////////////////////////
@@ -242,9 +286,47 @@ contract ConfigContract is BaseContract {
   }
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      _validateBridgingPartnerChange(_configToAddress(subKey), value == TRUE_BYTES32);
+    } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
+      _validateInternalSubAccountChange(_configToUint(value));
+    }
+
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
+  }
+
+  function _validateBridgingPartnerChange(address partnerAddress, bool isAdding) internal {
+    Account storage acc = state.accounts[partnerAddress];
+    if (acc.id == address(0)) {
+      // setting acc to a non-existent account is allowed because the account
+      // may be created in the future, and newly created account has 0 value
+      return;
+    }
+    Account storage partnerAccount = _requireAccount(partnerAddress);
+    _requireAccountNoBalance(partnerAccount);
+    require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
+    if (isAdding) {
+      addAddress(state.bridgingPartners, partnerAddress);
+    } else {
+      removeAddress(state.bridgingPartners, partnerAddress, false);
+    }
+  }
+
+  function _validateInternalSubAccountChange(uint64 newSubAccountId) internal {
+    SubAccount storage newSubAcc = _requireSubAccount(newSubAccountId);
+    if (_isInternalAccount(newSubAcc.accountID)) {
+      // if the new subaccount is already under an internal account
+      // this won't decrease the total client equity, therefore it's allowed
+      return;
+    }
+
+    Account storage account = _requireAccount(newSubAcc.accountID);
+    require(
+      _getTotalAccountValueUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      "new internal acc must have 0 value"
+    );
   }
 
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
@@ -351,10 +433,36 @@ contract ConfigContract is BaseContract {
       return 0;
     }
 
-    // These config types are not numerical and have a fixed lock duration
-    // There should be only 1 timelock rule for these config types
-    if (typ == ConfigType.ADDRESS || typ == ConfigType.ADDRESS2D || typ == ConfigType.BOOL || typ == ConfigType.BOOL2D)
+    if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
+      return newVal == TRUE_BYTES32 ? int64(0) : rules[0].lockDuration;
+    }
+
+    if (key == ConfigID.ORACLE_ADDRESS) {
       return rules[0].lockDuration;
+    }
+
+    // These 4 config types are not numerical and have a fixed lock duration
+    // There should be only 1 timelock rule for these config types
+    if (typ == ConfigType.ADDRESS) {
+      (address oldVal, bool isSet) = _getAddressConfig(key);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.ADDRESS2D) {
+      (address oldVal, bool isSet) = _getAddressConfig2D(key, subKey);
+      if (isSet) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL) {
+      bool oldVal = _getBoolConfig(key);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
+    if (typ == ConfigType.BOOL2D) {
+      bool oldVal = _getBoolConfig2D(key, subKey);
+      if (oldVal) return rules[0].lockDuration;
+      return 0;
+    }
 
     if (typ == ConfigType.INT) {
       (int64 oldVal, bool isSet) = _getIntConfig(key);
@@ -474,12 +582,6 @@ contract ConfigContract is BaseContract {
     /// ADMIN addresses
     ///////////////////////////////////////////////////////////////////
 
-    // ADMIN_RECOVERY_ADDRESS
-    id = ConfigID.ADMIN_RECOVERY_ADDRESS;
-    settings[id].typ = ConfigType.BOOL2D;
-    rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
-
     // ORACLE_ADDRESS
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
@@ -490,13 +592,15 @@ contract ConfigContract is BaseContract {
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
@@ -504,24 +608,28 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ERC20_ADDRESSES;
     settings[id].typ = ConfigType.ADDRESS2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config is immutable once set
+    rules.push(Rule(type(int64).max, 0, 0));
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    // This config does not have timelock as it is controlled by GRVT
+    rules.push(Rule(0, 0, 0));
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings

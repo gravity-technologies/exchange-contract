@@ -26,11 +26,14 @@ export async function mockFinalizeDeposit(
     L2TokenInfo[currency].erc20Decimals
   )
 
+  const to_account_id = ethers.utils.hexZeroPad(deposit.to_account_id, 20);
+
   if (currency in L2TokenInfo) {
+    const depositProxy = await exchangeContract.getDepositProxy(to_account_id)
     await l2SharedBridgeAsL1Bridge.finalizeDeposit(
       // Depositor and l2Receiver can be any here
-      deposit.to_account_id,
-      await exchangeContract.getDepositProxy(deposit.to_account_id),
+      to_account_id,
+      depositProxy,
       L2TokenInfo[currency].l1Token,
       rawAmount,
       encodedTokenData(L2TokenInfo[currency].name, currency, L2TokenInfo[currency].erc20Decimals)

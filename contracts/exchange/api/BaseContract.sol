@@ -72,6 +72,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return acc;
   }
 
+  function _requireAccountNoBalance(Account storage acc) internal view {
+    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      require(acc.spotBalances[i] == 0, "account has balance");
+    }
+  }
+
   function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
     require(sub.id != 0, "subaccount does not exist");
@@ -298,6 +304,10 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return _getSpotPriceBI(spot).div(_getSpotPriceBI(quote));
   }
 
+  function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+    return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
+  }
+
   /// @dev Get the spot price of a currency in terms of USD
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
@@ -405,5 +415,68 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       DepositProxy(
         L2ContractHelper.computeCreate2Address(address(this), salt, getDepositProxyBytecodeHash(), constructorInputHash)
       );
+  }
+
+  function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
+    uint dec = _getBalanceDecimal(Currency.USDT);
+
+    BI memory totalValue = _getBalanceValueInQuoteCurrencyBI(account.spotBalances, Currency.USDT);
+
+    for (uint256 i; i < account.subAccounts.length; ++i) {
+      SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
+      BI memory subValueInQuote = _getSubAccountValueInQuote(subAcc);
+      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
+
+      totalValue = totalValue.add(subValueInUSDT);
+    }
+
+    return totalValue;
+  }
+
+  function _getBalanceValueInQuoteCurrencyBI(
+    mapping(Currency => int64) storage balances,
+    Currency quoteCurrency
+  ) internal view returns (BI memory) {
+    BI memory total = BI(0, 0);
+    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      int64 balance = balances[i];
+      if (balance == 0) {
+        continue;
+      }
+      BI memory balanceBI = BI(balance, _getBalanceDecimal(quoteCurrency));
+      BI memory balanceValueInQuote = _convertCurrency(balanceBI, i, quoteCurrency);
+      total = total.add(balanceValueInQuote);
+    }
+    return total;
+  }
+
+  /// @dev Get the total value of a sub account in quote currency
+  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
+      _getPositionsValueInQuote(sub.options)
+    );
+
+    totalValue = totalValue.add(_getBalanceValueInQuoteCurrencyBI(sub.spotBalances, sub.quoteCurrency));
+
+    return totalValue;
+  }
+
+  /// @dev Get the total value of a position collections in quote currency
+  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
+    BI memory total;
+    bytes32[] storage keys = positions.keys;
+    mapping(bytes32 => Position) storage values = positions.values;
+
+    uint count = keys.length;
+    for (uint i; i < count; ++i) {
+      Position storage pos = values[keys[i]];
+      bytes32 assetID = pos.id;
+      Currency underlying = assetGetUnderlying(assetID);
+      uint64 uDec = _getBalanceDecimal(underlying);
+      BI memory balance = BI(pos.balance, uDec);
+      BI memory assetPrice = _requireAssetPriceBI(assetID);
+      total = total.add(balance.mul(assetPrice));
+    }
+    return total;
   }
 }
