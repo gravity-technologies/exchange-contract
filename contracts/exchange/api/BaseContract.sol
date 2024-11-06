@@ -437,14 +437,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     mapping(Currency => int64) storage balances,
     Currency quoteCurrency
   ) internal view returns (BI memory) {
-    uint64 dec = _getBalanceDecimal(quoteCurrency);
-    BI memory total = BI(0, dec);
+    BI memory total = BI(0, 0);
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
       int64 balance = balances[i];
       if (balance == 0) {
         continue;
       }
-      BI memory balanceBI = BI(balance, dec);
+      BI memory balanceBI = BI(balance, _getBalanceDecimal(quoteCurrency));
       BI memory balanceValueInQuote = _convertCurrency(balanceBI, i, quoteCurrency);
       total = total.add(balanceValueInQuote);
     }
