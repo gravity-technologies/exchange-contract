@@ -66,7 +66,7 @@ contract MarginConfigContract is ConfigContract {
       require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
     }
 
-    state.simpleCrossMaintenanceMarginTiers[kud] = tiersBI;
+    _setListMarginTiersBIToStorage(kud, tiersBI);
     delete state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
 
     state.configVersion++;
@@ -107,11 +107,39 @@ contract MarginConfigContract is ConfigContract {
     return ListMarginTiersBI({kud: kud, tiers: biTiers});
   }
 
+  function _getListMarginTiersBIFromStorage(bytes32 kud) internal view returns (ListMarginTiersBI memory) {
+    ListMarginTiersBIStorage storage storageTiers = state.simpleCrossMaintenanceMarginTiers[kud];
+    ListMarginTiersBI memory result = ListMarginTiersBI({
+      kud: storageTiers.kud,
+      tiers: new MarginTierBI[](storageTiers.tiers.length)
+    });
+
+    for (uint i = 0; i < storageTiers.tiers.length; i++) {
+      result.tiers[i] = MarginTierBI({
+        bracketStart: storageTiers.tiers[i].bracketStart,
+        rate: storageTiers.tiers[i].rate
+      });
+    }
+
+    return result;
+  }
+
+  function _setListMarginTiersBIToStorage(bytes32 kud, ListMarginTiersBI memory tiersBI) private {
+    ListMarginTiersBIStorage storage storageTiers = state.simpleCrossMaintenanceMarginTiers[kud];
+    storageTiers.kud = tiersBI.kud;
+    delete storageTiers.tiers;
+    storageTiers.tiers = new MarginTierBIStorage[](tiersBI.tiers.length);
+    for (uint i = 0; i < tiersBI.tiers.length; i++) {
+      storageTiers.tiers[i].bracketStart = tiersBI.tiers[i].bracketStart;
+      storageTiers.tiers[i].rate = tiersBI.tiers[i].rate;
+    }
+  }
+
   function _getSimpleCrossMaintenanceMarginTiersLockDuration(
     bytes32 kud,
     ListMarginTiersBI memory toMt
   ) private view returns (int64) {
-    ListMarginTiersBI memory fromMt = state.simpleCrossMaintenanceMarginTiers[kud];
+    ListMarginTiersBI memory fromMt = _getListMarginTiersBIFromStorage(kud);
 
     if (fromMt.tiers.length == 0) {
       return 0;

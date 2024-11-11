@@ -576,7 +576,10 @@ contract ConfigContract is BaseContract {
     id = ConfigID.SIMPLE_CROSS_FUTURES_INITIAL_MARGIN;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    ConfigTimelockRule storage rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     bytes32 addr;
 
@@ -588,21 +591,30 @@ contract ConfigContract is BaseContract {
     id = ConfigID.ORACLE_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, 0));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     // CONFIG_ADDRESS
     id = ConfigID.CONFIG_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
     // This config does not have timelock as it is controlled by GRVT
-    rules.push(Rule(0, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = 0;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     // MARKET_DATA_ADDRESS
     id = ConfigID.MARKET_DATA_ADDRESS;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
     // This config does not have timelock as it is controlled by GRVT
-    rules.push(Rule(0, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = 0;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Smart Contract Addresses
@@ -611,27 +623,39 @@ contract ConfigContract is BaseContract {
     settings[id].typ = ConfigType.ADDRESS2D;
     rules = settings[id].rules;
     // This config is immutable once set
-    rules.push(Rule(type(int64).max, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = type(int64).max;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     id = ConfigID.L2_SHARED_BRIDGE_ADDRESS;
     settings[id].typ = ConfigType.ADDRESS;
     rules = settings[id].rules;
     // This config is immutable once set
-    rules.push(Rule(type(int64).max, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = type(int64).max;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     // ADMIN_FEE_SUB_ACCOUNT_ID
     id = ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
     // This config does not have timelock as it is controlled by GRVT
-    rules.push(Rule(0, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = 0;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     // INSURANCE_FUND_SUB_ACCOUNT_ID
     id = ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
     // This config does not have timelock as it is controlled by GRVT
-    rules.push(Rule(0, 0, 0));
+    rule = rules.push();
+    rule.lockDuration = 0;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
 
     ///////////////////////////////////////////////////////////////////
     /// Funding rate settings
@@ -641,13 +665,19 @@ contract ConfigContract is BaseContract {
     id = ConfigID.FUNDING_RATE_HIGH;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     // FUNDING_RATE_LOW
     id = ConfigID.FUNDING_RATE_LOW;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     ///////////////////////////////////////////////////////////////////
     /// Fee settings
@@ -657,35 +687,53 @@ contract ConfigContract is BaseContract {
     id = ConfigID.FUTURES_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     // FUTURES_TAKER_FEE_MINIMUM
     id = ConfigID.FUTURES_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     // OPTIONS_MAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_MAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     // OPTIONS_TAKER_FEE_MINIMUM
     id = ConfigID.OPTIONS_TAKER_FEE_MINIMUM;
     settings[id].typ = ConfigType.CENTIBEEP2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     id = ConfigID.WITHDRAWAL_FEE;
     settings[id].typ = ConfigType.UINT;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
 
     // BRIDGING PARTNER ADDRESSES
     id = ConfigID.BRIDGING_PARTNER_ADDRESSES;
     settings[id].typ = ConfigType.BOOL2D;
     rules = settings[id].rules;
-    rules.push(Rule(int64(2 * ONE_WEEK_NANOS), 0, ONE_HUNDRED_PERCENT));
+    rule = rules.push();
+    rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
+    rule.deltaPositive = 0;
+    rule.deltaNegative = ONE_HUNDRED_PERCENT;
   }
 }

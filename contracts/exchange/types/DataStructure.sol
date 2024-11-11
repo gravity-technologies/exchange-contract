@@ -117,7 +117,7 @@ struct State {
   // Latest Transaction ID
   uint64 lastTxID;
   // Stores the maintenance margin tiers for simple cross margin on a per KUQ(kind, underlying, quote) basis
-  mapping(bytes32 => ListMarginTiersBI) simpleCrossMaintenanceMarginTiers;
+  mapping(bytes32 => ListMarginTiersBIStorage) simpleCrossMaintenanceMarginTiers;
   // Stores the timelock end time for the simple cross margin tiers on a per KUQ(kind, underlying, quote) basis
   mapping(bytes32 => int64) simpleCrossMaintenanceMarginTimelockEndTime;
   // Temporary storage for trade validation. This should always be cleared after each trade
@@ -169,7 +169,6 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
-  uint256[49] __gap;
 }
 
 struct SubAccount {
@@ -177,23 +176,22 @@ struct SubAccount {
   uint64 id;
   uint64 adminCount;
   uint64 signerCount;
+  // The timestamp that the sub account was last funded at
+  int64 lastAppliedFundingTimestamp;
   // The Account that this Sub Account belongs to
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
-  // The total amount of base currency that the sub account possesses
-  mapping(Currency => int64) spotBalances;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
+  // The total amount of base currency that the sub account possesses
+  mapping(Currency => int64) spotBalances;
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
-  // The timestamp that the sub account was last funded at
-  int64 lastAppliedFundingTimestamp;
-  uint256[49] __gap;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
@@ -203,7 +201,6 @@ struct SubAccount {
 struct ConfigSchedule {
   // The timestamp at which the config will be unlocked
   int64 lockEndTime;
-  uint256[49] __gap;
 }
 
 struct ConfigTimelockRule {
@@ -217,6 +214,7 @@ struct ConfigTimelockRule {
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
   uint64 deltaNegative;
+  uint256[49] __gap;
 }
 
 struct ReplayState {
@@ -333,6 +331,17 @@ struct MarginTierBI {
 struct ListMarginTiersBI {
   bytes32 kud;
   MarginTierBI[] tiers;
+}
+
+struct MarginTierBIStorage {
+  BI bracketStart;
+  BI rate;
+  uint256[49] __gap;
+}
+
+struct ListMarginTiersBIStorage {
+  bytes32 kud;
+  MarginTierBIStorage[] tiers;
 }
 
 // --------------- Trade --------------
