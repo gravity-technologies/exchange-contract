@@ -145,7 +145,6 @@ struct TmpLegData {
   bool isBuyingAsset;
   bool isSet;
   uint64 limitPrice;
-  uint256[49] __gap;
 }
 
 struct Account {
@@ -170,7 +169,6 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
-  uint256[49] __gap;
 }
 
 struct SubAccount {
@@ -194,7 +192,6 @@ struct SubAccount {
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
-  uint256[49] __gap;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
@@ -204,7 +201,6 @@ struct SubAccount {
 struct ConfigSchedule {
   // The timestamp at which the config will be unlocked
   int64 lockEndTime;
-  uint256[49] __gap;
 }
 
 struct ConfigTimelockRule {
@@ -254,7 +250,6 @@ struct Session {
   // The last timestamp in nanoseconds that the signer can sign at
   // We can apply a max one day expiry on session keys
   int64 expiry;
-  uint256[49] __gap;
 }
 
 // --------------- Config --------------
@@ -322,7 +317,6 @@ struct ConfigSetting {
   ConfigTimelockRule[] rules;
   // the schedules where we can change this config.
   mapping(bytes32 => ConfigSchedule) schedules;
-  uint256[49] __gap;
 }
 
 struct MarginTier {
@@ -338,7 +332,6 @@ struct MarginTierBI {
 struct ListMarginTiersBI {
   bytes32 kud;
   MarginTierBI[] tiers;
-  uint256[49] __gap;
 }
 
 // --------------- Trade --------------
