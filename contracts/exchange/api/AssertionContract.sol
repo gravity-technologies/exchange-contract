@@ -346,20 +346,20 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   // Assertions for MarginConfig Contract
   function assertSetSimpleCrossMMTiers(bytes32 kud, MarginTierAssertion[] calldata expectedTiers) external view {
-    ListMarginTiersBI storage tiers = state.simpleCrossMaintenanceMarginTiers[kud];
+    ListMarginTiersBI memory tiers = _getListMarginTiersBIFromStorage(kud);
     require(tiers.tiers.length == expectedTiers.length, "ex setSimpleCrossMMLenMismatch");
 
     for (uint i; i < tiers.tiers.length; ++i) {
       MarginTierAssertion calldata exTier = expectedTiers[i];
-      MarginTierBI storage tier = tiers.tiers[i];
+      MarginTierBI memory tier = tiers.tiers[i];
 
       // Compare bracketStart
-      BI storage bracketStart = tier.bracketStart;
+      BI memory bracketStart = tier.bracketStart;
       uint qDec = _getBalanceDecimal(assetGetQuote(kud));
       require(bracketStart.toUint64(qDec) == exTier.bracketStart, "ex setSimpleCrossMMTierBracket");
 
       // Compare rate
-      BI storage rate = tier.rate;
+      BI memory rate = tier.rate;
       require(rate.toUint64(CENTIBEEP_DECIMALS) == uint64(exTier.rate), "ex setSimpleCrossMMTierRate");
     }
   }
