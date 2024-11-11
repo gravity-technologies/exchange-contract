@@ -145,6 +145,7 @@ struct TmpLegData {
   bool isBuyingAsset;
   bool isSet;
   uint64 limitPrice;
+  uint256[49] __gap;
 }
 
 struct Account {
@@ -177,22 +178,22 @@ struct SubAccount {
   uint64 id;
   uint64 adminCount;
   uint64 signerCount;
+  // The timestamp that the sub account was last funded at
+  int64 lastAppliedFundingTimestamp;
   // The Account that this Sub Account belongs to
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
   Currency quoteCurrency;
-  // The total amount of base currency that the sub account possesses
-  mapping(Currency => int64) spotBalances;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
+  // The total amount of base currency that the sub account possesses
+  mapping(Currency => int64) spotBalances;
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
-  // The timestamp that the sub account was last funded at
-  int64 lastAppliedFundingTimestamp;
   uint256[49] __gap;
 }
 
@@ -217,6 +218,7 @@ struct ConfigTimelockRule {
   // It expresses the maximum delta (in the negative direction) that the config value
   // can be changed by in order for this rule to apply
   uint64 deltaNegative;
+  uint256[49] __gap;
 }
 
 struct ReplayState {
@@ -252,6 +254,7 @@ struct Session {
   // The last timestamp in nanoseconds that the signer can sign at
   // We can apply a max one day expiry on session keys
   int64 expiry;
+  uint256[49] __gap;
 }
 
 // --------------- Config --------------
@@ -309,6 +312,7 @@ struct ConfigValue {
   bool isSet;
   // The value is stored as bytes32 to allow for different types of config
   bytes32 val;
+  uint256[49] __gap;
 }
 
 struct ConfigSetting {
@@ -318,6 +322,7 @@ struct ConfigSetting {
   ConfigTimelockRule[] rules;
   // the schedules where we can change this config.
   mapping(bytes32 => ConfigSchedule) schedules;
+  uint256[49] __gap;
 }
 
 struct MarginTier {
@@ -333,6 +338,7 @@ struct MarginTierBI {
 struct ListMarginTiersBI {
   bytes32 kud;
   MarginTierBI[] tiers;
+  uint256[49] __gap;
 }
 
 // --------------- Trade --------------
