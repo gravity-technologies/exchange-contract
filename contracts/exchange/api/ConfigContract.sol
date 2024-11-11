@@ -287,7 +287,12 @@ contract ConfigContract is BaseContract {
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
-      _validateBridgingPartnerChange(_configToAddress(subKey), value == TRUE_BYTES32);
+      _validateBridgingPartnerChange(_configToAddress(subKey));
+      if (value == TRUE_BYTES32) {
+        addAddress(state.bridgingPartners, partnerAddress);
+      } else {
+        removeAddress(state.bridgingPartners, partnerAddress, false);
+      }
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
       _validateInternalSubAccountChange(_configToUint(value));
     }
@@ -297,7 +302,7 @@ contract ConfigContract is BaseContract {
     config.val = value;
   }
 
-  function _validateBridgingPartnerChange(address partnerAddress, bool isAdding) internal {
+  function _validateBridgingPartnerChange(address partnerAddress) internal {
     Account storage acc = state.accounts[partnerAddress];
     if (acc.id == address(0)) {
       // setting acc to a non-existent account is allowed because the account
@@ -307,11 +312,6 @@ contract ConfigContract is BaseContract {
     Account storage partnerAccount = _requireAccount(partnerAddress);
     _requireAccountNoBalance(partnerAccount);
     require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
-    if (isAdding) {
-      addAddress(state.bridgingPartners, partnerAddress);
-    } else {
-      removeAddress(state.bridgingPartners, partnerAddress, false);
-    }
   }
 
   function _validateInternalSubAccountChange(uint64 newSubAccountId) internal {
