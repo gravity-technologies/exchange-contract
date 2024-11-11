@@ -307,7 +307,6 @@ struct ConfigValue {
   bool isSet;
   // The value is stored as bytes32 to allow for different types of config
   bytes32 val;
-  uint256[49] __gap;
 }
 
 struct ConfigSetting {
