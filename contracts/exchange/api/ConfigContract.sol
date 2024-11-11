@@ -287,7 +287,8 @@ contract ConfigContract is BaseContract {
 
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
-      _validateBridgingPartnerChange(_configToAddress(subKey));
+      address partnerAddress = _configToAddress(subKey);
+      _validateBridgingPartnerChange(partnerAddress);
       if (value == TRUE_BYTES32) {
         addAddress(state.bridgingPartners, partnerAddress);
       } else {
