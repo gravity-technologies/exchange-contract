@@ -25,21 +25,9 @@ contract RiskCheck is BaseContract, MarginConfigContract {
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
   function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
-    int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
-    if (insuranceFundLossAmountUSDT <= 0) {
-      return 0;
-    }
-
-    uint usdtDec = _getBalanceDecimal(Currency.USDT);
-
-    int64 totalClientValueUSDT = _getTotalClientValueUSDT();
-    BI memory totalClientValueUSDTBI = BI(totalClientValueUSDT, usdtDec);
-    BI memory insuranceFundLossAmountUSDTBI = BI(insuranceFundLossAmountUSDT, usdtDec);
-
-    // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
-    BI memory withdrawAmountBI = BI(withdrawAmount, MAX_BALANCE_DECIMALS);
-    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountUSDTBI).div(totalClientValueUSDTBI);
-    return result.toUint64(MAX_BALANCE_DECIMALS);
+    int haircutAmount = (int(withdrawAmount) * int(_getInsuranceFundLossAmountUSDT())) /
+      int(_getTotalClientValueUSDT());
+    return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
