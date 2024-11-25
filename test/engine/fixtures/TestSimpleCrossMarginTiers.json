@@ -518,11 +518,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -590,11 +586,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -698,11 +690,7 @@
                "time": "10886400000000015",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1282,11 +1270,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1354,11 +1338,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1462,11 +1442,7 @@
                "time": "10886400000000015",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "USDC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "USDC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2046,11 +2022,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2118,11 +2090,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2226,11 +2194,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2272,11 +2236,7 @@
                "time": "10886400000000681",
                "type": "SCHEDULE_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "schedule_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2352,11 +2312,7 @@
                "time": "12096000000001681",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2942,11 +2898,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3014,11 +2966,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3122,11 +3070,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3172,11 +3116,7 @@
                "time": "10886400000000681",
                "type": "SCHEDULE_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "schedule_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3256,11 +3196,7 @@
                "time": "12096000000001681",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3854,11 +3790,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3926,11 +3858,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4034,11 +3962,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4592,11 +4516,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4664,11 +4584,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4772,11 +4688,7 @@
                "time": "10886400000000015",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5362,11 +5274,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5434,11 +5342,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5542,11 +5446,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6100,11 +6000,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6172,11 +6068,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6280,12 +6172,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "CALL",
-                     "underlying": "USDC",
-                     "quote": "USDT",
-                     "strike_price": "1234"
-                  },
+                  "asset_kuq": "USDC_USDT_Call_1Jan70_0",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6839,11 +6726,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6911,11 +6794,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7019,12 +6898,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "CALL",
-                     "underlying": "USDC",
-                     "quote": "USDT",
-                     "expiration": "1234"
-                  },
+                  "asset_kuq": "USDC_USDT_Call_1Jan70_0",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7578,11 +7452,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7650,11 +7520,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7758,12 +7624,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "CALL",
-                     "underlying": "USDC",
-                     "quote": "USDT",
-                     "expiration": "1234"
-                  },
+                  "asset_kuq": "USDC_USDT_Call_1Jan70_0",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -8317,11 +8178,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -8389,11 +8246,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -8497,12 +8350,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "RATE",
-                     "underlying": "USDC",
-                     "quote": "USDT",
-                     "expiration": "1234"
-                  },
+                  "asset_kuq": "",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -9056,11 +8904,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -9128,11 +8972,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -9236,11 +9076,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [],
                   "signature": {
                      "signer": "0xa08ee13480c410de20ea3d126ee2a7daa2a30b7d",
@@ -9777,11 +9613,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -9849,11 +9681,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -9957,11 +9785,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -10551,11 +10375,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -10623,11 +10443,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -10731,11 +10547,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "100000",
@@ -11297,11 +11109,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -11369,11 +11177,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -11477,11 +11281,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -12031,11 +11831,7 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -12103,11 +11899,7 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "ETH_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -12211,11 +12003,7 @@
                "time": "0",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": {
-                     "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
-                  },
+                  "asset_kuq": "BTC_USDT_Perp",
                   "tiers": [
                      {
                         "bracket_start": "0",
