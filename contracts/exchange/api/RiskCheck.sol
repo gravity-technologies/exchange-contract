@@ -24,9 +24,19 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   error InvalidTotalValue(uint64 subAccountID, int256 value);
 
-  function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
-    int haircutAmount = (int(withdrawAmount) * int(_getInsuranceFundLossAmountUSDT())) /
-      int(_getTotalClientValueUSDT());
+  function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {
+    int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
+    if (insuranceFundLossAmountUSDT <= 0) {
+      return 0;
+    }
+
+    // non-user accounts are not subject to socialized loss
+    if (!_isUserAccount(fromAccID)) {
+      return 0;
+    }
+
+    int64 totalClientValueUSDT = _getTotalClientValueUSDT();
+    int haircutAmount = (int(withdrawAmount) * int(insuranceFundLossAmountUSDT)) / int(totalClientValueUSDT);
     return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
   }
 

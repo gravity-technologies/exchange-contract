@@ -112,7 +112,7 @@ abstract contract TransferContract is TradeContract {
 
     acc.spotBalances[currency] -= amount;
 
-    int64 amountAfterSocializedLoss = _applySocializedLoss(amount, currency);
+    int64 amountAfterSocializedLoss = _applySocializedLoss(fromAccID, amount, currency);
     int64 amountToSend = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
 
     state.totalSpotBalances[currency] -= amountToSend;
@@ -132,14 +132,14 @@ abstract contract TransferContract is TradeContract {
     l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
   }
 
-  function _applySocializedLoss(int64 amount, Currency currency) private returns (int64) {
+  function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (!isInsuranceFundSet) {
       return amount;
     }
 
     _fundAndSettle(insuranceFund);
-    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(amount))));
+    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
     if (socializedLossHaircutAmount > 0) {
       insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
     }
@@ -256,10 +256,7 @@ abstract contract TransferContract is TradeContract {
       _isBridgingPartnerAccount(fromAccID) || fromAcc.onboardedTransferAccounts[toAccID],
       "bad external transfer address"
     );
-    require(
-      !_isUserAccount(fromAccID) || _isUserAccount(toAccID),
-      "user account cannot transfer to non-user account"
-    );
+    require(!_isUserAccount(fromAccID) || _isUserAccount(toAccID), "user account cannot transfer to non-user account");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
