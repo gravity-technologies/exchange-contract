@@ -26,7 +26,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {
     int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
-    if (insuranceFundLossAmountUSDT <= 0) {
+    if (insuranceFundLossAmountUSDT == 0) {
       return 0;
     }
 
