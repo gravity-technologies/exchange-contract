@@ -168,7 +168,7 @@ abstract contract TransferContract is TradeContract {
   function _getWithdrawalFee() private view returns (BI memory) {
     (uint64 fee, bool feeSet) = _getUintConfig(ConfigID.WITHDRAWAL_FEE);
     if (!feeSet) {
-      return BI(0, 0);
+      return BIMath.zero();
     }
     return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
   }

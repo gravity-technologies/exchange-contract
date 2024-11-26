@@ -50,6 +50,30 @@ contract FundingAndSettlement is BaseContract {
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
+  function _getPerpFundingPayment(bytes32 assetID, Position storage perp) internal view returns (BI memory) {
+    int64 latestFundingIndex = state.prices.fundingIndex[assetID];
+
+    int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
+    if (fundingIndexChange == 0) {
+      return BIMath.zero();
+    }
+
+    Currency underlying = assetGetUnderlying(assetID);
+    Currency quote = assetGetQuote(assetID);
+
+    uint64 uDec = _getBalanceDecimal(underlying);
+    uint64 qDec = _getBalanceDecimal(quote);
+
+    BI memory payment = BI(fundingIndexChange, PRICE_DECIMALS).mul(BI(perp.balance, uDec));
+
+    if (payment.isPositive()) {
+      BI memory paymentPad = BI(int(uint(_getBalanceMultiplier(quote))), 0);
+      return payment.mul(paymentPad).roundUp().div(paymentPad).scale(qDec);
+    }
+
+    return payment.scale(qDec);
+  }
+
   struct SettmentEntry {
     bytes32 assetID;
     uint64 settlePrice;

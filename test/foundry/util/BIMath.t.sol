@@ -60,7 +60,7 @@ contract BIMathTest is Test {
     // Test Case 3: 5*0, different decimals
     a = BI(500, 2);
     b = BI(0, 9);
-    want = BI(0, 0);
+    want = BIMath.zero();
     c = a.mul(b);
     assertEq(c.cmp(want), 0);
 
@@ -130,7 +130,7 @@ contract BIMathTest is Test {
     assertEq(c.cmp(want), 0);
 
     // Test Case 9: Large decimals difference
-    a = BI(1, 0); // Represents 1
+    a = BIMath.one(); // Represents 1
     b = BI(1, 18); // Represents 1e-18
     c = a.div(b);
     want = BI(1_000_000_000_000_000_000, 0); // Expected result: 1e18
@@ -166,40 +166,40 @@ contract BIMathTest is Test {
 
     // Test Case 14: Dividing numbers with significant decimal difference
     a = BI(1_000_000_000, 9); // Represents 1.0
-    b = BI(1, 0); // Represents 1.0
+    b = BIMath.one(); // Represents 1.0
     c = a.div(b);
     want = BI(1_000_000_000_000_000_000, 18); // Expected result: 1e9
     assertEq(c.cmp(want), 0);
 
     // Test Case 15: Division by zero
-    a = BI(1, 0);
-    b = BI(0, 0);
+    a = BIMath.one();
+    b = BIMath.zero();
     vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
     a.div(b);
   }
 
   function testScale() public {
     // Test Case 1: Scale up by 2 decimals
-    BI memory a = BI(1, 0);
+    BI memory a = BIMath.one();
     BI memory want = BI(100, 2);
     BI memory c = BIMath.scale(a, 2);
     assertEq(c.cmp(want), 0);
 
     // Test Case 2: Scale down by 2 decimals
     a = BI(100, 2);
-    want = BI(1, 0);
+    want = BIMath.one();
     c = BIMath.scale(a, 0);
     assertEq(c.cmp(want), 0);
 
     // Test Case 3: Scale up by 10 decimals
-    a = BI(1, 0);
+    a = BIMath.one();
     want = BI(1_000_000_000_000, 12);
     c = BIMath.scale(a, 12);
     assertEq(c.cmp(want), 0);
 
     // Test Case 4: Scale down by 10 decimals
     a = BI(1_000_000_000_000, 12);
-    want = BI(1, 0);
+    want = BIMath.one();
     c = BIMath.scale(a, 0);
     assertEq(c.cmp(want), 0);
 

@@ -64,6 +64,10 @@ library BIMath {
     return BI(-n.val, n.dec);
   }
 
+  function isPositive(BI memory a) internal pure returns (bool) {
+    return a.val > 0;
+  }
+
   function isNegative(BI memory a) internal pure returns (bool) {
     return a.val < 0;
   }
@@ -97,5 +101,44 @@ library BIMath {
       c = a.val * int256(10) ** (decimals - a.dec);
     }
     return SafeCast.toUint64(SafeCast.toUint256(c));
+  }
+
+  function zero() internal pure returns (BI memory) {
+    return BI(0, 0);
+  }
+
+  function one() internal pure returns (BI memory) {
+    return BI(1, 0);
+  }
+
+  function half() internal pure returns (BI memory) {
+    return BI(int256(5), 1);
+  }
+
+  function floor(BI memory b) internal pure returns (BI memory) {
+    return scale(scale(b, 0), b.dec);
+  }
+
+  function roundDown(BI memory b) internal pure returns (BI memory) {
+    if (b.val > 0) {
+      return floor(b);
+    }
+    return floor(sub(b, one()));
+  }
+
+  function roundUp(BI memory b) internal pure returns (BI memory) {
+    BI memory nearOne = sub(one(), BI(int256(1), b.dec));
+    if (b.val > 0) {
+      return floor(add(b, nearOne));
+    }
+    return floor(b);
+  }
+
+  function round(BI memory b) internal pure returns (BI memory) {
+    BI memory halfBI = half();
+    if (b.val > 0) {
+      return floor(add(b, halfBI));
+    }
+    return floor(sub(b, halfBI));
   }
 }
