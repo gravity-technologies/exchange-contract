@@ -22,8 +22,6 @@ uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
 
-  error InvalidTotalValue(uint64 subAccountID, int256 value);
-
   function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
     int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
     if (insuranceFundLossAmountUSDT <= 0) {
