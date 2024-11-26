@@ -41,7 +41,7 @@ contract FundingAndSettlement is BaseContract {
       fundingPayment = fundingPayment.add(_getPerpFundingPayment(assetID, perp, fundingIndexChange));
       perp.lastAppliedFundingIndex = latestFundingIndex;
     }
-    sub.spotBalances[quoteCurrency] += fundingPayment.toInt64(qdec);
+    sub.spotBalances[quoteCurrency] -= fundingPayment.toInt64(qdec);
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 
