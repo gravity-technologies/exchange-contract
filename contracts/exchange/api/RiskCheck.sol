@@ -6,11 +6,6 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
 
-struct MaintenanceMarginConfig {
-  BI size;
-  BI ratio;
-}
-
 // The maximum number of maintenance margin tiers
 uint256 constant MAX_M_MARGIN_TIERS = 12;
 
