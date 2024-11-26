@@ -139,10 +139,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     }
   }
 
-  function _requireNonNegativeValue(SubAccount storage sub) internal view {
-    require(_getSubAccountValueInQuote(sub).val >= 0, "invalid total value");
-  }
-
   /**
    * @dev Check the current subaccount margin level. If the subaccount is below the maintenance margin,
    * it is liquidatable.
