@@ -180,13 +180,13 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     uint numPerps = keys.length;
     for (uint i = 0; i < numPerps; i++) {
       bytes32 asset = keys[i];
-      totalCharge = totalCharge.add(_getSimpleCrossFuturesMMUsd(asset, values[asset]));
+      totalCharge = totalCharge.add(_getPositionSimpleCrossMMUsd(asset, values[asset]));
     }
 
     return totalCharge;
   }
 
-  function _getSimpleCrossFuturesMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
+  function _getPositionSimpleCrossMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
     BI memory markPrice = _requireAssetPriceBI(asset);
 
     int64 size = position.balance;
