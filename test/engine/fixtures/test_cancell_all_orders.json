@@ -492,7 +492,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -608,7 +612,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -788,7 +796,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "900000000"
                      }
                   ],
@@ -1403,7 +1414,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1519,7 +1534,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1699,7 +1718,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "900000000"
                      }
                   ],
@@ -2416,7 +2438,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2532,7 +2558,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2712,7 +2742,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "900000000"
                      }
                   ],
@@ -3429,7 +3462,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3545,7 +3582,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3725,7 +3766,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "900000000"
                      }
                   ],

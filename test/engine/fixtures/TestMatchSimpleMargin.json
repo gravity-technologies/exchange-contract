@@ -518,7 +518,11 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -586,7 +590,11 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -692,43 +700,89 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_21May70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -1022,7 +1076,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "60015000000000",
                            "is_buying_asset": true
@@ -1061,7 +1119,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "60015000000000",
                                  "is_buying_asset": false
@@ -1186,7 +1248,11 @@
                            {
                               "event_time": "0",
                               "sub_account_id": "1",
-                              "instrument": "BTC_USDT_Perp",
+                              "instrument": {
+                                 "kind": "PERPETUAL",
+                                 "underlying": "BTC",
+                                 "quote": "USDT"
+                              },
                               "size": "1000000000",
                               "notional": "60000000000",
                               "entry_price": "60015000000000",
@@ -1228,7 +1294,11 @@
                            {
                               "event_time": "0",
                               "sub_account_id": "2",
-                              "instrument": "BTC_USDT_Perp",
+                              "instrument": {
+                                 "kind": "PERPETUAL",
+                                 "underlying": "BTC",
+                                 "quote": "USDT"
+                              },
                               "size": "-1000000000",
                               "notional": "-60000000000",
                               "entry_price": "60015000000000",
@@ -1260,7 +1330,10 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "800000000"
                      }
                   ],
@@ -1343,7 +1416,11 @@
                            {
                               "event_time": "0",
                               "sub_account_id": "1",
-                              "instrument": "BTC_USDT_Perp",
+                              "instrument": {
+                                 "kind": "PERPETUAL",
+                                 "underlying": "BTC",
+                                 "quote": "USDT"
+                              },
                               "size": "1000000000",
                               "notional": "75000000000",
                               "entry_price": "60015000000000",
@@ -1885,7 +1962,11 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1953,7 +2034,11 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2059,43 +2144,89 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_21May70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -2389,7 +2520,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "59980000000000",
                            "is_buying_asset": true
@@ -2428,7 +2563,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "59980000000000",
                                  "is_buying_asset": false
@@ -2553,7 +2692,11 @@
                            {
                               "event_time": "0",
                               "sub_account_id": "1",
-                              "instrument": "BTC_USDT_Perp",
+                              "instrument": {
+                                 "kind": "PERPETUAL",
+                                 "underlying": "BTC",
+                                 "quote": "USDT"
+                              },
                               "size": "1000000000",
                               "notional": "60000000000",
                               "entry_price": "59980000000000",
@@ -2595,7 +2738,11 @@
                            {
                               "event_time": "0",
                               "sub_account_id": "2",
-                              "instrument": "BTC_USDT_Perp",
+                              "instrument": {
+                                 "kind": "PERPETUAL",
+                                 "underlying": "BTC",
+                                 "quote": "USDT"
+                              },
                               "size": "-1000000000",
                               "notional": "-60000000000",
                               "entry_price": "59980000000000",
@@ -3137,7 +3284,11 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3205,7 +3356,11 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3311,43 +3466,89 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_21May70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -3641,7 +3842,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "23000000000",
                            "limit_price": "60000000000000",
                            "is_buying_asset": true
@@ -3680,7 +3885,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "23000000000",
                                  "limit_price": "60000000000000",
                                  "is_buying_asset": false
@@ -4305,7 +4514,11 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4373,7 +4586,11 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4479,43 +4696,89 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_21May70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -4809,7 +5072,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "3000000000000",
                            "is_buying_asset": true
@@ -4848,7 +5115,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "3000000000000",
                                  "is_buying_asset": false
@@ -5473,7 +5744,11 @@
                "time": "9676800000000011",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5541,7 +5816,11 @@
                "time": "9676800000000012",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5647,43 +5926,89 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "59000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2159000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      },
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Fut_21May70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000"
+                        },
                         "price": "60005000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_75000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "100000000000"
                      },
                      {
-                        "asset": "BTC_USD_Call_21May70_45000",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "4000000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_45000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "45000000000000"
+                        },
                         "price": "80000000000"
                      },
                      {
-                        "asset": "BTC_USD_Put_21May70_75000",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "12096000000000000",
+                           "strike_price": "75000000000000"
+                        },
                         "price": "3000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2159000000000"
                      }
                   ],
@@ -5977,7 +6302,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "23000000000",
                            "limit_price": "60000000000000",
                            "is_buying_asset": true
@@ -6016,7 +6345,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "23000000000",
                                  "limit_price": "60000000000000",
                                  "is_buying_asset": false
@@ -6094,7 +6427,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "3000000000000",
                            "is_buying_asset": true
@@ -6133,7 +6470,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "3000000000000",
                                  "is_buying_asset": false

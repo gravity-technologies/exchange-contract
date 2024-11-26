@@ -508,7 +508,11 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": null
                   },
                   "name": "ExFundingIndex"
@@ -1075,19 +1079,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "USDC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1116,12 +1134,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1141,14 +1167,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -1721,19 +1755,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "USDC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1762,12 +1810,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -1787,14 +1843,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -2367,19 +2431,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "USDC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -2408,12 +2486,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -2433,14 +2519,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -3013,19 +3107,33 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      },
                      {
-                        "asset": "USDC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDC"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -3054,12 +3162,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -3079,14 +3195,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "520833333333"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-10416666"
                   },
                   "name": "ExFundingIndex"
@@ -3111,12 +3235,20 @@
                "funding_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USDT_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "funding_rate": 50000,
                         "mark_price": "0"
                      },
                      {
-                        "asset": "ETH_USDC_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDC"
+                        },
                         "funding_rate": -1,
                         "mark_price": "0"
                      }
@@ -3136,14 +3268,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "funding_rate": "1041666666666"
                   },
                   "name": "ExFundingIndex"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDC_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "ETH",
+                        "quote": "USDC"
+                     },
                      "funding_rate": "-20833332"
                   },
                   "name": "ExFundingIndex"

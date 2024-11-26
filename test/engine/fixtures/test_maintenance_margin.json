@@ -492,7 +492,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -608,7 +612,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -992,23 +1000,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -1044,7 +1069,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -1089,7 +1118,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -1167,7 +1200,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "1.0",
                         "notional": "40000",
                         "entry_price": "40000",
@@ -1197,7 +1234,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-1.0",
                         "notional": "-40000",
                         "entry_price": "40000",
@@ -1223,26 +1264,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -1256,26 +1278,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -1776,7 +1779,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -1892,7 +1899,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -2276,23 +2287,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -2328,7 +2356,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "3000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -2373,7 +2405,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "3000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -2451,7 +2487,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "3.0",
                         "notional": "120000",
                         "entry_price": "40000",
@@ -2481,7 +2521,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-3.0",
                         "notional": "-120000",
                         "entry_price": "40000",
@@ -2507,26 +2551,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -2540,26 +2565,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -3060,7 +3066,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3176,7 +3186,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -3560,23 +3574,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -3612,7 +3643,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "6000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -3657,7 +3692,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "6000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -3735,7 +3774,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "6.0",
                         "notional": "240000",
                         "entry_price": "40000",
@@ -3765,7 +3808,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-6.0",
                         "notional": "-240000",
                         "entry_price": "40000",
@@ -3791,26 +3838,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "4000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"4000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -3824,26 +3852,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "4000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"4000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -4344,7 +4353,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4460,7 +4473,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -4844,23 +4861,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -4896,7 +4930,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "20000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -4941,7 +4979,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "20000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -5019,7 +5061,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "20.0",
                         "notional": "800000",
                         "entry_price": "40000",
@@ -5049,7 +5095,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-20.0",
                         "notional": "-800000",
                         "entry_price": "40000",
@@ -5075,26 +5125,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "25500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"25500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -5108,26 +5139,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "25500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"25500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -5628,7 +5640,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -5744,7 +5760,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -6128,23 +6148,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -6180,7 +6217,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "40000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -6225,7 +6266,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "40000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -6303,7 +6348,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "40.0",
                         "notional": "1600000",
                         "entry_price": "40000",
@@ -6333,7 +6382,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-40.0",
                         "notional": "-1600000",
                         "entry_price": "40000",
@@ -6359,26 +6412,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "95500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"95500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -6392,26 +6426,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "95500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"95500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -6912,7 +6927,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7028,7 +7047,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -7412,23 +7435,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -7464,7 +7504,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "100000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -7509,7 +7553,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "100000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -7587,7 +7635,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "100.0",
                         "notional": "4000000",
                         "entry_price": "40000",
@@ -7617,7 +7669,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-100.0",
                         "notional": "-4000000",
                         "entry_price": "40000",
@@ -7643,26 +7699,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "435500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"435500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -7676,26 +7713,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "435500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"435500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -8196,7 +8214,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -8312,7 +8334,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -8696,23 +8722,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -8748,7 +8791,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "2000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -8793,7 +8840,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -8871,7 +8922,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "2.0",
                         "notional": "80000",
                         "entry_price": "40000",
@@ -8901,7 +8956,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-2.0",
                         "notional": "-80000",
                         "entry_price": "40000",
@@ -8927,26 +8986,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -8960,26 +9000,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -8996,11 +9017,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "60000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "60000000000000"
                      }
                   ],
@@ -9030,7 +9058,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "2.0",
                         "notional": "120000",
                         "entry_price": "40000",
@@ -9060,7 +9092,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-2.0",
                         "notional": "-120000",
                         "entry_price": "40000",
@@ -9086,26 +9122,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5040000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5040000","initial_margin":"","maintenance_margin":"1400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9119,26 +9136,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "4960000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"4960000","initial_margin":"","maintenance_margin":"1400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9155,11 +9153,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "200000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "200000000000000"
                      }
                   ],
@@ -9189,7 +9194,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "2.0",
                         "notional": "400000",
                         "entry_price": "40000",
@@ -9219,7 +9228,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-2.0",
                         "notional": "-400000",
                         "entry_price": "40000",
@@ -9245,26 +9258,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5320000",
-                        "initial_margin": "",
-                        "maintenance_margin": "8000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5320000","initial_margin":"","maintenance_margin":"8000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9278,26 +9272,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "4680000",
-                        "initial_margin": "",
-                        "maintenance_margin": "8000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"4680000","initial_margin":"","maintenance_margin":"8000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9314,11 +9289,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "300000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "300000000000000"
                      }
                   ],
@@ -9348,7 +9330,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "2.0",
                         "notional": "600000",
                         "entry_price": "40000",
@@ -9378,7 +9364,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-2.0",
                         "notional": "-600000",
                         "entry_price": "40000",
@@ -9404,26 +9394,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5520000",
-                        "initial_margin": "",
-                        "maintenance_margin": "15500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5520000","initial_margin":"","maintenance_margin":"15500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9437,26 +9408,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "4480000",
-                        "initial_margin": "",
-                        "maintenance_margin": "15500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"4480000","initial_margin":"","maintenance_margin":"15500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -9957,7 +9909,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -10073,7 +10029,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -10457,23 +10417,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -10509,7 +10486,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "10000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": false
@@ -10554,7 +10535,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "10000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": true
@@ -10632,7 +10617,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "10.0",
                         "notional": "20000",
                         "entry_price": "2000",
@@ -10662,7 +10651,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-10.0",
                         "notional": "-20000",
                         "entry_price": "2000",
@@ -10688,26 +10681,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "200",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"200","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -10721,26 +10695,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "200",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"200","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -11241,7 +11196,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -11357,7 +11316,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -11741,23 +11704,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -11793,7 +11773,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "70000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": false
@@ -11838,7 +11822,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "70000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": true
@@ -11916,7 +11904,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "70.0",
                         "notional": "140000",
                         "entry_price": "2000",
@@ -11946,7 +11938,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-70.0",
                         "notional": "-140000",
                         "entry_price": "2000",
@@ -11972,26 +11968,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -12005,26 +11982,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -12525,7 +12483,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -12641,7 +12603,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -13025,23 +12991,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -13077,7 +13060,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "200000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": false
@@ -13122,7 +13109,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "200000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": true
@@ -13200,7 +13191,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "200.0",
                         "notional": "400000",
                         "entry_price": "2000",
@@ -13230,7 +13225,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-200.0",
                         "notional": "-400000",
                         "entry_price": "2000",
@@ -13256,26 +13255,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "8000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"8000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -13289,26 +13269,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "8000",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"8000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -13809,7 +13770,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -13925,7 +13890,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -14309,23 +14278,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -14361,7 +14347,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "350000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": false
@@ -14406,7 +14396,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "350000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": true
@@ -14484,7 +14478,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "350.0",
                         "notional": "700000",
                         "entry_price": "2000",
@@ -14514,7 +14512,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-350.0",
                         "notional": "-700000",
                         "entry_price": "2000",
@@ -14540,26 +14542,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "20500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"20500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -14573,26 +14556,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "20500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"20500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -15093,7 +15057,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -15209,7 +15177,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -15593,23 +15565,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -15645,7 +15634,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "800000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": false
@@ -15690,7 +15683,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "800000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": true
@@ -15768,7 +15765,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "800.0",
                         "notional": "1600000",
                         "entry_price": "2000",
@@ -15798,7 +15799,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-800.0",
                         "notional": "-1600000",
                         "entry_price": "2000",
@@ -15824,26 +15829,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "95500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"95500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -15857,26 +15843,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "95500",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"95500","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -16377,7 +16344,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -16493,7 +16464,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -16877,23 +16852,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -17406,7 +17398,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -17522,7 +17518,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -17906,23 +17906,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -17958,7 +17975,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "1000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -18003,7 +18024,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "1000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -18081,7 +18106,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "1.0",
                         "notional": "40000",
                         "entry_price": "40000",
@@ -18111,7 +18140,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-1.0",
                         "notional": "-40000",
                         "entry_price": "40000",
@@ -18137,29 +18170,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        "BTC_USDT_Perp": {
-   "BuySize": "10000000000",
-   "SellSize": "0"
-}
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"10000000000","SellSize":"0"}}],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -18173,29 +18184,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "400",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        "BTC_USDT_Perp": {
-   "BuySize": "0",
-   "SellSize": "10000000000"
-}
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"400","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"10000000000"}}],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -18696,7 +18685,11 @@
                "time": "9676800000000027",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "BTC_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "BTC",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -18812,7 +18805,11 @@
                "time": "9676800000000029",
                "type": "SET_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS",
                "set_simple_cross_maintenance_margin_tiers": {
-                  "asset_kuq": "ETH_USDT_Perp",
+                  "asset_kuq": {
+                     "kind": "PERPETUAL",
+                     "underlying": "ETH",
+                     "quote": "USDT"
+                  },
                   "tiers": [
                      {
                         "bracket_start": "0",
@@ -19196,23 +19193,40 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "BTC",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "BTC"
+                        },
                         "price": "40000000000000"
                      },
                      {
-                        "asset": "ETH_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USD"
+                        },
                         "price": "2000000000000"
                      },
                      {
-                        "asset": "ETH",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "ETH"
+                        },
                         "price": "2200000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "1000000000"
                      }
                   ],
@@ -19248,7 +19262,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "BTC_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "BTC",
+                              "quote": "USDT"
+                           },
                            "size": "2000000000",
                            "limit_price": "40000000000000",
                            "is_buying_asset": false
@@ -19293,7 +19311,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "BTC_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "BTC",
+                                    "quote": "USDT"
+                                 },
                                  "size": "2000000000",
                                  "limit_price": "40000000000000",
                                  "is_buying_asset": true
@@ -19377,7 +19399,11 @@
                      "reduce_only": false,
                      "legs": [
                         {
-                           "instrument": "ETH_USDT_Perp",
+                           "instrument": {
+                              "kind": "PERPETUAL",
+                              "underlying": "ETH",
+                              "quote": "USDT"
+                           },
                            "size": "50000000000",
                            "limit_price": "2000000000000",
                            "is_buying_asset": true
@@ -19422,7 +19448,11 @@
                            "reduce_only": false,
                            "legs": [
                               {
-                                 "instrument": "ETH_USDT_Perp",
+                                 "instrument": {
+                                    "kind": "PERPETUAL",
+                                    "underlying": "ETH",
+                                    "quote": "USDT"
+                                 },
                                  "size": "50000000000",
                                  "limit_price": "2000000000000",
                                  "is_buying_asset": false
@@ -19500,7 +19530,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "2.0",
                         "notional": "80000",
                         "entry_price": "40000",
@@ -19530,7 +19564,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "BTC_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USDT"
+                        },
                         "size": "-2.0",
                         "notional": "-80000",
                         "entry_price": "40000",
@@ -19560,7 +19598,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "9646611240881097804",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "-50.0",
                         "notional": "-100000",
                         "entry_price": "2000",
@@ -19590,7 +19632,11 @@
                      "position": {
                         "event_time": "0",
                         "sub_account_id": "451668388525528739",
-                        "instrument": "ETH_USDT_Perp",
+                        "instrument": {
+                           "kind": "PERPETUAL",
+                           "underlying": "ETH",
+                           "quote": "USDT"
+                        },
                         "size": "50.0",
                         "notional": "100000",
                         "entry_price": "2000",
@@ -19616,26 +19662,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -19649,26 +19676,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "summary": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "margin_type": "UNSPECIFIED",
-                        "settle_currency": "USDT",
-                        "unrealized_pnl": "",
-                        "total_equity": "5000000",
-                        "initial_margin": "",
-                        "maintenance_margin": "1800",
-                        "available_balance": "",
-                        "spot_balances": null,
-                        "positions": null,
-                        "settle_index_price": ""
-                     },
-                     "aggregated_open_sizes": {
-                        
-                     },
-                     "pre_trade_initial_margin": ""
-                  },
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"5000000","initial_margin":"","maintenance_margin":"1800","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[],"pre_trade_initial_margin":""},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],

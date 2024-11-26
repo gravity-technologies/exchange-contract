@@ -1118,14 +1118,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "BTC",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "BTC"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -1692,11 +1699,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -1715,14 +1729,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -2289,11 +2310,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -2312,14 +2340,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -2886,11 +2921,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -2909,14 +2951,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -3483,11 +3532,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -3506,14 +3562,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -4080,11 +4143,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -4103,14 +4173,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -4677,11 +4754,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_2Dec71",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "60483600000000000"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -4700,14 +4785,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_2Dec71",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "60483600000000000"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -5274,11 +5367,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_2Dec71",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "60483600000000001"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -5297,14 +5398,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_2Dec71",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "60483600000000001"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -5871,11 +5980,19 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Fut_15Jan70",
+                        "asset": {
+                           "kind": "FUTURE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "1213199999999999"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -5894,14 +6011,22 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Fut_15Jan70",
+                     "asset_dto": {
+                        "kind": "FUTURE",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "1213199999999999"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -6468,11 +6593,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_2Dec71_0",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "60483600000000000",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -6491,21 +6625,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Call_2Dec71_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "60483600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USD_Call_2Dec71_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "60483600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "30000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -7072,11 +7221,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Call_1Jan70_0",
+                        "asset": {
+                           "kind": "CALL",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3599999999999",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -7095,21 +7253,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USDT",
+                        "expiration": "3599999999999",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USD_Call_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "CALL",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3599999999999",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -7676,11 +7849,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Put_2Dec71_0",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "60483600000000000",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -7699,21 +7881,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDT_Put_2Dec71_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USDT",
+                        "expiration": "60483600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "15000000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USD_Put_2Dec71_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "60483600000000000",
+                        "strike_price": "1234"
+                     },
                      "mark_price": "30000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -8280,11 +8477,20 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "ETH_USD_Put_1Jan70_0",
+                        "asset": {
+                           "kind": "PUT",
+                           "underlying": "ETH",
+                           "quote": "USD",
+                           "expiration": "3599999999999",
+                           "strike_price": "1234"
+                        },
                         "price": "30000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -8303,21 +8509,36 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USDT_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USDT",
+                        "expiration": "3599999999999",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "ETH_USD_Put_1Jan70_0",
+                     "asset_dto": {
+                        "kind": "PUT",
+                        "underlying": "ETH",
+                        "quote": "USD",
+                        "expiration": "3599999999999",
+                        "strike_price": "1234"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -8884,11 +9105,18 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "10000000000000"
                      },
                      {
-                        "asset": "USDT",
+                        "asset": {
+                           "kind": "SPOT",
+                           "underlying": "USDT"
+                        },
                         "price": "2000000000"
                      }
                   ],
@@ -8907,14 +9135,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "5000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -8933,7 +9168,11 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "BTC_USD_Perp",
+                        "asset": {
+                           "kind": "PERPETUAL",
+                           "underlying": "BTC",
+                           "quote": "USD"
+                        },
                         "price": "20000000000000"
                      }
                   ],
@@ -8952,14 +9191,21 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "USDT",
+                     "asset_dto": {
+                        "kind": "SPOT",
+                        "underlying": "USDT"
+                     },
                      "mark_price": "2000000000"
                   },
                   "name": "ExMarkPrice"
                },
                {
                   "expect": {
-                     "asset_dto": "BTC_USDT_Perp",
+                     "asset_dto": {
+                        "kind": "PERPETUAL",
+                        "underlying": "BTC",
+                        "quote": "USDT"
+                     },
                      "mark_price": "10000000000000"
                   },
                   "name": "ExMarkPrice"
@@ -9526,7 +9772,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "RATE",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "price": "10000000000000"
                      }
                   ],
@@ -9545,7 +9796,12 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "RATE",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
@@ -10112,7 +10368,12 @@
                "mark_price_tick": {
                   "entries": [
                      {
-                        "asset": "",
+                        "asset": {
+                           "kind": "SETTLEMENT",
+                           "underlying": "BTC",
+                           "quote": "USD",
+                           "expiration": "3600000000000"
+                        },
                         "price": "10000000000000"
                      }
                   ],
@@ -10131,7 +10392,12 @@
             "expectations": [
                {
                   "expect": {
-                     "asset_dto": "",
+                     "asset_dto": {
+                        "kind": "SETTLEMENT",
+                        "underlying": "BTC",
+                        "quote": "USD",
+                        "expiration": "3600000000000"
+                     },
                      "mark_price": null
                   },
                   "name": "ExMarkPrice"
