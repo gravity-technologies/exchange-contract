@@ -13,11 +13,6 @@ struct MaintenanceMarginConfig {
 
 // The maximum number of maintenance margin tiers
 uint256 constant MAX_M_MARGIN_TIERS = 12;
-// The bit mask for the least significant 32 bits
-uint256 constant LSB_32_MASK = 0xFFFFFFFF;
-
-// Only support BTC, ETH for now
-uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
 
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
