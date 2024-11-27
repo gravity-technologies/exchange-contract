@@ -67,7 +67,6 @@ contract ConfigContract is BaseContract {
   bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
-  uint64 internal constant DEFAULT_WITHDRAWAL_FEE_USD = 25;
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
 
   event ConfigUpdateMessageSent(uint256 configVersion, bytes4 selector, bytes data);
