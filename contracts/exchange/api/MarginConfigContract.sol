@@ -141,10 +141,6 @@ contract MarginConfigContract is ConfigContract {
   ) private view returns (int64) {
     ListMarginTiersBI memory fromMt = _getListMarginTiersBIFromStorage(kud);
 
-    if (fromMt.tiers.length == 0) {
-      return 0;
-    }
-
     if (_isMarginRequirementIncreasedAtSomeSize(fromMt, toMt)) {
       return SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS_LOCK_DURATION;
     }
