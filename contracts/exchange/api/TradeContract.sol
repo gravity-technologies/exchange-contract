@@ -80,13 +80,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           makerCalcResult.spotDelta = makerCalcResult.spotDelta.add(notional);
           takerCalcResult.spotDelta = takerCalcResult.spotDelta.sub(notional);
         }
-        if (_isOption(leg.assetID)) {
-          (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
-          require(found, ERR_NOT_FOUND);
+        (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
+        require(found, ERR_NOT_FOUND);
 
-          BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
-          makerCalcResult.optionIndexNotional = makerCalcResult.optionIndexNotional.add(indexNotional);
-        }
+        BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
+        makerCalcResult.optionIndexNotional = makerCalcResult.optionIndexNotional.add(indexNotional);
         makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
 
         takerCalcResult.matchedSizes[_findLegIndex(trade.takerOrder.legs, leg.assetID)] += size;
@@ -217,9 +215,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
       require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
       int64 expiry = assetGetExpiration(leg.assetID);
-      if (kind == Kind.FUTURES || kind == Kind.CALL || kind == Kind.PUT) {
-        require(expiry > timestamp, "asset expired");
-      }
     }
 
     // Check the order signature
@@ -276,35 +271,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       executedSize[leg.assetID] = total;
     }
 
-    bool isOption = false;
-    for (uint i; i < legsLen; ++i) {
-      if (_isOption(legs[i].assetID)) {
-        isOption = true;
-        break;
-      }
-    }
-
     // Check that the fee paid is within the cap of 20 bps
     int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
     if (order.isLiquidation) {
-      feeCapRate = isOption ? LIQUIDATION_FEE_CAP_RATE_BPS_OPTION : LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
+      feeCapRate = LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
     }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
-
-    int64 totalFeeCap;
-
-    if (isOption) {
-      totalFeeCap = _calculateBaseFee(calcResult.optionIndexNotional, feeCapRateBI, qDec);
-      BI memory premiumCapFee = _bpsToDecimal(PREMIUM_CAP_RATE_BPS);
-
-      if (totalFeeCap > 0) {
-        totalFeeCap = _min(totalFeeCap, _calculateBaseFee(calcResult.tradeNotional, premiumCapFee, qDec));
-      } else {
-        totalFeeCap = _max(totalFeeCap, _calculateBaseFee(calcResult.tradeNotional, premiumCapFee.neg(), qDec));
-      }
-    } else {
-      totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
-    }
+    int64 totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
 
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
   }
