@@ -66,7 +66,7 @@ contract FundingAndSettlement is BaseContract {
     return payment.scale(qDec);
   }
 
-  struct SettmentEntry {
+  struct SettlementEntry {
     bytes32 assetID;
     uint64 settlePrice;
   }
@@ -78,7 +78,7 @@ contract FundingAndSettlement is BaseContract {
     mapping(bytes32 => Position) storage posValues = positions.values;
     uint posLen = posKeys.length;
 
-    SettmentEntry[] memory settlements = new SettmentEntry[](posLen);
+    SettlementEntry[] memory settlements = new SettlementEntry[](posLen);
     uint settlementCount = 0;
     for (uint i; i < posLen; ++i) {
       bytes32 assetID = posKeys[i];
@@ -86,12 +86,12 @@ contract FundingAndSettlement is BaseContract {
       if (!found) {
         continue;
       }
-      settlements[settlementCount] = SettmentEntry(assetID, settlePrice);
+      settlements[settlementCount] = SettlementEntry(assetID, settlePrice);
       settlementCount++;
     }
 
     for (uint i = 0; i < settlementCount; i++) {
-      SettmentEntry memory entry = settlements[i];
+      SettlementEntry memory entry = settlements[i];
       int64 positionBalance = posValues[entry.assetID].balance;
       remove(positions, entry.assetID);
       if (entry.settlePrice == 0) {
