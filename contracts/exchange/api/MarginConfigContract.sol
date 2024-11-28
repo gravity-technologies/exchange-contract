@@ -186,11 +186,11 @@ contract MarginConfigContract is ConfigContract {
 
   function _blendedMM(ListMarginTiersBI memory mt, BI memory notional) internal pure returns (BI memory) {
     if (mt.tiers.length == 0) {
-      return BI(0, 0);
+      return BIMath.zero();
     }
 
-    BI memory margin = BI(0, 0);
-    BI memory prevStart = BI(0, 0);
+    BI memory margin = BIMath.zero();
+    BI memory prevStart = BIMath.zero();
     BI memory prevRate = mt.tiers[0].rate;
     BI memory bracketSize;
 

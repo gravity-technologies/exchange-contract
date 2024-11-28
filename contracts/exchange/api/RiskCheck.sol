@@ -12,22 +12,20 @@ uint256 constant MAX_M_MARGIN_TIERS = 12;
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
 
-  function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
+  function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {
     int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
-    if (insuranceFundLossAmountUSDT <= 0) {
+    if (insuranceFundLossAmountUSDT == 0) {
       return 0;
     }
 
-    uint usdtDec = _getBalanceDecimal(Currency.USDT);
+    // non-user accounts are not subject to socialized loss
+    if (!_isUserAccount(fromAccID)) {
+      return 0;
+    }
 
     int64 totalClientValueUSDT = _getTotalClientValueUSDT();
-    BI memory totalClientValueUSDTBI = BI(totalClientValueUSDT, usdtDec);
-    BI memory insuranceFundLossAmountUSDTBI = BI(insuranceFundLossAmountUSDT, usdtDec);
-
-    // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
-    BI memory withdrawAmountBI = BI(withdrawAmount, MAX_BALANCE_DECIMALS);
-    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountUSDTBI).div(totalClientValueUSDTBI);
-    return result.toUint64(MAX_BALANCE_DECIMALS);
+    int haircutAmount = (int(withdrawAmount) * int(insuranceFundLossAmountUSDT)) / int(totalClientValueUSDT);
+    return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
@@ -157,7 +155,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
    * @return The maintenance margin.
    */
   function _getSimpleCrossMMUsd(SubAccount storage subAccount) internal view returns (BI memory) {
-    BI memory totalCharge = BI(0, 0);
+    BI memory totalCharge = BIMath.zero();
 
     bytes32[] storage keys = subAccount.perps.keys;
     mapping(bytes32 => Position) storage values = subAccount.perps.values;

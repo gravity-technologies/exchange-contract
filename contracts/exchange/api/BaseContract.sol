@@ -437,7 +437,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     mapping(Currency => int64) storage balances,
     Currency quoteCurrency
   ) internal view returns (BI memory) {
-    BI memory total = BI(0, 0);
+    BI memory total = BIMath.zero();
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
       int64 balance = balances[i];
       if (balance == 0) {

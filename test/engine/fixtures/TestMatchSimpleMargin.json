@@ -1236,7 +1236,7 @@
                         "total_equity": "99985000000",
                         "initial_margin": "1200000000",
                         "maintenance_margin": "1199450000",
-                        "available_balance": "98800000000",
+                        "available_balance": "98785000000",
                         "spot_balances": [
                            {
                               "currency": "USDT",
@@ -1282,7 +1282,7 @@
                         "total_equity": "200015000000",
                         "initial_margin": "1200000000",
                         "maintenance_margin": "1199450000",
-                        "available_balance": "198815000000",
+                        "available_balance": "198800000000",
                         "spot_balances": [
                            {
                               "currency": "USDT",
@@ -1404,7 +1404,7 @@
                         "total_equity": "114985000000",
                         "initial_margin": "1500000000",
                         "maintenance_margin": "1499450000",
-                        "available_balance": "113485000000",
+                        "available_balance": "98500000000",
                         "spot_balances": [
                            {
                               "currency": "USDT",
@@ -2680,7 +2680,7 @@
                         "total_equity": "100020000000",
                         "initial_margin": "1200000000",
                         "maintenance_margin": "1199450000",
-                        "available_balance": "98820000000",
+                        "available_balance": "98800000000",
                         "spot_balances": [
                            {
                               "currency": "USDT",
@@ -2726,7 +2726,7 @@
                         "total_equity": "199980000000",
                         "initial_margin": "1200000000",
                         "maintenance_margin": "1199450000",
-                        "available_balance": "198800000000",
+                        "available_balance": "198780000000",
                         "spot_balances": [
                            {
                               "currency": "USDT",
