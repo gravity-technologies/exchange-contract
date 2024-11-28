@@ -235,4 +235,262 @@ contract BIMathTest is Test {
     BI memory c = a.sub(b);
     assertEq(c.cmp(want), 0);
   }
+
+  function testRoundDown() public {
+    // Test: "1.5"
+    BI memory a = BI(15, 1);
+    BI memory want = BI(1, 0);
+    BI memory result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.5"
+    a = BI(-15, 1);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000000"
+    a = BI(1_000_000, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000000"
+    a = BI(-1_000_000, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000001"
+    a = BI(1_000_001, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000001"
+    a = BI(-1_000_001, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.499999"
+    a = BI(1_499_999, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.499999"
+    a = BI(-1_499_999, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500000"
+    a = BI(1_500_000, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500000"
+    a = BI(-1_500_000, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500001"
+    a = BI(1_500_001, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500001"
+    a = BI(-1_500_001, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.999999"
+    a = BI(1_999_999, 6);
+    want = BI(1, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.999999"
+    a = BI(-1_999_999, 6);
+    want = BI(-2, 0);
+    result = BIMath.roundDown(a);
+    assertEq(result.cmp(want), 0);
+  }
+
+  function testRoundUp() public {
+    // Test: "1.5"
+    BI memory a = BI(15, 1);
+    BI memory want = BI(2, 0);
+    BI memory result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.5"
+    a = BI(-15, 1);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000000"
+    a = BI(1_000_000, 6);
+    want = BI(1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000000"
+    a = BI(-1_000_000, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000001"
+    a = BI(1_000_001, 6);
+    want = BI(2, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000001"
+    a = BI(-1_000_001, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.499999"
+    a = BI(1_499_999, 6);
+    want = BI(2, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.499999"
+    a = BI(-1_499_999, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500000"
+    a = BI(1_500_000, 6);
+    want = BI(2, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500000"
+    a = BI(-1_500_000, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500001"
+    a = BI(1_500_001, 6);
+    want = BI(2, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500001"
+    a = BI(-1_500_001, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.999999"
+    a = BI(1_999_999, 6);
+    want = BI(2, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.999999"
+    a = BI(-1_999_999, 6);
+    want = BI(-1, 0);
+    result = BIMath.roundUp(a);
+    assertEq(result.cmp(want), 0);
+  }
+
+  function testRound() public {
+    // Test: "1.5"
+    BI memory a = BI(15, 1);
+    BI memory want = BI(2, 0);
+    BI memory result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.5"
+    a = BI(-15, 1);
+    want = BI(-2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000000"
+    a = BI(1_000_000, 6);
+    want = BI(1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000000"
+    a = BI(-1_000_000, 6);
+    want = BI(-1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.000001"
+    a = BI(1_000_001, 6);
+    want = BI(1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.000001"
+    a = BI(-1_000_001, 6);
+    want = BI(-1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.499999"
+    a = BI(1_499_999, 6);
+    want = BI(1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.499999"
+    a = BI(-1_499_999, 6);
+    want = BI(-1, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500000"
+    a = BI(1_500_000, 6);
+    want = BI(2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500000"
+    a = BI(-1_500_000, 6);
+    want = BI(-2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.500001"
+    a = BI(1_500_001, 6);
+    want = BI(2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.500001"
+    a = BI(-1_500_001, 6);
+    want = BI(-2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "1.999999"
+    a = BI(1_999_999, 6);
+    want = BI(2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+
+    // Test: "-1.999999"
+    a = BI(-1_999_999, 6);
+    want = BI(-2, 0);
+    result = BIMath.round(a);
+    assertEq(result.cmp(want), 0);
+  }
 }
