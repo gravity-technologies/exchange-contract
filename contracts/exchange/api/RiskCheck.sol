@@ -171,7 +171,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
    * @return The maintenance margin.
    */
   function _getSimpleCrossMMUsd(SubAccount storage subAccount) internal view returns (BI memory) {
-    BI memory totalCharge = BI(0, 0);
+    BI memory totalCharge = BIMath.zero();
 
     bytes32[] storage keys = subAccount.perps.keys;
     mapping(bytes32 => Position) storage values = subAccount.perps.values;

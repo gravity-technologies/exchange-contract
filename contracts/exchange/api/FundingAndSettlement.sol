@@ -23,7 +23,6 @@ contract FundingAndSettlement is BaseContract {
     }
 
     Currency quoteCurrency = sub.quoteCurrency;
-    mapping(bytes32 => int64) storage fundingIndex = state.prices.fundingIndex;
     uint64 qdec = _getBalanceDecimal(quoteCurrency);
     PositionsMap storage perps = sub.perps;
     BI memory fundingPayment;
@@ -32,22 +31,39 @@ contract FundingAndSettlement is BaseContract {
     uint len = keys.length;
     for (uint i; i < len; ++i) {
       bytes32 assetID = keys[i];
-      int64 latestFundingIndex = fundingIndex[assetID];
+      int64 latestFundingIndex = state.prices.fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
       int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
       if (fundingIndexChange == 0) {
         continue;
       }
       // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
-      fundingPayment = fundingPayment.add(
-        BI(fundingIndexChange, PRICE_DECIMALS)
-          .mul(BI(-perp.balance, _getBalanceDecimal(assetGetUnderlying(assetID))))
-          .scale(qdec)
-      );
+      fundingPayment = fundingPayment.add(_getPerpFundingPayment(assetID, perp, fundingIndexChange));
       perp.lastAppliedFundingIndex = latestFundingIndex;
     }
-    sub.spotBalances[quoteCurrency] += fundingPayment.toInt64(qdec);
+    sub.spotBalances[quoteCurrency] -= fundingPayment.toInt64(qdec);
     sub.lastAppliedFundingTimestamp = fundingTime;
+  }
+
+  function _getPerpFundingPayment(
+    bytes32 assetID,
+    Position storage perp,
+    int256 fundingIndexChange
+  ) internal view returns (BI memory) {
+    Currency underlying = assetGetUnderlying(assetID);
+    Currency quote = assetGetQuote(assetID);
+
+    uint64 uDec = _getBalanceDecimal(underlying);
+    uint64 qDec = _getBalanceDecimal(quote);
+
+    BI memory payment = BI(fundingIndexChange, PRICE_DECIMALS).mul(BI(perp.balance, uDec));
+
+    if (payment.isPositive()) {
+      BI memory paymentPad = BI(int(uint(_getBalanceMultiplier(quote))), 0);
+      return payment.mul(paymentPad).roundUp().div(paymentPad).scale(qDec);
+    }
+
+    return payment.scale(qDec);
   }
 
   struct SettmentEntry {

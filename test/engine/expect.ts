@@ -276,7 +276,7 @@ export async function getSubAccountResult(
   accountID: string
   marginType: number
   quoteCurrency: number
-  lastAppliedFundingTimestamp: number
+  lastAppliedFundingTimestamp: bigint
 }> {
   let [id, adminCount, signerCount, accountID, marginType, quoteCurrency, lastAppliedFundingTimestamp] =
     await contract.getSubAccountResult(BigInt(subAccountId))
@@ -287,7 +287,7 @@ export async function getSubAccountResult(
     accountID: accountID,
     marginType: marginType,
     quoteCurrency: quoteCurrency,
-    lastAppliedFundingTimestamp: lastAppliedFundingTimestamp.toNumber(),
+    lastAppliedFundingTimestamp: lastAppliedFundingTimestamp,
   }
 }
 
@@ -414,7 +414,9 @@ async function expectOnboardedTransferAccount(contract: Contract, expectations: 
 
 async function expectExchangeCurrencyBalance(contract: Contract, expectations: ExExchangeCurrencyBalance) {
   const balance = await contract.getExchangeCurrencyBalance(CurrencyToEnum[expectations.currency])
-  expect(big(expectations.balance)).to.equal(big(balance))
+  // expectations.balance is the sum of all spot balances of that currency, calculated in risk engine test
+  // we cannot mint more fund than the total spot balance, which is the amount we hold
+  expect(big(expectations.balance)).to.lessThanOrEqual(big(balance))
 }
 
 // this refers to the subaccount's spot balance in API
