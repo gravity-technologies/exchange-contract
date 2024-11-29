@@ -24,7 +24,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] matchedSizes;
     BI spotDelta;
     BI tradeNotional;
-    BI optionIndexNotional;
   }
 
   function tradeDeriv(
@@ -80,11 +79,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
           makerCalcResult.spotDelta = makerCalcResult.spotDelta.add(notional);
           takerCalcResult.spotDelta = takerCalcResult.spotDelta.sub(notional);
         }
-        (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
-        require(found, ERR_NOT_FOUND);
 
-        BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
-        makerCalcResult.optionIndexNotional = makerCalcResult.optionIndexNotional.add(indexNotional);
         makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
 
         takerCalcResult.matchedSizes[_findLegIndex(trade.takerOrder.legs, leg.assetID)] += size;
@@ -92,9 +87,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Aggregate taker notional accross all makers
       takerCalcResult.tradeNotional = takerCalcResult.tradeNotional.add(makerCalcResult.tradeNotional);
-      takerCalcResult.optionIndexNotional = takerCalcResult.optionIndexNotional.add(
-        makerCalcResult.optionIndexNotional
-      );
 
       _verifyAndExecuteOrder(timestamp, makerMatch.makerOrder, makerCalcResult, true, makerMatch.feeCharged, takerSub);
     }
