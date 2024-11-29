@@ -199,7 +199,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
     int64 expectedFeeBalance,
     uint64 insuranceFundSubAccId,
     int64 expectedInsuranceFundBalance,
-    int64 expectedTotalSpotBalance
+    int64 expectedTotalSpotBalance,
+    SubAccountAssertion[] calldata subAccounts
   ) external view {
     Account storage account = state.accounts[fromAccID];
     require(account.spotBalances[currency] == expectedBalance, "ex withdrawBalance");
@@ -208,6 +209,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
     SubAccount storage insuranceFundSubAcc = state.subAccounts[insuranceFundSubAccId];
     require(insuranceFundSubAcc.spotBalances[currency] == expectedInsuranceFundBalance, "ex insuranceFundBalance");
     require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
+
+    _assertSubAccounts(subAccounts);
   }
 
   function assertTransfer(
@@ -217,7 +220,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
     uint64 toSubID,
     int64 expectedFromBalance,
     int64 expectedToBalance,
-    Currency currency
+    Currency currency,
+    SubAccountAssertion[] calldata subAccounts
   ) external view {
     if (fromSubID == 0) {
       Account storage fromAcc = state.accounts[fromAccID];
@@ -234,6 +238,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
       SubAccount storage toSub = state.subAccounts[toSubID];
       require(toSub.spotBalances[currency] == expectedToBalance, "ex toSubBalance");
     }
+
+    _assertSubAccounts(subAccounts);
   }
 
   struct PositionAssertion {
@@ -245,44 +251,48 @@ contract AssertionContract is ConfigContract, RiskCheck {
     Currency currency;
     int64 balance;
   }
-  struct SubAccountTradeAssertion {
+  struct SubAccountAssertion {
     uint64 subAccountID;
     int64 fundingTimestamp;
     PositionAssertion[] positions;
     SpotAssertion[] spots;
   }
   struct TradeAssertion {
-    SubAccountTradeAssertion[] subAccounts;
+    SubAccountAssertion[] subAccounts;
   }
 
   // Assertion for Trade Contract
   function assertTradeDeriv(TradeAssertion calldata tradeAssertion) external view {
-    // ex stands for expectation
-    SubAccountTradeAssertion[] calldata exSubs = tradeAssertion.subAccounts;
+    _assertSubAccounts(tradeAssertion.subAccounts);
+  }
 
+  function _assertSubAccounts(SubAccountAssertion[] calldata exSubs) internal view {
     for (uint i; i < exSubs.length; ++i) {
-      SubAccountTradeAssertion calldata exSub = exSubs[i];
-      SubAccount storage sub = state.subAccounts[exSub.subAccountID];
+      _assertSubAccount(exSubs[i]);
+    }
+  }
 
-      // Assert funding timestamp
-      require(sub.lastAppliedFundingTimestamp == exSub.fundingTimestamp, "exTrade - fundingTimeMismatch");
+  function _assertSubAccount(SubAccountAssertion calldata exSub) internal view {
+    SubAccount storage sub = state.subAccounts[exSub.subAccountID];
 
-      // Assert positions
-      for (uint j; j < exSub.positions.length; ++j) {
-        PositionAssertion calldata exPos = exSub.positions[j];
-        PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
-        Position storage pos = posmap.values[exPos.assetID];
-        require(
-          pos.balance == exPos.balance && pos.lastAppliedFundingIndex == exPos.fundingIndex,
-          "exTrade - positionMismatch"
-        );
-      }
+    // Assert funding timestamp
+    require(sub.lastAppliedFundingTimestamp == exSub.fundingTimestamp, "exSub - fundingTimeMismatch");
 
-      // Assert spot balances
-      for (uint j; j < exSub.spots.length; ++j) {
-        SpotAssertion calldata exSpot = exSub.spots[j];
-        require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exTrade - spotMismatch");
-      }
+    // Assert positions
+    for (uint j; j < exSub.positions.length; ++j) {
+      PositionAssertion calldata exPos = exSub.positions[j];
+      PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
+      Position storage pos = posmap.values[exPos.assetID];
+      require(
+        pos.balance == exPos.balance && pos.lastAppliedFundingIndex == exPos.fundingIndex,
+        "exSub - positionMismatch"
+      );
+    }
+
+    // Assert spot balances
+    for (uint j; j < exSub.spots.length; ++j) {
+      SpotAssertion calldata exSpot = exSub.spots[j];
+      require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
     }
   }
 
