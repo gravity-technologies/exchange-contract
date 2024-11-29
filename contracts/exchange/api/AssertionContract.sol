@@ -179,12 +179,14 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   // Assertions for Transfer Contract
   function assertDeposit(
+    bytes32 txHash,
     address accountID,
     Currency currency,
     int64 expectedBalance,
     int64 expectedTotalSpotBalance
   ) external view {
     Account storage account = state.accounts[accountID];
+    require(state.replay.executed[txHash], "ex depositExcuted");
     require(account.spotBalances[currency] == expectedBalance, "ex depositBalance");
     require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
   }
