@@ -38,6 +38,7 @@ contract GRVTExchange is
     bytes32 depositProxyProxyBytecodeHash
   ) public initializer {
     __ReentrancyGuard_init();
+    __AccessControl_init();
 
     // Initialize the config timelock rules
     _setDefaultConfigSettings();
