@@ -13,7 +13,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   // Assertions for Account Contract
-  function assertCreateAccount(address accountID) external view {
+  function assertCreateAccount(address accountID, address signer) external view {
     Account storage account = state.accounts[accountID];
     require(
       account.id == accountID &&
@@ -22,6 +22,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
         account.subAccounts.length == 0,
       "ex createAcc"
     );
+
+    require(account.signers[signer] == AccountPermAdmin, "ex signerNotAdmin");
   }
 
   function assertSetAccountMultiSigThreshold(address accountID, uint8 expectedThreshold) external view {
