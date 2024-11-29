@@ -56,6 +56,39 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
     acc.subAccounts.push(subAccountID);
   }
 
+  /// @notice Change the margin type of a subaccount
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param subAccID The subaccount ID
+  /// @param marginType The new margin type
+  /// @param sig The signature of the acting user
+  function setSubAccountMarginType(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    MarginType marginType,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    revert("not supported");
+    _setSequence(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+
+    require(marginType != MarginType.UNSPECIFIED, "invalid margin");
+    // To change margin type requires that there's no OPEN position
+    // See Binance: https://www.binance.com/en/support/faq/how-to-switch-between-cross-margin-mode-and-isolated-margin-mode-360038075852#:~:text=You%20are%20not%20allowed%20to%20change%20the%20margin%20mode%20if%20you%20have%20any%20open%20orders%20or%20positions%3B
+    // TODO: revise this to if subaccount is liquidatable under new margin model. If it is not, we allow it through.
+    _fundAndSettle(sub);
+    require(sub.options.keys.length + sub.futures.keys.length + sub.perps.keys.length == 0, "open positions exist");
+    _requireSubAccountPermission(sub, sig.signer, SubAccountPermAdmin);
+
+    // ---------- Signature Verification -----------
+    _preventReplay(hashSetMarginType(subAccID, marginType, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    sub.marginType = marginType;
+  }
+
   /// @notice Add a signer to a subaccount. This signer will be able to
   /// perform actions like Deposit, Withdrawal, Transfer, Trade etc. on the account, depending on the permissions.
   ///
