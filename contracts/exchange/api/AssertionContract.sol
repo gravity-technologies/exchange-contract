@@ -339,8 +339,11 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function _assertSameAddresses(address[] storage arr1, address[] calldata arr2) internal view {
     require(arr1.length == arr2.length, "ex array length mismatch");
+    for (uint256 i = 0; i < arr1.length; i++) {
+      require(addressExists(arr2, arr1[i]), "ex address not found in array1");
+    }
     for (uint256 i = 0; i < arr2.length; i++) {
-      require(addressExists(arr1, arr2[i]), "ex address not found in array");
+      require(addressExists(arr1, arr2[i]), "ex address not found in array2");
     }
   }
 
