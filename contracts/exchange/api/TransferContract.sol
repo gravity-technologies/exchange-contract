@@ -14,16 +14,8 @@ abstract contract TransferContract is TradeContract {
   event Withdrawal(
     address indexed fromAccount,
     address indexed recipient, // the recipient of the withdrawal on L1
-    Currency currency,
-    uint64 numTokens,
-    uint64 txID
-  );
-
-  event WithdrawalV2(
-    address indexed fromAccount,
-    address indexed recipient, // the recipient of the withdrawal on L1
-    WithdrawalInfo withdrawalInfo,
-    uint64 txID
+    uint64 txID,
+    WithdrawalInfo withdrawalInfo
   );
 
   event Deposit(
@@ -119,8 +111,7 @@ abstract contract TransferContract is TradeContract {
 
     WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
 
-    emit Withdrawal(fromAccID, recipient, info.currency, numTokens, txID);
-    emit WithdrawalV2(fromAccID, recipient, info, txID);
+    emit Withdrawal(fromAccID, recipient, txID, info);
   }
 
   function _doWithdrawal(
