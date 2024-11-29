@@ -19,6 +19,7 @@ contract MarginConfigContract is ConfigContract {
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
+    _validateAssetKUQ(kud);
     _requireValidMarginTiers(tiers);
 
     // ---------- Signature Verification -----------
@@ -45,10 +46,7 @@ contract MarginConfigContract is ConfigContract {
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
-    require(assetIsKUQ(kud), "must be KUQ");
-
-    uint kind = uint(assetGetKind(kud));
-    require(kind > 0 && kind < 6, "wrong kind");
+    _validateAssetKUQ(kud);
 
     _requireValidMarginTiers(tiers);
 
@@ -71,6 +69,12 @@ contract MarginConfigContract is ConfigContract {
 
     state.configVersion++;
     _sendConfigProofMessageToL1(abi.encode(timestamp, kud, tiers));
+  }
+
+  function _validateAssetKUQ(bytes32 kuq) private pure {
+    require(assetIsKUQ(kuq), "must be KUQ");
+    Kind kind = assetGetKind(kuq);
+    require(kind == Kind.SPOT || kind == Kind.PERPS || kind == Kind.FUTURES, "wrong kind");
   }
 
   function _requireValidMarginTiers(MarginTier[] calldata marginTiers) private pure {
