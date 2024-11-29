@@ -19,6 +19,19 @@ abstract contract TransferContract is TradeContract {
     uint64 txID
   );
 
+  event WithdrawalV2(
+    address indexed fromAccount,
+    address indexed recipient, // the recipient of the withdrawal on L1
+    Currency currency,
+    uint64 numTokens,
+    uint64 txID,
+    int64 withdrawalFee,
+    int64 socializedLossHaircutAmount,
+    int64 amountToSend,
+    address erc20Address,
+    uint256 erc20AmountToSend
+  );
+
   event Deposit(
     address indexed toAccount,
     bytes32 indexed bridgeMintHash, // the hash of the BridgeMint event on L2
@@ -112,30 +125,49 @@ abstract contract TransferContract is TradeContract {
 
     acc.spotBalances[currency] -= amount;
 
-    int64 amountAfterSocializedLoss = _applySocializedLoss(fromAccID, amount, currency);
-    int64 amountToSend = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
+    (int64 amountAfterSocializedLoss, int64 socializedLossHaircutAmount) = _applySocializedLoss(
+      fromAccID,
+      amount,
+      currency
+    );
+    (int64 amountToSend, int64 withdrawalFeeCharged) = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
 
     state.totalSpotBalances[currency] -= amountToSend;
 
-    _withdrawToL1(currency, amountToSend, recipient);
+    (address erc20Address, uint256 erc20AmountToSend) = _withdrawToL1(currency, amountToSend, recipient);
 
     emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
+    emit WithdrawalV2(
+      fromAccID,
+      recipient,
+      currency,
+      numTokens,
+      txID,
+      withdrawalFeeCharged,
+      socializedLossHaircutAmount,
+      amountToSend,
+      erc20Address,
+      erc20AmountToSend
+    );
   }
 
-  function _withdrawToL1(Currency currency, int64 amount, address recipient) private {
+  function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
     IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
 
     uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
-    l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
+    address erc20Address = getCurrencyERC20Address(currency);
+    l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
+
+    return (erc20Address, erc20AmountToSend);
   }
 
-  function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64) {
+  function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64, int64) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (!isInsuranceFundSet) {
-      return amount;
+      return (amount, 0);
     }
 
     _fundAndSettle(insuranceFund);
@@ -144,13 +176,13 @@ abstract contract TransferContract is TradeContract {
       insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
     }
 
-    return amount - socializedLossHaircutAmount;
+    return (amount - socializedLossHaircutAmount, socializedLossHaircutAmount);
   }
 
-  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64) {
+  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64, int64) {
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (!isFeeSubAccIdSet) {
-      return amount;
+      return (amount, 0);
     }
 
     BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
@@ -162,7 +194,7 @@ abstract contract TransferContract is TradeContract {
 
     require(amountAfterFee > 0, "withdrawal amount too small");
 
-    return amountAfterFee;
+    return (amountAfterFee, withdrawalFeeCharged);
   }
 
   function _getWithdrawalFee() private view returns (BI memory) {
