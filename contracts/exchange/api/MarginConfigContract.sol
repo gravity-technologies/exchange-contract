@@ -73,8 +73,8 @@ contract MarginConfigContract is ConfigContract {
 
   function _validateAssetKUQ(bytes32 kuq) private pure {
     require(assetIsKUQ(kuq), "must be KUQ");
-    uint kind = uint(assetGetKind(kuq));
-    require(kind > 0 && kind < 6, "wrong kind");
+    Kind kind = assetGetKind(kuq);
+    require(kind == Kind.SPOT || kind == Kind.PERPS || kind == Kind.FUTURES, "wrong kind");
   }
 
   function _requireValidMarginTiers(MarginTier[] calldata marginTiers) private pure {
