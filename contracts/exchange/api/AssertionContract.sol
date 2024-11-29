@@ -366,6 +366,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   function assertSetSimpleCrossMMTiers(bytes32 kud, MarginTierAssertion[] calldata expectedTiers) external view {
     ListMarginTiersBI memory tiers = _getListMarginTiersBIFromStorage(kud);
     require(tiers.tiers.length == expectedTiers.length, "ex setSimpleCrossMMLenMismatch");
+    require(state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == 0, "ex setSimpleCrossMMNotScheduled");
 
     for (uint i; i < tiers.tiers.length; ++i) {
       MarginTierAssertion calldata exTier = expectedTiers[i];
