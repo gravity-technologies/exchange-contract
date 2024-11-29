@@ -16,7 +16,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   function assertCreateAccount(address accountID) external view {
     Account storage account = state.accounts[accountID];
     require(
-      account.id != address(0) &&
+      account.id == accountID &&
         account.multiSigThreshold == 1 &&
         account.adminCount == 1 &&
         account.subAccounts.length == 0,
