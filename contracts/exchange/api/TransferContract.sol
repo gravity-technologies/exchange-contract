@@ -318,6 +318,7 @@ abstract contract TransferContract is TradeContract {
     _requireSubAccountUnderAccount(toSub, toAccID);
 
     _fundAndSettle(fromSub);
+    _fundAndSettle(toSub);
 
     fromSub.spotBalances[currency] -= numTokens;
 
