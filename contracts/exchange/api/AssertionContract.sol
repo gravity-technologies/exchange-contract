@@ -116,7 +116,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
 
   function assertRemoveSessionKey(address sessionKey) external view {
     require(state.sessions[sessionKey].expiry == 0, "ex sessionKeyNotRemoved");
-    require(state.sessions[sessionKey].subAccountSigner == 0, "ex subAccountSigner");
+    require(state.sessions[sessionKey].subAccountSigner == address(0), "ex subAccountSigner");
   }
 
   // Assertions for Oracle Contract
