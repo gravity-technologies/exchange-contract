@@ -22,14 +22,8 @@ abstract contract TransferContract is TradeContract {
   event WithdrawalV2(
     address indexed fromAccount,
     address indexed recipient, // the recipient of the withdrawal on L1
-    Currency currency,
-    uint64 numTokens,
-    uint64 txID,
-    int64 withdrawalFee,
-    int64 socializedLossHaircutAmount,
-    int64 amountToSend,
-    address erc20Address,
-    uint256 erc20AmountToSend
+    WithdrawalInfo withdrawalInfo,
+    uint64 txID
   );
 
   event Deposit(
@@ -123,10 +117,22 @@ abstract contract TransferContract is TradeContract {
     require(amount > 0, "invalid withdrawal amount");
     require(amount <= acc.spotBalances[currency], "insufficient balance");
 
+    WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
+
+    emit Withdrawal(fromAccID, recipient, info.currency, numTokens, txID);
+    emit WithdrawalV2(fromAccID, recipient, info, txID);
+  }
+
+  function _doWithdrawal(
+    Account storage acc,
+    int64 amount,
+    Currency currency,
+    address recipient
+  ) private returns (WithdrawalInfo memory) {
     acc.spotBalances[currency] -= amount;
 
     (int64 amountAfterSocializedLoss, int64 socializedLossHaircutAmount) = _applySocializedLoss(
-      fromAccID,
+      acc.id,
       amount,
       currency
     );
@@ -136,19 +142,26 @@ abstract contract TransferContract is TradeContract {
 
     (address erc20Address, uint256 erc20AmountToSend) = _withdrawToL1(currency, amountToSend, recipient);
 
-    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
-    emit WithdrawalV2(
-      fromAccID,
-      recipient,
-      currency,
-      numTokens,
-      txID,
-      withdrawalFeeCharged,
-      socializedLossHaircutAmount,
-      amountToSend,
-      erc20Address,
-      erc20AmountToSend
-    );
+    return
+      WithdrawalInfo({
+        currency: currency,
+        amount: amount,
+        socializedLossHaircutAmount: socializedLossHaircutAmount,
+        withdrawalFeeCharged: withdrawalFeeCharged,
+        amountToSend: amountToSend,
+        erc20Address: erc20Address,
+        erc20AmountToSend: erc20AmountToSend
+      });
+  }
+
+  struct WithdrawalInfo {
+    Currency currency;
+    int64 amount;
+    int64 socializedLossHaircutAmount;
+    int64 withdrawalFeeCharged;
+    int64 amountToSend;
+    address erc20Address;
+    uint256 erc20AmountToSend;
   }
 
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
