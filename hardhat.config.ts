@@ -11,11 +11,26 @@ import "@typechain/hardhat"
 // upgradable plugin
 import "@matterlabs/hardhat-zksync-upgradable"
 
-import { HardhatUserConfig } from "hardhat/config"
+import { HardhatUserConfig, task } from "hardhat/config"
+import { execSync } from "child_process"
 
-import "./scripts/deploy-exchange-on-l2-through-l1";
-import "./scripts/set-exchange-address";
-import "./scripts/upgrade-exchange-through-l1-governance";
+import "./scripts/deploy-exchange-on-l2-through-l1"
+import "./scripts/set-exchange-address"
+import "./scripts/upgrade-exchange-through-l1-governance"
+
+// Add custom task to handle pre-compilation steps
+task("compile").setAction(async (args, hre, runSuper) => {
+  const network = hre.network.name
+
+  // Only run the oracle timelock disable script for networks other than inMemoryNode and grvtMainnet
+  if (network !== "inMemoryNode" && network !== "grvtMainnet") {
+    console.log("Disabling oracle timelock for development environment...")
+    execSync("bash scripts/disable_oracle_timelock.sh", { stdio: "inherit" })
+  }
+
+  // Continue with the normal compilation
+  await runSuper(args)
+})
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
@@ -66,7 +81,7 @@ const config: HardhatUserConfig = {
     },
   },
   mocha: {
-    timeout: 100000000
+    timeout: 100000000,
   },
 }
 
