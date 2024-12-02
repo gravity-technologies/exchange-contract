@@ -189,9 +189,9 @@ abstract contract TransferContract is TradeContract {
       return (amount, 0);
     }
 
-    BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
-    uint64 tokenDec = _getBalanceDecimal(currency);
-    int64 withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
+    int64 withdrawalFeeCharged = _convertCurrency(_getWithdrawalFeeInUSDT(), Currency.USDT, currency).toInt64(
+      _getBalanceDecimal(currency)
+    );
 
     int64 amountAfterFee = amount - withdrawalFeeCharged;
     feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
@@ -201,12 +201,13 @@ abstract contract TransferContract is TradeContract {
     return (amountAfterFee, withdrawalFeeCharged);
   }
 
-  function _getWithdrawalFee() private view returns (BI memory) {
+  /// @dev Get the withdrawal fee in USDT
+  function _getWithdrawalFeeInUSDT() private view returns (BI memory) {
     (uint64 fee, bool feeSet) = _getUintConfig(ConfigID.WITHDRAWAL_FEE);
     if (!feeSet) {
       return BIMath.zero();
     }
-    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USDT));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
