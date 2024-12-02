@@ -19,6 +19,7 @@ contract MarginConfigContract is ConfigContract {
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
+    _validateAssetKUQ(kud);
     _requireValidMarginTiers(tiers);
 
     // ---------- Signature Verification -----------
@@ -45,10 +46,7 @@ contract MarginConfigContract is ConfigContract {
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
-    require(assetIsKUQ(kud), "must be KUQ");
-
-    uint kind = uint(assetGetKind(kud));
-    require(kind > 0 && kind < 6, "wrong kind");
+    _validateAssetKUQ(kud);
 
     _requireValidMarginTiers(tiers);
 
@@ -71,6 +69,12 @@ contract MarginConfigContract is ConfigContract {
 
     state.configVersion++;
     _sendConfigProofMessageToL1(abi.encode(timestamp, kud, tiers));
+  }
+
+  function _validateAssetKUQ(bytes32 kuq) private pure {
+    require(assetIsKUQ(kuq), "must be KUQ");
+    Kind kind = assetGetKind(kuq);
+    require(kind == Kind.SPOT || kind == Kind.PERPS || kind == Kind.FUTURES, "wrong kind");
   }
 
   function _requireValidMarginTiers(MarginTier[] calldata marginTiers) private pure {
@@ -141,10 +145,6 @@ contract MarginConfigContract is ConfigContract {
   ) private view returns (int64) {
     ListMarginTiersBI memory fromMt = _getListMarginTiersBIFromStorage(kud);
 
-    if (fromMt.tiers.length == 0) {
-      return 0;
-    }
-
     if (_isMarginRequirementIncreasedAtSomeSize(fromMt, toMt)) {
       return SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS_LOCK_DURATION;
     }
@@ -190,11 +190,11 @@ contract MarginConfigContract is ConfigContract {
 
   function _blendedMM(ListMarginTiersBI memory mt, BI memory notional) internal pure returns (BI memory) {
     if (mt.tiers.length == 0) {
-      return BI(0, 0);
+      return BIMath.zero();
     }
 
-    BI memory margin = BI(0, 0);
-    BI memory prevStart = BI(0, 0);
+    BI memory margin = BIMath.zero();
+    BI memory prevStart = BIMath.zero();
     BI memory prevRate = mt.tiers[0].rate;
     BI memory bracketSize;
 

@@ -300,6 +300,7 @@ export interface Expectation {
   | ExFundingIndex
   | ExMarkPrice
   | ExInterestRate
+  | ExFundingTimeDelta
   | ExSubAccountValue
   | ExSubAccountPosition
   | ExSubAccountSpot

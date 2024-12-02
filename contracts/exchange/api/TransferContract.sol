@@ -14,9 +14,8 @@ abstract contract TransferContract is TradeContract {
   event Withdrawal(
     address indexed fromAccount,
     address indexed recipient, // the recipient of the withdrawal on L1
-    Currency currency,
-    uint64 numTokens,
-    uint64 txID
+    uint64 txID,
+    WithdrawalInfo withdrawalInfo
   );
 
   event Deposit(
@@ -110,67 +109,105 @@ abstract contract TransferContract is TradeContract {
     require(amount > 0, "invalid withdrawal amount");
     require(amount <= acc.spotBalances[currency], "insufficient balance");
 
+    WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
+
+    emit Withdrawal(fromAccID, recipient, txID, info);
+  }
+
+  function _doWithdrawal(
+    Account storage acc,
+    int64 amount,
+    Currency currency,
+    address recipient
+  ) private returns (WithdrawalInfo memory) {
     acc.spotBalances[currency] -= amount;
 
-    int64 amountAfterSocializedLoss = _applySocializedLoss(amount, currency);
-    int64 amountToSend = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
+    (int64 amountAfterSocializedLoss, int64 socializedLossHaircutAmount) = _applySocializedLoss(
+      acc.id,
+      amount,
+      currency
+    );
+    (int64 amountToSend, int64 withdrawalFeeCharged) = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
 
     state.totalSpotBalances[currency] -= amountToSend;
 
-    _withdrawToL1(currency, amountToSend, recipient);
+    (address erc20Address, uint256 erc20AmountToSend) = _withdrawToL1(currency, amountToSend, recipient);
 
-    emit Withdrawal(fromAccID, recipient, currency, numTokens, txID);
+    return
+      WithdrawalInfo({
+        currency: currency,
+        amount: amount,
+        socializedLossHaircutAmount: socializedLossHaircutAmount,
+        withdrawalFeeCharged: withdrawalFeeCharged,
+        amountToSend: amountToSend,
+        erc20Address: erc20Address,
+        erc20AmountToSend: erc20AmountToSend
+      });
   }
 
-  function _withdrawToL1(Currency currency, int64 amount, address recipient) private {
+  struct WithdrawalInfo {
+    Currency currency;
+    int64 amount;
+    int64 socializedLossHaircutAmount;
+    int64 withdrawalFeeCharged;
+    int64 amountToSend;
+    address erc20Address;
+    uint256 erc20AmountToSend;
+  }
+
+  function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
     (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
     require(ok, "missing L2 shared bridge address");
     IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
 
     uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
-    l2SharedBridge.withdraw(recipient, getCurrencyERC20Address(currency), erc20AmountToSend);
+    address erc20Address = getCurrencyERC20Address(currency);
+    l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
+
+    return (erc20Address, erc20AmountToSend);
   }
 
-  function _applySocializedLoss(int64 amount, Currency currency) private returns (int64) {
+  function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64, int64) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (!isInsuranceFundSet) {
-      return amount;
+      return (amount, 0);
     }
 
     _fundAndSettle(insuranceFund);
-    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(amount))));
+    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
     if (socializedLossHaircutAmount > 0) {
       insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
     }
 
-    return amount - socializedLossHaircutAmount;
+    return (amount - socializedLossHaircutAmount, socializedLossHaircutAmount);
   }
 
-  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64) {
+  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64, int64) {
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (!isFeeSubAccIdSet) {
-      return amount;
+      return (amount, 0);
     }
 
-    BI memory spotMarkPrice = _requireAssetPriceBI(_getSpotAssetID(currency));
-    uint64 tokenDec = _getBalanceDecimal(currency);
-    int64 withdrawalFeeCharged = _getWithdrawalFee().div(spotMarkPrice).toInt64(tokenDec);
+    int64 withdrawalFeeCharged = _convertCurrency(_getWithdrawalFeeInUSDT(), Currency.USDT, currency).toInt64(
+      _getBalanceDecimal(currency)
+    );
 
     int64 amountAfterFee = amount - withdrawalFeeCharged;
     feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
 
     require(amountAfterFee > 0, "withdrawal amount too small");
 
-    return amountAfterFee;
+    return (amountAfterFee, withdrawalFeeCharged);
   }
 
-  function _getWithdrawalFee() private view returns (BI memory) {
+  /// @dev Get the withdrawal fee in USDT
+  function _getWithdrawalFeeInUSDT() private view returns (BI memory) {
     (uint64 fee, bool feeSet) = _getUintConfig(ConfigID.WITHDRAWAL_FEE);
     if (!feeSet) {
-      return BI(0, 0);
+      return BIMath.zero();
     }
-    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USD));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USDT));
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
@@ -256,10 +293,7 @@ abstract contract TransferContract is TradeContract {
       _isBridgingPartnerAccount(fromAccID) || fromAcc.onboardedTransferAccounts[toAccID],
       "bad external transfer address"
     );
-    require(
-      !_isUserAccount(fromAccID) || _isUserAccount(toAccID),
-      "user account cannot transfer to non-user account"
-    );
+    require(!_isUserAccount(fromAccID) || _isUserAccount(toAccID), "user account cannot transfer to non-user account");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
@@ -321,6 +355,7 @@ abstract contract TransferContract is TradeContract {
     _requireSubAccountUnderAccount(toSub, toAccID);
 
     _fundAndSettle(fromSub);
+    _fundAndSettle(toSub);
 
     fromSub.spotBalances[currency] -= numTokens;
 

@@ -227,12 +227,6 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
   }
 
-  function _requireAssetPriceInUsdBI(bytes32 assetID) internal view returns (BI memory) {
-    bytes32 assetWithUSDQuote = assetSetQuote(assetID, Currency.USD);
-    BI memory markPrice = _requireAssetPriceBI(assetWithUSDQuote);
-    return markPrice;
-  }
-
   // Price utils
   function _getAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
@@ -437,7 +431,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     mapping(Currency => int64) storage balances,
     Currency quoteCurrency
   ) internal view returns (BI memory) {
-    BI memory total = BI(0, 0);
+    BI memory total = BIMath.zero();
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
       int64 balance = balances[i];
       if (balance == 0) {

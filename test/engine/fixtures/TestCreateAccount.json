@@ -525,7 +525,7 @@
                   "name": "ExAccountSigners"
                }
             ],
-            "assertion_data": "0xe2912977000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+            "assertion_data": "0x19b230b7000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
          }
       ]
    },
@@ -1565,7 +1565,7 @@
                   "name": "ExAccountSigners"
                }
             ],
-            "assertion_data": "0xe2912977000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+            "assertion_data": "0x19b230b7000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
          },
          {
             "time": "9676800000000011",
@@ -1610,7 +1610,7 @@
                   "name": "ExAccountSigners"
                }
             ],
-            "assertion_data": "0xe2912977000000000000000000000000bfdc9e0f796d6ab818840e0ad182f78e5af383df"
+            "assertion_data": "0x19b230b7000000000000000000000000bfdc9e0f796d6ab818840e0ad182f78e5af383df000000000000000000000000bfdc9e0f796d6ab818840e0ad182f78e5af383df"
          }
       ]
    },
@@ -2140,7 +2140,7 @@
                   "name": "ExAccountSigners"
                }
             ],
-            "assertion_data": "0xe2912977000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
+            "assertion_data": "0x19b230b7000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98000000000000000000000000d7b2de3f16cc2a4c52d0caca4dbf8e75b48f5d98"
          },
          {
             "time": "0",

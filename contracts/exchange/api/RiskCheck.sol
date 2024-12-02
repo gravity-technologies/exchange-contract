@@ -6,40 +6,26 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
 
-struct MaintenanceMarginConfig {
-  BI size;
-  BI ratio;
-}
-
 // The maximum number of maintenance margin tiers
 uint256 constant MAX_M_MARGIN_TIERS = 12;
-// The bit mask for the least significant 32 bits
-uint256 constant LSB_32_MASK = 0xFFFFFFFF;
-
-// Only support BTC, ETH for now
-uint constant NUM_SUPPORTED_UNDERLYINGS = 2;
 
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
 
-  error InvalidTotalValue(uint64 subAccountID, int256 value);
-
-  function _getSocializedLossHaircutAmount(int64 withdrawAmount) internal view returns (uint64) {
+  function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {
     int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
-    if (insuranceFundLossAmountUSDT <= 0) {
+    if (insuranceFundLossAmountUSDT == 0) {
       return 0;
     }
 
-    uint usdtDec = _getBalanceDecimal(Currency.USDT);
+    // non-user accounts are not subject to socialized loss
+    if (!_isUserAccount(fromAccID)) {
+      return 0;
+    }
 
     int64 totalClientValueUSDT = _getTotalClientValueUSDT();
-    BI memory totalClientValueUSDTBI = BI(totalClientValueUSDT, usdtDec);
-    BI memory insuranceFundLossAmountUSDTBI = BI(insuranceFundLossAmountUSDT, usdtDec);
-
-    // result = withdrawAmount * (insuranceFundLoss / totalClientValue)
-    BI memory withdrawAmountBI = BI(withdrawAmount, MAX_BALANCE_DECIMALS);
-    BI memory result = withdrawAmountBI.mul(insuranceFundLossAmountUSDTBI).div(totalClientValueUSDTBI);
-    return result.toUint64(MAX_BALANCE_DECIMALS);
+    int haircutAmount = (int(withdrawAmount) * int(insuranceFundLossAmountUSDT)) / int(totalClientValueUSDT);
+    return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
@@ -110,7 +96,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
-      int64 insuranceFundValue = _getSubAccountValueInQuote(insuranceFund).toInt64(dec);
       BI memory insuranceFundValueInQuoteBI = _getSubAccountValueInQuote(insuranceFund);
       if (insuranceFundValueInQuoteBI.isNegative()) {
         BI memory insuranceFundValueInUSDT = _convertCurrency(
@@ -137,10 +122,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     } else if (!isLiquidation && !beforeTrade) {
       require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
     }
-  }
-
-  function _requireNonNegativeValue(SubAccount storage sub) internal view {
-    require(_getSubAccountValueInQuote(sub).val >= 0, "invalid total value");
   }
 
   /**
@@ -173,7 +154,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
    * @return The maintenance margin.
    */
   function _getSimpleCrossMMUsd(SubAccount storage subAccount) internal view returns (BI memory) {
-    BI memory totalCharge = BI(0, 0);
+    BI memory totalCharge = BIMath.zero();
 
     bytes32[] storage keys = subAccount.perps.keys;
     mapping(bytes32 => Position) storage values = subAccount.perps.values;

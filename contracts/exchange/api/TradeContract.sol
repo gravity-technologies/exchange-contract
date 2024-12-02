@@ -24,7 +24,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     uint64[] matchedSizes;
     BI spotDelta;
     BI tradeNotional;
-    BI optionIndexNotional;
   }
 
   function tradeDeriv(
@@ -55,53 +54,50 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
-
-      OrderCalculationResult memory makerCalcResult;
-      makerCalcResult.matchedSizes = makerMatch.matchedSize;
-
-      Order calldata makerOrder = makerMatch.makerOrder;
-      uint makerLegsLen = makerOrder.legs.length;
-      for (uint legIdx; legIdx < makerLegsLen; ++legIdx) {
-        uint64 size = makerCalcResult.matchedSizes[legIdx];
-        if (size == 0) {
-          continue;
-        }
-
-        OrderLeg calldata leg = makerOrder.legs[legIdx];
-        uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
-        BI memory tradeSize = BI(int256(uint256(size)), udec);
-        BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
-
-        // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
-        if (leg.isBuyingAsset) {
-          makerCalcResult.spotDelta = makerCalcResult.spotDelta.sub(notional);
-          takerCalcResult.spotDelta = takerCalcResult.spotDelta.add(notional);
-        } else {
-          makerCalcResult.spotDelta = makerCalcResult.spotDelta.add(notional);
-          takerCalcResult.spotDelta = takerCalcResult.spotDelta.sub(notional);
-        }
-        if (_isOption(leg.assetID)) {
-          (uint64 indexPrice, bool found) = _getIndexPrice9Dec(leg.assetID);
-          require(found, ERR_NOT_FOUND);
-
-          BI memory indexNotional = tradeSize.mul(BI(int(uint(indexPrice)), PRICE_DECIMALS));
-          makerCalcResult.optionIndexNotional = makerCalcResult.optionIndexNotional.add(indexNotional);
-        }
-        makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
-
-        takerCalcResult.matchedSizes[_findLegIndex(trade.takerOrder.legs, leg.assetID)] += size;
-      }
-
-      // Aggregate taker notional accross all makers
-      takerCalcResult.tradeNotional = takerCalcResult.tradeNotional.add(makerCalcResult.tradeNotional);
-      takerCalcResult.optionIndexNotional = takerCalcResult.optionIndexNotional.add(
-        makerCalcResult.optionIndexNotional
-      );
-
+      OrderCalculationResult memory makerCalcResult = _calculateMakerOrder(trade, makerMatch, takerCalcResult);
       _verifyAndExecuteOrder(timestamp, makerMatch.makerOrder, makerCalcResult, true, makerMatch.feeCharged, takerSub);
     }
 
     return takerCalcResult;
+  }
+
+  function _calculateMakerOrder(
+    Trade calldata trade,
+    MakerTradeMatch calldata makerMatch,
+    OrderCalculationResult memory takerCalcResult
+  ) private returns (OrderCalculationResult memory makerCalcResult) {
+    makerCalcResult.matchedSizes = makerMatch.matchedSize;
+    Order calldata makerOrder = makerMatch.makerOrder;
+
+    for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ++legIdx) {
+      uint64 size = makerCalcResult.matchedSizes[legIdx];
+      if (size == 0) {
+        continue;
+      }
+
+      OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
+      uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
+      BI memory tradeSize = BI(int256(uint256(size)), udec);
+      BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
+
+      // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
+      if (leg.isBuyingAsset) {
+        makerCalcResult.spotDelta = makerCalcResult.spotDelta.sub(notional);
+        takerCalcResult.spotDelta = takerCalcResult.spotDelta.add(notional);
+      } else {
+        makerCalcResult.spotDelta = makerCalcResult.spotDelta.add(notional);
+        takerCalcResult.spotDelta = takerCalcResult.spotDelta.sub(notional);
+      }
+
+      makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
+
+      takerCalcResult.matchedSizes[_findLegIndex(trade.takerOrder.legs, leg.assetID)] += size;
+    }
+
+    // Aggregate taker notional accross all makers
+    takerCalcResult.tradeNotional = takerCalcResult.tradeNotional.add(makerCalcResult.tradeNotional);
+
+    return makerCalcResult;
   }
 
   /// @notice Verifies the match between 1 taker and multiple maker orders.
@@ -217,9 +213,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
       require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
       int64 expiry = assetGetExpiration(leg.assetID);
-      if (kind == Kind.FUTURES || kind == Kind.CALL || kind == Kind.PUT) {
-        require(expiry > timestamp, "asset expired");
-      }
     }
 
     // Check the order signature
@@ -276,35 +269,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       executedSize[leg.assetID] = total;
     }
 
-    bool isOption = false;
-    for (uint i; i < legsLen; ++i) {
-      if (_isOption(legs[i].assetID)) {
-        isOption = true;
-        break;
-      }
-    }
-
     // Check that the fee paid is within the cap of 20 bps
     int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
     if (order.isLiquidation) {
-      feeCapRate = isOption ? LIQUIDATION_FEE_CAP_RATE_BPS_OPTION : LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
+      feeCapRate = LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
     }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
-
-    int64 totalFeeCap;
-
-    if (isOption) {
-      totalFeeCap = _calculateBaseFee(calcResult.optionIndexNotional, feeCapRateBI, qDec);
-      BI memory premiumCapFee = _bpsToDecimal(PREMIUM_CAP_RATE_BPS);
-
-      if (totalFeeCap > 0) {
-        totalFeeCap = _min(totalFeeCap, _calculateBaseFee(calcResult.tradeNotional, premiumCapFee, qDec));
-      } else {
-        totalFeeCap = _max(totalFeeCap, _calculateBaseFee(calcResult.tradeNotional, premiumCapFee.neg(), qDec));
-      }
-    } else {
-      totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
-    }
+    int64 totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
 
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
   }
