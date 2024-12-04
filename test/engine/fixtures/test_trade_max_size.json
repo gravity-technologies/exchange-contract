@@ -1190,7 +1190,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": -50000,
-                        "mark_price": "0"
+                        "mark_price": "40000000000000"
                      }
                   ],
                   "signature": {
@@ -1429,7 +1429,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": -50000,
-                        "mark_price": "0"
+                        "mark_price": "40000000000000"
                      }
                   ],
                   "signature": {
@@ -1531,7 +1531,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": -50000,
-                        "mark_price": "0"
+                        "mark_price": "40000000000000"
                      }
                   ],
                   "signature": {
@@ -2809,7 +2809,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": -50000,
-                        "mark_price": "0"
+                        "mark_price": "40000000000000"
                      }
                   ],
                   "signature": {
@@ -3084,7 +3084,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": -50000,
-                        "mark_price": "0"
+                        "mark_price": "40000000000000"
                      }
                   ],
                   "signature": {
