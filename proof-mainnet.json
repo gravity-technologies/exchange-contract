@@ -1,0 +1,64 @@
+{
+    "chainId": 325,
+    "bridgeHub": "0x303a465B659cBB0ab36eE643eA362c509EEb5213",
+    "bridgeProxyAddress": "0xE17aeD2fC55f4A876315376ffA49FE6358113a65",
+    "grvtGovernanceAddress": "0xe81d64195072e4d09639b31Abb257d0096FEa9d1",
+    "deployment": {
+        "commit": "b82300f35912e36262572dc0822e632238b89790",
+        "deployer": "0xF29bFff344c7ef0186432fE30C39fda0cca0550b",
+        "salt": "0xbdc9b37e0a07b32a83a200c42ad622010311c6155d9b4d263f6298cb254ba2e8",
+        "admin": "0xCda1A23Abe4a05E1242Ab7b17dd779d6E438AeC9",
+        "initializeConfigSigner": "0x84E696657434cA1D6A03d5b32Cfda20C71e37a7F",
+        "chainSubmitter": "0x518a13fA945e8F4c98f3D6634e5200B928ad4204",
+        "depositProxyBeaconOwner": "0x518a13fA945e8F4c98f3D6634e5200B928ad4204",
+        "implementationDeployment": {
+            "l1TxHash": "0xd73200db8198cc34a7e479a96f7a9ae27a854d6ea96d02d0b6ddf19e9b875dd2",
+            "l2TxHash": "0x3a8e246de35bec7ff608e37e0630d59af11a03b3ca039d5a5f6e55233b953dd5",
+            "l2BatchNumber": 3,
+            "l2MessageIndex": 5,
+            "l2TxNumberInBatch": 4,
+            "merkleProof": [
+              "0x180d791498e3ce3fad96a79ec3c4fd751241a29b16b29d9149f450636db4620a",
+              "0xe6c45218a0812106764aeb6d8026427e2b8d1eefc560f212e25f6174210dda5b",
+              "0xd948ed7e1ecc8904bdc99cf657dd52914b1719bc021e415896acb8290bcbf6a7",
+              "0x199cc5812543ddceeddd0fc82807646a4899444240db2c0d2f20c3cceb5f51fa",
+              "0xe4733f281f18ba3ea8775dd62d2fcd84011c8c938f16ea5790fd29a03bf8db89",
+              "0x1798a1fd9c8fbb818c98cff190daa7cc10b6e5ac9716b4a2649f7c2ebcef2272",
+              "0x66d7c5983afe44cf15ea8cf565b34c6c31ff0cb4dd744524f7842b942d08770d",
+              "0xb04e5ee349086985f74b73971ce9dfe76bbed95c84906c5dffd96504e1e5396c",
+              "0xac506ecb5465659b3a927143f6d724f91d8d9c4bdb2463aee111d9aa869874db",
+              "0x124b05ec272cecd7538fdafe53b6628d31188ffb6f345139aac3c3c1fd2e470f",
+              "0xc3be9cbd19304d84cca3d045e06b8db3acd68c304fc9cd4cbffe6d18036cb13f",
+              "0xfef7bd9f889811e59e4076a0174087135f080177302763019adaf531257e3a87",
+              "0xa707d1c62d8be699d34cb74804fdd7b4c568b6c1a821066f126c680d4b83e00b",
+              "0xf6e093070e0389d2e529d60fadb855fdded54976ec50ac709e3a36ceaa64c291"
+            ],
+            "status": 1
+        },
+        "proxyDeployment": {
+            "l1TxHash": "0x2a33c005355593dc34062d26cec1b57bc70f0a8408e84e8d503d749e956a8b2d",
+            "l2TxHash": "0x899f326fc210520cffaea449bbe5c570e0a3ac28852b8393b7c4651a41eb530c",
+            "l2BatchNumber": 3,
+            "l2MessageIndex": 6,
+            "l2TxNumberInBatch": 5,
+            "merkleProof": [
+              "0x72abee45b59e344af8a6e520241c4744aff26ed411f4c4b00f8af09adada43ba",
+              "0xe2f02ea53db1906726a0796a712a4743b6d78c98d482e8690cca39abbc4579ee",
+              "0xd948ed7e1ecc8904bdc99cf657dd52914b1719bc021e415896acb8290bcbf6a7",
+              "0x199cc5812543ddceeddd0fc82807646a4899444240db2c0d2f20c3cceb5f51fa",
+              "0xe4733f281f18ba3ea8775dd62d2fcd84011c8c938f16ea5790fd29a03bf8db89",
+              "0x1798a1fd9c8fbb818c98cff190daa7cc10b6e5ac9716b4a2649f7c2ebcef2272",
+              "0x66d7c5983afe44cf15ea8cf565b34c6c31ff0cb4dd744524f7842b942d08770d",
+              "0xb04e5ee349086985f74b73971ce9dfe76bbed95c84906c5dffd96504e1e5396c",
+              "0xac506ecb5465659b3a927143f6d724f91d8d9c4bdb2463aee111d9aa869874db",
+              "0x124b05ec272cecd7538fdafe53b6628d31188ffb6f345139aac3c3c1fd2e470f",
+              "0xc3be9cbd19304d84cca3d045e06b8db3acd68c304fc9cd4cbffe6d18036cb13f",
+              "0xfef7bd9f889811e59e4076a0174087135f080177302763019adaf531257e3a87",
+              "0xa707d1c62d8be699d34cb74804fdd7b4c568b6c1a821066f126c680d4b83e00b",
+              "0xf6e093070e0389d2e529d60fadb855fdded54976ec50ac709e3a36ceaa64c291"
+            ],
+            "status": 1
+        }
+    },
+    "upgrades": []
+}

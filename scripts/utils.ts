@@ -34,15 +34,23 @@ export function computeL2Create2Address(
   constructorInput: BytesLike,
   create2Salt: BytesLike
 ) {
+  return computeL2Create2AddressFromBytecodeHash(deployerAddress, hashBytecode(bytecode), constructorInput, create2Salt)
+}
+
+export function computeL2Create2AddressFromBytecodeHash(
+  deployerAddress: Address,
+  bytecodeHash: BytesLike,
+  constructorInput: BytesLike,
+  create2Salt: BytesLike
+) {
   const senderBytes = ethers.utils.hexZeroPad(deployerAddress, 32)
-  const bytecodeHash = hashBytecode(bytecode)
   const constructorInputHash = ethers.utils.keccak256(constructorInput)
 
   const data = ethers.utils.keccak256(
     ethers.utils.concat([CREATE2_PREFIX, senderBytes, create2Salt, bytecodeHash, constructorInputHash])
   )
 
-  return ethers.utils.hexDataSlice(data, 12)
+  return ethers.utils.getAddress(ethers.utils.hexDataSlice(data, 12))
 }
 
 export async function create2DeployFromL1NoFactoryDeps(
@@ -59,7 +67,11 @@ export async function create2DeployFromL1NoFactoryDeps(
 ) {
   const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
 
-  const deployerSystemContracts = new Interface(hre.artifacts.readArtifactSync("lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer").abi)
+  const deployerSystemContracts = new Interface(
+    hre.artifacts.readArtifactSync(
+      "lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer"
+    ).abi
+  )
   const bytecodeHash = hashBytecode(bytecode)
   const calldata = deployerSystemContracts.encodeFunctionData("create2", [create2Salt, bytecodeHash, constructor])
   gasPrice ??= await bridgehub.provider.getGasPrice()

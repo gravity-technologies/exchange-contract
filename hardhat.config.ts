@@ -14,7 +14,7 @@ import "@matterlabs/hardhat-zksync-upgradable"
 import { HardhatUserConfig } from "hardhat/config"
 
 import "./scripts/deploy-exchange-on-l2-through-l1";
-import "./scripts/set-exchange-address";
+import "./scripts/prove-deployment";
 import "./scripts/upgrade-exchange-through-l1-governance";
 
 const config: HardhatUserConfig = {
@@ -39,8 +39,8 @@ const config: HardhatUserConfig = {
       chainId: 326,
     },
     grvtMainnet: {
-      url: "http://zkstack.grvt.internal",
-      ethNetwork: "http://zkstack.grvt.internal:8545",
+      url: "https://zkrpc.mainnet.grvt.io/",
+      ethNetwork: `https://eth.drpc.org`,
       zksync: true,
       chainId: 325,
     },
