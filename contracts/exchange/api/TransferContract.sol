@@ -160,9 +160,9 @@ abstract contract TransferContract is TradeContract {
     require(ok, "missing L2 shared bridge address");
     // IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
 
-    // uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
+    uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
 
-    // address erc20Address = getCurrencyERC20Address(currency);
+    address erc20Address = getCurrencyERC20Address(currency);
     // l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
 
     return (erc20Address, erc20AmountToSend);
@@ -211,9 +211,7 @@ abstract contract TransferContract is TradeContract {
   }
 
   function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
-    address ta = getCurrencyERC20Address(currency);
-    IERC20MetadataUpgradeable token = IERC20MetadataUpgradeable(ta);
-    uint8 erc20TokenDec = token.decimals();
+    uint8 erc20TokenDec = 6;
     int256 erc20Amount = BI(numTokens, _getBalanceDecimal(currency)).scale(erc20TokenDec).toInt256(erc20TokenDec);
     require(erc20Amount > 0, "invalid amount");
     return SafeCast.toUint256(erc20Amount);
