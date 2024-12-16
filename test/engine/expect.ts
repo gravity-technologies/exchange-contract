@@ -431,10 +431,30 @@ function getBalanceDecimal(underlying: string) {
 }
 
 function getBalanceDecimalFromEnum(currency: number) {
-  if (currency == CurrencyToEnum.BTC || currency == CurrencyToEnum.ETH) {
+  if (
+    currency == CurrencyToEnum.BTC ||
+    currency == CurrencyToEnum.ETH ||
+    currency == CurrencyToEnum.SOL ||
+    currency == CurrencyToEnum.BNB
+  ) {
     return 9
+  } else if (
+    currency == CurrencyToEnum.USD ||
+    currency == CurrencyToEnum.USDC ||
+    currency == CurrencyToEnum.USDT ||
+    currency == CurrencyToEnum.ARB ||
+    currency == CurrencyToEnum.ZK ||
+    currency == CurrencyToEnum.POL ||
+    currency == CurrencyToEnum.OP ||
+    currency == CurrencyToEnum.ATOM ||
+    currency == CurrencyToEnum.TON
+  ) {
+    return 6
+  } else if (currency == CurrencyToEnum.PEPE1000) {
+    return 3
+  } else {
+    throw new Error("Unsupported currency")
   }
-  return 6
 }
 
 async function expectSubAccountPositionOptional(contract: Contract, expectations: ExSubAccountPositionOptional) {
