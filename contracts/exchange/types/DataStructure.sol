@@ -63,6 +63,11 @@ function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
+// only USDT spot balances is supported
+function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
+  return currency == Currency.USDT;
+}
+
 uint constant PRICE_DECIMALS = 9;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
