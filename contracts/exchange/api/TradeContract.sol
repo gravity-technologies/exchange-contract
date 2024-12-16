@@ -213,7 +213,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
-      require(underlying == Currency.ETH || underlying == Currency.BTC, ERR_NOT_SUPPORTED);
+      require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
       int64 expiry = assetGetExpiration(leg.assetID);
     }
 
