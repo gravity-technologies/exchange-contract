@@ -22,7 +22,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   struct OrderCalculationResult {
     uint64[] matchedSizes;
-    BI spotDelta;
+    int64 spotDelta;
     BI tradeNotional;
   }
 
@@ -77,16 +77,19 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
       uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
+      uint qdec = _getBalanceDecimal(assetGetQuote(leg.assetID));
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
 
+      int64 notionalInt = notional.toInt64(qdec);
+
       // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
       if (leg.isBuyingAsset) {
-        makerCalcResult.spotDelta = makerCalcResult.spotDelta.sub(notional);
-        takerCalcResult.spotDelta = takerCalcResult.spotDelta.add(notional);
+        makerCalcResult.spotDelta -= notionalInt;
+        takerCalcResult.spotDelta += notionalInt;
       } else {
-        makerCalcResult.spotDelta = makerCalcResult.spotDelta.add(notional);
-        takerCalcResult.spotDelta = takerCalcResult.spotDelta.sub(notional);
+        makerCalcResult.spotDelta += notionalInt;
+        takerCalcResult.spotDelta -= notionalInt;
       }
 
       makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
@@ -332,9 +335,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
     if (isFeeCharged) {
       feeSub.spotBalances[subQuote] += fee;
-      sub.spotBalances[subQuote] += calcResult.spotDelta.toInt64(qDec) - fee;
+      sub.spotBalances[subQuote] += calcResult.spotDelta - fee;
     } else {
-      sub.spotBalances[subQuote] += calcResult.spotDelta.toInt64(qDec);
+      sub.spotBalances[subQuote] += calcResult.spotDelta;
     }
   }
 
