@@ -2718,7 +2718,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10050","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10000"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10050","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10000"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -2817,7 +2817,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10360"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10360"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -2898,7 +2898,7 @@
                         "nonce": 1027726994
                      },
                      "metadata": {
-                        "client_order_id": "6861720418334302290",
+                        "client_order_id": "8909100570997877114",
                         "create_time": "10886400000000143"
                      },
                      "state": {
@@ -2960,7 +2960,7 @@
                               "nonce": 1298447931
                            },
                            "metadata": {
-                              "client_order_id": "12495859877829866068",
+                              "client_order_id": "7188517731811392025",
                               "create_time": "0"
                            },
                            "state": {
@@ -5937,7 +5937,7 @@
                         "nonce": 455231885
                      },
                      "metadata": {
-                        "client_order_id": "437973045473773840",
+                        "client_order_id": "8168685424344619131",
                         "create_time": "10886400000000135"
                      },
                      "state": {
@@ -5999,7 +5999,7 @@
                               "nonce": 549730996
                            },
                            "metadata": {
-                              "client_order_id": "638230961892246790",
+                              "client_order_id": "6892726987625554728",
                               "create_time": "0"
                            },
                            "state": {
