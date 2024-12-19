@@ -74,7 +74,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   function _requireAccountNoBalance(Account storage acc) internal view {
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      require(acc.spotBalances[i] == 0, "account has balance");
+      require(!currencyCanHoldSpotBalance(i) || acc.spotBalances[i] == 0, "account has balance");
     }
   }
 
@@ -205,16 +205,28 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
-    if (currency == Currency.BTC || currency == Currency.ETH) {
-      return 9;
+    uint64 decimals;
+    if (currency == Currency.BTC || currency == Currency.ETH || currency == Currency.SOL || currency == Currency.BNB) {
+      decimals = 9;
+    } else if (
+      currency == Currency.USD ||
+      currency == Currency.USDC ||
+      currency == Currency.USDT ||
+      currency == Currency.ARB ||
+      currency == Currency.ZK ||
+      currency == Currency.POL ||
+      currency == Currency.OP ||
+      currency == Currency.ATOM ||
+      currency == Currency.TON
+    ) {
+      decimals = 6;
+    } else if (currency == Currency.PEPE1000) {
+      decimals = 3;
+    } else {
+      revert(ERR_UNSUPPORTED_CURRENCY);
     }
 
-    // USDT, USDC, USD
-    if (currency == Currency.USDT || currency == Currency.USDC || currency == Currency.USD) {
-      return 6;
-    }
-
-    revert(ERR_UNSUPPORTED_CURRENCY);
+    return decimals;
   }
 
   function _getBalanceMultiplier(Currency currency) internal pure returns (uint64) {
@@ -433,6 +445,10 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   ) internal view returns (BI memory) {
     BI memory total = BIMath.zero();
     for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
+      if (!currencyCanHoldSpotBalance(i)) {
+        continue;
+      }
+
       int64 balance = balances[i];
       if (balance == 0) {
         continue;

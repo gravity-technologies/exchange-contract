@@ -9,10 +9,20 @@ export enum MarginType {
 
 export enum Currency {
   UNSPECIFIED,
+  USD,
   USDC,
   USDT,
   ETH,
   BTC,
+  SOL,
+  ARB,
+  BNB,
+  ZK,
+  POL,
+  OP,
+  ATOM,
+  PEPE1000,
+  TON
 }
 
 export enum Instrument {
