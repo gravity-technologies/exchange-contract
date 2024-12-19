@@ -87,7 +87,7 @@ export const deployContract = async (
 
   log(`\nStarting deployment process of "${contractArtifactName}"...`)
 
-  const wallet = options?.wallet ?? getWallet()
+  const wallet = options?.wallet ?? getWallet("7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110")
   const deployer = new Deployer(hre, wallet)
   const artifact = await deployer.loadArtifact(contractArtifactName).catch((error) => {
     if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {
@@ -143,7 +143,7 @@ export const deployContractUpgradable = async (
 
   log(`\nStarting deployment process of "${contractArtifactName}"...`)
 
-  const zkWallet = options?.wallet ?? getWallet()
+  const zkWallet = options?.wallet ?? getWallet("7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110")
   const deployer = new Deployer(hre, zkWallet)
   const contract = await deployer.loadArtifact(contractArtifactName).catch((error) => {
     if (error?.message?.includes(`Artifact for contract "${contractArtifactName}" not found.`)) {

@@ -4,10 +4,31 @@ import { ethers } from "ethers"
 import * as hre from "hardhat"
 import path from "path"
 import { hashBytecode } from "zksync-web3/build/src/utils"
-import { L2TokenInfo } from "../../deploy/testutil"
-import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
-import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
-import { getDeployerWallet } from "../util"
+import { L2TokenInfo } from "../deploy/testutil"
+import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../deploy/utils"
+import { L2SharedBridgeFactory } from "../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
+
+async function main() {
+  console.log("Setting up fuzz test environment...")
+  const { exchangeContract, l2SharedBridgeAsL1Bridge, w1 } = await setupTestEnvironment()
+
+  console.log({
+    exchangeContractAddress: exchangeContract.address,
+    l2SharedBridgeAddress: l2SharedBridgeAsL1Bridge.address,
+    walletAddress: w1.address,
+  })
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })
+
+function getDeployerWallet() {
+  return getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+}
 
 export async function setupTestEnvironment() {
   const w1 = getDeployerWallet()

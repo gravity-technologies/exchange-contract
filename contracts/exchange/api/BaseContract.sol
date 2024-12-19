@@ -10,9 +10,9 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
-import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
 import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import "hardhat/console.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -38,10 +38,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
-  bytes32 private immutable DOMAIN_HASH =
-    keccak256(
-      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
-    );
+  bytes32 private constant DOMAIN_HASH =
+    keccak256(abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), 260));
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 
@@ -59,6 +57,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _setSequenceInitializeConfig(int64 timestamp, uint64 txID) internal {
+    console.log("initCfg.timestamp", uint256(int256(timestamp)));
+    console.log("initCfg.state.timestamp", uint256(int256(state.timestamp)));
     require(timestamp >= state.timestamp, "invalid timestamp");
     require(state.lastTxID == 0, "initializeConfig called after first tx");
     require(txID == state.lastTxID + 1, "invalid txID");
