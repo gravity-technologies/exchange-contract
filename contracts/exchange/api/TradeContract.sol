@@ -79,8 +79,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
       uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
+      uint qdec = _getBalanceDecimal(assetGetQuote(leg.assetID));
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
+
+      int64 notionalInt = notional.toInt64(qdec);
 
       // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
       if (leg.isBuyingAsset) {
@@ -334,6 +337,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     for (uint i; i < legsLen; ++i) {
       spotDelta += calcResult.legSpotDelta[i].toInt64(qDec);
     }
+    console.log("sub.id: ");
+    console.logUint(sub.id);
+    console.log("sub.spotBalances[subQuote](before): ");
+    console.logInt(sub.spotBalances[subQuote]);
+    console.log("calcResult.spotDelta: ");
+    console.logInt(calcResult.spotDelta);
+    console.log("fee: ");
+    console.logInt(fee);
 
     // Step 4: Update subaccount spot balance, deducting fees
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
