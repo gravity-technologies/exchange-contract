@@ -39,7 +39,12 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     BI memory totalValueBI = BI(0, dec);
 
     for (uint i = 0; i < state.bridgingPartners.length; i++) {
-      Account storage account = _requireAccount(state.bridgingPartners[i]);
+      Account storage account = state.accounts[state.bridgingPartners[i]];
+      if (account.id == address(0)) {
+        // allow non-exist bridging partners, consider them to have 0 value
+        continue;
+      }
+
       totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
     }
     return totalValueBI.toInt64(dec);

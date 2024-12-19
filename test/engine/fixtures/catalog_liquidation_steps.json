@@ -1638,7 +1638,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10050","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10000"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10050","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10000"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -1652,7 +1652,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10200","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10000"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10200","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10000"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -1737,7 +1737,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10360"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10360"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -1818,7 +1818,7 @@
                         "nonce": 472526897
                      },
                      "metadata": {
-                        "client_order_id": "15008585445400871698",
+                        "client_order_id": "14912778209631135920",
                         "create_time": "10886400000000125"
                      },
                      "state": {
@@ -1832,7 +1832,7 @@
                            "0",
                            "0"
                         ],
-                        "update_time": "0",
+                        "update_time": "10886400000000125",
                         "avg_fill_price": [
                            "0",
                            "0"
@@ -1880,7 +1880,7 @@
                               "nonce": 1965635137
                            },
                            "metadata": {
-                              "client_order_id": "10992551294175738664",
+                              "client_order_id": "11902710631695397799",
                               "create_time": "0"
                            },
                            "state": {
@@ -1947,7 +1947,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10360"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"9646611240881097804","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"19000","initial_margin":"10410","maintenance_margin":"3180","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10360"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -3653,7 +3653,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10200","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}},{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}}],"pre_trade_initial_margin":"10000"},
+                  "expect": {"summary":{"event_time":"0","sub_account_id":"451668388525528739","margin_type":"UNSPECIFIED","settle_currency":"USDT","unrealized_pnl":"","total_equity":"10000","initial_margin":"10200","maintenance_margin":"3000","available_balance":"","spot_balances":null,"positions":null,"settle_index_price":""},"aggregated_open_sizes":[{"asset":{"kind":"PERPETUAL","underlying":"ETH","quote":"USDT"},"open_size":{"BuySize":"500000000","SellSize":"0"}},{"asset":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"open_size":{"BuySize":"0","SellSize":"200000000"}}],"pre_trade_initial_margin":"10000"},
                   "name": "ExSubAccountSummaryOptional"
                }
             ],
@@ -3777,7 +3777,7 @@
                         "nonce": 1816586777
                      },
                      "metadata": {
-                        "client_order_id": "563294261058851461",
+                        "client_order_id": "6550533410241807773",
                         "create_time": "10886400000000117"
                      },
                      "state": {
@@ -3791,7 +3791,7 @@
                            "0",
                            "0"
                         ],
-                        "update_time": "0",
+                        "update_time": "10886400000000117",
                         "avg_fill_price": [
                            "0",
                            "0"
@@ -3839,7 +3839,7 @@
                               "nonce": 1772107198
                            },
                            "metadata": {
-                              "client_order_id": "13152994090741997270",
+                              "client_order_id": "11902311522753402505",
                               "create_time": "0"
                            },
                            "state": {
