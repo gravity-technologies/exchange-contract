@@ -344,6 +344,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     } else {
       sub.spotBalances[subQuote] += spotDelta;
     }
+
+    console.log("sub.spotBalances[subQuote](after): ");
+    console.logInt(sub.spotBalances[subQuote]);
   }
 
   function removePos(SubAccount storage sub, bytes32 assetID) private {
