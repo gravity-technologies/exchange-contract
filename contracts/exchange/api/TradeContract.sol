@@ -22,7 +22,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
   struct OrderCalculationResult {
     uint64[] matchedSizes;
-    int64 spotDelta;
+    BI[] legSpotDelta;
     BI tradeNotional;
   }
 
@@ -48,7 +48,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   ) private returns (OrderCalculationResult memory) {
     OrderCalculationResult memory takerCalcResult;
     takerCalcResult.matchedSizes = new uint64[](trade.takerOrder.legs.length);
-
+    takerCalcResult.legSpotDelta = new BI[](trade.takerOrder.legs.length);
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
 
@@ -67,6 +67,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     OrderCalculationResult memory takerCalcResult
   ) private returns (OrderCalculationResult memory makerCalcResult) {
     makerCalcResult.matchedSizes = makerMatch.matchedSize;
+    makerCalcResult.legSpotDelta = new BI[](makerMatch.makerOrder.legs.length);
     Order calldata makerOrder = makerMatch.makerOrder;
 
     for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ++legIdx) {
@@ -81,15 +82,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
 
-      int64 notionalInt = notional.toInt64(qdec);
-
       // Here we agregate the maker's spot delta, maker's notional, taker spot delta and taker's matched sizes
       if (leg.isBuyingAsset) {
-        makerCalcResult.spotDelta -= notionalInt;
-        takerCalcResult.spotDelta += notionalInt;
+        makerCalcResult.legSpotDelta[legIdx] = makerCalcResult.legSpotDelta[legIdx].sub(notional);
+        takerCalcResult.legSpotDelta[legIdx] = takerCalcResult.legSpotDelta[legIdx].add(notional);
       } else {
-        makerCalcResult.spotDelta += notionalInt;
-        takerCalcResult.spotDelta -= notionalInt;
+        makerCalcResult.legSpotDelta[legIdx] = makerCalcResult.legSpotDelta[legIdx].add(notional);
+        takerCalcResult.legSpotDelta[legIdx] = takerCalcResult.legSpotDelta[legIdx].sub(notional);
       }
 
       makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
@@ -331,13 +330,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
+    int64 spotDelta = 0;
+    for (uint i; i < legsLen; ++i) {
+      spotDelta += calcResult.legSpotDelta[i].toInt64(qDec);
+    }
+
     // Step 4: Update subaccount spot balance, deducting fees
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
     if (isFeeCharged) {
       feeSub.spotBalances[subQuote] += fee;
-      sub.spotBalances[subQuote] += calcResult.spotDelta - fee;
+      sub.spotBalances[subQuote] += spotDelta - fee;
     } else {
-      sub.spotBalances[subQuote] += calcResult.spotDelta;
+      sub.spotBalances[subQuote] += spotDelta;
     }
   }
 
