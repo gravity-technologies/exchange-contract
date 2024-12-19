@@ -79,7 +79,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
       uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
-      uint qdec = _getBalanceDecimal(assetGetQuote(leg.assetID));
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
 
