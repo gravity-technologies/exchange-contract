@@ -275,6 +275,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
   }
 
   function _assertSubAccount(SubAccountAssertion calldata exSub) internal view {
+    console.log("exSub.subAccountID: ");
+    console.logUint(exSub.subAccountID);
     SubAccount storage sub = state.subAccounts[exSub.subAccountID];
 
     // Assert funding timestamp
@@ -294,6 +296,12 @@ contract AssertionContract is ConfigContract, RiskCheck {
     // Assert spot balances
     for (uint j; j < exSub.spots.length; ++j) {
       SpotAssertion calldata exSpot = exSub.spots[j];
+      console.log("exSpot.currency: ");
+      console.logUint(uint(exSpot.currency));
+      console.log("exSpot.balance: ");
+      console.logInt(exSpot.balance);
+      console.log("sub.spotBalances[exSpot.currency]: ");
+      console.logInt(sub.spotBalances[exSpot.currency]);
       require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
     }
   }
