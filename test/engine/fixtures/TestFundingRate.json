@@ -1140,7 +1140,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 50000,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      },
                      {
                         "asset": {
@@ -1149,7 +1149,7 @@
                            "quote": "USDC"
                         },
                         "funding_rate": -1,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      }
                   ],
                   "signature": {
@@ -1816,7 +1816,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 50000,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      },
                      {
                         "asset": {
@@ -1825,7 +1825,7 @@
                            "quote": "USDC"
                         },
                         "funding_rate": -1,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      }
                   ],
                   "signature": {
@@ -2492,7 +2492,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 50000,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      },
                      {
                         "asset": {
@@ -2501,7 +2501,7 @@
                            "quote": "USDC"
                         },
                         "funding_rate": -1,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      }
                   ],
                   "signature": {
@@ -3168,7 +3168,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 50000,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      },
                      {
                         "asset": {
@@ -3177,7 +3177,7 @@
                            "quote": "USDC"
                         },
                         "funding_rate": -1,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      }
                   ],
                   "signature": {
@@ -3241,7 +3241,7 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 50000,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      },
                      {
                         "asset": {
@@ -3250,7 +3250,7 @@
                            "quote": "USDC"
                         },
                         "funding_rate": -1,
-                        "mark_price": "0"
+                        "mark_price": "5000000000000000"
                      }
                   ],
                   "signature": {
