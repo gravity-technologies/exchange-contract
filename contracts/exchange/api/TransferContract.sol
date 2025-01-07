@@ -293,10 +293,22 @@ abstract contract TransferContract is TradeContract {
       _isBridgingPartnerAccount(fromAccID) || fromAcc.onboardedTransferAccounts[toAccID],
       "bad external transfer address"
     );
-    require(!_isUserAccount(fromAccID) || _isUserAccount(toAccID), "user account cannot transfer to non-user account");
+    if (_isUserAccount(fromAccID)) {
+      require(!_isInternalAccount(toAccID), "user account cannot transfer to internal account");
+      if (_isBridgingPartnerAccount(toAccID)) {
+        require(
+          !_isSocializedLossActive(),
+          "transfer to bridging partner is not allowed when socialized loss is active"
+        );
+      }
+    }
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
+  }
+
+  function _isSocializedLossActive() private view returns (bool) {
+    return _getInsuranceFundLossAmountUSDT() > 0;
   }
 
   function _transferMainToSub(
