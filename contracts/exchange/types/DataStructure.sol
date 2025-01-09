@@ -36,7 +36,16 @@ enum Currency {
   USDC, // 2
   USDT, // 3
   ETH, // 4
-  BTC // 5
+  BTC, // 5
+  SOL, // 6
+  ARB, // 7
+  BNB, // 8
+  ZK, // 9
+  POL, // 10
+  OP, // 11
+  ATOM, // 12
+  PEPE1000, // 13
+  TON // 14
 }
 
 function currencyStart() pure returns (Currency) {
@@ -52,6 +61,11 @@ function currencyNext(Currency iter) pure returns (Currency) {
 
 function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
+}
+
+// only USDT spot balances is supported
+function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
+  return currency == Currency.USDT;
 }
 
 uint constant PRICE_DECIMALS = 9;
