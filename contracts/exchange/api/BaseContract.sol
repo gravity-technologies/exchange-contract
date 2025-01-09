@@ -220,7 +220,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.TON
     ) {
       decimals = 6;
-    } else if (currency == Currency.PEPE1000) {
+    } else if (currency == Currency.KPEPE) {
       decimals = 3;
     } else {
       revert(ERR_UNSUPPORTED_CURRENCY);

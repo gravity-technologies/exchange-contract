@@ -44,7 +44,7 @@ enum Currency {
   POL, // 10
   OP, // 11
   ATOM, // 12
-  PEPE1000, // 13
+  KPEPE, // 13
   TON // 14
 }
 
