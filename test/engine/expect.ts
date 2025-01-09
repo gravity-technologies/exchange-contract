@@ -450,7 +450,7 @@ function getBalanceDecimalFromEnum(currency: number) {
     currency == CurrencyToEnum.TON
   ) {
     return 6
-  } else if (currency == CurrencyToEnum.PEPE_1000) {
+  } else if (currency == CurrencyToEnum.KPEPE) {
     return 3
   } else {
     throw new Error("Unsupported currency")

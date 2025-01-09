@@ -1694,7 +1694,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -4131,7 +4131,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -6153,7 +6153,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [

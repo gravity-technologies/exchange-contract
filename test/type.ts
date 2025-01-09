@@ -21,7 +21,7 @@ export enum Currency {
   POL,
   OP,
   ATOM,
-  PEPE1000,
+  KPEPE,
   TON
 }
 

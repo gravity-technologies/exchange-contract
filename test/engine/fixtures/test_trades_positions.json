@@ -1694,7 +1694,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -1898,7 +1898,9 @@
                      "v": 28,
                      "expiration": "9676800000000056",
                      "nonce": 1664277816
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff9290003800000000000000000000000000000000000000000000000000000000000000180000000000000000000000008d6e1e537097e9a34b973dc2b42c4db6c829684f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000008d6e1e537097e9a34b973dc2b42c4db6c829684f00000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be4000000000000000000000000008d6e1e537097e9a34b973dc2b42c4db6c829684fc61863896fc162512de76550c6852950ad4bac63a0627c10f7cf61308251df75338e355ae154e30dbf8dbbb3141b4c3619c1eca05faea842960f4f01ca66355b000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff92900038000000000000000000000000000000000000000000000000000000006332dd38",
@@ -2000,7 +2002,9 @@
                      "v": 27,
                      "expiration": "9676800000000064",
                      "nonce": 420105061
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000f727dafe27fe529c7f1d83aa984de8d1102183d40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000f727dafe27fe529c7f1d83aa984de8d1102183d40000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000f727dafe27fe529c7f1d83aa984de8d1102183d4359b124f857fcc7b1616ed053cf2f5e9d0987082df1e90a85f551de405ee7c24725c04706b88d17a44f73994767ae9e26e9546f2aa1254a677f01ec5c0bc1d69000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff9290004000000000000000000000000000000000000000000000000000000000190a4b65",
@@ -2315,7 +2319,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -2349,7 +2354,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -2584,7 +2590,8 @@
                         "realized_pnl": "-10",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -2618,7 +2625,8 @@
                         "realized_pnl": "10",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -4351,7 +4359,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -4555,7 +4563,9 @@
                      "v": 27,
                      "expiration": "9676800000000056",
                      "nonce": 452659259
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff9290003800000000000000000000000000000000000000000000000000000000000000180000000000000000000000005c4f7c442d3711a9508d616ef4aa2cfe30cdb45300000000000000000000000000000000000000000000000000000000000000000000000000000000000000005c4f7c442d3711a9508d616ef4aa2cfe30cdb45300000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be4000000000000000000000000005c4f7c442d3711a9508d616ef4aa2cfe30cdb4534142a35aa3c8aa6fc78848e6b53504590344ebfcda146ce90fedcace924ea3a868e38304a4b7215076d6b61359f5eee2322c83a33adebc2ef333dad9f7c4e348000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff92900038000000000000000000000000000000000000000000000000000000001afb083b",
@@ -4657,7 +4667,9 @@
                      "v": 28,
                      "expiration": "9676800000000064",
                      "nonce": 891702545
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000fe57bf47534e57414db73be4361a9ab078e62bb20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fe57bf47534e57414db73be4361a9ab078e62bb20000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000fe57bf47534e57414db73be4361a9ab078e62bb2e9b1422a21e15b7ce5409ef5fa1ad9371e1086ad628127f34cdb7c7c3257117d083a9605b9d2f5ae0d363c60568e2c18014f80f1f78a8326bac7a41307024051000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff929000400000000000000000000000000000000000000000000000000000000035264d11",
@@ -4972,7 +4984,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -5006,7 +5019,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -6940,7 +6954,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -7144,7 +7158,9 @@
                      "v": 27,
                      "expiration": "9676800000000056",
                      "nonce": 450063245
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900038000000000000000000000000000000000000000000000000000000000000001800000000000000000000000030756d68f03b0f6a336543aaf272d9958f702281000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030756d68f03b0f6a336543aaf272d9958f70228100000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be40000000000000000000000000030756d68f03b0f6a336543aaf272d9958f702281ea9682f7b8a865f3af1641e0338b54c23e475cea688a6cf8d238f9e9ed133b722dc29481e1b774168fdeb63310e3bf7f97aad884bacbc4ec989062be74e1b015000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff92900038000000000000000000000000000000000000000000000000000000001ad36b8d",
@@ -7246,7 +7262,9 @@
                      "v": 28,
                      "expiration": "9676800000000064",
                      "nonce": 1532294969
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000643c719444cd3beef9fc324c39793776eb63e3e40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000643c719444cd3beef9fc324c39793776eb63e3e40000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000643c719444cd3beef9fc324c39793776eb63e3e47c13e0fb599d5e14facd6cd33d1e1faf48e03c5b22de06d7d28e4aafb329070849e98a368991d98156295e247745d8fe667f27016aef4002564c149695ed2fd8000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000005b54f739",
@@ -7561,7 +7579,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -7595,7 +7614,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -7830,7 +7850,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -7864,7 +7885,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -8099,7 +8121,8 @@
                         "realized_pnl": "-20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -8133,7 +8156,8 @@
                         "realized_pnl": "20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -9866,7 +9890,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -10070,7 +10094,9 @@
                      "v": 27,
                      "expiration": "9676800000000056",
                      "nonce": 1352966935
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff9290003800000000000000000000000000000000000000000000000000000000000000180000000000000000000000005ac35f8fc6135ab5da994c51851a716eba11b1ce00000000000000000000000000000000000000000000000000000000000000000000000000000000000000005ac35f8fc6135ab5da994c51851a716eba11b1ce00000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be4000000000000000000000000005ac35f8fc6135ab5da994c51851a716eba11b1cebb817deb17dbb9432a9e7c9c58d2050d51cf34599de9220d1ee3075866f290b478ee32693b849c442d2c44b8c29a9debf2b2bd09187b470de253938485c6c1f1000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff929000380000000000000000000000000000000000000000000000000000000050a4a317",
@@ -10172,7 +10198,9 @@
                      "v": 27,
                      "expiration": "9676800000000064",
                      "nonce": 874433588
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000355a79b1742272c8174d7eaf18a6290f2b61d4f90000000000000000000000000000000000000000000000000000000000000000000000000000000000000000355a79b1742272c8174d7eaf18a6290f2b61d4f90000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000355a79b1742272c8174d7eaf18a6290f2b61d4f9beac9c7ecd9dc229e4c59bd0eceb1b337887e7329692f2bf9930289270a0c93305db9ebe14011d5a533f3a55ddaddae6b4d53b4143d1aa06129d326022531e9c000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff9290004000000000000000000000000000000000000000000000000000000000341ecc34",
@@ -10487,7 +10515,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -10521,7 +10550,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -10616,7 +10646,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -10650,7 +10681,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -10885,7 +10917,8 @@
                         "realized_pnl": "-20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -10919,7 +10952,8 @@
                         "realized_pnl": "20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -11154,7 +11188,8 @@
                         "realized_pnl": "-20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -11188,7 +11223,8 @@
                         "realized_pnl": "20",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -12921,7 +12957,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -13125,7 +13161,9 @@
                      "v": 27,
                      "expiration": "9676800000000056",
                      "nonce": 1774717125
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff929000380000000000000000000000000000000000000000000000000000000000000018000000000000000000000000ca86832c09f18c347fd58865074869c2eece35ec0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ca86832c09f18c347fd58865074869c2eece35ec00000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000ca86832c09f18c347fd58865074869c2eece35ecbc314f4c33dec3482ddca111b14afc1a17a0e39cae9ca63f56037399a9ed9e7232b187cd6c50140646e64cc72aace0119aa6649c0436b47e1c408fec4f6dfa3a000000000000000000000000000000000000000000000000000000000000001b000000000000000000000000000000000000000000000000002260ff929000380000000000000000000000000000000000000000000000000000000069c808c5",
@@ -13227,7 +13265,9 @@
                      "v": 28,
                      "expiration": "9676800000000064",
                      "nonce": 1323538662
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000516db3479fc64a7df8d46ce76b42a169d2d4e54f0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000516db3479fc64a7df8d46ce76b42a169d2d4e54f0000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000516db3479fc64a7df8d46ce76b42a169d2d4e54f85e6fb8cb1d06d09c7be1b41dc126ef8a3045c35badd46f08679a77bc4ea1cb960f7c3f4d1bd1ce117dea10647841206a280a6a4bad6b87f3dc70b5ba0e87dfa000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000004ee398e6",
@@ -13542,7 +13582,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -13576,7 +13617,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -13811,7 +13853,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -13845,7 +13888,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -14080,7 +14124,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -14114,7 +14159,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -15847,7 +15893,7 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PEPE_1000",
+                     "underlying": "KPEPE",
                      "quote": "USDT"
                   },
                   "tiers": [
@@ -16051,7 +16097,9 @@
                      "v": 28,
                      "expiration": "9676800000000056",
                      "nonce": 1966837164
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900038000000000000000000000000000000000000000000000000000000000000001800000000000000000000000027abfd37c352309a95d27f5b497a63cc0562cdb1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000027abfd37c352309a95d27f5b497a63cc0562cdb100000000000000000000000000000000000000000000000085dfa5d04b020c4c000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be40000000000000000000000000027abfd37c352309a95d27f5b497a63cc0562cdb1ff5595c4fe6080088791ade34ac7462f7c6999ecf8b7f9a1ae91fa05efcbc8d645db8db0b86a0b3b301eafcdd5984aef37c82278cf7af4d489cda9eb590ad3d7000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff9290003800000000000000000000000000000000000000000000000000000000753b8dac",
@@ -16153,7 +16201,9 @@
                      "v": 28,
                      "expiration": "9676800000000064",
                      "nonce": 549430986
-                  }
+                  },
+                  "transfer_type": "UNSPECIFIED",
+                  "transfer_metadata": ""
                }
             },
             "tx_data": "0x2ea1d9de000000000000000000000000000000000000000000000000002260ff92900040000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000fef779624ddb2475d38d2c92c5426200bba76dcd0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fef779624ddb2475d38d2c92c5426200bba76dcd0000000000000000000000000000000000000000000000000644a6019e5656a3000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000002540be400000000000000000000000000fef779624ddb2475d38d2c92c5426200bba76dcde0fa621c74ab13875973a58d68fbda3ac5f12d381f72fa7d7c505e8e44703c286685f8bbc5b31a6157090fc29b5858ea164388c855979d42379729d2d81ae330000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000000000000000000000000000002260ff929000400000000000000000000000000000000000000000000000000000000020bfa6ca",
@@ -16468,7 +16518,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -16502,7 +16553,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -16632,7 +16684,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -16666,7 +16719,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -16804,7 +16858,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
@@ -16838,7 +16893,8 @@
                         "realized_pnl": "0",
                         "total_pnl": "",
                         "roi": "",
-                        "quote_index_price": ""
+                        "quote_index_price": "",
+                        "est_liquidation_price": ""
                      }
                   },
                   "name": "ExSubAccountPositionOptional"
