@@ -28,7 +28,7 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     Account storage acc = state.accounts[accountID];
-    require(quoteCurrency == Currency.USDT, "invalid quote currency");
+    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(acc.id != address(0), "account does not exist");
     require(subAccountID != 0, "invalid subaccount id");

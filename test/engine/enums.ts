@@ -5,6 +5,15 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   USDT: 3,
   ETH: 4,
   BTC: 5,
+  SOL: 6,
+  ARB: 7,
+  BNB: 8,
+  ZK: 9,
+  POL: 10,
+  OP: 11,
+  ATOM: 12,
+  PEPE_1000: 13,
+  TON: 14
 }
 
 export const MarginTypeToEnum: { [cur: string]: number } = {
