@@ -290,7 +290,9 @@ abstract contract TransferContract is TradeContract {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     require(
-      _isBridgingPartnerAccount(fromAccID) || fromAcc.onboardedTransferAccounts[toAccID],
+      fromAcc.onboardedTransferAccounts[toAccID] ||
+        _isBridgingPartnerAccount(fromAccID) ||
+        _isBridgingPartnerAccount(toAccID),
       "bad external transfer address"
     );
     if (_isUserAccount(fromAccID)) {
