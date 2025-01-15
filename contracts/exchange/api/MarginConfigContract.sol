@@ -128,7 +128,7 @@ contract MarginConfigContract is ConfigContract {
     return result;
   }
 
-  function _setListMarginTiersBIToStorage(bytes32 kud, ListMarginTiersBI memory tiersBI) private {
+  function _setListMarginTiersBIToStorage(bytes32 kud, ListMarginTiersBI memory tiersBI) internal {
     ListMarginTiersBIStorage storage storageTiers = state.simpleCrossMaintenanceMarginTiers[kud];
     storageTiers.kud = tiersBI.kud;
     delete storageTiers.tiers;

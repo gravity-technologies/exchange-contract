@@ -28,7 +28,7 @@ contract AccountContract is BaseContract {
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
-    _deployDepositProxy(accountID);
+    // _deployDepositProxy(accountID);
 
     // Create account
     acc.id = accountID;

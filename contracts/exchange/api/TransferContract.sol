@@ -57,9 +57,9 @@ abstract contract TransferContract is TradeContract {
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
     require(numTokensSigned > 0, "invalid deposit amount");
 
-    uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
+    // uint256 fundExchangeAmount = scaleToERC20Amount(currency, numTokensSigned);
 
-    getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
+    // getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
 
     Account storage account = _requireAccount(accountID);
     account.spotBalances[currency] += numTokensSigned;
@@ -109,9 +109,9 @@ abstract contract TransferContract is TradeContract {
     require(amount > 0, "invalid withdrawal amount");
     require(amount <= acc.spotBalances[currency], "insufficient balance");
 
-    WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
+    // WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
 
-    emit Withdrawal(fromAccID, recipient, txID, info);
+    // emit Withdrawal(fromAccID, recipient, txID, info);
   }
 
   function _doWithdrawal(

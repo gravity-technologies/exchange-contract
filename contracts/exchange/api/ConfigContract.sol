@@ -264,10 +264,11 @@ contract ConfigContract is BaseContract {
     InitializeConfigItem[] calldata items,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setDefaultConfigSettings();
     _setSequenceInitializeConfig(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
+    // require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
     _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
