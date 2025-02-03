@@ -441,6 +441,16 @@ contract ConfigContract is BaseContract {
       return rules[0].lockDuration;
     }
 
+    if (key == ConfigID.WITHDRAWAL_FEE) {
+      (uint64 oldVal, bool isSet) = _getUintConfig(key);
+      if (isSet) {
+        if (_configToUint(newVal) <= oldVal) {
+          return 0;
+        }
+      }
+      return rules[0].lockDuration;
+    }
+
     // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
     if (typ == ConfigType.ADDRESS) {
