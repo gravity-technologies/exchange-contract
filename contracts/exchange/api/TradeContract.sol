@@ -333,16 +333,20 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       }
     }
 
-    int64 spotDelta = 0;
-    for (uint i; i < legsLen; ++i) {
-      spotDelta += calcResult.legSpotDelta[i].toInt64(qDec);
-    }
     console.log("sub.id: ");
     console.logUint(sub.id);
     console.log("sub.spotBalances[subQuote](before): ");
     console.logInt(sub.spotBalances[subQuote]);
-    console.log("calcResult.spotDelta: ");
-    console.logInt(calcResult.spotDelta);
+
+    int64 spotDelta = 0;
+    for (uint i; i < legsLen; ++i) {
+      spotDelta += calcResult.legSpotDelta[i].toInt64(qDec);
+      console.log("calcResult.legSpotDelta[i]: ");
+      console.logInt(calcResult.legSpotDelta[i].toInt64(qDec));
+    }
+
+    console.log("spotDelta: ");
+    console.logInt(spotDelta);
     console.log("fee: ");
     console.logInt(fee);
 
