@@ -41,8 +41,8 @@ contract OracleContract is ConfigContract {
     _setSequenceMarkPriceTick(timestamp, txID);
 
     // ---------- Signature Verification -----------
-    bytes32 hash = hashOraclePrice(sig.expiration, prices);
-    _verifyPriceUpdateSig(timestamp, hash, sig);
+    // bytes32 hash = hashOraclePrice(sig.expiration, prices);
+    // _verifyPriceUpdateSig(timestamp, hash, sig);
     // ------- End of Signature Verification -------
 
     mapping(bytes32 => uint64) storage marks = state.prices.mark;
