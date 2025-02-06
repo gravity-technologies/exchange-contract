@@ -10,10 +10,9 @@ import { hashBytecode } from "zksync-web3/build/src/utils"
 // EIP-1967 storage slot for implementation address
 const IMPLEMENTATION_SLOT = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
 
-task("fork", "Fork network with implementation contract")
+task("replay", "Replay a specific transaction locally")
+  .addParam("txHash", "Transaction hash to replay")
   .addOptionalParam("exchangeAddr", "Address of the exchange contract (overrides config)")
-  .addOptionalParam("blockNumber", "Fork from specific block number")
-  .addOptionalParam("transactionHash", "Fork from specific transaction hash")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
     const exchangeAddr = taskArgs.exchangeAddr ||
@@ -49,38 +48,31 @@ task("fork", "Fork network with implementation contract")
     // 2. Query implementation address
     const { l2Provider } = createProviders(hre.config.networks, hre.network)
     const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT)
-    const implAddress = "0x" + implAddressBytes.slice(-40) // Convert to address format
+    const implAddress = "0x" + implAddressBytes.slice(-40)
 
     console.log("Implementation address:", implAddress)
 
     // 3. Create temp directory and copy artifact
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grvt-fork-'))
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grvt-replay-'))
     console.log("Using temporary directory:", tempDir)
 
-    // Write override JSON to file named with implementation address
+    // Write override JSON to file
     fs.writeFileSync(
       path.join(tempDir, `${implAddress}.json`),
       JSON.stringify(overrideJson, null, 2)
     )
 
-    // 4. Run anvil-zksync
+    // 4. Run anvil-zksync in replay mode
     const anvilArgs = [
       "run",
       "--quiet",
       "--",
       "--override-bytecodes-dir=" + tempDir,
-      "fork",
+      "replay_tx",
       "--fork-url",
-      (hre.network.config as HttpNetworkConfig).url
+      (hre.network.config as HttpNetworkConfig).url,
+      taskArgs.txHash
     ]
-
-    // Add optional fork arguments if provided
-    if (taskArgs.blockNumber) {
-      anvilArgs.push("--fork-block-number", taskArgs.blockNumber.toString())
-    }
-    if (taskArgs.transactionHash) {
-      anvilArgs.push("--fork-transaction-hash", taskArgs.transactionHash)
-    }
 
     const anvilProcess = spawn("cargo", anvilArgs, {
       cwd: path.join(__dirname, "../lib/anvil-zksync"),

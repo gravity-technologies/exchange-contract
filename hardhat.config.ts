@@ -28,6 +28,7 @@ import "./scripts/deploy-exchange-on-l2-through-l1";
 import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/fork";
+import "./scripts/replay-tx";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
