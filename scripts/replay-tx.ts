@@ -47,7 +47,13 @@ task("replay", "Replay a specific transaction locally")
 
     // 2. Query implementation address
     const { l2Provider } = createProviders(hre.config.networks, hre.network)
-    const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT)
+
+    const tx = await l2Provider.getTransaction(taskArgs.txHash)
+    if (!tx) {
+        throw new Error(`Transaction ${taskArgs.txHash} not found`)
+    }
+
+    const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT, tx.blockNumber!)
     const implAddress = "0x" + implAddressBytes.slice(-40)
 
     console.log("Implementation address:", implAddress)

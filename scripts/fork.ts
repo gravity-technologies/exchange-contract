@@ -48,7 +48,23 @@ task("fork", "Fork network with implementation contract")
 
     // 2. Query implementation address
     const { l2Provider } = createProviders(hre.config.networks, hre.network)
-    const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT)
+
+    let blockNumber = taskArgs.blockNumber;
+
+    // If transaction hash is provided, get the transaction and set block number
+    if (taskArgs.transactionHash) {
+      const tx = await l2Provider.getTransaction(taskArgs.transactionHash)
+      if (!tx) {
+        throw new Error(`Transaction ${taskArgs.transactionHash} not found`)
+      }
+      blockNumber = tx.blockNumber!
+    }
+
+    if (taskArgs.blockNumber) {
+      blockNumber = taskArgs.blockNumber
+    }
+
+    const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT, blockNumber)
     const implAddress = "0x" + implAddressBytes.slice(-40) // Convert to address format
 
     console.log("Implementation address:", implAddress)
