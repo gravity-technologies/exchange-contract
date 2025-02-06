@@ -27,7 +27,7 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
-          version: v0.0.2
+          version: nightly-b1e93654348a0f31effa34790adae18865b14aa8
           submodules: recursive
 
       - name: Install Node dependencies
