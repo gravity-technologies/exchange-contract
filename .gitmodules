@@ -4,3 +4,6 @@
 [submodule "lib/era-contracts"]
 	path = lib/era-contracts
 	url = git@github.com:gravity-technologies/era-contracts.git
+[submodule "lib/anvil-zksync"]
+	path = lib/anvil-zksync
+	url = git@github.com:matter-labs/anvil-zksync.git

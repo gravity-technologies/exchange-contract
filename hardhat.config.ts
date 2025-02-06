@@ -13,9 +13,21 @@ import "@matterlabs/hardhat-zksync-upgradable"
 
 import { HardhatUserConfig } from "hardhat/config"
 
+// Add this before the config
+declare module "hardhat/types/config" {
+  interface HardhatUserConfig {
+    contractAddresses?: {
+      exchange?: {
+        [network: string]: string;
+      };
+    };
+  }
+}
+
 import "./scripts/deploy-exchange-on-l2-through-l1";
 import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
+import "./scripts/fork";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
@@ -39,8 +51,8 @@ const config: HardhatUserConfig = {
       chainId: 326,
     },
     grvtMainnet: {
-      url: "http://zkstack.grvt.internal",
-      ethNetwork: "http://zkstack.grvt.internal:8545",
+      url: "https://zkrpc.mainnet.grvt.io/",
+      ethNetwork: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
       zksync: true,
       chainId: 325,
     },
@@ -68,6 +80,13 @@ const config: HardhatUserConfig = {
   mocha: {
     timeout: 100000000
   },
+  contractAddresses: {
+    exchange: {
+      grvtMainnet: "0x85dee82d32d78eaa59588b6574df420ef2a74098",
+      grvtTestnet: "0x9faca433bc7723e056f7e88bbb464c7b0d894e93",
+      grvtDev: "0x40b5ef69a178288e3f088160efa6e308dd324d3f",
+    }
+  }
 }
 
 export default config
