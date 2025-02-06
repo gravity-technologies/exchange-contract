@@ -79,10 +79,10 @@ task("fork", "Fork network with implementation contract")
       JSON.stringify(overrideJson, null, 2)
     )
 
+    console.log("Building test node...")
     // 4. Run anvil-zksync
     const anvilArgs = [
       "run",
-      "--quiet",
       "--",
       "--override-bytecodes-dir=" + tempDir,
       "fork",

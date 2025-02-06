@@ -68,10 +68,11 @@ task("replay", "Replay a specific transaction locally")
       JSON.stringify(overrideJson, null, 2)
     )
 
+    console.log("Building test node...")
+
     // 4. Run anvil-zksync in replay mode
     const anvilArgs = [
       "run",
-      "--quiet",
       "--",
       "--override-bytecodes-dir=" + tempDir,
       "replay_tx",
