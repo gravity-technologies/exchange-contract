@@ -17,8 +17,9 @@ import { HardhatUserConfig } from "hardhat/config"
 declare module "hardhat/types/config" {
   interface HardhatUserConfig {
     contractAddresses?: {
-      exchange?: {
-        [network: string]: string;
+      [network: string]: {
+        exchange: string;
+        multicall3: string;
       };
     };
   }
@@ -29,7 +30,7 @@ import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/fork";
 import "./scripts/replay-tx";
-
+import "./scripts/find-contract-error";
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
@@ -82,10 +83,17 @@ const config: HardhatUserConfig = {
     timeout: 100000000
   },
   contractAddresses: {
-    exchange: {
-      grvtMainnet: "0x85dee82d32d78eaa59588b6574df420ef2a74098",
-      grvtTestnet: "0x9faca433bc7723e056f7e88bbb464c7b0d894e93",
-      grvtDev: "0x40b5ef69a178288e3f088160efa6e308dd324d3f",
+    grvtMainnet: {
+      exchange: "0x85dee82d32d78eaa59588b6574df420ef2a74098",
+      multicall3: "0xB787151147A17A7d91Ffab30A11B80B4868901d3"
+    },
+    grvtTestnet: {
+      exchange: "0x9faca433bc7723e056f7e88bbb464c7b0d894e93",
+      multicall3: "0x3a435A467f19c24f3f867F6C40a7ea628C410998"
+    },
+    grvtDev: {
+      exchange: "0x40b5ef69a178288e3f088160efa6e308dd324d3f",
+      multicall3: "0xD53767fC3b7Cc71d22BDeCf6C9C8C6207CfF11C9"
     }
   }
 }

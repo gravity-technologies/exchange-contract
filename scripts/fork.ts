@@ -17,7 +17,7 @@ task("fork", "Fork network with implementation contract")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
     const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.exchange?.[hre.network.name]
+      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
