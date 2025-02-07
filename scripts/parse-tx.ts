@@ -16,7 +16,7 @@ interface RevertContext {
   previousCall?: CallTrace
 }
 
-function findRevertInCalls(calls: CallTrace[] | undefined, exchangeAddr: string, includeContext = false): RevertContext | null {
+function findRevertInCalls(calls: CallTrace[] | undefined, multicallAddr: string, exchangeAddr: string, includeContext = false): RevertContext | null {
   if (!calls) return null
 
   for (const call of calls) {
@@ -25,7 +25,7 @@ function findRevertInCalls(calls: CallTrace[] | undefined, exchangeAddr: string,
       let lastExchangeCall: CallTrace | undefined
       
       for (const innerCall of call.calls) {
-        if (innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
+        if (innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() && innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
           if (innerCall.revertReason) {
             return {
               call: innerCall,
@@ -36,13 +36,13 @@ function findRevertInCalls(calls: CallTrace[] | undefined, exchangeAddr: string,
         }
         
         // Also check deeper calls
-        const innerRevert = findRevertInCalls([innerCall], exchangeAddr, includeContext)
+        const innerRevert = findRevertInCalls([innerCall], multicallAddr, exchangeAddr, includeContext)
         if (innerRevert) return innerRevert
       }
     }
     
     // Direct call to exchange
-    if (call.to?.toLowerCase() === exchangeAddr.toLowerCase() && call.revertReason) {
+    if (call.from?.toLowerCase() === multicallAddr.toLowerCase() && call.to?.toLowerCase() === exchangeAddr.toLowerCase() && call.revertReason) {
       return { call }
     }
   }
@@ -129,6 +129,37 @@ function formatCallData(call: CallTrace, exchangeInterface: Interface): string {
   }
 }
 
+function findAllExchangeCalls(calls: CallTrace[] | undefined, multicallAddr: string, exchangeAddr: string): CallTrace[] {
+  if (!calls) return []
+  
+  const exchangeCalls: CallTrace[] = []
+  
+  for (const call of calls) {
+    // For multicall contracts, look at their internal calls
+    if (call.calls?.length) {
+      for (const innerCall of call.calls) {
+        let callFound = false;
+        if (innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() && innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
+          callFound = true;
+          exchangeCalls.push(innerCall)
+        }
+        
+        // Also check deeper calls
+        if (!callFound) {
+          exchangeCalls.push(...findAllExchangeCalls([innerCall], multicallAddr, exchangeAddr))
+        }
+      }
+    }
+    
+    // Direct call to exchange
+    if (call.from?.toLowerCase() === multicallAddr.toLowerCase() && call.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
+      exchangeCalls.push(call)
+    }
+  }
+
+  return exchangeCalls
+}
+
 task("find-contract-error", "Find contract error in a specific transaction")
   .addParam("txHash", "Transaction hash to analyze")
   .addOptionalParam("exchangeAddr", "Address of the exchange contract (overrides config)")
@@ -137,6 +168,8 @@ task("find-contract-error", "Find contract error in a specific transaction")
     // Get exchange address from param or config
     const exchangeAddr = taskArgs.exchangeAddr ||
       (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+
+    const multicallAddr = (hre.config as any).contractAddresses?.[hre.network.name]?.multicall3
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
@@ -162,6 +195,7 @@ task("find-contract-error", "Find contract error in a specific transaction")
     // Find revert in call tree, include context for assertion errors
     const revertContext = findRevertInCalls(
       [response], 
+      multicallAddr,
       exchangeAddr,
       true // Include context for all calls to help with debugging
     )
@@ -202,5 +236,70 @@ task("find-contract-error", "Find contract error in a specific transaction")
       console.log("─".repeat(50))
     } else {
       console.log("No contract errors found in transaction")
+    }
+  })
+
+task("view-contract-calls", "View all calls to exchange contract in a transaction")
+  .addParam("txHash", "Transaction hash to analyze")
+  .addOptionalParam("exchangeAddr", "Address of the exchange contract (overrides config)")
+  .addFlag("showCalldata", "Show raw calldata in output")
+  .setAction(async (taskArgs, hre) => {
+    // Get exchange address from param or config
+    const exchangeAddr = taskArgs.exchangeAddr ||
+      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+
+    const multicallAddr = (hre.config as any).contractAddresses?.[hre.network.name]?.multicall3
+
+    if (!exchangeAddr) {
+      throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
+    }
+
+    const { l2Provider } = createProviders(hre.config.networks, hre.network)
+
+    // Verify transaction exists
+    const tx = await l2Provider.getTransaction(taskArgs.txHash)
+    if (!tx) {
+      throw new Error(`Transaction ${taskArgs.txHash} not found`)
+    }
+
+    // Load GRVTExchange artifact and create interface
+    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchange")
+    const exchangeInterface = new Interface(exchangeArtifact.abi)
+
+    const response = await l2Provider.send("debug_traceTransaction", [
+      taskArgs.txHash,
+      { tracer: "callTracer" }
+    ])
+
+    // Find all exchange calls in the transaction
+    const exchangeCalls = findAllExchangeCalls([response], multicallAddr, exchangeAddr)
+
+    if (exchangeCalls.length > 0) {
+      console.log("\nFound exchange contract calls:")
+      console.log("─".repeat(50))
+      
+      exchangeCalls.forEach((call, index) => {
+        console.log(`\nCall #${index + 1}:`)
+        try {
+          console.log(formatCallData(call, exchangeInterface))
+          
+          if (call.revertReason) {
+            console.log("\nReverted with:", call.revertReason)
+          }
+          
+          if (taskArgs.showCalldata) {
+            console.log("\nRaw calldata:")
+            console.log(call.input)
+          }
+        } catch (e) {
+          console.log("Could not decode call data")
+          if (call.revertReason) {
+            console.log("Reverted with:", call.revertReason)
+          }
+        }
+        console.log("─".repeat(50))
+      })
+    } else {
+      console.log("No calls to exchange contract found in transaction")
     }
   })

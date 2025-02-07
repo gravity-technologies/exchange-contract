@@ -28,9 +28,8 @@ declare module "hardhat/types/config" {
 import "./scripts/deploy-exchange-on-l2-through-l1";
 import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
-import "./scripts/fork";
 import "./scripts/replay-tx";
-import "./scripts/find-contract-error";
+import "./scripts/parse-tx";
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
