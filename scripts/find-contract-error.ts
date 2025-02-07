@@ -42,33 +42,59 @@ function parseArguments(functionFragment: any, decodedData: any) {
       
       if (param?.components) {
         // This is a struct or array of structs
-        if (param.baseType === 'array') {
+        if (param.type.includes('[]')) {
           // Handle array of structs
-          const values = value.toString().split(',')
-          const structSize = param.components.length
-          const structs = []
-          
-          for (let i = 0; i < values.length; i += structSize) {
-            const struct = param.components.reduce((obj: any, component: any, index: number) => {
-              obj[component.name] = values[i + index]
-              return obj
-            }, {})
-            structs.push(struct)
+          if (Array.isArray(value)) {
+            acc[key] = value.map((item: any) => parseStruct(item, param.components))
+          } else {
+            // Handle comma-separated string case
+            const values = value.toString().split(',')
+            const structSize = param.components.length
+            const structs = []
+            
+            for (let i = 0; i < values.length; i += structSize) {
+              const struct = param.components.reduce((obj: any, comp: any, idx: number) => {
+                obj[comp.name] = values[i + idx]
+                return obj
+              }, {})
+              structs.push(struct)
+            }
+            acc[key] = structs
           }
-          acc[key] = structs
         } else {
-          // Handle single struct
-          const values = value.toString().split(',')
-          acc[key] = param.components.reduce((obj: any, component: any, index: number) => {
-            obj[component.name] = values[index]
-            return obj
-          }, {})
+          // Single struct
+          acc[key] = parseStruct(value, param.components)
         }
       } else {
         acc[key] = value?.toString ? value.toString() : value
       }
       return acc
     }, {})
+}
+
+function parseStruct(value: any, components: any[]): any {
+  const result: any = {}
+  
+  components.forEach((component: any, index: number) => {
+    const fieldValue = value[index] || value[component.name]
+    
+    if (component.components) {
+      // Nested struct
+      if (component.type.includes('[]')) {
+        // Array of nested structs
+        result[component.name] = Array.isArray(fieldValue) 
+          ? fieldValue.map((item: any) => parseStruct(item, component.components))
+          : parseStruct(fieldValue, component.components)
+      } else {
+        // Single nested struct
+        result[component.name] = parseStruct(fieldValue, component.components)
+      }
+    } else {
+      result[component.name] = fieldValue?.toString ? fieldValue.toString() : fieldValue
+    }
+  })
+  
+  return result
 }
 
 task("find-contract-error", "Find contract error in a specific transaction")
@@ -107,6 +133,7 @@ task("find-contract-error", "Find contract error in a specific transaction")
 
     if (revertCall) {
       console.log("Found exchange contract call with error:")
+      console.log("Revert reason:", revertCall.revertReason)
       if (taskArgs.showCalldata) {
         console.log("Calldata:", revertCall.input)
       }
@@ -131,8 +158,6 @@ task("find-contract-error", "Find contract error in a specific transaction")
       } catch (e) {
         console.log("Could not decode method name or arguments from calldata")
       }
-      
-      console.log("Revert reason:", revertCall.revertReason)
     } else {
       console.log("No contract errors found in transaction")
     }
