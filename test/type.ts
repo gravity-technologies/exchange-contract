@@ -22,7 +22,31 @@ export enum Currency {
   OP,
   ATOM,
   KPEPE,
-  TON
+  TON,
+  XRP,
+  XLM,
+  WLD,
+  WIF,
+  VIRTUAL,
+  TRUMP,
+  SUI,
+  KSHIB,
+  POPCAT,
+  PENGU,
+  LINK,
+  KBONK,
+  JUP,
+  FARTCOIN,
+  ENA,
+  DOGE,
+  AIXBT,
+  AI16Z,
+  ADA,
+  AAVE,
+  BERA,
+  VINE,
+  PENDLE,
+  UXLINK
 }
 
 export enum Instrument {

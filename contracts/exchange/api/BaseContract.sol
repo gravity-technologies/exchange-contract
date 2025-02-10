@@ -206,7 +206,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
     uint64 decimals;
-    if (currency == Currency.BTC || currency == Currency.ETH || currency == Currency.SOL || currency == Currency.BNB) {
+    if (
+      currency == Currency.BTC ||
+      currency == Currency.ETH ||
+      currency == Currency.SOL ||
+      currency == Currency.BNB ||
+      currency == Currency.AAVE
+    ) {
       decimals = 9;
     } else if (
       currency == Currency.USD ||
@@ -217,7 +223,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.POL ||
       currency == Currency.OP ||
       currency == Currency.ATOM ||
-      currency == Currency.TON
+      currency == Currency.TON ||
+      currency == Currency.XRP ||
+      currency == Currency.XLM ||
+      currency == Currency.WLD ||
+      currency == Currency.WIF ||
+      currency == Currency.VIRTUAL ||
+      currency == Currency.TRUMP ||
+      currency == Currency.SUI ||
+      currency == Currency.KSHIB ||
+      currency == Currency.POPCAT ||
+      currency == Currency.PENGU ||
+      currency == Currency.LINK ||
+      currency == Currency.KBONK ||
+      currency == Currency.JUP ||
+      currency == Currency.FARTCOIN ||
+      currency == Currency.ENA ||
+      currency == Currency.DOGE ||
+      currency == Currency.AIXBT ||
+      currency == Currency.AI16Z ||
+      currency == Currency.ADA ||
+      currency == Currency.BERA ||
+      currency == Currency.VINE ||
+      currency == Currency.PENDLE ||
+      currency == Currency.UXLINK
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {

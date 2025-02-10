@@ -13,7 +13,31 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   OP: 11,
   ATOM: 12,
   KPEPE: 13,
-  TON: 14
+  TON: 14,
+  XRP: 15,
+  XLM: 16,
+  WLD: 17,
+  WIF: 18,
+  VIRTUAL: 19,
+  TRUMP: 20,
+  SUI: 21,
+  KSHIB: 22,
+  POPCAT: 23,
+  PENGU: 24,
+  LINK: 25,
+  KBONK: 26,
+  JUP: 27,
+  FARTCOIN: 28,
+  ENA: 29,
+  DOGE: 30,
+  AIXBT: 31,
+  AI16Z: 32,
+  ADA: 33,
+  AAVE: 34,
+  BERA: 35,
+  VINE: 36,
+  PENDLE: 37,
+  UXLINK: 38
 }
 
 export const MarginTypeToEnum: { [cur: string]: number } = {

@@ -4067,7 +4067,15 @@
                      },
                      "metadata": {
                         "client_order_id": "0",
-                        "create_time": "0"
+                        "create_time": "0",
+                        "trigger": {
+                           "trigger_type": "UNSPECIFIED",
+                           "tpsl": {
+                              "trigger_by": "UNSPECIFIED",
+                              "trigger_price": "0"
+                           }
+                        },
+                        "broker": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -4110,7 +4118,15 @@
                            },
                            "metadata": {
                               "client_order_id": "0",
-                              "create_time": "0"
+                              "create_time": "0",
+                              "trigger": {
+                                 "trigger_type": "UNSPECIFIED",
+                                 "tpsl": {
+                                    "trigger_by": "UNSPECIFIED",
+                                    "trigger_price": "0"
+                                 }
+                              },
+                              "broker": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -4283,7 +4299,15 @@
                      },
                      "metadata": {
                         "client_order_id": "0",
-                        "create_time": "0"
+                        "create_time": "0",
+                        "trigger": {
+                           "trigger_type": "UNSPECIFIED",
+                           "tpsl": {
+                              "trigger_by": "UNSPECIFIED",
+                              "trigger_price": "0"
+                           }
+                        },
+                        "broker": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -4326,7 +4350,15 @@
                            },
                            "metadata": {
                               "client_order_id": "0",
-                              "create_time": "0"
+                              "create_time": "0",
+                              "trigger": {
+                                 "trigger_type": "UNSPECIFIED",
+                                 "tpsl": {
+                                    "trigger_by": "UNSPECIFIED",
+                                    "trigger_price": "0"
+                                 }
+                              },
+                              "broker": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -7132,7 +7164,15 @@
                      },
                      "metadata": {
                         "client_order_id": "0",
-                        "create_time": "0"
+                        "create_time": "0",
+                        "trigger": {
+                           "trigger_type": "UNSPECIFIED",
+                           "tpsl": {
+                              "trigger_by": "UNSPECIFIED",
+                              "trigger_price": "0"
+                           }
+                        },
+                        "broker": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -7175,7 +7215,15 @@
                            },
                            "metadata": {
                               "client_order_id": "0",
-                              "create_time": "0"
+                              "create_time": "0",
+                              "trigger": {
+                                 "trigger_type": "UNSPECIFIED",
+                                 "tpsl": {
+                                    "trigger_by": "UNSPECIFIED",
+                                    "trigger_price": "0"
+                                 }
+                              },
+                              "broker": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -7308,7 +7356,15 @@
                      },
                      "metadata": {
                         "client_order_id": "0",
-                        "create_time": "0"
+                        "create_time": "0",
+                        "trigger": {
+                           "trigger_type": "UNSPECIFIED",
+                           "tpsl": {
+                              "trigger_by": "UNSPECIFIED",
+                              "trigger_price": "0"
+                           }
+                        },
+                        "broker": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -7351,7 +7407,15 @@
                            },
                            "metadata": {
                               "client_order_id": "0",
-                              "create_time": "0"
+                              "create_time": "0",
+                              "trigger": {
+                                 "trigger_type": "UNSPECIFIED",
+                                 "tpsl": {
+                                    "trigger_by": "UNSPECIFIED",
+                                    "trigger_price": "0"
+                                 }
+                              },
+                              "broker": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -8784,7 +8848,15 @@
                      },
                      "metadata": {
                         "client_order_id": "0",
-                        "create_time": "0"
+                        "create_time": "0",
+                        "trigger": {
+                           "trigger_type": "UNSPECIFIED",
+                           "tpsl": {
+                              "trigger_by": "UNSPECIFIED",
+                              "trigger_price": "0"
+                           }
+                        },
+                        "broker": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -8827,7 +8899,15 @@
                            },
                            "metadata": {
                               "client_order_id": "0",
-                              "create_time": "0"
+                              "create_time": "0",
+                              "trigger": {
+                                 "trigger_type": "UNSPECIFIED",
+                                 "tpsl": {
+                                    "trigger_by": "UNSPECIFIED",
+                                    "trigger_price": "0"
+                                 }
+                              },
+                              "broker": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "UNSPECIFIED",
