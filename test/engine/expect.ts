@@ -435,7 +435,8 @@ function getBalanceDecimalFromEnum(currency: number) {
     currency == CurrencyToEnum.BTC ||
     currency == CurrencyToEnum.ETH ||
     currency == CurrencyToEnum.SOL ||
-    currency == CurrencyToEnum.BNB
+    currency == CurrencyToEnum.BNB ||
+    currency == CurrencyToEnum.AAVE
   ) {
     return 9
   } else if (
@@ -447,7 +448,30 @@ function getBalanceDecimalFromEnum(currency: number) {
     currency == CurrencyToEnum.POL ||
     currency == CurrencyToEnum.OP ||
     currency == CurrencyToEnum.ATOM ||
-    currency == CurrencyToEnum.TON
+    currency == CurrencyToEnum.TON ||
+    currency == CurrencyToEnum.XRP ||
+    currency == CurrencyToEnum.XLM ||
+    currency == CurrencyToEnum.WLD ||
+    currency == CurrencyToEnum.WIF ||
+    currency == CurrencyToEnum.VIRTUAL ||
+    currency == CurrencyToEnum.TRUMP ||
+    currency == CurrencyToEnum.SUI ||
+    currency == CurrencyToEnum.KSHIB ||
+    currency == CurrencyToEnum.POPCAT ||
+    currency == CurrencyToEnum.PENGU ||
+    currency == CurrencyToEnum.LINK ||
+    currency == CurrencyToEnum.KBONK ||
+    currency == CurrencyToEnum.JUP ||
+    currency == CurrencyToEnum.FARTCOIN ||
+    currency == CurrencyToEnum.ENA ||
+    currency == CurrencyToEnum.DOGE ||
+    currency == CurrencyToEnum.AIXBT ||
+    currency == CurrencyToEnum.AI_16_Z ||
+    currency == CurrencyToEnum.ADA ||
+    currency == CurrencyToEnum.BERA ||
+    currency == CurrencyToEnum.VINE ||
+    currency == CurrencyToEnum.PENDLE ||
+    currency == CurrencyToEnum.UXLINK
   ) {
     return 6
   } else if (currency == CurrencyToEnum.KPEPE) {
