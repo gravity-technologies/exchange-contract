@@ -40,7 +40,7 @@ export enum Currency {
   ENA,
   DOGE,
   AIXBT,
-  AI16Z,
+  AI_16_Z,
   ADA,
   AAVE,
   BERA,

@@ -241,7 +241,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.ENA ||
       currency == Currency.DOGE ||
       currency == Currency.AIXBT ||
-      currency == Currency.AI16Z ||
+      currency == Currency.AI_16_Z ||
       currency == Currency.ADA ||
       currency == Currency.BERA ||
       currency == Currency.VINE ||
