@@ -114,7 +114,7 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     return 0;
   }
 
-  function _requireValidMargin(SubAccount storage sub, bool isLiquidation, bool beforeTrade) internal view {
+  function _requireValidMargin(SubAccount storage sub, Order calldata order, bool beforeTrade) internal view {
     (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
 
     // Insurance Fund can Trade when under MM, and in Negative Equity
@@ -122,11 +122,32 @@ contract RiskCheck is BaseContract, MarginConfigContract {
       return;
     }
 
-    if (isLiquidation && beforeTrade) {
+    if (order.isLiquidation && beforeTrade) {
       require(!isAboveMaintenanceMargin(sub), "subaccount liquidated is above maintenance margin");
-    } else if (!isLiquidation && !beforeTrade) {
+    } else if (!order.isLiquidation && !beforeTrade) {
       require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
     }
+  }
+
+  /**
+   * @dev Checks if an order is reducing the size of each position specified in its legs
+   * @param sub The subaccount containing the positions
+   * @param order The order to check
+   * @return true if all legs of the order reduce their respective positions, false otherwise
+   */
+  function _isReducingOrder(SubAccount storage sub, Order calldata order) internal view returns (bool) {
+    for (uint256 i = 0; i < order.legs.length; i++) {
+      OrderLeg calldata leg = order.legs[i];
+      int64 curSize = _getPositionCollection(sub, assetGetKind(leg.assetID)).values[leg.assetID].balance;
+      int64 newSize = curSize + (leg.isBuyingAsset ? int64(leg.size) : -int64(leg.size));
+      bool reducing = curSize != 0 &&
+        (curSize > 0 ? (newSize >= 0 && newSize < curSize) : (newSize <= 0 && newSize > curSize));
+
+      if (!reducing) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
