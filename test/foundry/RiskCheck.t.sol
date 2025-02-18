@@ -264,7 +264,11 @@ contract RiskCheckTest is Test, RiskCheck {
 
   // External helper to expose _isReducingSize for testing
   function orderReducesPosition(Order calldata order) external view returns (bool) {
-    return _isReducingOrder(subAccount, order);
+    uint64[] memory matchedSizes = new uint64[](order.legs.length);
+    for (uint256 i = 0; i < order.legs.length; i++) {
+      matchedSizes[i] = order.legs[i].size;
+    }
+    return _isReducingOrder(subAccount, order, matchedSizes);
   }
 
   function _getPerp(Currency underlying) private returns (bytes32) {
