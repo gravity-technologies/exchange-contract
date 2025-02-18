@@ -65,10 +65,9 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     Trade calldata trade,
     MakerTradeMatch calldata makerMatch,
     OrderCalculationResult memory takerCalcResult
-  ) private returns (OrderCalculationResult memory makerCalcResult) {
+  ) private pure returns (OrderCalculationResult memory makerCalcResult) {
     makerCalcResult.matchedSizes = makerMatch.matchedSize;
     makerCalcResult.legSpotDelta = new BI[](makerMatch.makerOrder.legs.length);
-    Order calldata makerOrder = makerMatch.makerOrder;
 
     for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ++legIdx) {
       uint64 size = makerCalcResult.matchedSizes[legIdx];
@@ -78,7 +77,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
       uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
-      uint qdec = _getBalanceDecimal(assetGetQuote(leg.assetID));
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
 
@@ -224,7 +222,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(currencyCanHoldSpotBalance(assetQuote), ERR_NOT_SUPPORTED);
       require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
-      int64 expiry = assetGetExpiration(leg.assetID);
     }
 
     // Check the order signature
@@ -313,7 +310,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Step 1: Retrieve position
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
-      int64 posBalance = pos.balance;
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {

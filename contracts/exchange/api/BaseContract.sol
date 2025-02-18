@@ -453,8 +453,6 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
-
     BI memory totalValue = _getBalanceValueInQuoteCurrencyBI(account.spotBalances, Currency.USDT);
 
     for (uint256 i; i < account.subAccounts.length; ++i) {

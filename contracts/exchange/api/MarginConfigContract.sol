@@ -183,7 +183,7 @@ contract MarginConfigContract is ConfigContract {
     ListMarginTiersBI memory mt,
     BI memory sizeBI,
     BI memory markPriceBI
-  ) internal view returns (BI memory) {
+  ) internal pure returns (BI memory) {
     BI memory notional = sizeBI.mul(markPriceBI);
     return _blendedMM(mt, notional);
   }

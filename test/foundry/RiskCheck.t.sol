@@ -271,7 +271,7 @@ contract RiskCheckTest is Test, RiskCheck {
     return _isReducingOrder(subAccount, order, matchedSizes);
   }
 
-  function _getPerp(Currency underlying) private returns (bytes32) {
+  function _getPerp(Currency underlying) private pure returns (bytes32) {
     return
       assetToID(Asset({kind: Kind.PERPS, underlying: underlying, quote: Currency.USDT, expiration: 0, strikePrice: 0}));
   }
