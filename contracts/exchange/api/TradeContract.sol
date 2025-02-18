@@ -172,7 +172,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     // Always allow non-liquidation orders that reduce position size
     // Liquidation orders must maintain subaccount above maintenance margin
-    bool isReducingOrder = _isReducingOrder(sub, order);
+    bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
     if (!order.isLiquidation && isReducingOrder) {
       _executeOrder(sub, order, calcResult, totalFee);
       return;

@@ -135,15 +135,17 @@ contract RiskCheck is BaseContract, MarginConfigContract {
    * @param order The order to check
    * @return true if all legs of the order reduce their respective positions, false otherwise
    */
-  function _isReducingOrder(SubAccount storage sub, Order calldata order) internal view returns (bool) {
+  function _isReducingOrder(
+    SubAccount storage sub,
+    Order calldata order,
+    uint64[] memory matchedSizes
+  ) internal view returns (bool) {
     for (uint256 i = 0; i < order.legs.length; i++) {
       OrderLeg calldata leg = order.legs[i];
       int64 curSize = _getPositionCollection(sub, assetGetKind(leg.assetID)).values[leg.assetID].balance;
-      int64 newSize = curSize + (leg.isBuyingAsset ? int64(leg.size) : -int64(leg.size));
-      bool reducing = curSize != 0 &&
-        (curSize > 0 ? (newSize >= 0 && newSize < curSize) : (newSize <= 0 && newSize > curSize));
+      int64 newSize = curSize + (leg.isBuyingAsset ? int64(matchedSizes[i]) : -int64(matchedSizes[i]));
 
-      if (!reducing) {
+      if (curSize == 0 || (curSize > 0 ? (newSize < 0 || newSize >= curSize) : (newSize > 0 || newSize <= curSize))) {
         return false;
       }
     }
