@@ -181,7 +181,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Non-reducing order is subjected to margin check, ensuring sufficient balance pre and post trade
     _requireValidMargin(sub, order, true);
     // if reduce only flag is set, the order must be reducing size
-    require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
     _executeOrder(sub, order, calcResult, totalFee);
     _requireValidMargin(sub, order, false);
   }
@@ -314,6 +313,18 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       // Step 1: Retrieve position
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
       int64 posBalance = pos.balance;
+
+      if (order.reduceOnly) {
+        require(posBalance != 0, "failed reduce only: no position");
+        // If the position is in the same direction as the trade, return an error
+        bool isLong = posBalance > 0;
+        // Require the trade side must be opposite to the current position side
+        require(leg.isBuyingAsset != isLong, "failed reduce only");
+        // unsafe cast because absolute value of posBalance is always non-negative
+        uint64 posBalanceAbs = uint64(posBalance < 0 ? -posBalance : posBalance);
+        // Trade shouldn't reduce the position size by more than the current position size (ie crossing 0)
+        require(calcResult.matchedSizes[i] <= posBalanceAbs, "failed reduce only");
+      }
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {
