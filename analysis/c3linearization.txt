@@ -1,7 +1,0 @@
-GRVTExchange
-  ↖ WalletRecoveryContract
-  ↖ TransferContract
-  ↖ SubAccountContract
-  ↖ OracleContract
-  ↖ AccountContract
-  ↖ Initializable
