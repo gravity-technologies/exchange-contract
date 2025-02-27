@@ -30,6 +30,7 @@ import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/replay-tx";
 import "./scripts/parse-tx";
+import "./scripts/fork";
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
