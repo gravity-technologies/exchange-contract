@@ -37,7 +37,9 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   BERA: 35,
   VINE: 36,
   PENDLE: 37,
-  UXLINK: 38
+  UXLINK: 38,
+  KAITO: 39,
+  IP: 40
 }
 
 export const MarginTypeToEnum: { [cur: string]: number } = {

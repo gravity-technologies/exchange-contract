@@ -246,7 +246,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.BERA ||
       currency == Currency.VINE ||
       currency == Currency.PENDLE ||
-      currency == Currency.UXLINK
+      currency == Currency.UXLINK ||
+      currency == Currency.KAITO ||
+      currency == Currency.IP
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {

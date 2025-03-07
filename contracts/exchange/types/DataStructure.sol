@@ -69,7 +69,9 @@ enum Currency {
   BERA, // 35
   VINE, // 36
   PENDLE, // 37
-  UXLINK // 38
+  UXLINK, // 38
+  KAITO, // 39
+  IP // 40
 }
 
 function currencyStart() pure returns (Currency) {

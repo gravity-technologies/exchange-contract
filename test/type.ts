@@ -46,7 +46,9 @@ export enum Currency {
   BERA,
   VINE,
   PENDLE,
-  UXLINK
+  UXLINK,
+  KAITO,
+  IP
 }
 
 export enum Instrument {
