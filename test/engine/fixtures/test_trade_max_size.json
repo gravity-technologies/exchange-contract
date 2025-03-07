@@ -5195,32 +5195,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "99.0",
-                        "notional": "3960000",
-                        "entry_price": "40000",
-                        "exit_price": "",
-                        "mark_price": "40000",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"99.0","notional":"3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5234,32 +5209,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-99.0",
-                        "notional": "-3960000",
-                        "entry_price": "40000",
-                        "exit_price": "",
-                        "mark_price": "40000",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-99.0","notional":"-3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5460,32 +5410,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "98.0",
-                        "notional": "3920000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5499,32 +5424,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-98.0",
-                        "notional": "-3920000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5572,32 +5472,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "98.0",
-                        "notional": "3920000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5611,32 +5486,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-98.0",
-                        "notional": "-3920000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -10876,32 +10726,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "100.0",
-                        "notional": "4000000",
-                        "entry_price": "40000",
-                        "exit_price": "",
-                        "mark_price": "40000",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"100.0","notional":"4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -10915,32 +10740,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-100.0",
-                        "notional": "-4000000",
-                        "entry_price": "40000",
-                        "exit_price": "",
-                        "mark_price": "40000",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-100.0","notional":"-4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -11141,32 +10941,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "99.0",
-                        "notional": "3960000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"99.0","notional":"3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -11180,32 +10955,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-99.0",
-                        "notional": "-3960000",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-99.0","notional":"-3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],

@@ -23101,34 +23101,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "15275931202175106572",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""15275931202175106572"": "IFSA",
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"15275931202175106572","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -23142,34 +23115,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""15275931202175106572"": "IFSA",
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29299,7 +29245,7 @@
                         "nonce": 314924837
                      },
                      "metadata": {
-                        "client_order_id": "7755731992204206002",
+                        "client_order_id": "947867716672932984",
                         "create_time": "10886400000000189",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -29356,7 +29302,7 @@
                               "nonce": 71008731
                            },
                            "metadata": {
-                              "client_order_id": "18395393404344656156",
+                              "client_order_id": "2627572002251639147",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -29492,34 +29438,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "15275931202175106572",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "-10",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"15275931202175106572","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-10","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29533,34 +29452,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "10",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"10","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29574,34 +29466,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1",
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29853,34 +29718,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "15275931202175106572",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA",
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"15275931202175106572","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29894,34 +29732,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "9646611240881097804",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA",
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -29935,34 +29746,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {
-                     "position": {
-                        "event_time": "0",
-                        "sub_account_id": "451668388525528739",
-                        "instrument": {
-                           "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
-                        },
-                        "size": "0",
-                        "notional": "",
-                        "entry_price": "",
-                        "exit_price": "",
-                        "mark_price": "",
-                        "unrealized_pnl": "",
-                        "realized_pnl": "",
-                        "total_pnl": "",
-                        "roi": "",
-                        "quote_index_price": "",
-                        "est_liquidation_price": ""
-                     },
-                     "sub_account_names": {
-                        ""451668388525528739"": "BobSA1",
-                        ""15275931202175106572"": "IFSA",
-                        ""15591139857928586553"": "FSA",
-                        ""9646611240881097804"": "AliceSA1"
-                     }
-                  },
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"0","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"},{"ID":"15275931202175106572","Name":"IFSA"},{"ID":"15591139857928586553","Name":"FSA"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],

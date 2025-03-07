@@ -109,7 +109,7 @@ export function parseTestsFromFile(filePath: string): TestCase[] {
       const tests = JSON.parse(data) as TestCase[]
       return tests
     } catch (error) {
-      console.error("Failed to parse JSON:", error)
+      console.error(`Failed to parse JSON from ${filePath}:`, error)
       return []
     }
   } catch (err) {
