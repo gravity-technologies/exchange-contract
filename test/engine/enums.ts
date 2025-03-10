@@ -31,7 +31,7 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   ENA: 29,
   DOGE: 30,
   AIXBT: 31,
-  AI_16_Z: 32,
+  AI16Z: 32,
   ADA: 33,
   AAVE: 34,
   BERA: 35,
