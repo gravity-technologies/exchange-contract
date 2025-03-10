@@ -466,12 +466,14 @@ function getBalanceDecimalFromEnum(currency: number) {
     currency == CurrencyToEnum.ENA ||
     currency == CurrencyToEnum.DOGE ||
     currency == CurrencyToEnum.AIXBT ||
-    currency == CurrencyToEnum.AI_16_Z ||
+    currency == CurrencyToEnum.AI16Z ||
     currency == CurrencyToEnum.ADA ||
     currency == CurrencyToEnum.BERA ||
     currency == CurrencyToEnum.VINE ||
     currency == CurrencyToEnum.PENDLE ||
-    currency == CurrencyToEnum.UXLINK
+    currency == CurrencyToEnum.UXLINK ||
+    currency == CurrencyToEnum.KAITO ||
+    currency == CurrencyToEnum.IP
   ) {
     return 6
   } else if (currency == CurrencyToEnum.KPEPE) {
