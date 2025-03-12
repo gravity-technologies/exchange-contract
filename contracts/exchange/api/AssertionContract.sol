@@ -26,6 +26,41 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(account.signers[signer] == AccountPermAdmin, "ex signerNotAdmin");
   }
 
+  function assertCreateAccountWithSubAccount(
+    address accountID,
+    uint64 subAccountID,
+    MarginType marginType,
+    Currency quoteCurrency,
+    int64 lastAppliedFundingTimestamp
+  ) external view {
+    // Verify account creation
+    Account storage account = state.accounts[accountID];
+    require(
+      account.id == accountID &&
+        account.multiSigThreshold == 1 &&
+        account.adminCount == 1 &&
+        account.subAccounts.length == 1,
+      "ex createAccWithSub"
+    );
+
+    // Verify signer permissions
+    require(account.signers[accountID] == AccountPermAdmin, "ex signerNotAdmin");
+
+    // Verify subaccount creation
+    SubAccount storage sub = state.subAccounts[subAccountID];
+    require(
+      sub.id == subAccountID &&
+        sub.accountID == accountID &&
+        sub.quoteCurrency == quoteCurrency &&
+        sub.marginType == marginType &&
+        sub.lastAppliedFundingTimestamp == lastAppliedFundingTimestamp,
+      "ex createSubAcc"
+    );
+
+    // Verify subaccount is linked to account
+    require(account.subAccounts[0] == subAccountID, "ex subAccountNotLinked");
+  }
+
   function assertSetAccountMultiSigThreshold(address accountID, uint8 expectedThreshold) external view {
     require(state.accounts[accountID].multiSigThreshold == expectedThreshold, "ex multiSigThreshold");
   }
