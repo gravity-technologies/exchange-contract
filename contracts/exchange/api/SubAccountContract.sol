@@ -7,7 +7,7 @@ import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
 
 contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlement {
-  int64 private constant _MAX_SESSION_DURATION_NANO = 31 * 24 * 60 * 60 * 1e9; // 31 days
+  int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9;
 
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
