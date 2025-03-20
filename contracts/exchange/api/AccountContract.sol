@@ -1,10 +1,11 @@
 pragma solidity ^0.8.20;
 
-import "./BaseContract.sol";
+import "./ConfigContract.sol";
 import "./signature/generated/AccountSig.sol";
+import "./signature/generated/CombinedAccountSig.sol";
 import "../types/DataStructure.sol";
 
-contract AccountContract is BaseContract {
+contract AccountContract is ConfigContract {
   /// @notice Create a new account
   ///
   /// @param timestamp The timestamp of the transaction
@@ -264,5 +265,69 @@ contract AccountContract is BaseContract {
     // ------- End of Signature Verification -------
 
     acc.onboardedTransferAccounts[transferAccountID] = false;
+  }
+
+  /// @notice Create a new account and subaccount in a single transaction
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accountID The ID the account will be tagged to
+  /// @param subAccountID The subaccount ID
+  /// @param quoteCurrency The quote currency of the subaccount
+  /// @param marginType The margin type of the subaccount
+  /// @param sig The signature of the acting user
+  function createAccountWithSubAccount(
+    int64 timestamp,
+    uint64 txID,
+    address accountID,
+    uint64 subAccountID,
+    MarginType marginType,
+    Currency quoteCurrency,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+
+    // Account creation verification
+    Account storage acc = state.accounts[accountID];
+    require(acc.id == address(0), "account already exists");
+    require(accountID == sig.signer, "accountID must be signer");
+
+    // Subaccount creation verification
+    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
+    require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
+    require(subAccountID != 0, "invalid subaccount id");
+    SubAccount storage sub = state.subAccounts[subAccountID];
+    require(sub.accountID == address(0), "subaccount already exists");
+    require(!_isBridgingPartnerAccount(accountID), "no subaccts for bridges");
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashCreateAccountWithSubAccount(
+      accountID,
+      subAccountID,
+      quoteCurrency,
+      marginType,
+      sig.nonce,
+      sig.expiration
+    );
+    _preventReplay(hash, sig);
+    // ------- End of Signature Verification -------
+
+    // Create account
+    _deployDepositProxy(accountID);
+    acc.id = accountID;
+    acc.multiSigThreshold = 1;
+    acc.adminCount = 1;
+    acc.signers[sig.signer] = AccountPermAdmin;
+
+    // Create subaccount
+    sub.id = subAccountID;
+    sub.accountID = accountID;
+    sub.marginType = marginType;
+    sub.quoteCurrency = quoteCurrency;
+    sub.lastAppliedFundingTimestamp = timestamp;
+    // We will not create any authorizedSigners in subAccount upon creation.
+    // All account admins are presumably authorizedSigners
+
+    acc.subAccounts.push(subAccountID);
   }
 }
