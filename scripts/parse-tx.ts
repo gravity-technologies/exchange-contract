@@ -304,8 +304,6 @@ task("view-contract-calls", "View all calls to exchange contract in a transactio
     }
   })
 
-  // ... existing code ...
-
 task("decode-calldata", "Decode and format calldata for exchange contract")
 .addParam("calldata", "Calldata in hex string format")
 .setAction(async (taskArgs, hre) => {
@@ -328,5 +326,3 @@ task("decode-calldata", "Decode and format calldata for exchange contract")
     console.log("Could not decode calldata:", e.message)
   }
 })
-
-// ... existing code ...
