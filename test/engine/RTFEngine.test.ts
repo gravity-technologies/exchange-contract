@@ -11,7 +11,7 @@ const TEST_FIXTURES_DIR = process.cwd() + "/test/engine/fixtures/"
 
 describe("API - TestEngine", function () {
   let exchangeContract: Contract
-  let l2SharedBridgeAsL1Bridge: L2SharedBridge
+  let l2SharedBridgeAsL1Bridge: Contract
   let runSnapshotId: string
   let testSnapshotId: string
   let w1: Wallet

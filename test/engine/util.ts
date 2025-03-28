@@ -70,7 +70,7 @@ export const toAssetID = ({ kind, underlying, quote, expiration, strike_price }:
 }
 
 export function hex32(val: string | Uint8Array) {
-  return utils.hexZeroPad(utils.hexValue(val), 32)
+  return zeroPadValue(utils.hexValue(val), 32)
 }
 
 /**

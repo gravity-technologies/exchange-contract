@@ -3,7 +3,6 @@ import { getExchangeAddress } from "./utils"
 
 const contractName = "GRVTExchange"
 
-
 task("force-import", "Force import a proxy or implementation contract")
     .setAction(async (_, hre) => {
         const address = getExchangeAddress(hre)

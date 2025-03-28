@@ -37,8 +37,14 @@ export function computeL2Create2Address(
   return ethers.dataSlice(data, 12)
 }
 
-function connectContract(hre: HardhatRuntimeEnvironment, target: string | ethers.Addressable, path: string, runner?: ethers.ContractRunner | null | undefined) {
-  return new ethers.Contract(target, new ethers.Interface(hre.artifacts.readArtifactSync(path).abi), runner)
+export function connectContract(hre: HardhatRuntimeEnvironment, target: string | ethers.Addressable, abiJsonPath: string, runner?: ethers.ContractRunner | null | undefined) {
+  // Get current working directory
+  const pwd = process.cwd()
+  const abi = require(pwd + '/' + abiJsonPath).abi
+  if (!abi) {
+    throw new Error(`Could not load ABI from ${pwd}/${abiJsonPath}`)
+  }
+  return new ethers.Contract(target, new ethers.Interface(abi), runner)
 }
 
 export async function create2DeployFromL1NoFactoryDeps(
@@ -245,12 +251,16 @@ export async function getGovernanceCalldata(
   }
 }
 
-function loadInterface(hre: HardhatRuntimeEnvironment, path: string) {
+export function loadInterface(hre: HardhatRuntimeEnvironment, path: string) {
   return new ethers.Interface(hre.artifacts.readArtifactSync(path).abi)
 }
 
-function getEraL1Path(name: string, path?: string) {
+export function getEraL1Path(name: string, path?: string) {
   return `lib/era-contracts/l1-contracts/contracts/${path?.concat("/") ?? ""}${name}.sol:${name}`
+}
+
+export function getEraL2ABIJsonPath(name: string, path?: string) {
+  return `lib/era-contracts/l2-contracts/artifacts-zk/contracts/${path?.concat("/") ?? ""}${name}.sol/${name}.json`
 }
 
 export function getExchangeAddress(hre: HardhatRuntimeEnvironment) {

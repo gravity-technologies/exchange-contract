@@ -94,7 +94,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     const { gasPrice } = await l1Provider.getFeeData()
     const governanceCalls = [
       {
-        target: await getBaseToken(chainId, bridgeHub, l1Provider),
+        target: await getBaseToken(hre, chainId, bridgeHub, l1Provider),
         data: new ethers.Interface(["function approve(address,uint256)"]).encodeFunctionData("approve", [
           l1SharedBridge,
           ethers.MaxUint256,
@@ -121,6 +121,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     }
 
     const { scheduleTxReceipt, executeTxReceipt } = await scheduleAndExecuteGovernanceOp(
+      hre,
       governance,
       l1GovernanceAdmin,
       operation
@@ -132,5 +133,5 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     console.log("Governance operation execution txhash: ", executeTxReceipt.transactionHash)
     console.log("Governance operation execution status: ", executeTxReceipt.status)
 
-    console.log("calldata: ", await getGovernanceCalldata(operation, l1Provider))
+    console.log("calldata: ", await getGovernanceCalldata(hre, operation, l1Provider))
   })
