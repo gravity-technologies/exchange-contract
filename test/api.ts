@@ -1,4 +1,4 @@
-import { BigNumber, Wallet } from "ethers"
+import { Wallet } from "ethers"
 import { Contract } from "zksync-ethers"
 import {
   genAddAccountAdminSig as genAddAccountSignerSig,
@@ -349,7 +349,7 @@ export async function markPriceTick(
 function priceEntryToPriceEntrySig(entries: PriceEntry[]): PriceEntrySig[] {
   return entries.map((e) => {
     return {
-      sid: BigNumber.from(e.assetID),
+      sid: e.assetID,
       v: e.value,
     }
   })

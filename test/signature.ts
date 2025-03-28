@@ -1,9 +1,10 @@
 import { SignTypedDataVersion, signTypedData } from "@metamask/eth-sig-util"
 import { randomInt } from "crypto"
-import { Wallet, utils } from "ethers"
+import { Wallet } from "ethers"
 import * as Types from "../signatures/schema"
 import { OrderNoSignature, PriceEntrySig, Signature } from "./type"
 import { buf, getTimestampNs } from "./util"
+import { ethers } from "hardhat"
 
 export function genCreateAccountSig(wallet: Wallet, accountID: string, nonce: number = randomInt(22021991)): Signature {
   return sign(wallet, {
@@ -370,7 +371,7 @@ function sign(wallet: Wallet, msgParams: any): Signature {
   })
 
   // ethers-6 const { r, s, v } = EtherSig.from(sig)
-  const { r, s, v } = utils.splitSignature(sig)
+  const { r, s, v } = ethers.Signature.from(sig)
 
   // console.log("sig", sig)
   // console.log("r", r, "s", s, "v", v)

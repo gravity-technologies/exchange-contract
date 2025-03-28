@@ -1,6 +1,5 @@
 import { Contract, ethers } from "ethers"
 import { L2TokenInfo } from "./setup"
-import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridge"
 import { DepositTxInfo, TestStep } from "./types"
 import { scaleBigInt } from "./util"
 

@@ -1,8 +1,8 @@
-import { utils } from "ethers"
 import { Asset } from "./types"
 import { CurrencyToEnum, KindToEnum } from "./enums"
 import { TestCase } from "./types"
 import * as fs from "fs"
+import { ethers } from "hardhat"
 
 function getLSB(val: bigint, shift: number) {
   return Number((val >> BigInt(shift)) & BigInt(0xff))
@@ -70,7 +70,7 @@ export const toAssetID = ({ kind, underlying, quote, expiration, strike_price }:
 }
 
 export function hex32(val: string | Uint8Array) {
-  return zeroPadValue(utils.hexValue(val), 32)
+  return ethers.zeroPadValue(ethers.toQuantity(val), 32)
 }
 
 /**
