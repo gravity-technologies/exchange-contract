@@ -303,3 +303,26 @@ task("view-contract-calls", "View all calls to exchange contract in a transactio
       console.log("No calls to exchange contract found in transaction")
     }
   })
+
+task("decode-calldata", "Decode and format calldata for exchange contract")
+.addParam("calldata", "Calldata in hex string format")
+.setAction(async (taskArgs, hre) => {
+  // Load GRVTExchange artifact and create interface
+  const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchange")
+  const exchangeInterface = new Interface(exchangeArtifact.abi)
+
+  const mockCall: CallTrace = {
+    from: "0x0000000000000000000000000000000000000000",
+    to: "0x0000000000000000000000000000000000000000",
+    input: taskArgs.calldata
+  }
+
+  try {
+    console.log("\nDecoded calldata:")
+    console.log("─".repeat(50))
+    console.log(formatCallData(mockCall, exchangeInterface))
+    console.log("─".repeat(50))
+  } catch (e) {
+    console.log("Could not decode calldata:", e.message)
+  }
+})

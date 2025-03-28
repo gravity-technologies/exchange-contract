@@ -30,6 +30,7 @@ import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/replay-tx";
 import "./scripts/parse-tx";
+import "./scripts/fork";
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
@@ -91,7 +92,7 @@ const config: HardhatUserConfig = {
       multicall3: "0x3a435A467f19c24f3f867F6C40a7ea628C410998"
     },
     grvtDev: {
-      exchange: "0x40b5ef69a178288e3f088160efa6e308dd324d3f",
+      exchange: "0x45ce10dd2014ad01027b745bf34eb12840bda881",
       multicall3: "0xD53767fC3b7Cc71d22BDeCf6C9C8C6207CfF11C9"
     }
   }
