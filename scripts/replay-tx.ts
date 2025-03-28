@@ -3,7 +3,7 @@ import fs from "fs"
 import path from "path"
 import os from "os"
 import { spawn } from "child_process"
-import { createProviders } from "./utils"
+import { createProviders, getExchangeAddress } from "./utils"
 import { HttpNetworkConfig } from "hardhat/types"
 import { hashBytecode } from "zksync-web3/build/src/utils"
 
@@ -15,8 +15,7 @@ task("replay", "Replay a specific transaction locally")
   .addOptionalParam("exchangeAddr", "Address of the exchange contract (overrides config)")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
-    const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+    const exchangeAddr = taskArgs.exchangeAddr || getExchangeAddress(hre)
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
@@ -35,8 +34,8 @@ task("replay", "Replay a specific transaction locally")
       },
       methodIdentifiers: {},
       storageLayout: {
-          storage: [],
-          types: {}
+        storage: [],
+        types: {}
       },
       userdoc: {},
       devdoc: {},
@@ -50,10 +49,10 @@ task("replay", "Replay a specific transaction locally")
 
     const tx = await l2Provider.getTransaction(taskArgs.txHash)
     if (!tx) {
-        throw new Error(`Transaction ${taskArgs.txHash} not found`)
+      throw new Error(`Transaction ${taskArgs.txHash} not found`)
     }
 
-    const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT, tx.blockNumber!)
+    const implAddressBytes = await l2Provider.getStorage(exchangeAddr, IMPLEMENTATION_SLOT, tx.blockNumber!)
     const implAddress = "0x" + implAddressBytes.slice(-40)
 
     console.log("Implementation address:", implAddress)

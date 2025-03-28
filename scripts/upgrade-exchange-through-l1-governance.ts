@@ -1,6 +1,6 @@
 import { task } from "hardhat/config"
 
-import { ethers, Wallet as L1Wallet, providers as l1Providers, BigNumber } from "ethers"
+import { ethers, Wallet as L1Wallet } from "ethers"
 import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 import {
   ADDRESS_ONE,
@@ -49,7 +49,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     const l1GovernanceAdmin = new L1Wallet(l1GovernanceAdminPrivateKey!, l1Provider)
     const l1Deployer = new L1Wallet(l1DeployerPrivateKey!, l1Provider)
 
-    const salt = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltPreImage))
+    const salt = ethers.keccak256(ethers.toUtf8Bytes(saltPreImage))
     console.log("CREATE2 salt: ", salt)
     console.log("CREATE2 salt preimage: ", saltPreImage)
 
@@ -61,14 +61,14 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     const exchangeCodehash = hashBytecode(exchangeArtifact.bytecode)
     const exchangeImpl = await l2Deployer.deploy(exchangeArtifact, [])
 
-    const newExchangeImplConstructorData = ethers.utils.arrayify("0x")
+    const newExchangeImplConstructorData = ethers.getBytes("0x")
     const expectedNewExchangeImplAddress = computeL2Create2Address(
       l1Deployer.address,
       exchangeArtifact.bytecode,
       newExchangeImplConstructorData,
       salt
     )
-    console.log("Exchange codehash: ", ethers.utils.hexlify(exchangeCodehash))
+    console.log("Exchange codehash: ", ethers.hexlify(exchangeCodehash))
     console.log("Expected exchange impl address: ", expectedNewExchangeImplAddress)
 
     // deploy an instance of the exchange impl with CREATE2
@@ -91,31 +91,32 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     // schedule governance operation with 2 steps
     // approve l1SharedBridge to spend max amount of token
     // upgrade proxy to new target
-    const gasPrice = await l1Provider.getGasPrice()
+    const { gasPrice } = await l1Provider.getFeeData()
     const governanceCalls = [
       {
         target: await getBaseToken(chainId, bridgeHub, l1Provider),
-        data: new ethers.utils.Interface(["function approve(address,uint256)"]).encodeFunctionData("approve", [
+        data: new ethers.Interface(["function approve(address,uint256)"]).encodeFunctionData("approve", [
           l1SharedBridge,
-          ethers.constants.MaxUint256,
+          ethers.MaxUint256,
         ]),
         value: 0,
       },
       await getL1ToL2TxInfo(
+        hre,
         chainId,
         bridgeHub,
         exchangeProxy,
         await getTransparentProxyUpgradeCalldata(hre, expectedNewExchangeImplAddress),
-        ethers.constants.AddressZero,
-        gasPrice.mul(100), // use high gas price for L2 transaction to ensure the transaction is included
-        BigNumber.from(1000000),
+        ethers.ZeroAddress,
+        gasPrice! * 100n, // use high gas price for L2 transaction to ensure the transaction is included
+        BigInt(1000000),
         l1Provider
       ),
     ]
 
     const operation = {
       calls: governanceCalls,
-      predecessor: ethers.constants.HashZero,
+      predecessor: ethers.ZeroHash,
       salt: salt, // use the same salt for both create 2 and governance operation
     }
 

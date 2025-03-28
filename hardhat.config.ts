@@ -10,6 +10,9 @@ import "@matterlabs/hardhat-zksync-chai-matchers"
 import "@typechain/hardhat"
 // upgradable plugin
 import "@matterlabs/hardhat-zksync-upgradable"
+import '@openzeppelin/hardhat-upgrades';
+
+import "@nomicfoundation/hardhat-ethers"
 
 import { HardhatUserConfig } from "hardhat/config"
 
@@ -26,11 +29,12 @@ declare module "hardhat/types/config" {
 }
 
 import "./scripts/deploy-exchange-on-l2-through-l1";
-import "./scripts/set-exchange-address";
 import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/replay-tx";
 import "./scripts/parse-tx";
 import "./scripts/fork";
+import "./scripts/upgrade";
+
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
