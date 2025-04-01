@@ -327,6 +327,8 @@ abstract contract TransferContract is TradeContract {
     fromAcc.spotBalances[currency] -= numTokens;
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
+    require(!toSubAcc.isVault, "transfer to vault subaccount");
+
     _requireSubAccountUnderAccount(toSubAcc, toAccID);
     _fundAndSettle(toSubAcc);
     toSubAcc.spotBalances[currency] += numTokens;
@@ -341,6 +343,7 @@ abstract contract TransferContract is TradeContract {
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
+    require(!fromSub.isVault, "transfer from vault subaccount");
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
@@ -367,6 +370,9 @@ abstract contract TransferContract is TradeContract {
 
     SubAccount storage toSub = _requireSubAccount(toSubID);
     _requireSubAccountUnderAccount(toSub, toAccID);
+
+    require(!fromSub.isVault, "transfer from vault subaccount");
+    require(!toSubAcc.isVault, "transfer to vault subaccount");
 
     _fundAndSettle(fromSub);
     _fundAndSettle(toSub);
