@@ -1,5 +1,5 @@
 import { expect } from "chai"
-import { BigNumber, Contract, ethers } from "ethers"
+import { Contract, ethers } from "ethers"
 import {
   ExAccountMultiSigThreshold,
   ExAccountSigners,
@@ -168,7 +168,7 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
       expectations.signers[sessionKey].session_key
     )
     expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
-    const expectedAuthExpiry = big(await contract.getTimestamp()).add(big(expectations.signers[sessionKey].authorization_expiry_delta))
+    const expectedAuthExpiry = big(await contract.getTimestamp()) + big(expectations.signers[sessionKey].authorization_expiry_delta)
     const actualAuthExpiry = actualAuthorizationExpiry
     expect(big(actualAuthExpiry)).to.equal(expectedAuthExpiry)
   }
@@ -186,7 +186,7 @@ async function expectWithdrawalAddresses(contract: Contract, expectations: ExAcc
 
 async function expectConfig2D(contract: Contract, expectations: ExConfig2D) {
   let subKey = big(expectations.sub_key)
-  let subKeyHex = ethers.utils.hexZeroPad(subKey.toHexString(), 32)
+  let subKeyHex = ethers.zeroPadValue(ethers.toBeHex(subKey), 32)
   const val = await contract.getConfig2D(ConfigIDToEnum[expectations.key], subKeyHex)
   expect(big(val)).to.equal(big(expectations.value))
 }
@@ -200,7 +200,7 @@ async function expectConfig1D(contract: Contract, expectations: ExConfig1D) {
 
 async function expectConfigSchedule(contract: Contract, expectations: ExConfigSchedule) {
   const lockEndTime = await contract.getConfigSchedule(ConfigIDToEnum[expectations.key], hex32(expectations.sub_key))
-  const expectedLockEndTime = big(await contract.getTimestamp()).add(big(expectations.lock_end_delta))
+  const expectedLockEndTime = big(await contract.getTimestamp()) + big(expectations.lock_end_delta)
   expect(big(lockEndTime)).to.equal(expectedLockEndTime)
 }
 
@@ -225,7 +225,7 @@ async function expectSubAccountMarginType(contract: Contract, expectations: ExSu
 
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {
   let assetID = big(toAssetID(expectations.asset_dto))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   const fundingIndex = await contract.getFundingIndex(assetIDHex)
   expect(big(fundingIndex)).to.equal(big(expectations.funding_rate ?? "0"))
 }
@@ -233,13 +233,13 @@ async function expectFundingIndex(contract: Contract, expectations: ExFundingInd
 async function expectFundingTimeDelta(contract: Contract, expectations: ExFundingTimeDelta) {
   const fundingTime = await contract.getFundingTime()
   const stateTimestamp = await contract.getTimestamp()
-  expect(big(fundingTime).sub(big(stateTimestamp))).to.equal(big(expectations.funding_time_delta))
+  expect(big(fundingTime) - big(stateTimestamp)).to.equal(big(expectations.funding_time_delta))
 }
 
 async function expectMarkPrice(contract: Contract, expectations: ExMarkPrice) {
   // const assetID = toAssetID(expectations.asset_dto)
   let assetID = big(toAssetID(expectations.asset_dto))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   let expectMark = BigInt(expectations.mark_price ?? "0")
   let [markPrice, found] = await contract.getMarkPrice(assetIDHex)
   expect(big(markPrice)).to.equal(big(expectMark))
@@ -247,7 +247,7 @@ async function expectMarkPrice(contract: Contract, expectations: ExMarkPrice) {
 
 async function expectInterestRate(contract: Contract, expectations: ExInterestRate) {
   let assetID = big(toAssetID(expectations.asset_dto))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   let expectInterest = BigInt(expectations.interest_rate ?? "0")
   let interestRate = await contract.getInterestRate(assetIDHex)
   expect(big(interestRate)).to.equal(big(expectInterest))
@@ -299,7 +299,7 @@ async function expectSubAccountValue(contract: Contract, expectations: ExSubAcco
 
 async function expectSubAccountPosition(contract: Contract, expectations: ExSubAccountPosition) {
   let assetID = big(toAssetID(expectations.asset))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   const expectedPos = expectations.position
   const [found, balance, lastAppliedFundingIndex] = await contract.getSubAccountPosition(
     BigInt(expectations.sub_account_id),
@@ -325,7 +325,7 @@ async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccou
 
 async function expectSettlementPrice(contract: Contract, expectations: ExSettlementPrice) {
   let assetID = big(toAssetID(expectations.asset_dto))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   const [price, found] = await contract.getSettlementPrice(assetIDHex)
   if (expectations.settlement_price == null) {
     expect(found).to.be.false
@@ -374,7 +374,7 @@ async function expectSimpleCrossMaintenanceMarginTiers(
   expectations: ExSimpleCrossMaintenanceMarginTiers
 ) {
   const tiers = await contract.getSimpleCrossMaintenanceMarginTiers("0x" + expectations.kuq)
-  const convertedTiers = tiers.map((tier: { bracketStart: BigNumber; rate: number }) => ({
+  const convertedTiers = tiers.map((tier: { bracketStart: bigint; rate: number }) => ({
     bracket_start: tier.bracketStart.toString(),
     rate: tier.rate,
   }))
@@ -387,7 +387,7 @@ async function expectSimpleCrossMaintenanceMarginTimelockEndTime(
 ) {
   const timelockEndTime = await contract.getSimpleCrossMaintenanceMarginTimelockEndTime("0x" + expectations.kuq)
   const stateTimestamp = await contract.getTimestamp()
-  const actualDelta = big(timelockEndTime).sub(big(stateTimestamp))
+  const actualDelta = timelockEndTime - stateTimestamp
   expect(actualDelta).to.equal(big(expectations.timelock_end_time_delta))
 }
 
@@ -485,7 +485,7 @@ function getBalanceDecimalFromEnum(currency: number) {
 
 async function expectSubAccountPositionOptional(contract: Contract, expectations: ExSubAccountPositionOptional) {
   let assetID = big(toAssetID(expectations.position.instrument))
-  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
   const [found, balance] = await contract.getSubAccountPosition(
     BigInt(expectations.position.sub_account_id),
     assetIDHex
@@ -526,7 +526,7 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
 
   if (expectations.summary.settle_index_price != null && expectations.summary.settle_index_price != "") {
     let assetID = big(toAssetID({ kind: "SPOT", underlying: expectations.summary.settle_currency, quote: "" }))
-    let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+    let assetIDHex = ethers.zeroPadValue(ethers.toBeHex(assetID), 32)
     const [price, found] = await contract.getMarkPrice(assetIDHex)
     expect(found).to.be.true
     expect(
@@ -547,6 +547,6 @@ async function expectNumSubAccountPositions(contract: Contract, expectations: Ex
   expect(numPositions).to.equal(expectations.num_positions)
 }
 
-function big(s: any): BigNumber {
-  return BigNumber.from(s)
+function big(s: any): bigint {
+  return BigInt(s)
 }
