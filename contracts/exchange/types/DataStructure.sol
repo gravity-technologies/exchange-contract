@@ -218,6 +218,7 @@ struct SubAccount {
   // The timestamp that the sub account was last funded at
   int64 lastAppliedFundingTimestamp;
   // The Account that this Sub Account belongs to
+  // In the case of a vault, this will be the vault manager
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
@@ -231,6 +232,25 @@ struct SubAccount {
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
+  bool isVault;
+  VaultInfo vaultInfo;
+}
+
+struct VaultInfo {
+  VaultStatus status;
+  uint64 totalLpTokenSupply;
+  mapping(address => uint64) lpTokenBalance;
+  uint32 managementFeeCentiBeeps;
+  uint32 performanceFeeCentiBeeps;
+  uint32 marketingFeeCentiBeeps;
+  uint256[49] __gap;
+}
+
+enum VaultStatus {
+  UNSPECIFIED,
+  ACTIVE,
+  DELISTED,
+  CLOSED
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
