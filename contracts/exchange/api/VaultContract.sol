@@ -138,6 +138,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     _requireAccountPermission(account, sig.signer, AccountPermExternalTransfer);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
+    require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can accept investment");
     require(tokenCurrency == vaultSub.quoteCurrency, "non-quote currency vault deposit");
 
     // ---------- Signature Verification -----------
