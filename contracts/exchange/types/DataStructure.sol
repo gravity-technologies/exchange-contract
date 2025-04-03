@@ -95,6 +95,7 @@ function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
 }
 
 uint constant PRICE_DECIMALS = 9;
+uint constant RATE_DECIMALS = 9;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
 uint constant BASIS_POINTS_DECIMALS = 4;
@@ -239,11 +240,17 @@ struct SubAccount {
 struct VaultInfo {
   VaultStatus status;
   uint64 totalLpTokenSupply;
-  mapping(address => uint64) lpTokenBalance;
+  mapping(address => VaultLpInfo) lpInfos;
   uint32 managementFeeCentiBeeps;
   uint32 performanceFeeCentiBeeps;
   uint32 marketingFeeCentiBeeps;
+  int64 lastFeeSettlementTimestamp;
   uint256[49] __gap;
+}
+
+struct VaultLpInfo {
+  uint64 lpTokenBalance;
+  uint64 costInQuote;
 }
 
 enum VaultStatus {
