@@ -371,14 +371,13 @@ abstract contract TransferContract is TradeContract {
     int64 numTokens
   ) internal {
     require(numTokens >= 0, "invalid transfer amount");
-    require(numTokens <= fromSub.spotBalances[currency], "insufficient balance");
 
     _fundAndSettle(fromSub);
 
     fromSub.spotBalances[currency] -= numTokens;
-    toAcc.spotBalances[currency] += numTokens;
-
     require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
+
+    toAcc.spotBalances[currency] += numTokens;
   }
 
   function _transferSubToSub(
