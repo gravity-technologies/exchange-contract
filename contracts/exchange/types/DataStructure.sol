@@ -209,6 +209,7 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
+  uint256[49] __gap;
 }
 
 struct SubAccount {
@@ -235,6 +236,7 @@ struct SubAccount {
   mapping(address => uint64) signers;
   bool isVault;
   VaultInfo vaultInfo;
+  uint256[49] __gap;
 }
 
 struct VaultInfo {
