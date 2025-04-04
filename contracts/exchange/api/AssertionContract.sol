@@ -424,4 +424,194 @@ contract AssertionContract is ConfigContract, RiskCheck {
       "ex schedSimpleCrossMMTiers"
     );
   }
+
+  // Vault assertion structs
+  struct VaultLpAssertion {
+    address accountID;
+    uint64 lpTokenBalance;
+    uint64 costInQuote;
+    int64 spotBalance;
+  }
+
+  // Helper functions for vault assertions
+  function _assertVaultLp(
+    SubAccount storage vaultSub,
+    VaultLpAssertion memory lpAssertion,
+    string memory errorPrefix
+  ) internal view {
+    // Check LP token info
+    VaultLpInfo storage lpInfo = vaultSub.vaultInfo.lpInfos[lpAssertion.accountID];
+    require(
+      lpInfo.lpTokenBalance == lpAssertion.lpTokenBalance && lpInfo.costInQuote == lpAssertion.costInQuote,
+      string.concat(errorPrefix, " - lpInfo")
+    );
+
+    // Check spot balance
+    require(
+      state.accounts[lpAssertion.accountID].spotBalances[vaultSub.quoteCurrency] == lpAssertion.spotBalance,
+      string.concat(errorPrefix, " - spotBalance")
+    );
+  }
+
+  function assertVaultCreate(
+    uint64 vaultID,
+    address managerAccountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    uint32 managementFeeCentiBeeps,
+    uint32 performanceFeeCentiBeeps,
+    uint32 marketingFeeCentiBeeps,
+    int64 lastFeeSettlementTimestamp,
+    uint64 totalLpTokenSupply,
+    int64 vaultSpotBalance,
+    VaultLpAssertion calldata managerAssertion
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+
+    // Check vault properties
+    require(
+      vaultSub.id == vaultID &&
+        vaultSub.accountID == managerAccountID &&
+        vaultSub.quoteCurrency == quoteCurrency &&
+        vaultSub.marginType == marginType &&
+        vaultSub.lastAppliedFundingTimestamp == lastFeeSettlementTimestamp &&
+        vaultSub.isVault == true,
+      "ex vaultCreate"
+    );
+
+    // Check vault info properties
+    VaultInfo storage vaultInfo = vaultSub.vaultInfo;
+    require(
+      vaultInfo.status == VaultStatus.ACTIVE &&
+        vaultInfo.managementFeeCentiBeeps == managementFeeCentiBeeps &&
+        vaultInfo.performanceFeeCentiBeeps == performanceFeeCentiBeeps &&
+        vaultInfo.marketingFeeCentiBeeps == marketingFeeCentiBeeps &&
+        vaultInfo.lastFeeSettlementTimestamp == lastFeeSettlementTimestamp &&
+        vaultInfo.totalLpTokenSupply == totalLpTokenSupply,
+      "ex vaultCreateInfo"
+    );
+
+    // Check vault spot balance
+    require(vaultSub.spotBalances[quoteCurrency] == vaultSpotBalance, "ex vaultCreateVaultSpotBalance");
+
+    // Check manager's LP state
+    _assertVaultLp(vaultSub, managerAssertion, "ex vaultCreateManager");
+  }
+
+  function assertVaultUpdate(
+    uint64 vaultID,
+    uint32 managementFeeCentiBeeps,
+    uint32 performanceFeeCentiBeeps,
+    uint32 marketingFeeCentiBeeps
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+
+    VaultInfo storage vaultInfo = vaultSub.vaultInfo;
+    require(
+      vaultInfo.managementFeeCentiBeeps == managementFeeCentiBeeps &&
+        vaultInfo.performanceFeeCentiBeeps == performanceFeeCentiBeeps &&
+        vaultInfo.marketingFeeCentiBeeps == marketingFeeCentiBeeps,
+      "ex vaultUpdate"
+    );
+  }
+
+  function assertVaultDelist(uint64 vaultID) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+    require(vaultSub.vaultInfo.status == VaultStatus.DELISTED, "ex vaultDelist");
+  }
+
+  function assertVaultClose(uint64 vaultID) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+    require(vaultSub.vaultInfo.status == VaultStatus.CLOSED, "ex vaultClose");
+  }
+
+  function assertVaultInvest(
+    uint64 vaultID,
+    uint64 expectedTotalLpTokenSupply,
+    int64 expectedVaultSpotBalance,
+    VaultLpAssertion calldata investorAssertion
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+
+    // Check total LP token supply
+    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultInvestTotalSupply");
+
+    // Check vault spot balance
+    require(vaultSub.spotBalances[vaultSub.quoteCurrency] == expectedVaultSpotBalance, "ex vaultInvestSpotBalance");
+
+    // Check investor's LP state
+    _assertVaultLp(vaultSub, investorAssertion, "ex vaultInvestInvestor");
+  }
+
+  function assertVaultBurnLpToken(
+    uint64 vaultID,
+    uint64 expectedTotalLpTokenSupply,
+    VaultLpAssertion calldata lpAssertion
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+
+    // Check total LP token supply
+    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultBurnTotalSupply");
+
+    // Check LP state
+    _assertVaultLp(vaultSub, lpAssertion, "ex vaultBurn");
+  }
+
+  function assertVaultRedeem(
+    uint64 vaultID,
+    uint64 expectedTotalLpTokenSupply,
+    int64 expectedVaultSpotBalance,
+    VaultLpAssertion calldata redeemingLpAssertion,
+    VaultLpAssertion calldata managerAssertion,
+    VaultLpAssertion calldata feeAccountAssertion
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+
+    // Check total LP token supply
+    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultRedeemTotalSupply");
+
+    // Check vault spot balance
+    require(
+      vaultSub.spotBalances[vaultSub.quoteCurrency] == expectedVaultSpotBalance,
+      "ex vaultRedeemVaultSpotBalance"
+    );
+
+    // Check all LP states
+    _assertVaultLp(vaultSub, redeemingLpAssertion, "ex vaultRedeemRedeeming");
+    _assertVaultLp(vaultSub, managerAssertion, "ex vaultRedeemManager");
+
+    if (feeAccountAssertion.accountID != address(0)) {
+      _assertVaultLp(vaultSub, feeAccountAssertion, "ex vaultRedeemFeeAccount");
+    }
+  }
+
+  function assertVaultManagementFeeTick(
+    uint64 vaultID,
+    int64 expectedLastFeeSettlementTimestamp,
+    uint64 expectedTotalLpTokenSupply,
+    VaultLpAssertion calldata managerAssertion,
+    VaultLpAssertion calldata feeAccountAssertion
+  ) external view {
+    SubAccount storage vaultSub = state.subAccounts[vaultID];
+    require(vaultSub.isVault, "ex notVault");
+
+    // Check last fee settlement timestamp
+    require(vaultSub.vaultInfo.lastFeeSettlementTimestamp == expectedLastFeeSettlementTimestamp, "ex vaultFeeTick");
+
+    // Check total LP token supply
+    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultFeeTickTotalSupply");
+
+    // Check LP states
+    _assertVaultLp(vaultSub, managerAssertion, "ex vaultFeeTickManager");
+
+    if (feeAccountAssertion.accountID != address(0)) {
+      _assertVaultLp(vaultSub, feeAccountAssertion, "ex vaultFeeTickFeeAccount");
+    }
+  }
 }

@@ -38,12 +38,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  /// @custom:oz-upgrades-unsafe-allow state-variable-assignment
   bytes32 private immutable DOMAIN_HASH =
     keccak256(
       abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
     );
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
+  int64 internal constant ONE_DAY_NANOS = 24 * 60 * 60 * 1e9;
 
   /// @dev The maximum signature expiry time. Any signature with a longer expiry time will capped to this value
   int64 private constant MAX_SIG_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
@@ -81,6 +84,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
     require(sub.id != 0, "subaccount does not exist");
+    return sub;
+  }
+
+  function _requireVaultSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    require(sub.isVault, "subaccount is not a vault");
     return sub;
   }
 

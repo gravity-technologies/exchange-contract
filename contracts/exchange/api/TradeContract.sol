@@ -290,6 +290,14 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
 
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
+
+    if (sub.isVault) {
+      require(
+        sub.vaultInfo.status == VaultStatus.DELISTED || order.reduceOnly,
+        "delisted vault can only reduce position"
+      );
+      require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
+    }
   }
 
   function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
