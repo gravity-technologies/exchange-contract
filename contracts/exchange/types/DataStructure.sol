@@ -238,13 +238,13 @@ struct SubAccount {
 }
 
 struct VaultInfo {
-  VaultStatus status;
-  uint64 totalLpTokenSupply;
   mapping(address => VaultLpInfo) lpInfos;
+  uint64 totalLpTokenSupply;
+  int64 lastFeeSettlementTimestamp;
   uint32 managementFeeCentiBeeps;
   uint32 performanceFeeCentiBeeps;
   uint32 marketingFeeCentiBeeps;
-  int64 lastFeeSettlementTimestamp;
+  VaultStatus status;
   uint256[49] __gap;
 }
 
