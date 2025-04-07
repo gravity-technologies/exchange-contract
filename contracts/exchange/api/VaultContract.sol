@@ -51,9 +51,14 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     vaultSub.isVault = true;
     vaultSub.vaultInfo.status = VaultStatus.ACTIVE;
-    vaultSub.vaultInfo.managementFeeCentiBeeps = managementFeeCentiBeeps;
-    vaultSub.vaultInfo.performanceFeeCentiBeeps = performanceFeeCentiBeeps;
-    vaultSub.vaultInfo.marketingFeeCentiBeeps = marketingFeeCentiBeeps;
+
+    _validateAndUpdateVaultParams(
+      vaultSub.vaultInfo,
+      managementFeeCentiBeeps,
+      performanceFeeCentiBeeps,
+      marketingFeeCentiBeeps
+    );
+
     vaultSub.vaultInfo.lastFeeSettlementTimestamp = timestamp;
 
     int64 initialInvestmentSigned = int64(initialInvestmentNumTokens);
@@ -89,9 +94,28 @@ contract VaultContract is SubAccountContract, TransferContract {
     );
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
-    vaultSub.vaultInfo.managementFeeCentiBeeps = managementFeeCentiBeeps;
-    vaultSub.vaultInfo.performanceFeeCentiBeeps = performanceFeeCentiBeeps;
-    vaultSub.vaultInfo.marketingFeeCentiBeeps = marketingFeeCentiBeeps;
+
+    _validateAndUpdateVaultParams(
+      vaultSub.vaultInfo,
+      managementFeeCentiBeeps,
+      performanceFeeCentiBeeps,
+      marketingFeeCentiBeeps
+    );
+  }
+
+  function _validateAndUpdateVaultParams(
+    VaultInfo storage vaultInfo,
+    uint32 managementFeeCentiBeeps,
+    uint32 performanceFeeCentiBeeps,
+    uint32 marketingFeeCentiBeeps
+  ) internal {
+    require(managementFeeCentiBeeps <= 400, "management fee must be <= 4%");
+    require(performanceFeeCentiBeeps <= 4000, "performance fee must be <= 40%");
+    require(marketingFeeCentiBeeps <= 4000, "marketing fee must be <= 40%");
+
+    vaultInfo.managementFeeCentiBeeps = managementFeeCentiBeeps;
+    vaultInfo.performanceFeeCentiBeeps = performanceFeeCentiBeeps;
+    vaultInfo.marketingFeeCentiBeeps = marketingFeeCentiBeeps;
   }
 
   function vaultDelist(
@@ -135,7 +159,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     _setSequence(timestamp, txID);
 
     Account storage account = _requireAccount(accountID);
-    _requireAccountPermission(account, sig.signer, AccountPermExternalTransfer);
+    _requireAccountPermission(account, sig.signer, AccountPermVaultInvest);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
     require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can accept investment");

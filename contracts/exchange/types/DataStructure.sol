@@ -105,6 +105,7 @@ uint64 constant AccountPermAdmin = 1 << 1;
 uint64 constant AccountPermInternalTransfer = 1 << 2;
 uint64 constant AccountPermExternalTransfer = 1 << 3;
 uint64 constant AccountPermWithdraw = 1 << 4;
+uint64 constant AccountPermVaultInvest = 1 << 5;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
