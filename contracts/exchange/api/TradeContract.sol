@@ -293,7 +293,7 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
     if (sub.isVault) {
       require(
-        sub.vaultInfo.status == VaultStatus.DELISTED || order.reduceOnly,
+        sub.vaultInfo.status != VaultStatus.DELISTED || order.reduceOnly,
         "delisted vault can only reduce position"
       );
       require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
