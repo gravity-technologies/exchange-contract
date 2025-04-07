@@ -304,6 +304,7 @@ abstract contract TransferContract is TradeContract {
         );
       }
     }
+    require(numTokens >= 0, "invalid transfer amount");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
@@ -375,9 +376,9 @@ abstract contract TransferContract is TradeContract {
     _fundAndSettle(fromSub);
 
     fromSub.spotBalances[currency] -= numTokens;
-    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
-
     toAcc.spotBalances[currency] += numTokens;
+
+    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
   }
 
   function _transferSubToSub(
@@ -396,6 +397,7 @@ abstract contract TransferContract is TradeContract {
     SubAccount storage toSub = _requireSubAccount(toSubID);
     _requireSubAccountUnderAccount(toSub, toAccID);
 
+    require(numTokens >= 0, "invalid transfer amount");
     require(!fromSub.isVault, "transfer from vault subaccount");
     require(!toSub.isVault, "transfer to vault subaccount");
 
