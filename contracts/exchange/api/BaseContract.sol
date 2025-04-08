@@ -358,9 +358,6 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
-    if (from == to) {
-      return amount;
-    }
     return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
   }
 
