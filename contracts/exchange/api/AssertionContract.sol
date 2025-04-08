@@ -429,7 +429,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   struct VaultLpAssertion {
     address accountID;
     uint64 lpTokenBalance;
-    uint64 costInQuote;
+    uint64 usdNotionalInvested;
     int64 spotBalance;
   }
 
@@ -442,7 +442,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
     // Check LP token info
     VaultLpInfo storage lpInfo = vaultSub.vaultInfo.lpInfos[lpAssertion.accountID];
     require(
-      lpInfo.lpTokenBalance == lpAssertion.lpTokenBalance && lpInfo.costInQuote == lpAssertion.costInQuote,
+      lpInfo.lpTokenBalance == lpAssertion.lpTokenBalance &&
+        lpInfo.usdNotionalInvested == lpAssertion.usdNotionalInvested,
       string.concat(errorPrefix, " - lpInfo")
     );
 

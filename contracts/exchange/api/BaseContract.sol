@@ -347,10 +347,20 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
 
-    return _getSpotPriceBI(spot).div(_getSpotPriceBI(quote));
+    BI memory spotPriceInUsd = _getSpotPriceBI(spot);
+
+    if (quote == Currency.USD) {
+      return spotPriceInUsd;
+    }
+
+    BI memory quotePriceInUsd = _getSpotPriceBI(quote);
+    return spotPriceInUsd.div(quotePriceInUsd);
   }
 
   function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+    if (from == to) {
+      return amount;
+    }
     return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
   }
 
@@ -498,6 +508,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       total = total.add(balanceValueInQuote);
     }
     return total;
+  }
+
+  function _getSubAccountValueInUSD(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getSubAccountValueInQuote(sub);
+    return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
   }
 
   /// @dev Get the total value of a sub account in quote currency

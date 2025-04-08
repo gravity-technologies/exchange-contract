@@ -17,6 +17,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint32 managementFeeCentiBeeps,
     uint32 performanceFeeCentiBeeps,
     uint32 marketingFeeCentiBeeps,
+    Currency initialInvestmentCurrency,
     uint64 initialInvestmentNumTokens,
     Signature calldata sig
   ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -31,6 +32,8 @@ contract VaultContract is SubAccountContract, TransferContract {
       managementFeeCentiBeeps,
       performanceFeeCentiBeeps,
       marketingFeeCentiBeeps,
+      initialInvestmentCurrency,
+      initialInvestmentNumTokens,
       sig.nonce,
       sig.expiration
     );
@@ -66,7 +69,7 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     Account storage managerAcc = _requireAccount(managerAccountID);
 
-    _investAndMintLpToken(vaultSub, managerAcc, initialInvestmentNumTokens);
+    _investAndMintLpToken(vaultSub, managerAcc, initialInvestmentCurrency, initialInvestmentNumTokens);
   }
 
   function vaultUpdate(
@@ -170,56 +173,63 @@ contract VaultContract is SubAccountContract, TransferContract {
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
-    _investAndMintLpToken(vaultSub, account, numTokens);
+    _investAndMintLpToken(vaultSub, account, tokenCurrency, numTokens);
   }
 
-  function _investAndMintLpToken(SubAccount storage vaultSub, Account storage account, uint64 numQuoteTokens) internal {
-    int64 numQuoteTokensSigned = int64(numQuoteTokens);
-    require(numQuoteTokensSigned > 0, "investment amount must be positive");
+  function _investAndMintLpToken(
+    SubAccount storage vaultSub,
+    Account storage account,
+    Currency currency,
+    uint64 numTokens
+  ) internal {
+    require(currency == Currency.USDT, "Only USDT vault investment is supported");
 
-    uint64 lpTokensToMint = _calculateLpTokensToMintOnInvest(vaultSub, numQuoteTokens);
+    int64 numTokensSigned = int64(numTokens);
+    require(numTokensSigned > 0, "investment amount must be positive");
+
+    (uint64 lpTokensToMint, uint64 amountInUsd) = _calculateLpTokensToMintOnInvest(vaultSub, currency, numTokens);
     require(lpTokensToMint > 0, "no LP tokens minted");
 
-    _doTransferMainToSub(account, vaultSub, vaultSub.quoteCurrency, numQuoteTokensSigned);
-    _mintLpTokens(vaultSub, account.id, lpTokensToMint, numQuoteTokens);
+    _doTransferMainToSub(account, vaultSub, currency, numTokensSigned);
+    _mintLpTokens(vaultSub, account.id, lpTokensToMint, amountInUsd);
   }
 
   function _calculateLpTokensToMintOnInvest(
     SubAccount storage vaultSub,
-    uint64 numQuoteTokens
-  ) internal returns (uint64) {
-    // Calculate LP tokens to mint based on proportion of equity increase
+    Currency currency,
+    uint64 numTokens
+  ) internal returns (uint64, uint64) {
+    BI memory numTokensBI = BIMath.fromUint64(numTokens, _getBalanceDecimal(currency));
+
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    uint64 amountInUsd = _convertCurrency(numTokensBI, currency, Currency.USD).toUint64(usdDec);
+
     if (vaultSub.vaultInfo.totalLpTokenSupply == 0) {
-      // First investment - mint same amount as deposit
-      return numQuoteTokens;
+      return (amountInUsd, amountInUsd);
     }
 
-    BI memory vaultEquityBeforeInQuote = _getSubAccountValueInQuote(vaultSub);
-    require(vaultEquityBeforeInQuote.isPositive(), "vault equity is not positive");
+    BI memory vaultEquityBeforeInUsd = _getSubAccountValueInUSD(vaultSub);
+    require(vaultEquityBeforeInUsd.isPositive(), "vault equity is not positive");
 
-    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(
-      vaultSub.vaultInfo.totalLpTokenSupply,
-      _getBalanceDecimal(vaultSub.quoteCurrency)
-    );
+    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, usdDec);
 
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
-    BI memory numQuoteTokensBI = BIMath.fromUint64(numQuoteTokens, qDec);
-    BI memory lpTokensToMintBI = numQuoteTokensBI.mul(totalLpTokenSupplyBI).div(vaultEquityBeforeInQuote);
+    BI memory amountInUsdBI = BIMath.fromUint64(amountInUsd, usdDec);
+    BI memory lpTokensToMintBI = amountInUsdBI.mul(totalLpTokenSupplyBI).div(vaultEquityBeforeInUsd);
 
-    return lpTokensToMintBI.toUint64(qDec);
+    return (lpTokensToMintBI.toUint64(usdDec), amountInUsd);
   }
 
   function _mintLpTokens(
     SubAccount storage vaultSub,
     address accountID,
     uint64 lpTokenToMint,
-    uint64 costInQuote
+    uint64 usdNotionalInvested
   ) internal {
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
     vaultInfo.totalLpTokenSupply += lpTokenToMint;
 
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
-    lpInfo.costInQuote += costInQuote;
+    lpInfo.usdNotionalInvested += usdNotionalInvested;
     lpInfo.lpTokenBalance += lpTokenToMint;
   }
 
@@ -264,66 +274,67 @@ contract VaultContract is SubAccountContract, TransferContract {
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
-    uint64 redeemedInQuote = _calculateQuoteTokenRedeemed(vaultSub, numLpTokens);
-    uint64 costOfLpTokenBurnt = _burnLpTokens(vaultSub, accountID, numLpTokens);
+    uint64 redeemedInUsd = _calculateUsdRedeemed(vaultSub, numLpTokens);
+    uint64 costOfLpTokenBurntInUsd = _burnLpTokens(vaultSub, accountID, numLpTokens);
 
-    (uint64 performanceFeeInQuote, uint64 performanceFeeInLpToken) = _calculateRedemptionPerformanceFee(
+    (uint64 performanceFeeInUsd, uint64 performanceFeeInLpToken) = _calculateRedemptionPerformanceFee(
       vaultSub,
       accountID,
-      redeemedInQuote,
-      costOfLpTokenBurnt
+      redeemedInUsd,
+      costOfLpTokenBurntInUsd
     );
 
     if (performanceFeeInLpToken > 0) {
       _mintLpTokenForFee(vaultSub, performanceFeeInLpToken, marketingFeeChargedInLpToken);
     }
 
-    uint64 redeemedInQuoteAfterFee = redeemedInQuote - performanceFeeInQuote;
+    uint64 redeemedInUsdAfterFee = redeemedInUsd - performanceFeeInUsd;
 
-    int64 redeemedInQuoteAfterFeeSigned = int64(redeemedInQuoteAfterFee);
-    require(redeemedInQuoteAfterFeeSigned > 0, "redeemed in quote after fee is not positive");
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, usdDec);
 
-    _doTransferSubToMain(vaultSub, _requireAccount(accountID), vaultSub.quoteCurrency, redeemedInQuoteAfterFeeSigned);
+    int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, vaultSub.quoteCurrency)
+      .toInt64(_getBalanceDecimal(vaultSub.quoteCurrency));
+
+    require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
+
+    _doTransferSubToMain(vaultSub, _requireAccount(accountID), vaultSub.quoteCurrency, redeemedInQuoteAfterFee);
   }
 
-  function _calculateQuoteTokenRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {
-    BI memory vaultEquityInQuote = _getSubAccountValueInQuote(vaultSub);
-    require(vaultEquityInQuote.isPositive(), "vault equity is not positive");
+  function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {
+    BI memory vaultEquityInUsd = _getSubAccountValueInUSD(vaultSub);
+    require(vaultEquityInUsd.isPositive(), "vault equity is not positive");
 
-    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(
-      vaultSub.vaultInfo.totalLpTokenSupply,
-      _getBalanceDecimal(vaultSub.quoteCurrency)
-    );
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, usdDec);
 
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
+    BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, usdDec);
+    BI memory usdRedeemedBI = numLpTokensBI.mul(vaultEquityInUsd).div(totalLpTokenSupplyBI);
 
-    BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, qDec);
-    BI memory quoteTokenRedeemedBI = numLpTokensBI.mul(vaultEquityInQuote).div(totalLpTokenSupplyBI);
-
-    return quoteTokenRedeemedBI.toUint64(qDec);
+    return usdRedeemedBI.toUint64(usdDec);
   }
 
   function _calculateRedemptionPerformanceFee(
     SubAccount storage vaultSub,
     address accountID,
-    uint64 redeemedInQuote,
-    uint64 costOfLpTokenBurnt
+    uint64 redeemedInUsd,
+    uint64 costOfLpTokenBurntInUsd
   ) internal returns (uint64, uint64) {
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
-    if (vaultSub.accountID == accountID || costOfLpTokenBurnt >= redeemedInQuote) {
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    if (vaultSub.accountID == accountID || costOfLpTokenBurntInUsd >= redeemedInUsd) {
       return (0, 0);
     }
 
-    uint64 profitInQuote = redeemedInQuote - costOfLpTokenBurnt;
-    BI memory profitInQuoteBI = BIMath.fromUint64(profitInQuote, qDec);
+    uint64 profitInUsd = redeemedInUsd - costOfLpTokenBurntInUsd;
+    BI memory profitInUsdBI = BIMath.fromUint64(profitInUsd, usdDec);
     BI memory performanceFeeRateBI = BIMath.fromUint32(vaultSub.vaultInfo.performanceFeeCentiBeeps, CENTIBEEP_DECIMALS);
-    BI memory performanceFeeBI = profitInQuoteBI.mul(performanceFeeRateBI);
-    uint64 performanceFeeInQuote = performanceFeeBI.toUint64(qDec);
+    BI memory performanceFeeBI = profitInUsdBI.mul(performanceFeeRateBI);
+    uint64 performanceFeeInUsd = performanceFeeBI.toUint64(usdDec);
 
-    uint64 performanceFeeInLpToken = _calculateLpTokensToMintOnInvest(vaultSub, performanceFeeInQuote);
+    (uint64 performanceFeeInLpToken, ) = _calculateLpTokensToMintOnInvest(vaultSub, Currency.USD, performanceFeeInUsd);
 
     if (performanceFeeInLpToken > 0) {
-      return (performanceFeeInQuote, performanceFeeInLpToken);
+      return (performanceFeeInUsd, performanceFeeInLpToken);
     }
 
     return (0, 0);
@@ -333,26 +344,26 @@ contract VaultContract is SubAccountContract, TransferContract {
     SubAccount storage vaultSub,
     address accountID,
     uint64 lpTokenToBurn
-  ) internal returns (uint64 costOfLpTokenBurnt) {
+  ) internal returns (uint64 costOfLpTokenBurntInUsd) {
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
     vaultInfo.totalLpTokenSupply -= lpTokenToBurn;
 
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
     require(lpInfo.lpTokenBalance >= lpTokenToBurn, "insufficient LP tokens");
 
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
-    BI memory costBI = BIMath.fromUint64(lpInfo.costInQuote, qDec);
-    BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, qDec);
-    BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, qDec);
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
+    BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, usdDec);
+    BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, usdDec);
     BI memory remainingBalanceBI = balanceBI.sub(burnBI);
 
-    uint64 costInQuoteAfter = costBI.mul(remainingBalanceBI).div(balanceBI).toUint64(qDec);
-    costOfLpTokenBurnt = lpInfo.costInQuote - costInQuoteAfter;
+    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(usdDec);
+    costOfLpTokenBurntInUsd = lpInfo.usdNotionalInvested - usdNotionalInvestedAfter;
 
-    lpInfo.costInQuote = costInQuoteAfter;
+    lpInfo.usdNotionalInvested = usdNotionalInvestedAfter;
     lpInfo.lpTokenBalance -= lpTokenToBurn;
 
-    return costOfLpTokenBurnt;
+    return costOfLpTokenBurntInUsd;
   }
 
   function vaultManagementFeeTick(

@@ -253,7 +253,7 @@ struct VaultInfo {
 
 struct VaultLpInfo {
   uint64 lpTokenBalance;
-  uint64 costInQuote;
+  uint64 usdNotionalInvested;
 }
 
 enum VaultStatus {
