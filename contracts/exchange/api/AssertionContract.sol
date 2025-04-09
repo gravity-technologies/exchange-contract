@@ -431,12 +431,13 @@ contract AssertionContract is ConfigContract, RiskCheck {
     uint64 lpTokenBalance;
     uint64 usdNotionalInvested;
     int64 spotBalance;
+    SpotAssertion[] spots;
   }
 
   // Helper functions for vault assertions
   function _assertVaultLp(
     SubAccount storage vaultSub,
-    VaultLpAssertion memory lpAssertion,
+    VaultLpAssertion calldata lpAssertion,
     string memory errorPrefix
   ) internal view {
     // Check LP token info
@@ -448,10 +449,13 @@ contract AssertionContract is ConfigContract, RiskCheck {
     );
 
     // Check spot balance
-    require(
-      state.accounts[lpAssertion.accountID].spotBalances[vaultSub.quoteCurrency] == lpAssertion.spotBalance,
-      string.concat(errorPrefix, " - spotBalance")
-    );
+    for (uint j; j < lpAssertion.spots.length; ++j) {
+      SpotAssertion calldata exSpot = lpAssertion.spots[j];
+      require(
+        state.accounts[lpAssertion.accountID].spotBalances[exSpot.currency] == exSpot.balance,
+        string.concat(errorPrefix, " - spotMismatch")
+      );
+    }
   }
 
   function assertVaultCreate(
@@ -464,7 +468,8 @@ contract AssertionContract is ConfigContract, RiskCheck {
     uint32 marketingFeeCentiBeeps,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
-    int64 vaultSpotBalance,
+    Currency initialInvestmentCurrency,
+    int64 vaultInitialSpotBalance,
     VaultLpAssertion calldata managerAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
@@ -493,7 +498,10 @@ contract AssertionContract is ConfigContract, RiskCheck {
     );
 
     // Check vault spot balance
-    require(vaultSub.spotBalances[quoteCurrency] == vaultSpotBalance, "ex vaultCreateVaultSpotBalance");
+    require(
+      vaultSub.spotBalances[initialInvestmentCurrency] == vaultInitialSpotBalance,
+      "ex vaultCreateVaultSpotBalance"
+    );
 
     // Check manager's LP state
     _assertVaultLp(vaultSub, managerAssertion, "ex vaultCreateManager");
@@ -532,6 +540,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   function assertVaultInvest(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
+    Currency investmentCurrency,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata investorAssertion
   ) external view {
@@ -542,7 +551,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultInvestTotalSupply");
 
     // Check vault spot balance
-    require(vaultSub.spotBalances[vaultSub.quoteCurrency] == expectedVaultSpotBalance, "ex vaultInvestSpotBalance");
+    require(vaultSub.spotBalances[investmentCurrency] == expectedVaultSpotBalance, "ex vaultInvestSpotBalance");
 
     // Check investor's LP state
     _assertVaultLp(vaultSub, investorAssertion, "ex vaultInvestInvestor");
@@ -566,6 +575,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
   function assertVaultRedeem(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
+    Currency currencyRedeemed,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata redeemingLpAssertion,
     VaultLpAssertion calldata managerAssertion,
@@ -578,10 +588,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultRedeemTotalSupply");
 
     // Check vault spot balance
-    require(
-      vaultSub.spotBalances[vaultSub.quoteCurrency] == expectedVaultSpotBalance,
-      "ex vaultRedeemVaultSpotBalance"
-    );
+    require(vaultSub.spotBalances[currencyRedeemed] == expectedVaultSpotBalance, "ex vaultRedeemVaultSpotBalance");
 
     // Check all LP states
     _assertVaultLp(vaultSub, redeemingLpAssertion, "ex vaultRedeemRedeeming");

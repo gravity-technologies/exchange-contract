@@ -260,6 +260,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     int64 timestamp,
     uint64 txID,
     uint64 vaultID,
+    Currency tokenCurrency,
     uint64 numLpTokens,
     address accountID,
     uint64 marketingFeeChargedInLpToken,
@@ -268,6 +269,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     _setSequence(timestamp, txID);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
+    require(tokenCurrency == vaultSub.quoteCurrency, "non-quote currency vault redemption");
 
     Account storage account = _requireAccount(accountID);
 
@@ -278,7 +280,7 @@ contract VaultContract is SubAccountContract, TransferContract {
       _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
 
       // ---------- Signature Verification -----------
-      bytes32 hash = hashVaultRedeem(vaultID, numLpTokens, accountID, sig.nonce, sig.expiration);
+      bytes32 hash = hashVaultRedeem(vaultID, tokenCurrency, numLpTokens, accountID, sig.nonce, sig.expiration);
       _preventReplay(hash, sig);
       // ------- End of Signature Verification -------
     }
@@ -302,12 +304,13 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint64 usdDec = _getBalanceDecimal(Currency.USD);
     BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, usdDec);
 
-    int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, vaultSub.quoteCurrency)
-      .toInt64(_getBalanceDecimal(vaultSub.quoteCurrency));
+    int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, tokenCurrency).toInt64(
+      _getBalanceDecimal(tokenCurrency)
+    );
 
     require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
 
-    _doTransferSubToMain(vaultSub, account, vaultSub.quoteCurrency, redeemedInQuoteAfterFee);
+    _doTransferSubToMain(vaultSub, account, tokenCurrency, redeemedInQuoteAfterFee);
   }
 
   function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {

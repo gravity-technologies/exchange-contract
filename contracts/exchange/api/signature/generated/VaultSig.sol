@@ -94,15 +94,17 @@ function hashVaultBurnLpToken(
 }
 
 bytes32 constant _VAULT_REDEEM_H = keccak256(
-  "VaultRedeem(uint64 vaultID,uint64 numLpTokens,address accountID,uint32 nonce,int64 expiration)"
+  "VaultRedeem(uint64 vaultID,uint8 tokenCurrency,uint64 numLpTokens,address accountID,uint32 nonce,int64 expiration)"
 );
 
 function hashVaultRedeem(
   uint64 vaultID,
+  Currency tokenCurrency,
   uint64 numLpTokens,
   address accountID,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_VAULT_REDEEM_H, vaultID, numLpTokens, accountID, nonce, expiration));
+  return
+    keccak256(abi.encode(_VAULT_REDEEM_H, vaultID, uint8(tokenCurrency), numLpTokens, accountID, nonce, expiration));
 }
