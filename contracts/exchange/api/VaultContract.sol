@@ -162,7 +162,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     _setSequence(timestamp, txID);
 
     Account storage account = _requireAccount(accountID);
-    _requireAccountPermission(account, sig.signer, AccountPermVaultInvest);
+    _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
     require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can accept investment");
@@ -269,6 +269,10 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
 
+    Account storage account = _requireAccount(accountID);
+
+    _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
+
     // ---------- Signature Verification -----------
     bytes32 hash = hashVaultRedeem(vaultID, numLpTokens, accountID, sig.nonce, sig.expiration);
     _preventReplay(hash, sig);
@@ -298,7 +302,7 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
 
-    _doTransferSubToMain(vaultSub, _requireAccount(accountID), vaultSub.quoteCurrency, redeemedInQuoteAfterFee);
+    _doTransferSubToMain(vaultSub, account, vaultSub.quoteCurrency, redeemedInQuoteAfterFee);
   }
 
   function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {
