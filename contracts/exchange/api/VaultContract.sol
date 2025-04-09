@@ -114,7 +114,7 @@ contract VaultContract is SubAccountContract, TransferContract {
   ) internal {
     require(managementFeeCentiBeeps <= 400, "management fee must be <= 4%");
     require(performanceFeeCentiBeeps <= 4000, "performance fee must be <= 40%");
-    require(marketingFeeCentiBeeps <= 4000, "marketing fee must be <= 40%");
+    require(marketingFeeCentiBeeps <= 8000, "marketing fee must be <= 80%");
 
     vaultInfo.managementFeeCentiBeeps = managementFeeCentiBeeps;
     vaultInfo.performanceFeeCentiBeeps = performanceFeeCentiBeeps;
