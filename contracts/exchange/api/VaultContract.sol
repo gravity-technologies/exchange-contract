@@ -271,12 +271,17 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     Account storage account = _requireAccount(accountID);
 
-    _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
+    // permission and signature check is skipped for closed vault
+    // this is because the closed vaults does not have any positions and cannot trade any more
+    // so GRVT can redeem closed vaults for users
+    if (vaultSub.vaultInfo.status != VaultStatus.CLOSED) {
+      _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
 
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashVaultRedeem(vaultID, numLpTokens, accountID, sig.nonce, sig.expiration);
-    _preventReplay(hash, sig);
-    // ------- End of Signature Verification -------
+      // ---------- Signature Verification -----------
+      bytes32 hash = hashVaultRedeem(vaultID, numLpTokens, accountID, sig.nonce, sig.expiration);
+      _preventReplay(hash, sig);
+      // ------- End of Signature Verification -------
+    }
 
     uint64 redeemedInUsd = _calculateUsdRedeemed(vaultSub, numLpTokens);
     uint64 costOfLpTokenBurntInUsd = _burnLpTokens(vaultSub, accountID, numLpTokens);
