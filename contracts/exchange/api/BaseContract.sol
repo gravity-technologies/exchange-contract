@@ -365,6 +365,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
   function _getSpotPriceBI(Currency spot) internal view returns (BI memory) {
+    if (spot == Currency.USD) {
+      return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
+    }
     (uint64 price, bool ok) = _getSpotPrice9Dec(spot);
     require(ok, "mark price not found");
     return BI(int256(uint(price)), PRICE_DECIMALS);
