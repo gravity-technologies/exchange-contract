@@ -41,6 +41,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     // ------- End of Signature Verification -------
 
     require(quoteCurrency == Currency.USDT, "only USDT vault is supported");
+    require(initialInvestmentCurrency == quoteCurrency, "only investment in quote currency is supported");
 
     // signer Admin permission is checked here
     SubAccount storage vaultSub = _validateAndCreateBaseSubAccount(
@@ -201,8 +202,9 @@ contract VaultContract is SubAccountContract, TransferContract {
   ) internal returns (uint64, uint64) {
     BI memory numTokensBI = BIMath.fromUint64(numTokens, _getBalanceDecimal(currency));
 
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
-    uint64 amountInUsd = _convertCurrency(numTokensBI, currency, Currency.USD).toUint64(usdDec);
+    uint64 lpDec = _getLpTokenDecimal();
+    BI memory amountInUsdBI = _convertCurrency(numTokensBI, currency, Currency.USD);
+    uint64 amountInUsd = amountInUsdBI.toUint64(lpDec);
 
     if (vaultSub.vaultInfo.totalLpTokenSupply == 0) {
       return (amountInUsd, amountInUsd);
@@ -211,12 +213,10 @@ contract VaultContract is SubAccountContract, TransferContract {
     BI memory vaultEquityBeforeInUsd = _getSubAccountValueInUSD(vaultSub);
     require(vaultEquityBeforeInUsd.isPositive(), "vault equity is not positive");
 
-    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, usdDec);
-
-    BI memory amountInUsdBI = BIMath.fromUint64(amountInUsd, usdDec);
+    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, lpDec);
     BI memory lpTokensToMintBI = amountInUsdBI.mul(totalLpTokenSupplyBI).div(vaultEquityBeforeInUsd);
 
-    return (lpTokensToMintBI.toUint64(usdDec), amountInUsd);
+    return (lpTokensToMintBI.toUint64(lpDec), amountInUsd);
   }
 
   function _mintLpTokens(
@@ -301,8 +301,8 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     uint64 redeemedInUsdAfterFee = redeemedInUsd - performanceFeeInUsd;
 
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
-    BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, usdDec);
+    uint64 lpDec = _getLpTokenDecimal();
+    BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, lpDec);
 
     int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, tokenCurrency).toInt64(
       _getBalanceDecimal(tokenCurrency)
@@ -317,13 +317,13 @@ contract VaultContract is SubAccountContract, TransferContract {
     BI memory vaultEquityInUsd = _getSubAccountValueInUSD(vaultSub);
     require(vaultEquityInUsd.isPositive(), "vault equity is not positive");
 
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
-    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, usdDec);
+    uint64 lpDec = _getLpTokenDecimal();
+    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, lpDec);
 
-    BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, usdDec);
+    BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, lpDec);
     BI memory usdRedeemedBI = numLpTokensBI.mul(vaultEquityInUsd).div(totalLpTokenSupplyBI);
 
-    return usdRedeemedBI.toUint64(usdDec);
+    return usdRedeemedBI.toUint64(lpDec);
   }
 
   function _calculateRedemptionPerformanceFee(
@@ -332,16 +332,16 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint64 redeemedInUsd,
     uint64 costOfLpTokenBurntInUsd
   ) internal returns (uint64, uint64) {
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    uint64 lpDec = _getLpTokenDecimal();
     if (vaultSub.accountID == accountID || costOfLpTokenBurntInUsd >= redeemedInUsd) {
       return (0, 0);
     }
 
     uint64 profitInUsd = redeemedInUsd - costOfLpTokenBurntInUsd;
-    BI memory profitInUsdBI = BIMath.fromUint64(profitInUsd, usdDec);
+    BI memory profitInUsdBI = BIMath.fromUint64(profitInUsd, lpDec);
     BI memory performanceFeeRateBI = BIMath.fromUint32(vaultSub.vaultInfo.performanceFeeCentiBeeps, CENTIBEEP_DECIMALS);
     BI memory performanceFeeBI = profitInUsdBI.mul(performanceFeeRateBI);
-    uint64 performanceFeeInUsd = performanceFeeBI.toUint64(usdDec);
+    uint64 performanceFeeInUsd = performanceFeeBI.toUint64(lpDec);
 
     (uint64 performanceFeeInLpToken, ) = _calculateLpTokensToMintOnInvest(vaultSub, Currency.USD, performanceFeeInUsd);
 
@@ -363,19 +363,26 @@ contract VaultContract is SubAccountContract, TransferContract {
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
     require(lpInfo.lpTokenBalance >= lpTokenToBurn, "insufficient LP tokens");
 
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
-    BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
-    BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, usdDec);
-    BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, usdDec);
-    BI memory remainingBalanceBI = balanceBI.sub(burnBI);
+    costOfLpTokenBurntInUsd = _calculateCostOfLpTokenBurntInUsd(lpInfo, lpTokenToBurn);
 
-    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(usdDec);
-    costOfLpTokenBurntInUsd = lpInfo.usdNotionalInvested - usdNotionalInvestedAfter;
-
-    lpInfo.usdNotionalInvested = usdNotionalInvestedAfter;
+    lpInfo.usdNotionalInvested -= costOfLpTokenBurntInUsd;
     lpInfo.lpTokenBalance -= lpTokenToBurn;
 
     return costOfLpTokenBurntInUsd;
+  }
+
+  function _calculateCostOfLpTokenBurntInUsd(
+    VaultLpInfo storage lpInfo,
+    uint64 lpTokenToBurn
+  ) internal returns (uint64 costOfLpTokenBurntInUsd) {
+    uint64 lpDec = _getLpTokenDecimal();
+    BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, lpDec);
+    BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, lpDec);
+    BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, lpDec);
+    BI memory remainingBalanceBI = balanceBI.sub(burnBI);
+
+    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(lpDec);
+    return lpInfo.usdNotionalInvested - usdNotionalInvestedAfter;
   }
 
   function vaultManagementFeeTick(
@@ -416,12 +423,12 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint64 lpTokenToMint,
     uint64 marketingFeeChargedInLpToken
   ) internal {
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
+    uint64 lpDec = _getLpTokenDecimal();
 
-    BI memory lpTokenToMintBI = BIMath.fromUint64(lpTokenToMint, qDec);
+    BI memory lpTokenToMintBI = BIMath.fromUint64(lpTokenToMint, lpDec);
     BI memory marketingFeeCapRatioBI = BIMath.fromUint32(vaultSub.vaultInfo.marketingFeeCentiBeeps, CENTIBEEP_DECIMALS);
     BI memory marketingFeeCapBI = lpTokenToMintBI.mul(marketingFeeCapRatioBI);
-    uint64 marketingFeeCap = marketingFeeCapBI.toUint64(qDec);
+    uint64 marketingFeeCap = marketingFeeCapBI.toUint64(lpDec);
 
     require(marketingFeeChargedInLpToken <= marketingFeeCap, "marketing fee charged is more than cap");
 
@@ -478,5 +485,10 @@ contract VaultContract is SubAccountContract, TransferContract {
     BI memory managementFeeDailyFactorBI = managementFeeAnnualFactorBI.div(BI(365, 0));
     BI memory managementFeeDailyMultiplierBI = managementFeeDailyFactorBI.add(BIMath.one());
     return managementFeeDailyMultiplierBI.pow(daysSinceLastFeeSettlement).sub(BIMath.one());
+  }
+
+  function _getLpTokenDecimal() internal view returns (uint64) {
+    // lp token has the same decimal as USD
+    return _getBalanceDecimal(Currency.USD);
   }
 }
