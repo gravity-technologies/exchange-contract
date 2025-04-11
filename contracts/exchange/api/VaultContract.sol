@@ -358,12 +358,13 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint64 lpTokenToBurn
   ) internal returns (uint64 costOfLpTokenBurntInUsd) {
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
-    vaultInfo.totalLpTokenSupply -= lpTokenToBurn;
 
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
     require(lpInfo.lpTokenBalance >= lpTokenToBurn, "insufficient LP tokens");
 
     costOfLpTokenBurntInUsd = _calculateCostOfLpTokenBurntInUsd(lpInfo, lpTokenToBurn);
+
+    vaultInfo.totalLpTokenSupply -= lpTokenToBurn;
 
     lpInfo.usdNotionalInvested -= costOfLpTokenBurntInUsd;
     lpInfo.lpTokenBalance -= lpTokenToBurn;
@@ -376,12 +377,13 @@ contract VaultContract is SubAccountContract, TransferContract {
     uint64 lpTokenToBurn
   ) internal returns (uint64 costOfLpTokenBurntInUsd) {
     uint64 lpDec = _getLpTokenDecimal();
-    BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, lpDec);
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
     BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, lpDec);
     BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, lpDec);
     BI memory remainingBalanceBI = balanceBI.sub(burnBI);
 
-    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(lpDec);
+    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(usdDec);
     return lpInfo.usdNotionalInvested - usdNotionalInvestedAfter;
   }
 
