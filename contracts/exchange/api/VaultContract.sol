@@ -437,14 +437,12 @@ contract VaultContract is SubAccountContract, TransferContract {
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
 
     uint64 managerPayment = lpTokenToMint;
-    if (isFeeSubAccIdSet) {
+    if (isFeeSubAccIdSet && marketingFeeChargedInLpToken > 0) {
       managerPayment -= marketingFeeChargedInLpToken;
       _mintLpTokens(vaultSub, feeSubAcc.accountID, marketingFeeChargedInLpToken, 0);
     }
 
     _mintLpTokens(vaultSub, vaultSub.accountID, managerPayment, 0);
-
-    vaultSub.vaultInfo.totalLpTokenSupply += lpTokenToMint;
   }
 
   function _calculateManagementFee(
