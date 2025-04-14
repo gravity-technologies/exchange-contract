@@ -173,6 +173,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Always allow non-liquidation orders that reduce position size
     // Liquidation orders must maintain subaccount above maintenance margin
     bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
+    _checkVaultOrder(sub, order, isReducingOrder);
+
     if (!order.isLiquidation && isReducingOrder) {
       _executeOrder(sub, order, calcResult, totalFee);
       return;
@@ -184,6 +186,15 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
     _executeOrder(sub, order, calcResult, totalFee);
     _requireValidMargin(sub, order, false);
+  }
+
+  function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private {
+    if (!sub.isVault) {
+      return;
+    }
+
+    require(sub.vaultInfo.status != VaultStatus.DELISTED || isReducingOrder, "delisted vault can only reduce position");
+    require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
   }
 
   function _verifyOrderFull(
@@ -290,14 +301,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     int64 totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
 
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
-
-    if (sub.isVault) {
-      require(
-        sub.vaultInfo.status != VaultStatus.DELISTED || order.reduceOnly,
-        "delisted vault can only reduce position"
-      );
-      require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
-    }
   }
 
   function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {

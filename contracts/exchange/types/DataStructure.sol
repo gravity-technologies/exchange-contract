@@ -95,7 +95,7 @@ function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
 }
 
 uint constant PRICE_DECIMALS = 9;
-uint constant RATE_DECIMALS = 9;
+uint constant RATE_DECIMALS = 18;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
 uint constant BASIS_POINTS_DECIMALS = 4;
