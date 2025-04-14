@@ -253,7 +253,10 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
 
-    _burnLpTokens(vaultSub, accountID, numLpTokens);
+    VaultLpInfo storage lpInfo = vaultSub.vaultInfo.lpInfos[accountID];
+    uint64 costOfLpTokenBurntInUsd = _calculateCostOfLpTokenBurntInUsd(lpInfo, numLpTokens);
+
+    _burnLpTokens(vaultSub, accountID, numLpTokens, costOfLpTokenBurntInUsd);
   }
 
   function vaultRedeem(
@@ -286,7 +289,9 @@ contract VaultContract is SubAccountContract, TransferContract {
     }
 
     uint64 redeemedInUsd = _calculateUsdRedeemed(vaultSub, numLpTokens);
-    uint64 costOfLpTokenBurntInUsd = _burnLpTokens(vaultSub, accountID, numLpTokens);
+
+    VaultLpInfo storage lpInfo = vaultSub.vaultInfo.lpInfos[accountID];
+    uint64 costOfLpTokenBurntInUsd = _calculateCostOfLpTokenBurntInUsd(lpInfo, numLpTokens);
 
     (uint64 performanceFeeInUsd, uint64 performanceFeeInLpToken) = _calculateRedemptionPerformanceFee(
       vaultSub,
@@ -310,6 +315,7 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
 
+    _burnLpTokens(vaultSub, accountID, numLpTokens, costOfLpTokenBurntInUsd);
     _doTransferSubToMain(vaultSub, account, tokenCurrency, redeemedInQuoteAfterFee);
   }
 
@@ -355,8 +361,9 @@ contract VaultContract is SubAccountContract, TransferContract {
   function _burnLpTokens(
     SubAccount storage vaultSub,
     address accountID,
-    uint64 lpTokenToBurn
-  ) internal returns (uint64 costOfLpTokenBurntInUsd) {
+    uint64 lpTokenToBurn,
+    uint64 costOfLpTokenBurntInUsd
+  ) internal {
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
 
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
@@ -368,8 +375,6 @@ contract VaultContract is SubAccountContract, TransferContract {
 
     lpInfo.usdNotionalInvested -= costOfLpTokenBurntInUsd;
     lpInfo.lpTokenBalance -= lpTokenToBurn;
-
-    return costOfLpTokenBurntInUsd;
   }
 
   function _calculateCostOfLpTokenBurntInUsd(
