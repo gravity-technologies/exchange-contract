@@ -56,7 +56,7 @@ contract VaultContract is SubAccountContract, TransferContract {
     vaultSub.isVault = true;
     vaultSub.vaultInfo.status = VaultStatus.ACTIVE;
 
-    _validateAndUpdateVaultParams(
+    _validateAndSetVaultParams(
       vaultSub.vaultInfo,
       managementFeeCentiBeeps,
       performanceFeeCentiBeeps,
@@ -108,6 +108,30 @@ contract VaultContract is SubAccountContract, TransferContract {
   }
 
   function _validateAndUpdateVaultParams(
+    VaultInfo storage vaultInfo,
+    uint32 newManagementFeeCentiBeeps,
+    uint32 newPerformanceFeeCentiBeeps,
+    uint32 newMarketingFeeCentiBeeps
+  ) internal {
+    require(
+      newManagementFeeCentiBeeps <= vaultInfo.managementFeeCentiBeeps,
+      "vault management fee cannot be increased"
+    );
+    require(
+      newPerformanceFeeCentiBeeps <= vaultInfo.performanceFeeCentiBeeps,
+      "vault performance fee cannot be increased"
+    );
+    require(newMarketingFeeCentiBeeps <= vaultInfo.marketingFeeCentiBeeps, "vault marketing fee cannot be increased");
+
+    _validateAndSetVaultParams(
+      vaultInfo,
+      newManagementFeeCentiBeeps,
+      newPerformanceFeeCentiBeeps,
+      newMarketingFeeCentiBeeps
+    );
+  }
+
+  function _validateAndSetVaultParams(
     VaultInfo storage vaultInfo,
     uint32 managementFeeCentiBeeps,
     uint32 performanceFeeCentiBeeps,

@@ -430,7 +430,6 @@ contract AssertionContract is ConfigContract, RiskCheck {
     address accountID;
     uint64 lpTokenBalance;
     uint64 usdNotionalInvested;
-    int64 spotBalance;
     SpotAssertion[] spots;
   }
 
