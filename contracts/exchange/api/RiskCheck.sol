@@ -205,6 +205,11 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     BI memory sizeBI = BI(size, _getBalanceDecimal(assetGetUnderlying(asset)));
 
     bytes32 kuq = assetGetKUQ(asset);
+
+    if (assetGetUnderlying(asset) == Currency.KAITO) {
+      return BIMath.zero();
+    }
+
     ListMarginTiersBI memory mt = _getListMarginTiersBIFromStorage(kuq);
 
     BI memory mm = _getPositionMM(mt, sizeBI, markPrice);
