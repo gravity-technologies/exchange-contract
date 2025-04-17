@@ -304,6 +304,7 @@ abstract contract TransferContract is TradeContract {
         );
       }
     }
+    require(numTokens >= 0, "invalid transfer amount");
     require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
     fromAcc.spotBalances[currency] -= numTokens;
     _requireAccount(toAccID).spotBalances[currency] += numTokens;
@@ -323,12 +324,26 @@ abstract contract TransferContract is TradeContract {
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
-    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= numTokens;
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
+    require(!toSubAcc.isVault, "no transfer to vault subaccount");
+
     _requireSubAccountUnderAccount(toSubAcc, toAccID);
+    _doTransferMainToSub(fromAcc, toSubAcc, currency, numTokens);
+  }
+
+  function _doTransferMainToSub(
+    Account storage fromAcc,
+    SubAccount storage toSubAcc,
+    Currency currency,
+    int64 numTokens
+  ) internal {
+    require(numTokens >= 0, "invalid transfer amount");
+    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
+
     _fundAndSettle(toSubAcc);
+
+    fromAcc.spotBalances[currency] -= numTokens;
     toSubAcc.spotBalances[currency] += numTokens;
   }
 
@@ -341,15 +356,29 @@ abstract contract TransferContract is TradeContract {
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
+    require(!fromSub.isVault, "transfer from vault subaccount");
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
+
+    Account storage toAcc = _requireAccount(toAccID);
+
+    _doTransferSubToMain(fromSub, toAcc, currency, numTokens);
+  }
+
+  function _doTransferSubToMain(
+    SubAccount storage fromSub,
+    Account storage toAcc,
+    Currency currency,
+    int64 numTokens
+  ) internal {
+    require(numTokens >= 0, "invalid transfer amount");
 
     _fundAndSettle(fromSub);
 
     fromSub.spotBalances[currency] -= numTokens;
+    toAcc.spotBalances[currency] += numTokens;
 
     require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
-    _requireAccount(toAccID).spotBalances[currency] += numTokens;
   }
 
   function _transferSubToSub(
@@ -367,6 +396,10 @@ abstract contract TransferContract is TradeContract {
 
     SubAccount storage toSub = _requireSubAccount(toSubID);
     _requireSubAccountUnderAccount(toSub, toAccID);
+
+    require(numTokens >= 0, "invalid transfer amount");
+    require(!fromSub.isVault, "transfer from vault subaccount");
+    require(!toSub.isVault, "transfer to vault subaccount");
 
     _fundAndSettle(fromSub);
     _fundAndSettle(toSub);
