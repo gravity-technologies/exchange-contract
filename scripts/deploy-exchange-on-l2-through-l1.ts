@@ -1,4 +1,4 @@
-import { ethers, Wallet as L1Wallet, providers as l1Providers } from "ethers"
+import { ethers, Wallet as L1Wallet } from "ethers"
 
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
@@ -6,7 +6,6 @@ import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders } from "./utils"
 import { task } from "hardhat/config"
 import { applyL1ToL2Alias, hashBytecode } from "zksync-web3/build/src/utils"
-import { Interface } from "ethers/lib/utils"
 
 task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
   .addParam("l1DeployerPrivateKey", "l1DeployerPrivateKey")
@@ -41,7 +40,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
 
     const l1Deployer = new L1Wallet(l1DeployerPrivateKey!, l1Provider)
 
-    const salt = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltPreImage))
+    const salt = ethers.keccak256(ethers.toUtf8Bytes(saltPreImage))
     console.log("CREATE2 salt: ", salt)
     console.log("CREATE2 salt preimage: ", saltPreImage)
 
@@ -62,7 +61,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     ])
     const beaconProxyCodehash = hashBytecode(beaconProxyArtifact.bytecode)
 
-    const exchangeInitializeData = new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner, depositProxyBeaconOwner, beaconProxyCodehash])
+    const exchangeInitializeData = new ethers.Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner, depositProxyBeaconOwner, beaconProxyCodehash])
     const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
     await l2Deployer.deploy(tupArtifact, [
       exchangeImpl.address,
@@ -71,7 +70,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     ])
     const tupCodehash = hashBytecode(tupArtifact.bytecode)
 
-    const exchangeImplConstructorData = ethers.utils.arrayify("0x")
+    const exchangeImplConstructorData = ethers.getBytes("0x")
     const expectedExchangeImplAddress = computeL2Create2Address(
       l1Deployer.address,
       exchangeArtifact.bytecode,
@@ -79,8 +78,8 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
       salt
     )
 
-    const exchangeProxyConstructorData = ethers.utils.arrayify(
-      new ethers.utils.AbiCoder().encode(
+    const exchangeProxyConstructorData = ethers.getBytes(
+      new ethers.AbiCoder().encode(
         ["address", "address", "bytes"],
         [
           expectedExchangeImplAddress,
@@ -98,10 +97,10 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     )
 
     console.log("L1 deployer address", l1Deployer.address)
-    console.log("Exchange codehash: ", ethers.utils.hexlify(exchangeCodehash))
-    console.log("TUP codehash: ", ethers.utils.hexlify(tupCodehash))
-    console.log("Beacon codehash: ", ethers.utils.hexlify(beaconCodehash))
-    console.log("Beacon proxy codehash: ", ethers.utils.hexlify(beaconProxyCodehash))
+    console.log("Exchange codehash: ", ethers.hexlify(exchangeCodehash))
+    console.log("TUP codehash: ", ethers.hexlify(tupCodehash))
+    console.log("Beacon codehash: ", ethers.hexlify(beaconCodehash))
+    console.log("Beacon proxy codehash: ", ethers.hexlify(beaconProxyCodehash))
     console.log("Expected exchange impl address: ", expectedExchangeImplAddress)
     console.log("Expected exchange proxy address: ", expectedExchangeProxyAddress)
 

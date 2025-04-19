@@ -2,25 +2,17 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ethers } from "ethers"
 
-import { Interface } from "ethers/lib/utils"
-
 import { Provider as ZkSyncProvider } from "zksync-ethers"
-import { IBridgehubFactory } from "../lib/era-contracts/l1-contracts/typechain/IBridgehubFactory"
-import { IGovernanceFactory } from "../lib/era-contracts/l1-contracts/typechain/IGovernanceFactory"
-
-import { IERC20Factory } from "zksync-web3/build/typechain"
 
 import { hashBytecode } from "zksync-web3/build/src/utils"
 import { HardhatRuntimeEnvironment, HttpNetworkConfig, Network, NetworkConfig, NetworksConfig } from "hardhat/types"
-import { Address } from "zksync-ethers/build/src/types"
+import { Address } from "zksync-ethers/build/types"
 
-import { Deployer } from "@matterlabs/hardhat-zksync-deploy/dist/deployer"
-
-import type { BigNumber, BigNumberish, BytesLike } from "ethers"
+import type { BigNumberish, BytesLike } from "ethers"
 import { REQUIRED_L1_TO_L2_GAS_PER_PUBDATA_LIMIT } from "zksync-web3/build/src/utils"
 
 export const GAS_MULTIPLIER = 1
-const CREATE2_PREFIX = ethers.utils.solidityKeccak256(["string"], ["zksyncCreate2"])
+const CREATE2_PREFIX = ethers.solidityPackedKeccak256(["string"], ["zksyncCreate2"])
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const REQUIRED_L2_GAS_PRICE_PER_PUBDATA =
@@ -34,15 +26,25 @@ export function computeL2Create2Address(
   constructorInput: BytesLike,
   create2Salt: BytesLike
 ) {
-  const senderBytes = ethers.utils.hexZeroPad(deployerAddress, 32)
+  const senderBytes = ethers.zeroPadValue(deployerAddress, 32)
   const bytecodeHash = hashBytecode(bytecode)
-  const constructorInputHash = ethers.utils.keccak256(constructorInput)
+  const constructorInputHash = ethers.keccak256(constructorInput)
 
-  const data = ethers.utils.keccak256(
-    ethers.utils.concat([CREATE2_PREFIX, senderBytes, create2Salt, bytecodeHash, constructorInputHash])
+  const data = ethers.keccak256(
+    ethers.concat([CREATE2_PREFIX, senderBytes, create2Salt, bytecodeHash, constructorInputHash])
   )
 
-  return ethers.utils.hexDataSlice(data, 12)
+  return ethers.dataSlice(data, 12)
+}
+
+export function connectContract(hre: HardhatRuntimeEnvironment, target: string | ethers.Addressable, abiJsonPath: string, runner?: ethers.ContractRunner | null | undefined) {
+  // Get current working directory
+  const pwd = process.cwd()
+  const abi = require(pwd + '/' + abiJsonPath).abi
+  if (!abi) {
+    throw new Error(`Could not load ABI from ${pwd}/${abiJsonPath}`)
+  }
+  return new ethers.Contract(target, new ethers.Interface(abi), runner)
 }
 
 export async function create2DeployFromL1NoFactoryDeps(
@@ -57,12 +59,12 @@ export async function create2DeployFromL1NoFactoryDeps(
   l2GasLimit: ethers.BigNumberish,
   gasPrice?: ethers.BigNumberish
 ) {
-  const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
+  const bridgehub = connectContract(hre, bridgehubAddress, getEraL1Path("IBridgehub", "bridgehub"), wallet)
 
-  const deployerSystemContracts = new Interface(hre.artifacts.readArtifactSync("lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer").abi)
+  const deployerSystemContracts = new ethers.Interface(hre.artifacts.readArtifactSync("lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer").abi)
   const bytecodeHash = hashBytecode(bytecode)
   const calldata = deployerSystemContracts.encodeFunctionData("create2", [create2Salt, bytecodeHash, constructor])
-  gasPrice ??= await bridgehub.provider.getGasPrice()
+  gasPrice ??= (await wallet.provider!.getFeeData()).gasPrice!
 
   // pay 5 times the base cost(in L2 base token) to ensure the transaction goes through
   const expectedCost = (
@@ -70,7 +72,7 @@ export async function create2DeployFromL1NoFactoryDeps(
   ).mul(5)
 
   const baseTokenAddress = await bridgehub.baseToken(chainId)
-  const baseToken = IERC20Factory.connect(baseTokenAddress, wallet)
+  const baseToken = connectContract(hre, baseTokenAddress, "@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20", wallet)
 
   const tx = await baseToken.approve(l1SharedBridgeAddress, expectedCost)
   await tx.wait()
@@ -92,7 +94,7 @@ export function createProviders(
   networks: NetworksConfig,
   network: Network
 ): {
-  l1Provider: ethers.providers.BaseProvider
+  l1Provider: ethers.Provider
   l2Provider: ZkSyncProvider
 } {
   const networkName = network.name
@@ -121,9 +123,9 @@ export function createProviders(
   const ethNetwork = networkConfig.ethNetwork
 
   if (isValidEthNetworkURL(ethNetwork)) {
-    l1Provider = new ethers.providers.JsonRpcProvider(ethNetwork)
+    l1Provider = new ethers.JsonRpcProvider(ethNetwork)
   } else if (ethNetwork in networks && isHttpNetworkConfig(networks[ethNetwork])) {
-    l1Provider = new ethers.providers.JsonRpcProvider((networks[ethNetwork] as HttpNetworkConfig).url)
+    l1Provider = new ethers.JsonRpcProvider((networks[ethNetwork] as HttpNetworkConfig).url)
   } else {
     throw new Error(
       `Failed to resolve ethNetwork.\nNetwork '${networkName}' in 'hardhat.config' needs to have a valid 'ethNetwork' (layer 1) specified.`
@@ -150,7 +152,7 @@ export function isValidEthNetworkURL(string: string) {
 
 export async function getTransparentProxyUpgradeCalldata(hre: HardhatRuntimeEnvironment, target: string) {
   const proxyArtifact = await hre.artifacts.readArtifact("ITransparentUpgradeableProxy")
-  const proxyInterface = new ethers.utils.Interface(proxyArtifact.abi)
+  const proxyInterface = new ethers.Interface(proxyArtifact.abi)
 
   return proxyInterface.encodeFunctionData("upgradeTo", [target])
 }
@@ -162,16 +164,17 @@ export type TxInfo = {
 }
 
 export async function getL1ToL2TxInfo(
+  hre: HardhatRuntimeEnvironment,
   chainId: ethers.BigNumberish,
   bridgehubAddress: string,
   to: string,
   l2Calldata: string,
   refundRecipient: string,
-  gasPrice: BigNumber,
-  l2GasLimit: BigNumber,
-  provider: ethers.providers.BaseProvider
+  gasPrice: BigInt,
+  l2GasLimit: BigInt,
+  provider: ethers.Provider
 ): Promise<TxInfo> {
-  const bridgehub = IBridgehubFactory.connect(bridgehubAddress, provider)
+  const bridgehub = connectContract(hre, bridgehubAddress, getEraL1Path("IBridgehub", "bridgehub"), provider)
 
   const neededValue = await bridgehub.l2TransactionBaseCost(
     chainId,
@@ -195,22 +198,24 @@ export async function getL1ToL2TxInfo(
   ])
 
   return {
-    target: bridgehub.address,
+    target: await bridgehub.address(),
     data: l1Calldata,
     value: 0,
   }
 }
 
 export async function getBaseToken(
+  hre: HardhatRuntimeEnvironment,
   chainId: ethers.BigNumberish,
   bridgehubAddress: string,
-  provider: ethers.providers.BaseProvider
+  provider: ethers.Provider
 ) {
-  const bridgehub = IBridgehubFactory.connect(bridgehubAddress, provider)
+  const bridgehub = connectContract(hre, bridgehubAddress, getEraL1Path("IBridgehub", "bridgehub"), provider)
   return await bridgehub.baseToken(chainId)
 }
 
 export async function scheduleAndExecuteGovernanceOp(
+  hre: HardhatRuntimeEnvironment,
   governance: string,
   l1GovernanceAdmin: ethers.Wallet,
   operation: {
@@ -219,7 +224,7 @@ export async function scheduleAndExecuteGovernanceOp(
     salt: string
   }
 ) {
-  const governanceContract = IGovernanceFactory.connect(governance, l1GovernanceAdmin)
+  const governanceContract = connectContract(hre, governance, getEraL1Path("IGovernance", "governance"), l1GovernanceAdmin)
   const scheduleTx = await governanceContract.scheduleTransparent(operation, 0)
   const scheduleTxReceipt = await scheduleTx.wait()
   const executeTx = await governanceContract.execute(operation)
@@ -231,16 +236,33 @@ export async function scheduleAndExecuteGovernanceOp(
 }
 
 export async function getGovernanceCalldata(
+  hre: HardhatRuntimeEnvironment,
   operation: {
     calls: Array<TxInfo>
     predecessor: string
     salt: string
   },
-  provider: ethers.providers.BaseProvider
+  provider: ethers.Provider
 ) {
-  const governanceContract = IGovernanceFactory.connect(ethers.Wallet.createRandom().address, provider)
+  const governanceInterface = loadInterface(hre, getEraL1Path("IGovernance", "governance"))
   return {
-    scheduleTransparent: governanceContract.interface.encodeFunctionData("scheduleTransparent", [operation, 0]),
-    execute: governanceContract.interface.encodeFunctionData("execute", [operation]),
+    scheduleTransparent: governanceInterface.encodeFunctionData("scheduleTransparent", [operation, 0]),
+    execute: governanceInterface.encodeFunctionData("execute", [operation]),
   }
+}
+
+export function loadInterface(hre: HardhatRuntimeEnvironment, path: string) {
+  return new ethers.Interface(hre.artifacts.readArtifactSync(path).abi)
+}
+
+export function getEraL1Path(name: string, path?: string) {
+  return `lib/era-contracts/l1-contracts/contracts/${path?.concat("/") ?? ""}${name}.sol:${name}`
+}
+
+export function getEraL2ABIJsonPath(name: string, path?: string) {
+  return `lib/era-contracts/l2-contracts/artifacts-zk/contracts/${path?.concat("/") ?? ""}${name}.sol/${name}.json`
+}
+
+export function getExchangeAddress(hre: HardhatRuntimeEnvironment) {
+  return (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 }

@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish } from "ethers"
+import { BigNumberish } from "ethers"
 
 export enum MarginType {
   UNSPECIFIED,
