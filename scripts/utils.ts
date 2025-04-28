@@ -244,3 +244,86 @@ export async function getGovernanceCalldata(
     execute: governanceContract.interface.encodeFunctionData("execute", [operation]),
   }
 }
+
+export enum FacetCutAction {
+  Add = 0,
+  Replace = 1,
+  Remove = 2
+}
+
+/**
+ * Generate diamond cut data for facet methods
+ * @param facetInfos Array of facet contract instances
+ * @param action Diamond cut action (0=Add, 1=Replace, 2=Remove)
+ * @returns Diamond cut data for facet methods
+ */
+export async function generateDiamondCutData(facetInfos: Array<{ address: string, abi: any[] }>, action: FacetCutAction) {
+  // Create diamond cut data array
+  const diamondCut = [];
+
+  for (const { address, abi } of facetInfos) {
+    // Create interface from ABI
+    const facetInterface = new ethers.utils.Interface(abi);
+
+    // Get all function selectors from the facet
+    const selectors = [];
+    for (const fn of Object.keys(facetInterface.functions)) {
+      selectors.push(facetInterface.getSighash(fn));
+    }
+
+    diamondCut.push({
+      facetAddress: address,
+      action: action,
+      functionSelectors: selectors
+    });
+  }
+
+  return diamondCut;
+}
+
+/**
+ * Validates the diamond cut data for duplicate selectors
+ * @param abi Contract ABI to check against
+ * @param diamondCutData Diamond cut data to validate
+ * @returns A boolean indicating if validation passed
+ */
+export function validateDiamondCutData(abi: any[], diamondCutData: any[]) {
+  const abiInterface = new ethers.utils.Interface(abi);
+  const abiSelectors = Object.keys(abiInterface.functions).map(fn => abiInterface.getSighash(fn));
+
+  // Check for duplicate selectors in the diamond cut data
+  const allSelectors = [];
+  const selectorMap = new Map();
+
+  for (let i = 0; i < diamondCutData.length; i++) {
+    const facetCut = diamondCutData[i];
+    const facetSelectors = facetCut.functionSelectors;
+
+    for (let j = 0; j < facetSelectors.length; j++) {
+      const selector = facetSelectors[j];
+
+      if (selectorMap.has(selector)) {
+        console.error(`DUPLICATE SELECTOR: ${selector} found in both:`);
+        console.error(`1. Facet at address: ${selectorMap.get(selector)}`);
+        console.error(`2. Facet at address: ${facetCut.facetAddress}`);
+        return false;
+      }
+
+      selectorMap.set(selector, facetCut.facetAddress);
+      allSelectors.push(selector);
+    }
+  }
+
+  // Check if any selector in the ABI is also in the diamond cut data
+  for (let i = 0; i < abiSelectors.length; i++) {
+    const abiSelector = abiSelectors[i];
+
+    if (allSelectors.includes(abiSelector)) {
+      console.error(`CONFLICT: Selector ${abiSelector} from the ABI is also in the diamond cut data`);
+      console.error(`Found in facet at address: ${selectorMap.get(abiSelector)}`);
+      return false;
+    }
+  }
+
+  return true;
+}

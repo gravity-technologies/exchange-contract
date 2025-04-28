@@ -7,24 +7,10 @@ import "../util/BIMath.sol";
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
 import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
+import "../interfaces/ITransfer.sol";
 
-abstract contract TransferContract is TradeContract {
+abstract contract TransferContract is ITransfer, TradeContract {
   using BIMath for BI;
-
-  event Withdrawal(
-    address indexed fromAccount,
-    address indexed recipient, // the recipient of the withdrawal on L1
-    uint64 txID,
-    WithdrawalInfo withdrawalInfo
-  );
-
-  event Deposit(
-    address indexed toAccount,
-    bytes32 indexed bridgeMintHash, // the hash of the BridgeMint event on L2
-    Currency currency,
-    uint64 numTokens,
-    uint64 txID
-  );
 
   /**
    * @notice Deposit collateral into a sub account
@@ -143,16 +129,6 @@ abstract contract TransferContract is TradeContract {
         erc20Address: erc20Address,
         erc20AmountToSend: erc20AmountToSend
       });
-  }
-
-  struct WithdrawalInfo {
-    Currency currency;
-    int64 amount;
-    int64 socializedLossHaircutAmount;
-    int64 withdrawalFeeCharged;
-    int64 amountToSend;
-    address erc20Address;
-    uint256 erc20AmountToSend;
   }
 
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {

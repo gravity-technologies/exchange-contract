@@ -5,8 +5,9 @@ import "./BaseContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
+import "../interfaces/ISubAccount.sol";
 
-contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlement {
+contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, FundingAndSettlement {
   int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9; // 31 days
 
   /// @notice Create a subaccount

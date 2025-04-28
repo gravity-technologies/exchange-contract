@@ -4066,7 +4066,7 @@
                         "nonce": 191924934
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "4620859999669128511",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -4117,7 +4117,7 @@
                               "nonce": 847576847
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "8710746450285125235",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -4271,7 +4271,7 @@
                "type": "TRADE",
                "trade": {
                   "taker_order": {
-                     "order_id": "0x01",
+                     "order_id": "0x010201050377c8690000000000000002",
                      "sub_account_id": "1",
                      "is_market": false,
                      "time_in_force": "GOOD_TILL_TIME",
@@ -4298,8 +4298,8 @@
                         "nonce": 1313352296
                      },
                      "metadata": {
-                        "client_order_id": "0",
-                        "create_time": "0",
+                        "client_order_id": "3633636895601290752",
+                        "create_time": "13305600000000038",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
@@ -4310,12 +4310,16 @@
                         "broker": "UNSPECIFIED"
                      },
                      "state": {
-                        "status": "UNSPECIFIED",
+                        "status": "PENDING",
                         "reject_reason": "UNSPECIFIED",
                         "book_size": [],
-                        "traded_size": [],
-                        "update_time": "0",
-                        "avg_fill_price": []
+                        "traded_size": [
+                           "0"
+                        ],
+                        "update_time": "13305600000000038",
+                        "avg_fill_price": [
+                           "0"
+                        ]
                      },
                      "is_liquidation": true
                   },
@@ -4349,7 +4353,7 @@
                               "nonce": 1277092043
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "3435464340187195021",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -7163,7 +7167,7 @@
                         "nonce": 2012512289
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "4468531157939539393",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -7214,7 +7218,7 @@
                               "nonce": 210251266
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "1549320859886693672",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -7355,7 +7359,7 @@
                         "nonce": 554758663
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "2559019559425485342",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -7406,7 +7410,7 @@
                               "nonce": 911507019
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "5931215473795855051",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -8847,7 +8851,7 @@
                         "nonce": 35211315
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "2808271218437641263",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -8898,7 +8902,7 @@
                               "nonce": 602640576
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "6095560311058590301",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",

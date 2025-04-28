@@ -1,11 +1,12 @@
 pragma solidity ^0.8.20;
 
-import "./RiskCheck.sol";
+import "../api/RiskCheck.sol";
 import "../types/PositionMap.sol";
 import "../types/DataStructure.sol";
-import "./ConfigContract.sol";
+import "../api/ConfigContract.sol";
+import "../interfaces/IAssertion.sol";
 
-contract AssertionContract is ConfigContract, RiskCheck {
+contract AssertionFacet is IAssertion, ConfigContract, RiskCheck {
   using BIMath for BI;
 
   function assertLastTxID(uint64 expectedLastTxID) external view {
@@ -277,25 +278,6 @@ contract AssertionContract is ConfigContract, RiskCheck {
     _assertSubAccounts(subAccounts);
   }
 
-  struct PositionAssertion {
-    bytes32 assetID;
-    int64 balance;
-    int64 fundingIndex;
-  }
-  struct SpotAssertion {
-    Currency currency;
-    int64 balance;
-  }
-  struct SubAccountAssertion {
-    uint64 subAccountID;
-    int64 fundingTimestamp;
-    PositionAssertion[] positions;
-    SpotAssertion[] spots;
-  }
-  struct TradeAssertion {
-    SubAccountAssertion[] subAccounts;
-  }
-
   // Assertion for Trade Contract
   function assertTradeDeriv(TradeAssertion calldata tradeAssertion) external view {
     _assertSubAccounts(tradeAssertion.subAccounts);
@@ -392,11 +374,6 @@ contract AssertionContract is ConfigContract, RiskCheck {
     }
   }
 
-  struct MarginTierAssertion {
-    uint64 bracketStart;
-    uint32 rate;
-  }
-
   // Assertions for MarginConfig Contract
   function assertSetSimpleCrossMMTiers(bytes32 kud, MarginTierAssertion[] calldata expectedTiers) external view {
     ListMarginTiersBI memory tiers = _getListMarginTiersBIFromStorage(kud);
@@ -423,14 +400,6 @@ contract AssertionContract is ConfigContract, RiskCheck {
       state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == expectedLockEndTime,
       "ex schedSimpleCrossMMTiers"
     );
-  }
-
-  // Vault assertion structs
-  struct VaultLpAssertion {
-    address accountID;
-    uint64 lpTokenBalance;
-    uint64 usdNotionalInvested;
-    SpotAssertion[] spots;
   }
 
   // Helper functions for vault assertions
@@ -462,6 +431,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     address managerAccountID,
     Currency quoteCurrency,
     MarginType marginType,
+    int64 lastAppliedFundingTimestamp,
     uint32 managementFeeCentiBeeps,
     uint32 performanceFeeCentiBeeps,
     uint32 marketingFeeCentiBeeps,
@@ -479,7 +449,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
         vaultSub.accountID == managerAccountID &&
         vaultSub.quoteCurrency == quoteCurrency &&
         vaultSub.marginType == marginType &&
-        vaultSub.lastAppliedFundingTimestamp == lastFeeSettlementTimestamp &&
+        vaultSub.lastAppliedFundingTimestamp == lastAppliedFundingTimestamp &&
         vaultSub.isVault == true,
       "ex vaultCreate"
     );
