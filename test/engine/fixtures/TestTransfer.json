@@ -39187,7 +39187,7 @@
                         "nonce": 2109603158
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -39238,7 +39238,7 @@
                               "nonce": 574994927
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -40466,7 +40466,7 @@
                         "nonce": 1141203971
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -40517,7 +40517,7 @@
                               "nonce": 1543324631
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -41745,7 +41745,7 @@
                         "nonce": 1037452465
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -41796,7 +41796,7 @@
                               "nonce": 6709195
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -43024,7 +43024,7 @@
                         "nonce": 1821476410
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -43075,7 +43075,7 @@
                               "nonce": 1311679664
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -44303,7 +44303,7 @@
                         "nonce": 817381193
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -44354,7 +44354,7 @@
                               "nonce": 559774153
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -45556,7 +45556,7 @@
                         "nonce": 1033464171
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -45607,7 +45607,7 @@
                               "nonce": 1409954084
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -46809,7 +46809,7 @@
                         "nonce": 1161933101
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -46860,7 +46860,7 @@
                               "nonce": 149419964
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -47004,7 +47004,8 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 500,
-                        "mark_price": "60000000000000"
+                        "mark_price": "60000000000000",
+                        "funding_rate_8_h_avg": 0
                      }
                   ],
                   "signature": {
@@ -48122,7 +48123,7 @@
                         "nonce": 481498519
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10541",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -48173,7 +48174,7 @@
                               "nonce": 1987598197
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10542",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -48317,7 +48318,8 @@
                            "quote": "USDT"
                         },
                         "funding_rate": 500,
-                        "mark_price": "60000000000000"
+                        "mark_price": "60000000000000",
+                        "funding_rate_8_h_avg": 0
                      }
                   ],
                   "signature": {
