@@ -20,6 +20,11 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
   int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
 
+  /// @dev The maximum signature expiry time for orders. This is deliberately laxer than the expiry for order in risk
+  /// In risk normal orders have a 30 day expiry, and TPSL orders have a 180 day expiry.
+  /// Orders passing risk expiry validation also pass contract expiry validation
+  int64 private constant ONE_HUNDRED_EIGHTY_DAY_EXPIRY = 180 * 24 * ONE_HOUR_NANOS;
+
   struct OrderCalculationResult {
     uint64[] matchedSizes;
     BI[] legSpotDelta;
@@ -68,7 +73,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
   ) private returns (OrderCalculationResult memory makerCalcResult) {
     makerCalcResult.matchedSizes = makerMatch.matchedSize;
     makerCalcResult.legSpotDelta = new BI[](makerMatch.makerOrder.legs.length);
-    Order calldata makerOrder = makerMatch.makerOrder;
 
     for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ++legIdx) {
       uint64 size = makerCalcResult.matchedSizes[legIdx];
@@ -78,7 +82,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       OrderLeg calldata leg = makerMatch.makerOrder.legs[legIdx];
       uint udec = _getBalanceDecimal(assetGetUnderlying(leg.assetID));
-      uint qdec = _getBalanceDecimal(assetGetQuote(leg.assetID));
       BI memory tradeSize = BI(int256(uint256(size)), udec);
       BI memory notional = tradeSize.mul(BI(int256(uint256(leg.limitPrice)), PRICE_DECIMALS));
 
@@ -224,15 +227,16 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(currencyCanHoldSpotBalance(assetQuote), ERR_NOT_SUPPORTED);
       require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
-      int64 expiry = assetGetExpiration(leg.assetID);
     }
 
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
-    _requireValidSig(timestamp, orderHash, order.signature);
+    Signature calldata sig = order.signature;
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + ONE_HUNDRED_EIGHTY_DAY_EXPIRY), "expired");
+    _requireValidNoExipry(orderHash, sig);
 
     // Check that the signer has trade permission
-    Session storage session = state.sessions[order.signature.signer];
+    Session storage session = state.sessions[sig.signer];
 
     // The signer is considered to have trade permission if any of the following is true:
     // - order's signer is in the session key map, and session hasn't expired, and the sessionKey's signer has trade permission
@@ -243,10 +247,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     }
 
     require(
-      (session.expiry != 0 &&
-        session.expiry >= timestamp &&
-        hasSubAccountPermission(permSub, session.subAccountSigner, SubAccountPermTrade)) ||
-        hasSubAccountPermission(permSub, order.signature.signer, SubAccountPermTrade),
+      (hasSubAccountPermission(permSub, session.subAccountSigner, SubAccountPermTrade)) ||
+        hasSubAccountPermission(permSub, sig.signer, SubAccountPermTrade),
       ERR_NO_TRADE_PERMISSION
     );
 
@@ -313,7 +315,6 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
 
       // Step 1: Retrieve position
       Position storage pos = _getOrCreatePosition(sub, leg.assetID);
-      int64 posBalance = pos.balance;
 
       // Step 2: Update subaccount balances
       if (leg.isBuyingAsset) {

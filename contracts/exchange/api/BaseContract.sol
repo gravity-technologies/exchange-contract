@@ -45,8 +45,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
 
-  /// @dev The maximum signature expiry time. Any signature with a longer expiry time will capped to this value
-  int64 private constant MAX_SIG_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
+  /// @dev The maximum signature expiry time for all signatures except TPSL orders
+  int64 private constant THIRTY_DAY_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
@@ -114,7 +114,6 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     bytes32[] memory hashes,
     Signature[] calldata sigs
   ) internal {
-    // FIXME: implement
     uint numSigs = sigs.length;
     require(numSigs == hashes.length, "invalid number of hashes");
     // 1. Check that there are no duplicate signing key in the signatures
@@ -136,7 +135,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     int64 timestamp = state.timestamp;
     for (uint i; i < numSigs; ++i) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
-      _requireValidSig(timestamp, hashes[i], sigs[i]);
+      _requireValidSig30DaysExpiry(timestamp, hashes[i], sigs[i]);
       state.replay.executed[hashes[i]] = true;
     }
   }
@@ -154,13 +153,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
   function _preventReplay(bytes32 hash, Signature calldata sig) internal {
     require(!state.replay.executed[hash], "replayed payload");
-    _requireValidSig(state.timestamp, hash, sig);
+    _requireValidSig30DaysExpiry(state.timestamp, hash, sig);
     state.replay.executed[hash] = true;
   }
 
   // Verify that a signature is valid. Caller need to prevent replay attack
-  function _requireValidSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal view {
-    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + MAX_SIG_EXPIRY), "expired");
+  function _requireValidSig30DaysExpiry(int64 timestamp, bytes32 hash, Signature calldata sig) internal view {
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + THIRTY_DAY_EXPIRY), "expired");
     _requireValidNoExipry(hash, sig);
   }
 

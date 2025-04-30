@@ -1158,7 +1158,7 @@
                         "nonce": 1628974505
                      },
                      "metadata": {
-                        "client_order_id": "0",
+                        "client_order_id": "10081",
                         "create_time": "0",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
@@ -1209,7 +1209,7 @@
                               "nonce": 378244770
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10082",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
@@ -1363,7 +1363,7 @@
                "type": "TRADE",
                "trade": {
                   "taker_order": {
-                     "order_id": "0x01",
+                     "order_id": "0x01020107035871170000000000000002",
                      "sub_account_id": "1",
                      "is_market": false,
                      "time_in_force": "GOOD_TILL_TIME",
@@ -1390,8 +1390,8 @@
                         "nonce": 1686787126
                      },
                      "metadata": {
-                        "client_order_id": "0",
-                        "create_time": "0",
+                        "client_order_id": "10083",
+                        "create_time": "13305600000000033",
                         "trigger": {
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
@@ -1402,12 +1402,16 @@
                         "broker": "UNSPECIFIED"
                      },
                      "state": {
-                        "status": "UNSPECIFIED",
+                        "status": "PENDING",
                         "reject_reason": "UNSPECIFIED",
                         "book_size": [],
-                        "traded_size": [],
-                        "update_time": "0",
-                        "avg_fill_price": []
+                        "traded_size": [
+                           "0"
+                        ],
+                        "update_time": "13305600000000033",
+                        "avg_fill_price": [
+                           "0"
+                        ]
                      },
                      "is_liquidation": true
                   },
@@ -1441,7 +1445,7 @@
                               "nonce": 115379123
                            },
                            "metadata": {
-                              "client_order_id": "0",
+                              "client_order_id": "10084",
                               "create_time": "0",
                               "trigger": {
                                  "trigger_type": "UNSPECIFIED",
