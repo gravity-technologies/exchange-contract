@@ -1,75 +1,12 @@
 pragma solidity ^0.8.20;
 
-import "./api/AccountContract.sol";
-import "./api/SubAccountContract.sol";
-import "./api/WalletRecoveryContract.sol";
-import "./api/OracleContract.sol";
-import "./api/TransferContract.sol";
-import "./api/AssertionContract.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../api/ConfigContract.sol";
+import "../api/RiskCheck.sol";
+import "../api/MarginConfigContract.sol";
+import "../interfaces/IGetter.sol";
 
-contract GRVTExchangeTest is
-  Initializable,
-  AccountContract,
-  SubAccountContract,
-  WalletRecoveryContract,
-  OracleContract,
-  TransferContract,
-  AssertionContract
-{
+contract GetterFacet is IGetter, ConfigContract, MarginConfigContract, RiskCheck {
   using BIMath for BI;
-
-  function initialize(
-    address admin,
-    address chainSubmitter,
-    address initializeConfigSigner,
-    address beaconOwner,
-    bytes32 depositProxyProxyBytecodeHash
-  ) public initializer {
-    __ReentrancyGuard_init();
-
-    // Initialize the config timelock rules
-    _setDefaultConfigSettings();
-    state.initializeConfigSigner = initializeConfigSigner;
-
-    _setupRole(DEFAULT_ADMIN_ROLE, admin);
-    _setupRole(CHAIN_SUBMITTER_ROLE, chainSubmitter);
-
-    address depositProxy = address(new DepositProxy{salt: bytes32(0)}());
-    state.depositProxyBeacon = new UpgradeableBeacon{salt: bytes32(0)}(depositProxy);
-    state.depositProxyBeacon.transferOwnership(beaconOwner);
-    state.depositProxyProxyBytecodeHash = depositProxyProxyBytecodeHash;
-  }
-
-  struct AccountResult {
-    address id;
-    uint64 multiSigThreshold;
-    uint64 adminCount;
-    uint64[] subAccounts;
-    // Not returned fields since mapping is not supported in return type include:
-    // 1. spotBalances
-    // 2. recoveryAddresses
-    // 3. onboardedWithdrawalAddresses
-    // 4. onboardedTransferAccounts
-    // 5. signers
-  }
-
-  struct SubAccountResult {
-    uint64 id;
-    uint64 adminCount;
-    uint64 signerCount;
-    address accountID;
-    MarginType marginType;
-    Currency quoteCurrency;
-    int64 lastAppliedFundingTimestamp;
-    // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
-    // 1. spotBalances
-    // 2. PositionsMap options;
-    // 3. PositionsMap futures;
-    // 4. PositionsMap perps;
-    // 5. mapping(bytes => uint256) positionIndex;
-    // 6. signers;
-  }
 
   function getAccountResult(address accID) public view returns (AccountResult memory) {
     Account storage account = state.accounts[accID];
@@ -252,5 +189,49 @@ contract GRVTExchangeTest is
   function getTotalClientEquity(Currency currency) public view returns (int64) {
     require(currency == Currency.USDT, "Invalid currency");
     return _getTotalClientValueUSDT();
+  }
+
+  // Vault related getters
+  function isVault(uint64 subAccountID) public view returns (bool) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.isVault;
+  }
+
+  function getVaultStatus(uint64 vaultID) public view returns (VaultStatus) {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+    return sub.vaultInfo.status;
+  }
+
+  function getVaultFees(
+    uint64 vaultID
+  )
+    public
+    view
+    returns (uint32 managementFeeCentiBeeps, uint32 performanceFeeCentiBeeps, uint32 marketingFeeCentiBeeps)
+  {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+
+    VaultInfo storage vaultInfo = sub.vaultInfo;
+    return (vaultInfo.managementFeeCentiBeeps, vaultInfo.performanceFeeCentiBeeps, vaultInfo.marketingFeeCentiBeeps);
+  }
+
+  function getVaultTotalLpTokenSupply(uint64 vaultID) public view returns (uint64) {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+
+    return sub.vaultInfo.totalLpTokenSupply;
+  }
+
+  function getVaultLpInfo(
+    uint64 vaultID,
+    address lpAccountID
+  ) public view returns (uint64 lpTokenBalance, uint64 usdNotionalInvested) {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+
+    VaultLpInfo storage lpInfo = sub.vaultInfo.lpInfos[lpAccountID];
+    return (lpInfo.lpTokenBalance, lpInfo.usdNotionalInvested);
   }
 }

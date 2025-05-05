@@ -1,10 +1,11 @@
 pragma solidity ^0.8.20;
 
-import "./SubAccountContract.sol";
-import "./TransferContract.sol";
-import "./signature/generated/VaultSig.sol";
+import "../api/SubAccountContract.sol";
+import "../api/TransferContract.sol";
+import "../api/signature/generated/VaultSig.sol";
+import "../interfaces/IVault.sol";
 
-contract VaultContract is SubAccountContract, TransferContract {
+contract VaultFacet is IVault, SubAccountContract, TransferContract {
   using BIMath for BI;
 
   function vaultCreate(

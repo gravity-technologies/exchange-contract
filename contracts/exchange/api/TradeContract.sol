@@ -8,8 +8,9 @@ import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
+import "../interfaces/ITrade.sol";
 
-abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
+abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
   int32 internal constant TRADE_FEE_CAP_RATE_BPS = 2000;
