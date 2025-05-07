@@ -88,6 +88,8 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
     _requireSubAccountPermission(vaultSub, sig.signer, SubAccountPermAdmin);
 
+    require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can be updated");
+
     // ---------- Signature Verification -----------
     bytes32 hash = hashVaultUpdate(
       vaultID,
