@@ -413,10 +413,8 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
     BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, lpDec);
     BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, lpDec);
-    BI memory remainingBalanceBI = balanceBI.sub(burnBI);
 
-    uint64 usdNotionalInvestedAfter = usdNotionalInvestedBI.mul(remainingBalanceBI).div(balanceBI).toUint64(usdDec);
-    return lpInfo.usdNotionalInvested - usdNotionalInvestedAfter;
+    return usdNotionalInvestedBI.mul(burnBI).div(balanceBI).toUint64(usdDec);
   }
 
   function vaultManagementFeeTick(
