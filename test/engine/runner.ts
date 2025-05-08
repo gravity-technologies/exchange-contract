@@ -12,7 +12,7 @@ export async function runTestCase(
   test: TestCase,
   exchangeContract: Contract,
   w1: Wallet,
-  l2SharedBridgeAsL1Bridge: L2SharedBridge
+  l2SharedBridgeAsL1Bridge: Contract
 ) {
   for (const step of test.steps ?? []) {
     await executeTestStep(step, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
@@ -23,15 +23,15 @@ async function executeTestStep(
   step: TestStep,
   exchangeContract: Contract,
   w1: Wallet,
-  l2SharedBridgeAsL1Bridge: L2SharedBridge
+  l2SharedBridgeAsL1Bridge: Contract
 ) {
   if (step.tx_data === "") {
     await validateExpectations(exchangeContract, step.expectations)
     return
   }
 
-  const tx: ethers.providers.TransactionRequest = {
-    to: exchangeContract.address,
+  const tx: ethers.TransactionRequest = {
+    to: exchangeContract.target,
     gasLimit: GAS_LIMIT,
     data: step.tx_data,
   }
@@ -55,7 +55,7 @@ async function executeTestStep(
 
   if (step.assertion_data !== "") {
     const assertionTx = {
-      to: exchangeContract.address,
+      to: exchangeContract.target,
       gasLimit: GAS_LIMIT,
       data: step.assertion_data,
     }

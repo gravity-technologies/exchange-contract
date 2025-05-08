@@ -1,6 +1,5 @@
 import { Contract, ethers } from "ethers"
-import { L2TokenInfo } from "../../deploy/testutil"
-import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridge"
+import { L2TokenInfo } from "./setup"
 import { DepositTxInfo, TestStep } from "./types"
 import { scaleBigInt } from "./util"
 
@@ -14,7 +13,7 @@ export function isDeposit(step: TestStep) {
 // fundExchangeAccount method on the L2StandardERC20 to transfer the
 // deposited amount to the exchange.
 export async function mockFinalizeDeposit(
-  l2SharedBridgeAsL1Bridge: L2SharedBridge,
+  l2SharedBridgeAsL1Bridge: Contract,
   deposit: DepositTxInfo,
   exchangeContract: Contract,
 ) {
@@ -26,7 +25,7 @@ export async function mockFinalizeDeposit(
     L2TokenInfo[currency].erc20Decimals
   )
 
-  const to_account_id = ethers.utils.hexZeroPad(deposit.to_account_id, 20);
+  const to_account_id = ethers.zeroPadValue(deposit.to_account_id, 20);
 
   if (currency in L2TokenInfo) {
     const depositProxy = await exchangeContract.getDepositProxy(to_account_id)
@@ -44,7 +43,7 @@ export async function mockFinalizeDeposit(
 }
 
 function encodedTokenData(name: string, symbol: string, decimals: number) {
-  const abiCoder = ethers.utils.defaultAbiCoder
+  const abiCoder = ethers.AbiCoder.defaultAbiCoder()
   const encodedName = abiCoder.encode(["string"], [name])
   const encodedSymbol = abiCoder.encode(["string"], [symbol])
   const encodedDecimals = abiCoder.encode(["uint8"], [decimals])
