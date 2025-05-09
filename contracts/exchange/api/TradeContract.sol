@@ -8,8 +8,9 @@ import "../types/DataStructure.sol";
 import "../common/Error.sol";
 import "../util/BIMath.sol";
 import "../util/Asset.sol";
+import "../interfaces/ITrade.sol";
 
-abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskCheck {
+abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
   int32 internal constant TRADE_FEE_CAP_RATE_BPS = 2000;
@@ -176,6 +177,8 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     // Always allow non-liquidation orders that reduce position size
     // Liquidation orders must maintain subaccount above maintenance margin
     bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
+    _checkVaultOrder(sub, order, isReducingOrder);
+
     if (!order.isLiquidation && isReducingOrder) {
       _executeOrder(sub, order, calcResult, totalFee);
       return;
@@ -187,6 +190,15 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
     _executeOrder(sub, order, calcResult, totalFee);
     _requireValidMargin(sub, order, false);
+  }
+
+  function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private {
+    if (!sub.isVault) {
+      return;
+    }
+
+    require(sub.vaultInfo.status != VaultStatus.DELISTED || isReducingOrder, "delisted vault can only reduce position");
+    require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
   }
 
   function _verifyOrderFull(
@@ -244,6 +256,13 @@ abstract contract TradeContract is ConfigContract, FundingAndSettlement, RiskChe
     SubAccount storage permSub = sub;
     if (order.isLiquidation) {
       (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    } else if (sub.isVault && sub.vaultInfo.status == VaultStatus.DELISTED) {
+      (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
+        ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID
+      );
+      if (ifSubFound && hasSubAccountPermission(ifSub, session.subAccountSigner, SubAccountPermTrade)) {
+        permSub = ifSub;
+      }
     }
 
     require(
