@@ -252,6 +252,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     SubAccount storage permSub = sub;
     if (order.isLiquidation) {
       (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    } else if (sub.isVault && sub.vaultInfo.status == VaultStatus.DELISTED) {
+      (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
+        ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID
+      );
+      if (ifSubFound && hasSubAccountPermission(ifSub, session.subAccountSigner, SubAccountPermTrade)) {
+        permSub = ifSub;
+      }
     }
 
     require(
