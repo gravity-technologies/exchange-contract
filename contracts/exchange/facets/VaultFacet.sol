@@ -495,13 +495,13 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       daysSinceLastFeeSettlement
     );
 
-    uint64 qDec = _getBalanceDecimal(vaultSub.quoteCurrency);
+    uint64 lpDec = _getLpTokenDecimal();
 
-    BI memory managementFeeNewLpTokenSupplyBI = BIMath.fromUint64(vaultInfo.totalLpTokenSupply, qDec).mul(
+    BI memory managementFeeNewLpTokenSupplyBI = BIMath.fromUint64(vaultInfo.totalLpTokenSupply, lpDec).mul(
       managementFeeIncFactorBI
     );
 
-    managementFeeInLpToken = managementFeeNewLpTokenSupplyBI.toUint64(qDec);
+    managementFeeInLpToken = managementFeeNewLpTokenSupplyBI.toUint64(lpDec);
 
     return (daysSinceLastFeeSettlement, managementFeeInLpToken);
   }
