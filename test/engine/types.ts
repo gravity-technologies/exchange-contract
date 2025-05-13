@@ -264,9 +264,11 @@ export interface ExTotalClientEquity {
 
 export interface ExVaultParams {
   vault_id: string
-  management_fee_centi_beeps: number
-  performance_fee_centi_beeps: number
-  marketing_fee_centi_beeps: number
+  params_specs: {
+    management_fee_centi_beeps: string
+    performance_fee_centi_beeps: string
+    marketing_fee_centi_beeps: string
+  }
 }
 
 export interface ExVaultStatus {

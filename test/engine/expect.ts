@@ -564,9 +564,15 @@ async function expectVaultParams(contract: Contract, expectations: ExVaultParams
 
   // Get vault fees and check them against expectations
   const [managementFee, performanceFee, marketingFee] = await contract.getVaultFees(BigInt(expectations.vault_id))
-  expect(managementFee).to.equal(expectations.management_fee_centi_beeps)
-  expect(performanceFee).to.equal(expectations.performance_fee_centi_beeps)
-  expect(marketingFee).to.equal(expectations.marketing_fee_centi_beeps)
+  if (expectations.params_specs.management_fee_centi_beeps != "") {
+    expect(managementFee / 10000).to.equal(Number(expectations.params_specs.management_fee_centi_beeps))
+  }
+  if (expectations.params_specs.performance_fee_centi_beeps != "") {
+    expect(performanceFee / 10000).to.equal(Number(expectations.params_specs.performance_fee_centi_beeps))
+  }
+  if (expectations.params_specs.marketing_fee_centi_beeps != "") {
+    expect(marketingFee / 10000).to.equal(Number(expectations.params_specs.marketing_fee_centi_beeps))
+  }
 }
 
 async function expectVaultStatus(contract: Contract, expectations: ExVaultStatus) {

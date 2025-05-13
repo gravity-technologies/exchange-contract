@@ -260,7 +260,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
         ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID
       );
-      if (ifSubFound && hasSubAccountPermission(ifSub, session.subAccountSigner, SubAccountPermTrade)) {
+      if (ifSubFound && hasSubAccountPermission(ifSub, sig.signer, SubAccountPermTrade)) {
         permSub = ifSub;
       }
     }
