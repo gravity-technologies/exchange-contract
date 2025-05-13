@@ -155,6 +155,7 @@ export enum TimeInForce {
   ALL_OR_NONE,
   IMMEDIATE_OR_CANCEL,
   FILL_OR_KILL,
+  RETAIL_PRICE_IMPROVEMENT,
 }
 
 export interface OrderMatch {
