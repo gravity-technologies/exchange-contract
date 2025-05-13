@@ -5251,10 +5251,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -5308,10 +5310,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -10706,10 +10710,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -10763,10 +10769,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -16161,10 +16169,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -16218,10 +16228,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -16377,10 +16389,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -16434,10 +16448,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -21839,10 +21855,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -21896,10 +21914,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -22055,10 +22075,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -22112,10 +22134,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -27517,10 +27541,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -27574,10 +27600,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -27768,10 +27796,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -27825,10 +27855,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -28012,10 +28044,12 @@
                            "trigger_type": "STOP_LOSS",
                            "tpsl": {
                               "trigger_by": "LAST",
-                              "trigger_price": "40000000000000"
+                              "trigger_price": "40000000000000",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -28069,10 +28103,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
@@ -28165,10 +28201,12 @@
                            "trigger_type": "TAKE_PROFIT",
                            "tpsl": {
                               "trigger_by": "LAST",
-                              "trigger_price": "40000000000000"
+                              "trigger_price": "40000000000000",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -28222,10 +28260,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",

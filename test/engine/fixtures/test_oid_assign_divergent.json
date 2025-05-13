@@ -5251,10 +5251,12 @@
                            "trigger_type": "UNSPECIFIED",
                            "tpsl": {
                               "trigger_by": "UNSPECIFIED",
-                              "trigger_price": "0"
+                              "trigger_price": "0",
+                              "close_position": false
                            }
                         },
-                        "broker": "UNSPECIFIED"
+                        "broker": "UNSPECIFIED",
+                        "source": "UNSPECIFIED"
                      },
                      "state": {
                         "status": "PENDING",
@@ -5308,10 +5310,12 @@
                                  "trigger_type": "UNSPECIFIED",
                                  "tpsl": {
                                     "trigger_by": "UNSPECIFIED",
-                                    "trigger_price": "0"
+                                    "trigger_price": "0",
+                                    "close_position": false
                                  }
                               },
-                              "broker": "UNSPECIFIED"
+                              "broker": "UNSPECIFIED",
+                              "source": "UNSPECIFIED"
                            },
                            "state": {
                               "status": "OPEN",
