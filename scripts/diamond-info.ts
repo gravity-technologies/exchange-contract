@@ -8,10 +8,6 @@ export const ExchangeFacetInfos = [
         interface: "IGetter"
     },
     {
-        facet: "AssertionFacet",
-        interface: "IAssertion"
-    },
-    {
         facet: "VaultFacet",
         interface: "IVault"
     },

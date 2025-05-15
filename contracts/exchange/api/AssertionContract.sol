@@ -1,12 +1,12 @@
 pragma solidity ^0.8.20;
 
-import "../api/RiskCheck.sol";
+import "./RiskCheck.sol";
 import "../types/PositionMap.sol";
 import "../types/DataStructure.sol";
-import "../api/ConfigContract.sol";
+import "./ConfigContract.sol";
 import "../interfaces/IAssertion.sol";
 
-contract AssertionFacet is IAssertion, ConfigContract, RiskCheck {
+contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   using BIMath for BI;
 
   function assertLastTxID(uint64 expectedLastTxID) external view {
