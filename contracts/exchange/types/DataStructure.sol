@@ -96,6 +96,7 @@ function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
 }
 
 uint constant PRICE_DECIMALS = 9;
+uint constant RATE_DECIMALS = 18;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
 uint constant CENTIBEEP_DECIMALS = 6;
 uint constant BASIS_POINTS_DECIMALS = 4;
@@ -105,6 +106,7 @@ uint64 constant AccountPermAdmin = 1 << 1;
 uint64 constant AccountPermInternalTransfer = 1 << 2;
 uint64 constant AccountPermExternalTransfer = 1 << 3;
 uint64 constant AccountPermWithdraw = 1 << 4;
+uint64 constant AccountPermVaultInvestor = 1 << 5;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
@@ -209,6 +211,7 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
+  uint256[49] __gap;
 }
 
 struct SubAccount {
@@ -219,6 +222,7 @@ struct SubAccount {
   // The timestamp that the sub account was last funded at
   int64 lastAppliedFundingTimestamp;
   // The Account that this Sub Account belongs to
+  // In the case of a vault, this will be the vault manager
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
@@ -232,6 +236,32 @@ struct SubAccount {
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
+  bool isVault;
+  VaultInfo vaultInfo;
+  uint256[49] __gap;
+}
+
+struct VaultInfo {
+  mapping(address => VaultLpInfo) lpInfos;
+  uint64 totalLpTokenSupply;
+  int64 lastFeeSettlementTimestamp;
+  uint32 managementFeeCentiBeeps;
+  uint32 performanceFeeCentiBeeps;
+  uint32 marketingFeeCentiBeeps;
+  VaultStatus status;
+  uint256[49] __gap;
+}
+
+struct VaultLpInfo {
+  uint64 lpTokenBalance;
+  uint64 usdNotionalInvested;
+}
+
+enum VaultStatus {
+  UNSPECIFIED,
+  ACTIVE,
+  DELISTED,
+  CLOSED
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).

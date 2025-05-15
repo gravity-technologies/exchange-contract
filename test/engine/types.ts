@@ -262,6 +262,32 @@ export interface ExTotalClientEquity {
   currency: string
 }
 
+export interface ExVaultParams {
+  vault_id: string
+  params_specs: {
+    management_fee_centi_beeps: string
+    performance_fee_centi_beeps: string
+    marketing_fee_centi_beeps: string
+  }
+}
+
+export interface ExVaultStatus {
+  vault_id: string
+  status: string  // "ACTIVE", "DELISTED", or "CLOSED"
+}
+
+export interface ExVaultTotalLpTokenSupply {
+  vault_id: string
+  total_lp_token_supply: string
+}
+
+export interface ExVaultLpInfo {
+  vault_id: string
+  lp_account_id: string
+  lp_token_balance: string
+  usd_notional_invested: string
+}
+
 export interface ExSubAccountSummaryOptional {
   summary: {
     event_time: string
@@ -280,8 +306,6 @@ export interface ExSubAccountSummaryOptional {
   open_orders: []
   pre_trade_initial_margin: string
 }
-
-
 
 export interface Expectation {
   name: string
@@ -319,4 +343,8 @@ export interface Expectation {
   | ExNumSubAccountPositions
   | ExInsuranceFundLoss
   | ExTotalClientEquity
+  | ExVaultParams
+  | ExVaultStatus
+  | ExVaultTotalLpTokenSupply
+  | ExVaultLpInfo
 }

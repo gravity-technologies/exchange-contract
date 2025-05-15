@@ -4,8 +4,9 @@ import "./BaseContract.sol";
 import "./signature/generated/WalletRecoverySig.sol";
 import "../types/DataStructure.sol";
 import "../util/Address.sol";
+import "../interfaces/IWalletRecovery.sol";
 
-contract WalletRecoveryContract is BaseContract {
+contract WalletRecoveryContract is IWalletRecovery, BaseContract {
   /// @notice Add a recovery address for a signer for a given signer for a given account
   /// The recoveryAddress can be used to change the signer from the signer to another signer from the account and subAccounts associated with the account
   ///

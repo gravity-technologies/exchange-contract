@@ -6,6 +6,7 @@ import "./signature/generated/ConfigSig.sol";
 import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
 import {L2ContractHelper} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import "../interfaces/IConfig.sol";
 
 struct ConfigProofMessage {
   uint256 blockTimestamp;
@@ -55,7 +56,7 @@ struct ConfigProofMessage {
 ///    the new value by calling `setConfig`
 ///
 ///////////////////////////////////////////////////////////////////
-contract ConfigContract is BaseContract {
+contract ConfigContract is IConfig, BaseContract {
   using BIMath for BI;
 
   // --------------- Constants ---------------
