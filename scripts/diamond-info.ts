@@ -11,4 +11,8 @@ export const ExchangeFacetInfos = [
         facet: "VaultFacet",
         interface: "IVault"
     },
+    {
+        facet: "WalletRecoveryFacet",
+        interface: "IWalletRecovery"
+    }
 ]
