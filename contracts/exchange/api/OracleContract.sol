@@ -6,8 +6,9 @@ import "./signature/generated/OracleSig.sol";
 import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
+import "../interfaces/IOracle.sol";
 
-contract OracleContract is ConfigContract {
+contract OracleContract is IOracle, ConfigContract {
   using BIMath for BI;
 
   int64 private constant ONE_MINUTE_NANOS = 60_000_000_000; // 1 minute in nanos
