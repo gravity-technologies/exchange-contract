@@ -3,7 +3,7 @@ import { ethers, Wallet as L1Wallet, providers as l1Providers } from "ethers"
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 
-import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders } from "./utils"
+import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders, approveL1SharedBridgeIfNeeded } from "./utils"
 import { task } from "hardhat/config"
 import { applyL1ToL2Alias, hashBytecode } from "zksync-web3/build/src/utils"
 import { Interface } from "ethers/lib/utils"
@@ -104,6 +104,8 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     console.log("Beacon proxy codehash: ", ethers.utils.hexlify(beaconProxyCodehash))
     console.log("Expected exchange impl address: ", expectedExchangeImplAddress)
     console.log("Expected exchange proxy address: ", expectedExchangeProxyAddress)
+
+    await approveL1SharedBridgeIfNeeded(chainId, bridgeHub, l1SharedBridge, l1Deployer)
 
     // deploy exchange and proxy
     const exchangeImplDepTx = await create2DeployFromL1NoFactoryDeps(
