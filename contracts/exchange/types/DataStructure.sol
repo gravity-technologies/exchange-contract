@@ -175,9 +175,17 @@ struct State {
   // Bridging partners
   // Number of bridging partners will be less than 10
   address[] bridgingPartners;
+  // Currency Configs
+  mapping(uint16 => CurrencyConfig) currencyConfigs;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+  uint256[48] __gap;
+}
+
+struct CurrencyConfig {
+  uint16 id;
+  uint16 balanceDecimals;
   uint256[49] __gap;
 }
 

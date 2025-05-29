@@ -4,12 +4,14 @@ import "./api/AccountContract.sol";
 import "./api/SubAccountContract.sol";
 import "./api/WalletRecoveryContract.sol";
 import "./api/OracleContract.sol";
+import "./api/CurrencyContract.sol";
 import "./api/TransferContract.sol";
 import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GRVTExchangeTest is
   Initializable,
+  CurrencyContract,
   AccountContract,
   SubAccountContract,
   WalletRecoveryContract,
@@ -278,5 +280,9 @@ contract GRVTExchangeTest is
     } else {
       return totalEquity >= int64(deriskMargin);
     }
+  }
+
+  function getCurrencyDecimals(uint16 id) public view returns (uint16) {
+    return state.currencyConfigs[id].balanceDecimals;
   }
 }

@@ -438,4 +438,9 @@ contract AssertionContract is ConfigContract, RiskCheck {
       "ex setDeriskRatio"
     );
   }
+
+  function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view {
+    CurrencyConfig storage config = state.currencyConfigs[id];
+    require(config.id == id && config.balanceDecimals == balanceDecimals, "ex addCurrency");
+  }
 }
