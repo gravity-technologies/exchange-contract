@@ -53,3 +53,19 @@ bytes32 constant _ADD_SESSION_KEY_H = keccak256("AddSessionKey(address sessionKe
 function hashAddSessionKey(address key, int64 keyExpiry) pure returns (bytes32) {
   return keccak256(abi.encode(_ADD_SESSION_KEY_H, key, keyExpiry));
 }
+
+bytes32 constant _SET_DERISK_TO_MAINTENANCE_MARGIN_RATIO_H = keccak256(
+  "SetDeriskToMaintenanceMarginRatio(uint64 subAccountID,uint32 deriskToMaintenanceMarginRatio,uint32 nonce,int64 expiration)"
+);
+
+function hashSetDeriskToMaintenanceMarginRatio(
+  uint64 subID,
+  uint32 deriskToMaintenanceMarginRatio,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(_SET_DERISK_TO_MAINTENANCE_MARGIN_RATIO_H, subID, deriskToMaintenanceMarginRatio, nonce, expiration)
+    );
+}

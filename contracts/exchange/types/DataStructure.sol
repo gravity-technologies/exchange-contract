@@ -209,6 +209,7 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
+  uint256[49] __gap;
 }
 
 struct SubAccount {
@@ -232,6 +233,9 @@ struct SubAccount {
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
+  // The deriskToMaintenanceMarginRatio for this sub account
+  uint32 deriskToMaintenanceMarginRatio;
+  uint256[48] __gap;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).

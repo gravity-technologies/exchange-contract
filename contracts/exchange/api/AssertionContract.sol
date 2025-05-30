@@ -424,4 +424,14 @@ contract AssertionContract is ConfigContract, RiskCheck {
       "ex schedSimpleCrossMMTiers"
     );
   }
+
+  function assertSetDeriskToMaintenanceMarginRatio(
+    uint64 subAccountID,
+    uint32 expectedDeriskToMaintenanceMarginRatio
+  ) external view {
+    require(
+      state.subAccounts[subAccountID].deriskToMaintenanceMarginRatio == expectedDeriskToMaintenanceMarginRatio,
+      "ex setDeriskRatio"
+    );
+  }
 }
