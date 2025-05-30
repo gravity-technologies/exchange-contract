@@ -8,6 +8,10 @@ import "../util/BIMath.sol";
 
 // The maximum number of maintenance margin tiers
 uint256 constant MAX_M_MARGIN_TIERS = 12;
+uint64 constant DERISK_MM_RATIO_VAULT = 2_000_000; // 2x
+uint64 constant DERISK_MM_RATIO_DEFAULT = 1_000_000; // 1x
+uint256 constant DERISK_RATIO_DECIMALS = 6;
+int64 constant DERISK_WINDOW_NANOS = 60 * 1_000_000_000; // 1 minute
 
 contract RiskCheck is BaseContract, MarginConfigContract {
   using BIMath for BI;
@@ -114,21 +118,6 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     return 0;
   }
 
-  function _requireValidMargin(SubAccount storage sub, Order calldata order, bool beforeTrade) internal view {
-    (uint64 liquidationSubID, bool liquidationSubConfigured) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
-
-    // Insurance Fund can Trade when under MM, and in Negative Equity
-    if (liquidationSubConfigured && sub.id == liquidationSubID) {
-      return;
-    }
-
-    if (order.isLiquidation && beforeTrade) {
-      require(!isAboveMaintenanceMargin(sub), "subaccount liquidated is above maintenance margin");
-    } else if (!order.isLiquidation && !beforeTrade) {
-      require(isAboveMaintenanceMargin(sub), "subaccount is below maintenance margin");
-    }
-  }
-
   /**
    * @dev Checks if an order is reducing the size of each position specified in its legs
    * @param sub The subaccount containing the positions
@@ -211,5 +200,35 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     BI memory qPrice = _getSpotPriceBI(assetGetQuote(asset));
 
     return mm.mul(qPrice);
+  }
+
+  /// @dev compute the derisk margin in settle currency (and settle decimals), and return true if the subaccount is deriskable
+  function _isDeriskable(int64 timestamp, SubAccount storage subAccount) internal view returns (bool) {
+    if (subAccount.lastDeriskTimestamp + DERISK_WINDOW_NANOS > timestamp) {
+      return true;
+    }
+
+    // Compute the maintenance margin
+    uint64 mm = _getMaintenanceMargin(subAccount);
+    uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
+    BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
+
+    // Compute the derisk margin
+    // TODO: if subAccount is vault, ratio = DERISK_MM_RATIO_VAULT
+    uint64 ratio = subAccount.deriskToMaintenanceMarginRatio == 0
+      ? DERISK_MM_RATIO_DEFAULT
+      : subAccount.deriskToMaintenanceMarginRatio;
+    BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
+    uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
+
+    BI memory totalEquityBI = _getSubAccountValueInQuote(subAccount);
+    int64 totalEquity = totalEquityBI.toInt64(qDec);
+
+    // In contract, we omit the TE < MM check to allow derisk orders to proceed even when total equity
+    // is below maintenance margin. This is intentional as it reduces risk for our insurance fund by
+    // allowing accounts to reduce their positions even when they're in a risky state.
+    // This differs from the liquidator's scan which uses MM <= TE < DRM condition to avoid interference
+    // with liquidation process. For accounts outside derisking window, we only check TE < DRM.
+    return totalEquity < 0 || uint64(totalEquity) < deriskMargin;
   }
 }

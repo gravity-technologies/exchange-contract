@@ -281,42 +281,46 @@ export interface ExSubAccountSummaryOptional {
   pre_trade_initial_margin: string
 }
 
-
+export interface ExSubAccountUnderDeriskMargin {
+  sub_account_id: string
+  under_derisk_margin: boolean
+}
 
 export interface Expectation {
   name: string
   expect:
-  | ExNumAccounts
-  | ExAccountSigners
-  | ExAccountMultiSigThreshold
-  | ExAccountWithdrawalAddresses
-  | ExSessionKeys
-  | ExConfig1D
-  | ExConfig2D
-  | ExConfigSchedule
-  | ExConfigScheduleAbsent
-  | ExSubAccountSigners
-  | ExSubAccountMarginType
-  | ExFundingIndex
-  | ExMarkPrice
-  | ExInterestRate
-  | ExFundingTimeDelta
-  | ExSubAccountValue
-  | ExSubAccountPosition
-  | ExSubAccountSpot
-  | ExSettlementPrice
-  | ExAccountRecoveryAddresses
-  | ExNotAccountRecoveryAddresses
-  | ExAccountSpot
-  | ExSimpleCrossMaintenanceMarginTiers
-  | ExSimpleCrossMaintenanceMarginTimelockEndTime
-  | ExSimpleCrossMaintenanceMarginTiersNoTimelock
-  | ExSubAccountMaintMargin
-  | ExOnboardedTransferAccount
-  | ExSubAccountSummaryOptional
-  | ExSubAccountSpotReal
-  | ExSubAccountPositionOptional
-  | ExNumSubAccountPositions
-  | ExInsuranceFundLoss
-  | ExTotalClientEquity
+    | ExNumAccounts
+    | ExAccountSigners
+    | ExAccountMultiSigThreshold
+    | ExAccountWithdrawalAddresses
+    | ExSessionKeys
+    | ExConfig1D
+    | ExConfig2D
+    | ExConfigSchedule
+    | ExConfigScheduleAbsent
+    | ExSubAccountSigners
+    | ExSubAccountMarginType
+    | ExFundingIndex
+    | ExMarkPrice
+    | ExInterestRate
+    | ExFundingTimeDelta
+    | ExSubAccountValue
+    | ExSubAccountPosition
+    | ExSubAccountSpot
+    | ExSettlementPrice
+    | ExAccountRecoveryAddresses
+    | ExNotAccountRecoveryAddresses
+    | ExAccountSpot
+    | ExSimpleCrossMaintenanceMarginTiers
+    | ExSimpleCrossMaintenanceMarginTimelockEndTime
+    | ExSimpleCrossMaintenanceMarginTiersNoTimelock
+    | ExSubAccountMaintMargin
+    | ExOnboardedTransferAccount
+    | ExSubAccountSummaryOptional
+    | ExSubAccountSpotReal
+    | ExSubAccountPositionOptional
+    | ExNumSubAccountPositions
+    | ExInsuranceFundLoss
+    | ExTotalClientEquity
+    | ExSubAccountUnderDeriskMargin
 }

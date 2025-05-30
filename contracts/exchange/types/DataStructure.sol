@@ -235,7 +235,10 @@ struct SubAccount {
   mapping(address => uint64) signers;
   // The deriskToMaintenanceMarginRatio for this sub account
   uint32 deriskToMaintenanceMarginRatio;
-  uint256[48] __gap;
+  // If we have multiple derisk orders that are executed in a short period of time, only the first order will be subjected to derisking margin validation.
+  // The rest will be executed as long as they are within the derisking window (by default 1 minute)
+  int64 lastDeriskTimestamp;
+  uint256[49] __gap;
 }
 
 // A ScheduleConfig() call will add a new timelock entry to the state (for the config identifier).
@@ -426,8 +429,10 @@ struct Order {
   bool reduceOnly;
   OrderLeg[] legs;
   Signature signature;
-  // If the trade was a liquidation
+  // If the order is a liquidation
   bool isLiquidation;
+  // If the order is a derisk order (to reduce subaccount's leverage and risk of liquidation)
+  bool isDerisk;
 }
 
 struct OrderLeg {

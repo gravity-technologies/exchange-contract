@@ -10,8 +10,6 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
   int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9; // 31 days
 
   // DeriskToMaintenanceMarginRatio constants
-  uint32 private constant DERISK_MM_RATIO_VAULT = 2_000_000; // 2x
-  uint32 private constant DERISK_MM_RATIO_DEFAULT = 1_000_000; // 1x
   uint32 private constant DERISK_MM_RATIO_MIN = 1_000_000; // 1x
   uint32 private constant DERISK_MM_RATIO_MAX = 2_000_000; // 2x
 
@@ -256,6 +254,10 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
 
     // TODO: if sub account is a vault, reject
+
+    // If sub account is the insurance fund, reject
+    (uint64 insurFundSubID, bool isInsurFundSet) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    require(!isInsurFundSet || insurFundSubID != subAccID, "insurFund cannot set derisk");
 
     require(
       deriskToMaintenanceMarginRatio >= DERISK_MM_RATIO_MIN && deriskToMaintenanceMarginRatio <= DERISK_MM_RATIO_MAX,
