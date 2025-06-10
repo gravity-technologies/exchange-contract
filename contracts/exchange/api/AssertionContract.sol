@@ -291,6 +291,7 @@ contract AssertionContract is ConfigContract, RiskCheck {
     int64 fundingTimestamp;
     PositionAssertion[] positions;
     SpotAssertion[] spots;
+    int64 lastDeriskTimestamp;
   }
   struct TradeAssertion {
     SubAccountAssertion[] subAccounts;
@@ -329,6 +330,9 @@ contract AssertionContract is ConfigContract, RiskCheck {
       SpotAssertion calldata exSpot = exSub.spots[j];
       require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
     }
+
+    // Assert last derisk timestamp
+    require(sub.lastDeriskTimestamp == exSub.lastDeriskTimestamp, "exSub - deriskTimeMismatch");
   }
 
   // Assertions for WalletRecovery Contract
@@ -422,6 +426,16 @@ contract AssertionContract is ConfigContract, RiskCheck {
     require(
       state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == expectedLockEndTime,
       "ex schedSimpleCrossMMTiers"
+    );
+  }
+
+  function assertSetDeriskToMaintenanceMarginRatio(
+    uint64 subAccountID,
+    uint32 expectedDeriskToMaintenanceMarginRatio
+  ) external view {
+    require(
+      state.subAccounts[subAccountID].deriskToMaintenanceMarginRatio == expectedDeriskToMaintenanceMarginRatio,
+      "ex setDeriskRatio"
     );
   }
 }

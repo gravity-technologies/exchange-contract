@@ -9,6 +9,10 @@ import "../types/DataStructure.sol";
 contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlement {
   int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9; // 31 days
 
+  // DeriskToMaintenanceMarginRatio constants
+  uint32 private constant DERISK_MM_RATIO_MIN = 1_000_000; // 1x
+  uint32 private constant DERISK_MM_RATIO_MAX = 2_000_000; // 2x
+
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
@@ -216,5 +220,57 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     delete state.sessions[signer];
+  }
+
+  /// @notice Sets the deriskToMaintenanceMarginRatio, a crucial parameter controlling the account de-risking process.
+  /// @notice De-risking is a mechanism to proactively reduce a user's leverage before liquidation, aiming to prevent it.
+  /// It proportionately reduces all open positions at prices that widen the gap between the account's Equity and the Maintenance Margin Requirement (MMR).
+  /// This helps avoid liquidation, improves user experience, and potentially retains funds on the account.
+  /// @dev **Understanding the Ratio:**
+  ///  - The ratio must be between 1 and 2 (inclusive).
+  ///  - **1 (or less):** Disables de-risking. Liquidation occurs when Equity falls below the Maintenance Margin.
+  ///  - **Between 1 and 2:** Triggers de-risking when Equity is between the Maintenance Margin and Initial Margin.
+  ///    - Example: A ratio of 1.1 initiates de-risking when Equity is below 1.1 times the Maintenance Margin but still above the Maintenance Margin.
+  /// @dev **How De-Risking Works:**
+  ///  - When `MMR < Account Equity <= (deriskToMaintenanceMarginRatio * MMR)`, the system reduces position sizes.
+  ///  - De-risking stops if the Account Equity falls below the MMR, and the liquidation process takes over.
+  /// @dev **Important Considerations:**
+  ///  - Setting a higher ratio triggers de-risking earlier, potentially preventing liquidation but also reducing positions sooner.
+  ///  - Setting a lower ratio delays de-risking, allowing for more leverage but increasing the risk of liquidation.
+  ///  - This parameter affects the entire sub account and is not specific to individual instruments.
+  /// @dev **This was added on May 29, 2025.**
+  ///  - Existing sub accounts have a deriskToMaintenanceMarginRatio of 0, ie de-risking is disabled.
+  function setDeriskToMaintenanceMarginRatio(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    uint32 deriskToMaintenanceMarginRatio,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+
+    // require subaccount signer to have trade permission
+    _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
+
+    // TODO: if sub account is a vault, reject
+
+    // If sub account is the insurance fund, reject
+    (uint64 insurFundSubID, bool isInsurFundSet) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    require(!isInsurFundSet || insurFundSubID != subAccID, "insurFund cannot set derisk");
+
+    require(
+      deriskToMaintenanceMarginRatio >= DERISK_MM_RATIO_MIN && deriskToMaintenanceMarginRatio <= DERISK_MM_RATIO_MAX,
+      "bad deriskRatio"
+    );
+
+    // ---------- Signature Verification -----------
+    _preventReplay(
+      hashSetDeriskToMaintenanceMarginRatio(subAccID, deriskToMaintenanceMarginRatio, sig.nonce, sig.expiration),
+      sig
+    );
+    // ------- End of Signature Verification -------
+
+    sub.deriskToMaintenanceMarginRatio = deriskToMaintenanceMarginRatio;
   }
 }

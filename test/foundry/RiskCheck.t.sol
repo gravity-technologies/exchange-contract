@@ -34,7 +34,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -61,7 +62,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -88,7 +90,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -115,7 +118,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -160,7 +164,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -202,7 +207,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
@@ -255,7 +261,8 @@ contract RiskCheckTest is Test, RiskCheck {
       reduceOnly: false,
       legs: legs,
       signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
-      isLiquidation: false
+      isLiquidation: false,
+      isDerisk: true
     });
 
     bool isReducing = this.orderReducesPosition(order);
