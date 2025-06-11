@@ -494,8 +494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -614,8 +614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -734,8 +734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ARB",
-                     "quote": "USDT"
+                     "underlying": 7,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -854,8 +854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ATOM",
-                     "quote": "USDT"
+                     "underlying": 12,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -974,8 +974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BNB",
-                     "quote": "USDT"
+                     "underlying": 8,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1094,8 +1094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "OP",
-                     "quote": "USDT"
+                     "underlying": 11,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1214,8 +1214,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POL",
-                     "quote": "USDT"
+                     "underlying": 10,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1334,8 +1334,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SOL",
-                     "quote": "USDT"
+                     "underlying": 6,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1454,8 +1454,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TON",
-                     "quote": "USDT"
+                     "underlying": 14,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1574,8 +1574,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ZK",
-                     "quote": "USDT"
+                     "underlying": 9,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1694,8 +1694,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KPEPE",
-                     "quote": "USDT"
+                     "underlying": 13,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1814,8 +1814,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XRP",
-                     "quote": "USDT"
+                     "underlying": 15,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1934,8 +1934,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XLM",
-                     "quote": "USDT"
+                     "underlying": 16,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2054,8 +2054,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WLD",
-                     "quote": "USDT"
+                     "underlying": 17,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2174,8 +2174,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WIF",
-                     "quote": "USDT"
+                     "underlying": 18,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2294,8 +2294,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VIRTUAL",
-                     "quote": "USDT"
+                     "underlying": 19,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2414,8 +2414,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TRUMP",
-                     "quote": "USDT"
+                     "underlying": 20,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2534,8 +2534,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SUI",
-                     "quote": "USDT"
+                     "underlying": 21,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2654,8 +2654,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KSHIB",
-                     "quote": "USDT"
+                     "underlying": 22,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2774,8 +2774,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POPCAT",
-                     "quote": "USDT"
+                     "underlying": 23,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2894,8 +2894,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENGU",
-                     "quote": "USDT"
+                     "underlying": 24,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3014,8 +3014,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "LINK",
-                     "quote": "USDT"
+                     "underlying": 25,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3134,8 +3134,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KBONK",
-                     "quote": "USDT"
+                     "underlying": 26,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3254,8 +3254,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "JUP",
-                     "quote": "USDT"
+                     "underlying": 27,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3374,8 +3374,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "FARTCOIN",
-                     "quote": "USDT"
+                     "underlying": 28,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3494,8 +3494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ENA",
-                     "quote": "USDT"
+                     "underlying": 29,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3614,8 +3614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "DOGE",
-                     "quote": "USDT"
+                     "underlying": 30,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3734,8 +3734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AIXBT",
-                     "quote": "USDT"
+                     "underlying": 31,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3854,8 +3854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3974,8 +3974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ADA",
-                     "quote": "USDT"
+                     "underlying": 33,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4094,8 +4094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AAVE",
-                     "quote": "USDT"
+                     "underlying": 34,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4214,8 +4214,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BERA",
-                     "quote": "USDT"
+                     "underlying": 35,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4334,8 +4334,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VINE",
-                     "quote": "USDT"
+                     "underlying": 36,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4454,8 +4454,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENDLE",
-                     "quote": "USDT"
+                     "underlying": 37,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4574,8 +4574,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "UXLINK",
-                     "quote": "USDT"
+                     "underlying": 38,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4718,7 +4718,7 @@
                "deposit": {
                   "tx_hash": "0x8184c25d2ba406ae9f81e3c585c39e737043c17720eb2cc048f34292c290145b",
                   "to_account_id": "0x8bd3d3a1367d3b255388f20c6be73a98494de445",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000"
                }
             },
@@ -4737,7 +4737,7 @@
                "create_sub_account": {
                   "account": "0x8bd3d3a1367d3b255388f20c6be73a98494de445",
                   "sub_account_id": "9646611240881097804",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x8bd3d3a1367d3b255388f20c6be73a98494de445",
@@ -4769,7 +4769,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x8bd3d3a1367d3b255388f20c6be73a98494de445",
                   "to_sub_account_id": "9646611240881097804",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000",
                   "signature": {
                      "signer": "0x8bd3d3a1367d3b255388f20c6be73a98494de445",
@@ -4822,7 +4822,7 @@
                "deposit": {
                   "tx_hash": "0xe8cab919dbe03ccc2707e31a9845d970a3573ccb840486e55542dc3502b924fd",
                   "to_account_id": "0x8dcdd2c44e846871ab4862f3d6fe201bb8cc3077",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000"
                }
             },
@@ -4841,7 +4841,7 @@
                "create_sub_account": {
                   "account": "0x8dcdd2c44e846871ab4862f3d6fe201bb8cc3077",
                   "sub_account_id": "451668388525528739",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x8dcdd2c44e846871ab4862f3d6fe201bb8cc3077",
@@ -4873,7 +4873,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x8dcdd2c44e846871ab4862f3d6fe201bb8cc3077",
                   "to_sub_account_id": "451668388525528739",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000",
                   "signature": {
                      "signer": "0x8dcdd2c44e846871ab4862f3d6fe201bb8cc3077",
@@ -4966,22 +4966,22 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "40000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "46000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      }
@@ -5020,8 +5020,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "99000000000",
                            "limit_price": "40000000000000",
@@ -5080,8 +5080,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "99000000000",
                                  "limit_price": "40000000000000",
@@ -5144,7 +5144,12 @@
                         "mark_price": "40000000000000",
                         "index_price": "46000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -5172,8 +5177,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
+                           "underlying": 5,
+                           "quote": 3
                         },
                         "funding_rate": -50000,
                         "mark_price": "40000000000000",
@@ -5202,7 +5207,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"99.0","notional":"3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"99.0","notional":"3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5216,7 +5221,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-99.0","notional":"-3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-99.0","notional":"-3960000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5242,8 +5247,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "40000000000000",
@@ -5302,8 +5307,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "40000000000000",
@@ -5366,7 +5371,12 @@
                         "mark_price": "40000000000000",
                         "index_price": "46000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -5394,8 +5404,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
+                           "underlying": 5,
+                           "quote": 3
                         },
                         "funding_rate": -50000,
                         "mark_price": "40000000000000",
@@ -5424,7 +5434,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5438,7 +5448,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5457,8 +5467,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
+                           "underlying": 5,
+                           "quote": 3
                         },
                         "funding_rate": -50000,
                         "mark_price": "40000000000000",
@@ -5487,7 +5497,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"98.0","notional":"3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -5501,7 +5511,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-98.0","notional":"-3920000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -6004,8 +6014,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6124,8 +6134,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6244,8 +6254,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ARB",
-                     "quote": "USDT"
+                     "underlying": 7,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6364,8 +6374,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ATOM",
-                     "quote": "USDT"
+                     "underlying": 12,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6484,8 +6494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BNB",
-                     "quote": "USDT"
+                     "underlying": 8,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6604,8 +6614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "OP",
-                     "quote": "USDT"
+                     "underlying": 11,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6724,8 +6734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POL",
-                     "quote": "USDT"
+                     "underlying": 10,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6844,8 +6854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SOL",
-                     "quote": "USDT"
+                     "underlying": 6,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6964,8 +6974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TON",
-                     "quote": "USDT"
+                     "underlying": 14,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7084,8 +7094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ZK",
-                     "quote": "USDT"
+                     "underlying": 9,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7204,8 +7214,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KPEPE",
-                     "quote": "USDT"
+                     "underlying": 13,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7324,8 +7334,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XRP",
-                     "quote": "USDT"
+                     "underlying": 15,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7444,8 +7454,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XLM",
-                     "quote": "USDT"
+                     "underlying": 16,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7564,8 +7574,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WLD",
-                     "quote": "USDT"
+                     "underlying": 17,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7684,8 +7694,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WIF",
-                     "quote": "USDT"
+                     "underlying": 18,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7804,8 +7814,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VIRTUAL",
-                     "quote": "USDT"
+                     "underlying": 19,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7924,8 +7934,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TRUMP",
-                     "quote": "USDT"
+                     "underlying": 20,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8044,8 +8054,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SUI",
-                     "quote": "USDT"
+                     "underlying": 21,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8164,8 +8174,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KSHIB",
-                     "quote": "USDT"
+                     "underlying": 22,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8284,8 +8294,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POPCAT",
-                     "quote": "USDT"
+                     "underlying": 23,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8404,8 +8414,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENGU",
-                     "quote": "USDT"
+                     "underlying": 24,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8524,8 +8534,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "LINK",
-                     "quote": "USDT"
+                     "underlying": 25,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8644,8 +8654,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KBONK",
-                     "quote": "USDT"
+                     "underlying": 26,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8764,8 +8774,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "JUP",
-                     "quote": "USDT"
+                     "underlying": 27,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8884,8 +8894,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "FARTCOIN",
-                     "quote": "USDT"
+                     "underlying": 28,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9004,8 +9014,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ENA",
-                     "quote": "USDT"
+                     "underlying": 29,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9124,8 +9134,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "DOGE",
-                     "quote": "USDT"
+                     "underlying": 30,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9244,8 +9254,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AIXBT",
-                     "quote": "USDT"
+                     "underlying": 31,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9364,8 +9374,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9484,8 +9494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ADA",
-                     "quote": "USDT"
+                     "underlying": 33,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9604,8 +9614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AAVE",
-                     "quote": "USDT"
+                     "underlying": 34,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9724,8 +9734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BERA",
-                     "quote": "USDT"
+                     "underlying": 35,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9844,8 +9854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VINE",
-                     "quote": "USDT"
+                     "underlying": 36,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9964,8 +9974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENDLE",
-                     "quote": "USDT"
+                     "underlying": 37,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10084,8 +10094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "UXLINK",
-                     "quote": "USDT"
+                     "underlying": 38,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10228,7 +10238,7 @@
                "deposit": {
                   "tx_hash": "0x82750305adc703a6feabc203645172e60a39a8c1d170fcf926d10215fec1b90a",
                   "to_account_id": "0xd95ce1e3c5a0dcb6a86259f83a087dd1eda0983f",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000"
                }
             },
@@ -10247,7 +10257,7 @@
                "create_sub_account": {
                   "account": "0xd95ce1e3c5a0dcb6a86259f83a087dd1eda0983f",
                   "sub_account_id": "9646611240881097804",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xd95ce1e3c5a0dcb6a86259f83a087dd1eda0983f",
@@ -10279,7 +10289,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xd95ce1e3c5a0dcb6a86259f83a087dd1eda0983f",
                   "to_sub_account_id": "9646611240881097804",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000",
                   "signature": {
                      "signer": "0xd95ce1e3c5a0dcb6a86259f83a087dd1eda0983f",
@@ -10332,7 +10342,7 @@
                "deposit": {
                   "tx_hash": "0x6b89d04d6131b1129e681c1450d6ce9a916f349b9275e77215f89bd24483cf7e",
                   "to_account_id": "0xc601677b20d4252567a44d9b1c3b7ee697ee98df",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000"
                }
             },
@@ -10351,7 +10361,7 @@
                "create_sub_account": {
                   "account": "0xc601677b20d4252567a44d9b1c3b7ee697ee98df",
                   "sub_account_id": "451668388525528739",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xc601677b20d4252567a44d9b1c3b7ee697ee98df",
@@ -10383,7 +10393,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xc601677b20d4252567a44d9b1c3b7ee697ee98df",
                   "to_sub_account_id": "451668388525528739",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "1000000000000000",
                   "signature": {
                      "signer": "0xc601677b20d4252567a44d9b1c3b7ee697ee98df",
@@ -10476,22 +10486,22 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "40000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "46000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      }
@@ -10530,8 +10540,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "100000000000",
                            "limit_price": "40000000000000",
@@ -10590,8 +10600,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "100000000000",
                                  "limit_price": "40000000000000",
@@ -10654,7 +10664,12 @@
                         "mark_price": "40000000000000",
                         "index_price": "46000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -10682,8 +10697,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
+                           "underlying": 5,
+                           "quote": 3
                         },
                         "funding_rate": -50000,
                         "mark_price": "40000000000000",
@@ -10714,7 +10729,7 @@
                {
                   "expect": {
                      "sub_account_id": "9646611240881097804",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "1000000000000000"
                   },
                   "name": "ExSubAccountSpotReal"
@@ -10732,7 +10747,7 @@
                {
                   "expect": {
                      "sub_account_id": "451668388525528739",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "1000000000000000"
                   },
                   "name": "ExSubAccountSpotReal"
@@ -10748,7 +10763,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"100.0","notional":"4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"100.0","notional":"4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -10762,7 +10777,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-100.0","notional":"-4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-100.0","notional":"-4000000","entry_price":"40000","exit_price":"","mark_price":"40000","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -10788,8 +10803,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "40000000000000",
@@ -10848,8 +10863,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "40000000000000",
@@ -10912,7 +10927,12 @@
                         "mark_price": "40000000000000",
                         "index_price": "46000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -10940,8 +10960,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USDT"
+                           "underlying": 5,
+                           "quote": 3
                         },
                         "funding_rate": -50000,
                         "mark_price": "40000000000000",
@@ -10970,7 +10990,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"99.0","notional":"3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"9646611240881097804","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"99.0","notional":"3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],
@@ -10984,7 +11004,7 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":"BTC","quote":"USDT"},"size":"-99.0","notional":"-3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"451668388525528739","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-99.0","notional":"-3960000","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[{"ID":"451668388525528739","Name":"BobSA1"},{"ID":"9646611240881097804","Name":"AliceSA1"}]},
                   "name": "ExSubAccountPositionOptional"
                }
             ],

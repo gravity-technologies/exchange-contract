@@ -494,8 +494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -614,8 +614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -734,8 +734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ARB",
-                     "quote": "USDT"
+                     "underlying": 7,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -854,8 +854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ATOM",
-                     "quote": "USDT"
+                     "underlying": 12,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -974,8 +974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BNB",
-                     "quote": "USDT"
+                     "underlying": 8,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1094,8 +1094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "OP",
-                     "quote": "USDT"
+                     "underlying": 11,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1214,8 +1214,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POL",
-                     "quote": "USDT"
+                     "underlying": 10,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1334,8 +1334,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SOL",
-                     "quote": "USDT"
+                     "underlying": 6,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1454,8 +1454,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TON",
-                     "quote": "USDT"
+                     "underlying": 14,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1574,8 +1574,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ZK",
-                     "quote": "USDT"
+                     "underlying": 9,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1694,8 +1694,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KPEPE",
-                     "quote": "USDT"
+                     "underlying": 13,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1814,8 +1814,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XRP",
-                     "quote": "USDT"
+                     "underlying": 15,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1934,8 +1934,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XLM",
-                     "quote": "USDT"
+                     "underlying": 16,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2054,8 +2054,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WLD",
-                     "quote": "USDT"
+                     "underlying": 17,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2174,8 +2174,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WIF",
-                     "quote": "USDT"
+                     "underlying": 18,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2294,8 +2294,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VIRTUAL",
-                     "quote": "USDT"
+                     "underlying": 19,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2414,8 +2414,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TRUMP",
-                     "quote": "USDT"
+                     "underlying": 20,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2534,8 +2534,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SUI",
-                     "quote": "USDT"
+                     "underlying": 21,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2654,8 +2654,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KSHIB",
-                     "quote": "USDT"
+                     "underlying": 22,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2774,8 +2774,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POPCAT",
-                     "quote": "USDT"
+                     "underlying": 23,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2894,8 +2894,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENGU",
-                     "quote": "USDT"
+                     "underlying": 24,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3014,8 +3014,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "LINK",
-                     "quote": "USDT"
+                     "underlying": 25,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3134,8 +3134,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KBONK",
-                     "quote": "USDT"
+                     "underlying": 26,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3254,8 +3254,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "JUP",
-                     "quote": "USDT"
+                     "underlying": 27,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3374,8 +3374,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "FARTCOIN",
-                     "quote": "USDT"
+                     "underlying": 28,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3494,8 +3494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ENA",
-                     "quote": "USDT"
+                     "underlying": 29,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3614,8 +3614,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "DOGE",
-                     "quote": "USDT"
+                     "underlying": 30,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3734,8 +3734,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AIXBT",
-                     "quote": "USDT"
+                     "underlying": 31,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3854,8 +3854,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3974,8 +3974,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ADA",
-                     "quote": "USDT"
+                     "underlying": 33,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4094,8 +4094,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AAVE",
-                     "quote": "USDT"
+                     "underlying": 34,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4214,8 +4214,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BERA",
-                     "quote": "USDT"
+                     "underlying": 35,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4334,8 +4334,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VINE",
-                     "quote": "USDT"
+                     "underlying": 36,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4454,8 +4454,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENDLE",
-                     "quote": "USDT"
+                     "underlying": 37,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4574,8 +4574,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "UXLINK",
-                     "quote": "USDT"
+                     "underlying": 38,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4758,22 +4758,22 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "50000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "40000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      }
@@ -5289,8 +5289,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5409,8 +5409,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5529,8 +5529,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ARB",
-                     "quote": "USDT"
+                     "underlying": 7,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5649,8 +5649,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ATOM",
-                     "quote": "USDT"
+                     "underlying": 12,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5769,8 +5769,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BNB",
-                     "quote": "USDT"
+                     "underlying": 8,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5889,8 +5889,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "OP",
-                     "quote": "USDT"
+                     "underlying": 11,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6009,8 +6009,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POL",
-                     "quote": "USDT"
+                     "underlying": 10,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6129,8 +6129,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SOL",
-                     "quote": "USDT"
+                     "underlying": 6,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6249,8 +6249,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TON",
-                     "quote": "USDT"
+                     "underlying": 14,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6369,8 +6369,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ZK",
-                     "quote": "USDT"
+                     "underlying": 9,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6489,8 +6489,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KPEPE",
-                     "quote": "USDT"
+                     "underlying": 13,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6609,8 +6609,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XRP",
-                     "quote": "USDT"
+                     "underlying": 15,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6729,8 +6729,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XLM",
-                     "quote": "USDT"
+                     "underlying": 16,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6849,8 +6849,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WLD",
-                     "quote": "USDT"
+                     "underlying": 17,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6969,8 +6969,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WIF",
-                     "quote": "USDT"
+                     "underlying": 18,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7089,8 +7089,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VIRTUAL",
-                     "quote": "USDT"
+                     "underlying": 19,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7209,8 +7209,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TRUMP",
-                     "quote": "USDT"
+                     "underlying": 20,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7329,8 +7329,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SUI",
-                     "quote": "USDT"
+                     "underlying": 21,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7449,8 +7449,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KSHIB",
-                     "quote": "USDT"
+                     "underlying": 22,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7569,8 +7569,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POPCAT",
-                     "quote": "USDT"
+                     "underlying": 23,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7689,8 +7689,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENGU",
-                     "quote": "USDT"
+                     "underlying": 24,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7809,8 +7809,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "LINK",
-                     "quote": "USDT"
+                     "underlying": 25,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -7929,8 +7929,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KBONK",
-                     "quote": "USDT"
+                     "underlying": 26,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8049,8 +8049,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "JUP",
-                     "quote": "USDT"
+                     "underlying": 27,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8169,8 +8169,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "FARTCOIN",
-                     "quote": "USDT"
+                     "underlying": 28,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8289,8 +8289,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ENA",
-                     "quote": "USDT"
+                     "underlying": 29,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8409,8 +8409,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "DOGE",
-                     "quote": "USDT"
+                     "underlying": 30,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8529,8 +8529,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AIXBT",
-                     "quote": "USDT"
+                     "underlying": 31,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8649,8 +8649,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8769,8 +8769,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ADA",
-                     "quote": "USDT"
+                     "underlying": 33,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -8889,8 +8889,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AAVE",
-                     "quote": "USDT"
+                     "underlying": 34,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9009,8 +9009,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BERA",
-                     "quote": "USDT"
+                     "underlying": 35,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9129,8 +9129,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VINE",
-                     "quote": "USDT"
+                     "underlying": 36,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9249,8 +9249,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENDLE",
-                     "quote": "USDT"
+                     "underlying": 37,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9369,8 +9369,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "UXLINK",
-                     "quote": "USDT"
+                     "underlying": 38,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -9553,22 +9553,22 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "50000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "40000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -10084,8 +10084,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10204,8 +10204,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10324,8 +10324,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ARB",
-                     "quote": "USDT"
+                     "underlying": 7,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10444,8 +10444,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ATOM",
-                     "quote": "USDT"
+                     "underlying": 12,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10564,8 +10564,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BNB",
-                     "quote": "USDT"
+                     "underlying": 8,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10684,8 +10684,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "OP",
-                     "quote": "USDT"
+                     "underlying": 11,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10804,8 +10804,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POL",
-                     "quote": "USDT"
+                     "underlying": 10,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -10924,8 +10924,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SOL",
-                     "quote": "USDT"
+                     "underlying": 6,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11044,8 +11044,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TON",
-                     "quote": "USDT"
+                     "underlying": 14,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11164,8 +11164,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ZK",
-                     "quote": "USDT"
+                     "underlying": 9,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11284,8 +11284,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KPEPE",
-                     "quote": "USDT"
+                     "underlying": 13,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11404,8 +11404,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XRP",
-                     "quote": "USDT"
+                     "underlying": 15,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11524,8 +11524,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "XLM",
-                     "quote": "USDT"
+                     "underlying": 16,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11644,8 +11644,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WLD",
-                     "quote": "USDT"
+                     "underlying": 17,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11764,8 +11764,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "WIF",
-                     "quote": "USDT"
+                     "underlying": 18,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -11884,8 +11884,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VIRTUAL",
-                     "quote": "USDT"
+                     "underlying": 19,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12004,8 +12004,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "TRUMP",
-                     "quote": "USDT"
+                     "underlying": 20,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12124,8 +12124,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "SUI",
-                     "quote": "USDT"
+                     "underlying": 21,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12244,8 +12244,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KSHIB",
-                     "quote": "USDT"
+                     "underlying": 22,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12364,8 +12364,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "POPCAT",
-                     "quote": "USDT"
+                     "underlying": 23,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12484,8 +12484,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENGU",
-                     "quote": "USDT"
+                     "underlying": 24,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12604,8 +12604,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "LINK",
-                     "quote": "USDT"
+                     "underlying": 25,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12724,8 +12724,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "KBONK",
-                     "quote": "USDT"
+                     "underlying": 26,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12844,8 +12844,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "JUP",
-                     "quote": "USDT"
+                     "underlying": 27,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -12964,8 +12964,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "FARTCOIN",
-                     "quote": "USDT"
+                     "underlying": 28,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13084,8 +13084,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ENA",
-                     "quote": "USDT"
+                     "underlying": 29,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13204,8 +13204,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "DOGE",
-                     "quote": "USDT"
+                     "underlying": 30,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13324,8 +13324,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AIXBT",
-                     "quote": "USDT"
+                     "underlying": 31,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13444,8 +13444,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13564,8 +13564,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ADA",
-                     "quote": "USDT"
+                     "underlying": 33,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13684,8 +13684,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AAVE",
-                     "quote": "USDT"
+                     "underlying": 34,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13804,8 +13804,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BERA",
-                     "quote": "USDT"
+                     "underlying": 35,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -13924,8 +13924,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "VINE",
-                     "quote": "USDT"
+                     "underlying": 36,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -14044,8 +14044,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "PENDLE",
-                     "quote": "USDT"
+                     "underlying": 37,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -14164,8 +14164,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "UXLINK",
-                     "quote": "USDT"
+                     "underlying": 38,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -14348,22 +14348,22 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "50000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "40000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "800000000"
                      }

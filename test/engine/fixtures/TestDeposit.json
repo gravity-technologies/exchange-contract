@@ -494,8 +494,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -566,8 +566,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -662,7 +662,7 @@
                "create_sub_account": {
                   "account": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
@@ -692,7 +692,7 @@
                "deposit": {
                   "tx_hash": "0xe6359d2b136ba49ad2313d6e9b3b6d2bfd70078a720a7aa4f9c8ea26b7d36703",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000"
                }
             },
@@ -702,7 +702,7 @@
                {
                   "expect": {
                      "account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "10000000000"
                   },
                   "name": "ExAccountSpot"
@@ -1207,8 +1207,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1279,8 +1279,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -1375,7 +1375,7 @@
                "create_sub_account": {
                   "account": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
@@ -1405,7 +1405,7 @@
                "deposit": {
                   "tx_hash": "0x01",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000"
                }
             },
@@ -1415,7 +1415,7 @@
                {
                   "expect": {
                      "account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "10000000000"
                   },
                   "name": "ExAccountSpot"
@@ -1434,7 +1434,7 @@
                "deposit": {
                   "tx_hash": "0x01",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000"
                }
             },
@@ -1939,8 +1939,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2011,8 +2011,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2083,7 +2083,7 @@
                "deposit": {
                   "tx_hash": "0x952022632b889feb64f2c584468a0ab5844a50eb95635967b72ff349e0a548ac",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000"
                }
             },
@@ -2588,8 +2588,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2660,8 +2660,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2756,7 +2756,7 @@
                "create_sub_account": {
                   "account": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
@@ -2786,7 +2786,7 @@
                "deposit": {
                   "tx_hash": "0x563eadeac3fcd7fc5d5b073054d05f6e63f2d294d37db451ce17f08dae34995a",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "9223372036854775807"
                }
             },
@@ -2796,7 +2796,7 @@
                {
                   "expect": {
                      "account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "9223372036854775807"
                   },
                   "name": "ExAccountSpot"
@@ -2815,7 +2815,7 @@
                "deposit": {
                   "tx_hash": "0x1cbf0aabbf6e98051a8c743c5e63ae6517e4cf28375e29d1b7b7fec0898747db",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "9223372036854775807"
                }
             },
@@ -3320,8 +3320,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3392,8 +3392,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3488,7 +3488,7 @@
                "create_sub_account": {
                   "account": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
@@ -3518,7 +3518,7 @@
                "deposit": {
                   "tx_hash": "0x6e6cf0b11f7ba17b8cb109720f254934574ba0faa780ca226a63fad46b44a988",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "9223372036854775808"
                }
             },
@@ -4023,8 +4023,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4095,8 +4095,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4191,7 +4191,7 @@
                "create_sub_account": {
                   "account": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
@@ -4221,7 +4221,7 @@
                "deposit": {
                   "tx_hash": "0x78e6aace54a16718eca1654586825f99975b8828210d705261d30d2e3e512dd0",
                   "to_account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "0"
                }
             },
@@ -4231,7 +4231,7 @@
                {
                   "expect": {
                      "account_id": "0x6bdb8b9103da2a2e70722fdf158f7a7bdbfe88ca",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "0"
                   },
                   "name": "ExAccountSpot"
