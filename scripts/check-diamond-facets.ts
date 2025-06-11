@@ -1,16 +1,14 @@
 import { task } from "hardhat/config"
 
-import { Contract, ethers } from "ethers"
 import {
     createProviders,
     generateDiamondCutDataFromDiff,
     getLocalFacetInfo,
     getOnChainFacetInfo,
+    validateHybridProxy,
 } from "./utils"
-import { hashBytecode } from "zksync-web3/build/src/utils"
-import { ExchangeFacetInfos } from "./diamond-info"
 
-task("diff-diamond-facets", "diff diamond facets")
+task("check-diamond-facets", "check diamond facets")
     .addParam("exchangeProxy", "exchangeProxy")
     .setAction(async (taskArgs, hre) => {
         const {
@@ -20,13 +18,19 @@ task("diff-diamond-facets", "diff diamond facets")
         const { l2Provider } = createProviders(hre.config.networks, hre.network)
         const onChainFacetInfo = await getOnChainFacetInfo(hre, exchangeProxy, l2Provider)
 
-        console.log("Facets: ", onChainFacetInfo)
+        console.log("On-chain facets: ", onChainFacetInfo)
 
         const localFacetInfo = await getLocalFacetInfo(hre)
 
         console.log("Local facets: ", localFacetInfo)
 
-        const { add, replace, remove, facetsToDeploy } = generateDiamondCutDataFromDiff(onChainFacetInfo, localFacetInfo)
+        const diamondCutData = generateDiamondCutDataFromDiff(onChainFacetInfo, localFacetInfo)
+
+        if (!await validateHybridProxy(hre, localFacetInfo)) {
+            throw new Error("Invalid diamond cut data")
+        }
+
+        const { add, replace, remove, facetsToDeploy } = diamondCutData;
 
         console.log("Add actions: ", add)
         console.log("Replace actions: ", replace)

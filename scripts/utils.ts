@@ -348,46 +348,44 @@ export async function generateDiamondCutDataForNewFacets(facetInfos: Array<{ add
   return diamondCut;
 }
 
-/**
- * Validates the diamond cut data for duplicate selectors
- * @param abi Contract ABI to check against
- * @param diamondCutData Diamond cut data to validate
- * @returns A boolean indicating if validation passed
- */
-export function validateDiamondCutData(abi: any[], diamondCutData: any[]) {
-  const abiInterface = new ethers.utils.Interface(abi);
-  const abiSelectors = Object.keys(abiInterface.functions).map(fn => abiInterface.getSighash(fn));
+export async function validateHybridProxy(hre: HardhatRuntimeEnvironment, facets: {
+  facet: string,
+  selectors: string[],
+}[]) {
+  const mainContract = await hre.artifacts.readArtifact("GRVTExchange")
+  const mainAbiInterface = new ethers.utils.Interface(mainContract.abi);
+  const mainAbiSelectors = Object.keys(mainAbiInterface.functions).map(fn => mainAbiInterface.getSighash(fn));
 
   // Check for duplicate selectors in the diamond cut data
   const allSelectors = [];
   const selectorMap = new Map();
 
-  for (let i = 0; i < diamondCutData.length; i++) {
-    const facetCut = diamondCutData[i];
-    const facetSelectors = facetCut.functionSelectors;
+  for (let i = 0; i < facets.length; i++) {
+    const facet = facets[i];
+    const facetSelectors = facet.selectors;
 
     for (let j = 0; j < facetSelectors.length; j++) {
       const selector = facetSelectors[j];
 
       if (selectorMap.has(selector)) {
         console.error(`DUPLICATE SELECTOR: ${selector} found in both:`);
-        console.error(`1. Facet at address: ${selectorMap.get(selector)}`);
-        console.error(`2. Facet at address: ${facetCut.facetAddress}`);
+        console.error(`1. ${selectorMap.get(selector)}`);
+        console.error(`2. ${facet.facet}`);
         return false;
       }
 
-      selectorMap.set(selector, facetCut.facetAddress);
+      selectorMap.set(selector, facet.facet);
       allSelectors.push(selector);
     }
   }
 
   // Check if any selector in the ABI is also in the diamond cut data
-  for (let i = 0; i < abiSelectors.length; i++) {
-    const abiSelector = abiSelectors[i];
+  for (let i = 0; i < mainAbiSelectors.length; i++) {
+    const abiSelector = mainAbiSelectors[i];
 
     if (allSelectors.includes(abiSelector)) {
       console.error(`CONFLICT: Selector ${abiSelector} from the ABI is also in the diamond cut data`);
-      console.error(`Found in facet at address: ${selectorMap.get(abiSelector)}`);
+      console.error(`Found in facet: ${selectorMap.get(abiSelector)}`);
       return false;
     }
   }

@@ -5,7 +5,7 @@ import { L2TokenInfo } from "../../deploy/testutil"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
 import { getDeployerWallet } from "../util"
-import { generateDiamondCutDataForNewFacets, validateDiamondCutData, FacetCutAction } from "../../scripts/utils"
+import { generateDiamondCutDataForNewFacets, getLocalFacetInfo, validateHybridProxy } from "../../scripts/utils"
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import * as hre from "hardhat"
 import { hashBytecode } from "zksync-web3/build/src/utils"
@@ -79,7 +79,7 @@ async function deployContracts() {
 
   const diamondCutData = await generateDiamondCutDataForNewFacets(diamondCutInput);
 
-  if (!validateDiamondCutData(exchangeArtifact.abi, diamondCutData)) {
+  if (!await validateHybridProxy(hre, await getLocalFacetInfo(hre))) {
     throw new Error("Invalid diamond cut data")
   }
 

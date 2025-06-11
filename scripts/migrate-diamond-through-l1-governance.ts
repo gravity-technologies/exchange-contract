@@ -10,10 +10,10 @@ import {
     scheduleAndExecuteGovernanceOp,
     deployFromL1NoFactoryDepsNoConstructor,
     encodeTransparentProxyUpgradeToAndCall,
-    FacetCutAction,
     generateDiamondCutDataForNewFacets,
-    validateDiamondCutData,
     approveL1SharedBridgeIfNeeded,
+    validateHybridProxy,
+    getLocalFacetInfo,
 } from "./utils"
 
 import { applyL1ToL2Alias } from "zksync-web3/build/src/utils"
@@ -104,7 +104,7 @@ task("migrate-diamond-through-l1-governance", "Migrate diamond through L1 govern
         const diamondCutFacetAddress = deployedContracts.get("DiamondCutFacet")!
 
         const diamondCutData = await generateDiamondCutDataForNewFacets(diamondCutInput);
-        if (!validateDiamondCutData(exchangeArtifact.abi, diamondCutData)) {
+        if (!await validateHybridProxy(hre, await getLocalFacetInfo(hre))) {
             throw new Error("Invalid diamond cut data")
         }
 
