@@ -1,6 +1,6 @@
 // hardhat import should be the first import in the file
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ethers } from "ethers"
+import { Contract, ethers } from "ethers"
 
 import { Interface } from "ethers/lib/utils"
 
@@ -16,8 +16,9 @@ import { Address } from "zksync-ethers/build/src/types"
 
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy/dist/deployer"
 
-import type { BigNumber, BigNumberish, BytesLike } from "ethers"
+import { BigNumber, BigNumberish, BytesLike } from "ethers"
 import { REQUIRED_L1_TO_L2_GAS_PER_PUBDATA_LIMIT } from "zksync-web3/build/src/utils"
+import { ExchangeFacetInfos } from "./diamond-info"
 
 export const GAS_MULTIPLIER = 1
 const CREATE2_PREFIX = ethers.utils.solidityKeccak256(["string"], ["zksyncCreate2"])
@@ -45,6 +46,54 @@ export function computeL2Create2Address(
   return ethers.utils.hexDataSlice(data, 12)
 }
 
+export async function deployFromL1NoFactoryDepsNoConstructor(
+  hre: HardhatRuntimeEnvironment,
+  chainId: ethers.BigNumberish,
+  bridgeHub: string,
+  l1SharedBridge: string,
+  l1Deployer: ethers.Wallet,
+  l2Deployer: Deployer,
+  artifactName: string,
+  salt: string
+) {
+  const artifact = await l2Deployer.loadArtifact(artifactName)
+  const codehash = hashBytecode(artifact.bytecode)
+  await l2Deployer.deploy(artifact, [])
+
+  console.log(`${artifactName} L2 codehash registered: ${ethers.utils.hexlify(codehash)}`)
+
+  const emptyConstructorData = ethers.utils.arrayify("0x")
+  const expectedNewImplAddress = computeL2Create2Address(
+    l2Deployer.zkWallet.address,
+    artifact.bytecode,
+    emptyConstructorData,
+    salt
+  )
+
+  // deploy an instance of the impl with CREATE2
+  const newImplDepTx = await create2DeployFromL1NoFactoryDeps(
+    hre,
+    chainId,
+    bridgeHub,
+    l1SharedBridge,
+    l1Deployer,
+    artifact.bytecode,
+    emptyConstructorData,
+    salt,
+    1000000
+  )
+  const newImplDepTxReceipt = await newImplDepTx.wait()
+
+  console.log(`Expected ${artifactName} impl address: ${expectedNewImplAddress}`)
+  console.log(`${artifactName} impl deployment tx hash: ${newImplDepTx.hash}`)
+  console.log(`${artifactName} impl deployment stauts: ${newImplDepTxReceipt.status}`)
+
+  return {
+    artifactName,
+    address: expectedNewImplAddress,
+  }
+}
+
 export async function create2DeployFromL1NoFactoryDeps(
   hre: HardhatRuntimeEnvironment,
   chainId: ethers.BigNumberish,
@@ -69,12 +118,6 @@ export async function create2DeployFromL1NoFactoryDeps(
     await bridgehub.l2TransactionBaseCost(chainId, gasPrice, l2GasLimit, REQUIRED_L2_GAS_PRICE_PER_PUBDATA)
   ).mul(5)
 
-  const baseTokenAddress = await bridgehub.baseToken(chainId)
-  const baseToken = IERC20Factory.connect(baseTokenAddress, wallet)
-
-  const tx = await baseToken.approve(l1SharedBridgeAddress, expectedCost)
-  await tx.wait()
-
   return await bridgehub.requestL2TransactionDirect({
     chainId,
     l2Contract: DEPLOYER_SYSTEM_CONTRACT_ADDRESS,
@@ -86,6 +129,24 @@ export async function create2DeployFromL1NoFactoryDeps(
     factoryDeps: [],
     refundRecipient: wallet.address,
   })
+}
+
+const BASE_TOKEN_ALLOWANCE = BigNumber.from("100000000000000000000")
+
+export async function approveL1SharedBridgeIfNeeded(
+  chainId: ethers.BigNumberish,
+  bridgehubAddress: string,
+  l1SharedBridgeAddress: string,
+  wallet: ethers.Wallet,
+) {
+  const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
+  const baseTokenAddress = await bridgehub.baseToken(chainId)
+  const baseToken = IERC20Factory.connect(baseTokenAddress, wallet)
+  const allowance = await baseToken.allowance(wallet.address, l1SharedBridgeAddress)
+  if (allowance.lt(BASE_TOKEN_ALLOWANCE.div(2))) {
+    const tx = await baseToken.approve(l1SharedBridgeAddress, BASE_TOKEN_ALLOWANCE)
+    await tx.wait()
+  }
 }
 
 export function createProviders(
@@ -148,11 +209,18 @@ export function isValidEthNetworkURL(string: string) {
   }
 }
 
-export async function getTransparentProxyUpgradeCalldata(hre: HardhatRuntimeEnvironment, target: string) {
+export async function encodeTransparentProxyUpgradeTo(hre: HardhatRuntimeEnvironment, target: string) {
   const proxyArtifact = await hre.artifacts.readArtifact("ITransparentUpgradeableProxy")
   const proxyInterface = new ethers.utils.Interface(proxyArtifact.abi)
 
   return proxyInterface.encodeFunctionData("upgradeTo", [target])
+}
+
+export async function encodeTransparentProxyUpgradeToAndCall(hre: HardhatRuntimeEnvironment, target: string, calldata: string) {
+  const proxyArtifact = await hre.artifacts.readArtifact("ITransparentUpgradeableProxy")
+  const proxyInterface = new ethers.utils.Interface(proxyArtifact.abi)
+
+  return proxyInterface.encodeFunctionData("upgradeToAndCall", [target, calldata])
 }
 
 export type TxInfo = {
@@ -252,12 +320,11 @@ export enum FacetCutAction {
 }
 
 /**
- * Generate diamond cut data for facet methods
+ * Generate diamond cut data for new facet methods
  * @param facetInfos Array of facet contract instances
- * @param action Diamond cut action (0=Add, 1=Replace, 2=Remove)
  * @returns Diamond cut data for facet methods
  */
-export async function generateDiamondCutData(facetInfos: Array<{ address: string, abi: any[] }>, action: FacetCutAction) {
+export async function generateDiamondCutDataForNewFacets(facetInfos: Array<{ address: string, abi: any[] }>) {
   // Create diamond cut data array
   const diamondCut = [];
 
@@ -273,7 +340,7 @@ export async function generateDiamondCutData(facetInfos: Array<{ address: string
 
     diamondCut.push({
       facetAddress: address,
-      action: action,
+      action: FacetCutAction.Add,
       functionSelectors: selectors
     });
   }
@@ -281,49 +348,205 @@ export async function generateDiamondCutData(facetInfos: Array<{ address: string
   return diamondCut;
 }
 
-/**
- * Validates the diamond cut data for duplicate selectors
- * @param abi Contract ABI to check against
- * @param diamondCutData Diamond cut data to validate
- * @returns A boolean indicating if validation passed
- */
-export function validateDiamondCutData(abi: any[], diamondCutData: any[]) {
-  const abiInterface = new ethers.utils.Interface(abi);
-  const abiSelectors = Object.keys(abiInterface.functions).map(fn => abiInterface.getSighash(fn));
+export async function validateHybridProxy(hre: HardhatRuntimeEnvironment, facets: {
+  facet: string,
+  selectors: string[],
+}[]) {
+  const mainContract = await hre.artifacts.readArtifact("GRVTExchange")
+  const mainAbiInterface = new ethers.utils.Interface(mainContract.abi);
+  const mainAbiSelectors = Object.keys(mainAbiInterface.functions).map(fn => mainAbiInterface.getSighash(fn));
 
   // Check for duplicate selectors in the diamond cut data
   const allSelectors = [];
   const selectorMap = new Map();
 
-  for (let i = 0; i < diamondCutData.length; i++) {
-    const facetCut = diamondCutData[i];
-    const facetSelectors = facetCut.functionSelectors;
+  for (let i = 0; i < facets.length; i++) {
+    const facet = facets[i];
+    const facetSelectors = facet.selectors;
 
     for (let j = 0; j < facetSelectors.length; j++) {
       const selector = facetSelectors[j];
 
       if (selectorMap.has(selector)) {
         console.error(`DUPLICATE SELECTOR: ${selector} found in both:`);
-        console.error(`1. Facet at address: ${selectorMap.get(selector)}`);
-        console.error(`2. Facet at address: ${facetCut.facetAddress}`);
+        console.error(`1. ${selectorMap.get(selector)}`);
+        console.error(`2. ${facet.facet}`);
         return false;
       }
 
-      selectorMap.set(selector, facetCut.facetAddress);
+      selectorMap.set(selector, facet.facet);
       allSelectors.push(selector);
     }
   }
 
   // Check if any selector in the ABI is also in the diamond cut data
-  for (let i = 0; i < abiSelectors.length; i++) {
-    const abiSelector = abiSelectors[i];
+  for (let i = 0; i < mainAbiSelectors.length; i++) {
+    const abiSelector = mainAbiSelectors[i];
 
     if (allSelectors.includes(abiSelector)) {
       console.error(`CONFLICT: Selector ${abiSelector} from the ABI is also in the diamond cut data`);
-      console.error(`Found in facet at address: ${selectorMap.get(abiSelector)}`);
+      console.error(`Found in facet: ${selectorMap.get(abiSelector)}`);
       return false;
     }
   }
 
   return true;
+}
+
+export function generateDiamondCutDataFromDiff(
+  onChainFacetInfo: { address: string, selectors: string[], bytecodeHash: string }[],
+  localFacetInfo: { facet: string, selectors: string[], bytecodeHash: string }[],
+) {
+  const matchingFacetBytecodeHashes = onChainFacetInfo.filter(onChainFacet => {
+    const localFacet = localFacetInfo.find(localFacet =>
+      localFacet.bytecodeHash === onChainFacet.bytecodeHash
+    )
+
+    if (!localFacet) {
+      return false
+    }
+
+    // Compare selectors arrays
+    if (onChainFacet.selectors.length !== localFacet.selectors.length) {
+      return false
+    }
+
+    const onChainSelectorsSet = new Set(onChainFacet.selectors)
+    const localSelectorsSet = new Set(localFacet.selectors)
+
+    if (!onChainFacet.selectors.every((selector: string) => localSelectorsSet.has(selector)) ||
+      !localFacet.selectors.every((selector: string) => onChainSelectorsSet.has(selector))) {
+      return false
+    }
+
+    return true
+  }).map(facet => facet.bytecodeHash)
+
+
+  const onChainFacetInfoWithDiff = onChainFacetInfo.filter(facet => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash))
+
+  const localFacetInfoWithDiff = localFacetInfo.filter(facet => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash))
+
+  const onChainSelectorsWithDiff = new Map()
+  onChainFacetInfoWithDiff.forEach(facet => {
+    facet.selectors.forEach((selector: string) => {
+      onChainSelectorsWithDiff.set(selector, facet)
+    })
+  })
+
+  const localSelectorsWithDiff = new Map()
+  localFacetInfoWithDiff.forEach(facet => {
+    facet.selectors.forEach((selector: string) => {
+      localSelectorsWithDiff.set(selector, facet)
+    })
+  })
+
+  // if a local facet is not already deployed, it needs to be deployed
+  const facetsToDeploy = localFacetInfoWithDiff.map(facet => facet.facet)
+
+  // Map from facet address to array of selectors that need to be added
+  const addActions = new Map<string, string[]>()
+  const replaceActions = new Map<string, string[]>()
+  const removeActions: string[] = []
+
+  // Group selectors by facet for add actions
+  for (const [localSelector, facetInfo] of localSelectorsWithDiff) {
+    if (!onChainSelectorsWithDiff.has(localSelector)) {
+      const selectors = addActions.get(facetInfo.facet) || []
+      selectors.push(localSelector)
+      addActions.set(facetInfo.facet, selectors)
+    } else {
+      const selectors = replaceActions.get(facetInfo.facet) || []
+      selectors.push(localSelector)
+      replaceActions.set(facetInfo.facet, selectors)
+    }
+  }
+
+  for (const [onChainSelector, _] of onChainSelectorsWithDiff) {
+    if (!localSelectorsWithDiff.has(onChainSelector)) {
+      removeActions.push(onChainSelector)
+    }
+  }
+
+  return {
+    add: Object.fromEntries(addActions),
+    replace: Object.fromEntries(replaceActions),
+    remove: removeActions,
+    facetsToDeploy
+  }
+}
+
+export async function getOnChainFacetInfo(
+  hre: HardhatRuntimeEnvironment,
+  exchangeProxy: string,
+  l2Provider: ZkSyncProvider
+) {
+  const diamondLoupeFacet = new Contract(
+    exchangeProxy,
+    (await hre.artifacts.readArtifact("IDiamondLoupe")).abi,
+    l2Provider
+  )
+
+  const facets = await diamondLoupeFacet.facets()
+  const onChainFacetInfo = await Promise.all(facets.map(async (facet: { facetAddress: string; functionSelectors: string[] }) => {
+    const facetCode = await l2Provider.getCode(facet.facetAddress)
+    return {
+      address: facet.facetAddress,
+      selectors: facet.functionSelectors.slice().sort(),
+      bytecodeHash: ethers.utils.hexlify(hashBytecode(facetCode))
+    }
+  }))
+
+  return onChainFacetInfo
+}
+
+export async function getLocalFacetInfo(
+  hre: HardhatRuntimeEnvironment,
+) {
+  const allLocalFacets = [
+    // diamond cut is initialized at diamond migration
+    // so not part of the exchange facet info
+    {
+      facet: "DiamondCutFacet",
+      interface: "IDiamondCut"
+    },
+    ...ExchangeFacetInfos
+  ]
+
+  const localFacetInfo = await Promise.all(allLocalFacets.map(async (facetInfo) => {
+    const facetArtifact = await hre.artifacts.readArtifact(facetInfo.facet)
+    const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
+    const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
+    return {
+      facet: facetInfo.facet,
+      selectors: Object.keys(facetInterface.functions).map((fn) => facetInterface.getSighash(fn)).slice().sort(),
+      bytecodeHash: ethers.utils.hexlify(hashBytecode(facetArtifact.bytecode))
+    }
+  }))
+
+  return localFacetInfo
+}
+
+export async function validateFacetStorage(hre: HardhatRuntimeEnvironment) {
+  const contractStorage = await getAbstractStorage(hre, "contracts/exchange/GRVTExchange.sol", "GRVTExchange");
+  for (const facet of ExchangeFacetInfos) {
+    const facetStorage = await getAbstractStorage(hre, facet.file, facet.facet);
+    if (!(facetStorage.length === 0 || JSON.stringify(facetStorage) === JSON.stringify(contractStorage))) {
+      throw new Error(`Inconsistent storage layout for facet ${facet.facet} in ${facet.file}`);
+    }
+  }
+}
+
+async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, contractName: string) {
+  const buildInfo = await hre.artifacts.getBuildInfo(file + ":" + contractName);
+  const storageWithContract = buildInfo?.output.contracts[file][contractName].storageLayout.storage;
+
+  const storage = storageWithContract.map((item: any) => {
+    return {
+      ...item,
+      contract: null
+    }
+  })
+
+  return storage;
 }
