@@ -5,7 +5,7 @@ import { L2TokenInfo } from "../../deploy/testutil"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
 import { getDeployerWallet } from "../util"
-import { generateDiamondCutDataForNewFacets, getLocalFacetInfo, validateHybridProxy } from "../../scripts/utils"
+import { generateDiamondCutDataForNewFacets, getLocalFacetInfo, validateFacetStorage, validateHybridProxy } from "../../scripts/utils"
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import * as hre from "hardhat"
 import { hashBytecode } from "zksync-web3/build/src/utils"
@@ -20,6 +20,8 @@ export async function setupTestEnvironment() {
 }
 
 async function deployContracts() {
+  await validateFacetStorage(hre)
+
   const deployerWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
   const proxyAdminWallet = getWallet(LOCAL_RICH_WALLETS[3].privateKey)
   const deployOptions = { wallet: deployerWallet, silent: true, noVerify: true }

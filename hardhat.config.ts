@@ -80,6 +80,11 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 5,
       },
+      outputSelection: {
+        "*": {
+          "*": ["storageLayout"],
+        },
+      },
     },
   },
   mocha: {

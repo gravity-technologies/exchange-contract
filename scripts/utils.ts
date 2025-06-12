@@ -526,3 +526,27 @@ export async function getLocalFacetInfo(
 
   return localFacetInfo
 }
+
+export async function validateFacetStorage(hre: HardhatRuntimeEnvironment) {
+  const contractStorage = await getAbstractStorage(hre, "contracts/exchange/GRVTExchange.sol", "GRVTExchange");
+  for (const facet of ExchangeFacetInfos) {
+    const facetStorage = await getAbstractStorage(hre, facet.file, facet.facet);
+    if (!(facetStorage.length === 0 || JSON.stringify(facetStorage) === JSON.stringify(contractStorage))) {
+      throw new Error(`Inconsistent storage layout for facet ${facet.facet} in ${facet.file}`);
+    }
+  }
+}
+
+async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, contractName: string) {
+  const buildInfo = await hre.artifacts.getBuildInfo(file + ":" + contractName);
+  const storageWithContract = buildInfo?.output.contracts[file][contractName].storageLayout.storage;
+
+  const storage = storageWithContract.map((item: any) => {
+    return {
+      ...item,
+      contract: null
+    }
+  })
+
+  return storage;
+}
