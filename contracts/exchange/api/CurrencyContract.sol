@@ -1,9 +1,9 @@
 pragma solidity ^0.8.20;
 
-import "./BaseContract.sol";
+import "./ConfigContract.sol";
 import "../types/DataStructure.sol";
 
-contract CurrencyContract is BaseContract {
+contract CurrencyContract is ConfigContract {
   function addCurrency(
     int64 timestamp,
     uint64 txID,
@@ -16,5 +16,8 @@ contract CurrencyContract is BaseContract {
     CurrencyConfig storage config = state.currencyConfigs[id];
     config.id = id;
     config.balanceDecimals = balanceDecimals;
+
+    state.configVersion++;
+    _sendConfigProofMessageToL1(abi.encode(timestamp, id, balanceDecimals));
   }
 }
