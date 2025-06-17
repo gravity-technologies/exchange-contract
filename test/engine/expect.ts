@@ -39,6 +39,8 @@ import {
   ExInsuranceFundLoss,
   ExTotalClientEquity,
   ExSubAccountUnderDeriskMargin,
+  ExCurrencyConfig,
+  ExCurrencyCount,
 } from "./types"
 import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
@@ -141,6 +143,10 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectNumSubAccountPositions(contract, expectation.expect as ExNumSubAccountPositions)
     case "ExSubAccountUnderDeriskMargin":
       return expectSubAccountUnderDeriskMargin(contract, expectation.expect as ExSubAccountUnderDeriskMargin)
+    case "ExCurrencyConfig":
+      return expectCurrencyConfig(contract, expectation.expect as ExCurrencyConfig)
+    case "ExCurrencyCount":
+      return expectCurrencyCount(contract, expectation.expect as ExCurrencyCount)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -556,6 +562,15 @@ async function expectSubAccountUnderDeriskMargin(contract: Contract, expectation
     expectations.under_derisk_margin
   )
   expect(underDeriskMargin).to.equal(true)
+}
+
+async function expectCurrencyConfig(contract: Contract, expectations: ExCurrencyConfig) {
+  const decimals = await contract.getCurrencyDecimals(expectations.id)
+  expect(decimals).to.equal(expectations.balance_decimals)
+}
+
+async function expectCurrencyCount(contract: Contract, expectations: ExCurrencyCount) {
+  // This is only implemented in risk, and not in contract (intentional)
 }
 
 function big(s: any): BigNumber {

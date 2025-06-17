@@ -286,6 +286,15 @@ export interface ExSubAccountUnderDeriskMargin {
   under_derisk_margin: boolean
 }
 
+export interface ExCurrencyConfig {
+  id: number
+  balance_decimals: number
+}
+
+export interface ExCurrencyCount {
+  count: number
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -323,4 +332,6 @@ export interface Expectation {
     | ExInsuranceFundLoss
     | ExTotalClientEquity
     | ExSubAccountUnderDeriskMargin
+    | ExCurrencyConfig
+    | ExCurrencyCount
 }
