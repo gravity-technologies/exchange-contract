@@ -239,4 +239,6 @@ interface IAssertion {
     uint64 subAccountID,
     uint32 expectedDeriskToMaintenanceMarginRatio
   ) external view;
+
+  function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view;
 }
