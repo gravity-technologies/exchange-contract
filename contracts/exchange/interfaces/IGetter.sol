@@ -120,4 +120,6 @@ interface IGetter {
   ) external view returns (uint64 lpTokenBalance, uint64 usdNotionalInvested);
 
   function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) external view returns (bool);
+
+  function getCurrencyDecimals(uint16 id) external view returns (uint16);
 }

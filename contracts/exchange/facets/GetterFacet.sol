@@ -1,11 +1,11 @@
 pragma solidity ^0.8.20;
 
-import "../api/ConfigContract.sol";
 import "../api/RiskCheck.sol";
 import "../api/MarginConfigContract.sol";
+import "../api/CurrencyContract.sol";
 import "../interfaces/IGetter.sol";
 
-contract GetterFacet is IGetter, ConfigContract, MarginConfigContract, RiskCheck {
+contract GetterFacet is IGetter, CurrencyContract, MarginConfigContract, RiskCheck {
   using BIMath for BI;
 
   function getAccountResult(address accID) public view returns (AccountResult memory) {
@@ -259,5 +259,9 @@ contract GetterFacet is IGetter, ConfigContract, MarginConfigContract, RiskCheck
     } else {
       return totalEquity >= int64(deriskMargin);
     }
+  }
+
+  function getCurrencyDecimals(uint16 id) public view returns (uint16) {
+    return state.currencyConfigs[id].balanceDecimals;
   }
 }
