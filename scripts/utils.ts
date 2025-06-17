@@ -543,8 +543,9 @@ async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, 
 
   const storage = storageWithContract.map((item: any) => {
     return {
-      ...item,
-      contract: null
+      label: item.label,
+      offset: item.offset,
+      size: item.size,
     }
   })
 
