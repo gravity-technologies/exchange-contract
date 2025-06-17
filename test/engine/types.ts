@@ -307,6 +307,11 @@ export interface ExSubAccountSummaryOptional {
   pre_trade_initial_margin: string
 }
 
+export interface ExSubAccountUnderDeriskMargin {
+  sub_account_id: string
+  under_derisk_margin: boolean
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -347,4 +352,6 @@ export interface Expectation {
   | ExVaultStatus
   | ExVaultTotalLpTokenSupply
   | ExVaultLpInfo
+  | ExSubAccountUnderDeriskMargin
+
 }

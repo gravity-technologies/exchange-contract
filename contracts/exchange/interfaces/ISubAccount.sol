@@ -85,6 +85,14 @@ interface ISubAccount {
     Signature calldata sig
   ) external;
 
+  function setDeriskToMaintenanceMarginRatio(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    uint32 deriskToMaintenanceMarginRatio,
+    Signature calldata sig
+  ) external;
+
   /// @notice Remove a session key
   ///
   /// @param timestamp The timestamp of the transaction

@@ -311,6 +311,9 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       SpotAssertion calldata exSpot = exSub.spots[j];
       require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
     }
+
+    // Assert last derisk timestamp
+    require(sub.lastDeriskTimestamp == exSub.lastDeriskTimestamp, "exSub - deriskTimeMismatch");
   }
 
   // Assertions for WalletRecovery Contract
@@ -590,5 +593,15 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     if (feeAccountAssertion.accountID != address(0)) {
       _assertVaultLp(vaultSub, feeAccountAssertion, "ex vaultFeeTickFeeAccount");
     }
+  }
+
+  function assertSetDeriskToMaintenanceMarginRatio(
+    uint64 subAccountID,
+    uint32 expectedDeriskToMaintenanceMarginRatio
+  ) external view {
+    require(
+      state.subAccounts[subAccountID].deriskToMaintenanceMarginRatio == expectedDeriskToMaintenanceMarginRatio,
+      "ex setDeriskRatio"
+    );
   }
 }

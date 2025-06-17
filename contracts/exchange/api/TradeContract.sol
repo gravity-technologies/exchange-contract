@@ -158,6 +158,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
+  /// @dev Verifies and executes an order, applying checks based on order type and account status.
+  /// Validation spec: https://grvt.atlassian.net/wiki/spaces/TRADE/pages/142803008/De-risking+tech+design
   function _verifyAndExecuteOrder(
     int64 timestamp,
     Order calldata order,
@@ -166,30 +168,59 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     int64[] memory feePerLegs,
     SubAccount storage takerSub
   ) private {
+    // 1. Resolve active sub-account and calculate total fee
     SubAccount storage sub = isMakerOrder ? _requireSubAccount(order.subAccountID) : takerSub;
     int64 totalFee = _getTotalFee(feePerLegs);
 
+    // 2. Order validation
     _verifyOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, totalFee);
 
-    // Fund and settle the subaccount before checking total value
+    // 3. Apply funding and settlement before margin checks
     _fundAndSettle(sub);
 
-    // Always allow non-liquidation orders that reduce position size
-    // Liquidation orders must maintain subaccount above maintenance margin
+    // 4. Pre-check for reduceOnly orders
+    // A reduce-only order must actually reduce the position size.
     bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
+    require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
     _checkVaultOrder(sub, order, isReducingOrder);
 
-    if (!order.isLiquidation && isReducingOrder) {
-      _executeOrder(sub, order, calcResult, totalFee);
+    // ---------- Early Exits for Special Order Types ----------
+
+    // Path 1: Insurance Fund orders have special execution privileges.
+    (uint64 insuranceFundSubID, bool isInsuranceFundSet) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    bool isInsuranceFund = isInsuranceFundSet && sub.id == insuranceFundSubID;
+    if (isInsuranceFund) {
+      _executeOrder(timestamp, sub, order, calcResult, totalFee);
       return;
     }
 
-    // Non-reducing order is subjected to margin check, ensuring sufficient balance pre and post trade
-    _requireValidMargin(sub, order, true);
-    // if reduce only flag is set, the order must be reducing size
-    require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
-    _executeOrder(sub, order, calcResult, totalFee);
-    _requireValidMargin(sub, order, false);
+    // Path 2: Non-liquidation, non-derisk orders that reduce position size.
+    // These are generally preferred and can bypass some stricter checks.
+    bool isPlainOrder = !order.isLiquidation && !order.isDerisk;
+    if (isPlainOrder && isReducingOrder) {
+      _executeOrder(timestamp, sub, order, calcResult, totalFee);
+      return;
+    }
+
+    // ---------- Derisk Flow ----------
+    if (order.isDerisk) {
+      require(_isDeriskable(timestamp, sub), "not deriskable");
+      _executeOrder(timestamp, sub, order, calcResult, totalFee);
+      return;
+    }
+
+    // ---------- Liquidation / Standard Execution Fallback ----------
+    if (order.isLiquidation) {
+      // Liquidation orders require the subaccount to not be above maintenance margin beforehand.
+      require(!isAboveMaintenanceMargin(sub), "liquidated sub above MM");
+    }
+
+    _executeOrder(timestamp, sub, order, calcResult, totalFee);
+
+    // Post-trade Maintenance Margin check for non-liquidation orders.
+    if (!order.isLiquidation) {
+      require(isAboveMaintenanceMargin(sub), "sub below MM");
+    }
   }
 
   function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private {
@@ -254,7 +285,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // - order's signer is in the session key map, and session hasn't expired, and the sessionKey's signer has trade permission
     // - order's signer has trade permission
     SubAccount storage permSub = sub;
-    if (order.isLiquidation) {
+    if (order.isLiquidation || order.isDerisk) {
       (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
     } else if (sub.isVault && sub.vaultInfo.status == VaultStatus.DELISTED) {
       (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
@@ -319,6 +350,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   }
 
   function _executeOrder(
+    int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
     OrderCalculationResult memory calcResult,
@@ -361,6 +393,11 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     } else {
       sub.spotBalances[subQuote] += spotDelta;
     }
+
+    // Update account derisk window. We must already have passed derisk validation before this update
+    if (order.isDerisk) {
+      sub.lastDeriskTimestamp = timestamp;
+    }
   }
 
   function removePos(SubAccount storage sub, bytes32 assetID) private {
@@ -374,7 +411,6 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  // FIXME: Our BE disables charging fees for now. To enable back afterwards
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
     int64 totalFee;
     uint len = feePerLegs.length;

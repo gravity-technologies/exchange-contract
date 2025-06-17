@@ -7,6 +7,7 @@ import { TestCase, TestStep } from "./types"
 import { isDeposit, mockFinalizeDeposit } from "./deposit"
 
 const GAS_LIMIT = 2100000000
+const DEBUG = false
 
 export async function runTestCase(
   test: TestCase,
@@ -15,6 +16,9 @@ export async function runTestCase(
   l2SharedBridgeAsL1Bridge: L2SharedBridge
 ) {
   for (const step of test.steps ?? []) {
+    if (DEBUG) {
+      console.log(`Executing step ${step.tx_id} of ${step.tx?.type}`)
+    }
     await executeTestStep(step, exchangeContract, w1, l2SharedBridgeAsL1Bridge)
   }
 }

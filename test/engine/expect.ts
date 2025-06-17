@@ -42,6 +42,7 @@ import {
   ExVaultStatus,
   ExVaultTotalLpTokenSupply,
   ExVaultLpInfo,
+  ExSubAccountUnderDeriskMargin,
 } from "./types"
 import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
@@ -129,6 +130,9 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectOnboardedTransferAccount(contract, expectation.expect as ExOnboardedTransferAccount)
     case "ExExchangeCurrencyBalance":
       return expectExchangeCurrencyBalance(contract, expectation.expect as ExExchangeCurrencyBalance)
+    case "ExSubAccountSpotReal":
+      console.log(`⚠️ ${expectation.name} is not check on contract because calculation logic is not in contract ⚠️ `)
+      break
     case "ExSubAccountPositionOptional":
       return expectSubAccountPositionOptional(contract, expectation.expect as ExSubAccountPositionOptional)
     case "ExInsuranceFundLoss":
@@ -147,6 +151,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectVaultTotalLpTokenSupply(contract, expectation.expect as ExVaultTotalLpTokenSupply)
     case "ExVaultLpInfo":
       return expectVaultLpInfo(contract, expectation.expect as ExVaultLpInfo)
+    case "ExSubAccountUnderDeriskMargin":
+      return expectSubAccountUnderDeriskMargin(contract, expectation.expect as ExSubAccountUnderDeriskMargin)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -177,7 +183,9 @@ async function expectSessionKeys(contract: Contract, expectations: ExSessionKeys
       expectations.signers[sessionKey].session_key
     )
     expect(actualSubAccSigner.toLowerCase()).to.equal(expectations.signers[sessionKey].main_signing_key.toLowerCase())
-    const expectedAuthExpiry = big(await contract.getTimestamp()).add(big(expectations.signers[sessionKey].authorization_expiry_delta))
+    const expectedAuthExpiry = big(await contract.getTimestamp()).add(
+      big(expectations.signers[sessionKey].authorization_expiry_delta)
+    )
     const actualAuthExpiry = actualAuthorizationExpiry
     expect(big(actualAuthExpiry)).to.equal(expectedAuthExpiry)
   }
@@ -495,15 +503,15 @@ function getBalanceDecimalFromEnum(currency: number) {
 async function expectSubAccountPositionOptional(contract: Contract, expectations: ExSubAccountPositionOptional) {
   let assetID = big(toAssetID(expectations.position.instrument))
   let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
-  const [found, balance] = await contract.getSubAccountPosition(
+  const [found, actualBalance] = await contract.getSubAccountPosition(
     BigInt(expectations.position.sub_account_id),
     assetIDHex
   )
 
   if (found) {
-    expect(
+    const expectedPosSize =
       Number(expectations.position.size) * 10 ** getBalanceDecimal(expectations.position.instrument.underlying)
-    ).to.equal(Number(balance))
+    expect(Number(actualBalance)).to.equal(expectedPosSize)
   } else {
     expect(expectations.position.size).to.equal("0")
   }
@@ -538,9 +546,7 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
     let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
     const [price, found] = await contract.getMarkPrice(assetIDHex)
     expect(found).to.be.true
-    expect(
-      Number(expectations.summary.settle_index_price) * 10 ** 9
-    ).to.equal(Number(price))
+    expect(Number(expectations.summary.settle_index_price) * 10 ** 9).to.equal(Number(price))
   }
 
   if (expectations.summary.maintenance_margin != null && expectations.summary.maintenance_margin != "") {
@@ -610,6 +616,14 @@ async function expectVaultLpInfo(contract: Contract, expectations: ExVaultLpInfo
 
   expect(big(lpTokenBalance)).to.equal(big(expectations.lp_token_balance))
   expect(big(usdNotionalInvested)).to.equal(big(expectations.usd_notional_invested))
+}
+
+async function expectSubAccountUnderDeriskMargin(contract: Contract, expectations: ExSubAccountUnderDeriskMargin) {
+  const underDeriskMargin = await contract.isUnderDeriskMargin(
+    BigInt(expectations.sub_account_id),
+    expectations.under_derisk_margin
+  )
+  expect(underDeriskMargin).to.equal(true)
 }
 
 function big(s: any): BigNumber {

@@ -124,6 +124,7 @@ interface IAssertion {
     int64 fundingTimestamp;
     PositionAssertion[] positions;
     SpotAssertion[] spots;
+    int64 lastDeriskTimestamp;
   }
   struct TradeAssertion {
     SubAccountAssertion[] subAccounts;
@@ -230,5 +231,10 @@ interface IAssertion {
     uint64 expectedTotalLpTokenSupply,
     VaultLpAssertion calldata managerAssertion,
     VaultLpAssertion calldata feeAccountAssertion
+  ) external view;
+
+  function assertSetDeriskToMaintenanceMarginRatio(
+    uint64 subAccountID,
+    uint32 expectedDeriskToMaintenanceMarginRatio
   ) external view;
 }

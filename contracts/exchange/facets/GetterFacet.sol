@@ -234,4 +234,30 @@ contract GetterFacet is IGetter, ConfigContract, MarginConfigContract, RiskCheck
     VaultLpInfo storage lpInfo = sub.vaultInfo.lpInfos[lpAccountID];
     return (lpInfo.lpTokenBalance, lpInfo.usdNotionalInvested);
   }
+
+  function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) public view returns (bool) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+
+    // Compute the maintenance margin
+    uint64 mm = _getMaintenanceMargin(sub);
+    uint64 qDec = _getBalanceDecimal(sub.quoteCurrency);
+    BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
+
+    // Compute the derisk margin
+    // TODO: if subAccount is vault, ratio = DERISK_MM_RATIO_VAULT
+    uint64 ratio = sub.deriskToMaintenanceMarginRatio == 0
+      ? DERISK_MM_RATIO_DEFAULT
+      : sub.deriskToMaintenanceMarginRatio;
+    BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
+    uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
+
+    BI memory totalEquityBI = _getSubAccountValueInQuote(sub);
+    int64 totalEquity = totalEquityBI.toInt64(qDec);
+
+    if (underDeriskMargin) {
+      return totalEquity < int64(deriskMargin);
+    } else {
+      return totalEquity >= int64(deriskMargin);
+    }
+  }
 }
