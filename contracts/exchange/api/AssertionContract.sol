@@ -292,12 +292,16 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function _assertSubAccount(SubAccountAssertion calldata exSub) internal view {
     SubAccount storage sub = state.subAccounts[exSub.subAccountID];
 
-    // Assert funding timestamp
     require(sub.lastAppliedFundingTimestamp == exSub.fundingTimestamp, "exSub - fundingTimeMismatch");
+    require(sub.lastDeriskTimestamp == exSub.lastDeriskTimestamp, "exSub - deriskTimeMismatch");
 
-    // Assert positions
-    for (uint j; j < exSub.positions.length; ++j) {
-      PositionAssertion calldata exPos = exSub.positions[j];
+    _assertSubAccountPositions(sub, exSub.positions);
+    _assertSubAccountSpots(sub, exSub.spots);
+  }
+
+  function _assertSubAccountPositions(SubAccount storage sub, PositionAssertion[] calldata positions) internal view {
+    for (uint j; j < positions.length; ++j) {
+      PositionAssertion calldata exPos = positions[j];
       PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
       Position storage pos = posmap.values[exPos.assetID];
       require(
@@ -305,15 +309,13 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
         "exSub - positionMismatch"
       );
     }
+  }
 
-    // Assert spot balances
-    for (uint j; j < exSub.spots.length; ++j) {
-      SpotAssertion calldata exSpot = exSub.spots[j];
+  function _assertSubAccountSpots(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
+    for (uint j; j < spots.length; ++j) {
+      SpotAssertion calldata exSpot = spots[j];
       require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
     }
-
-    // Assert last derisk timestamp
-    require(sub.lastDeriskTimestamp == exSub.lastDeriskTimestamp, "exSub - deriskTimeMismatch");
   }
 
   // Assertions for WalletRecovery Contract
