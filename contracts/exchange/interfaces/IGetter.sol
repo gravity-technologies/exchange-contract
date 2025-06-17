@@ -118,4 +118,6 @@ interface IGetter {
     uint64 vaultID,
     address lpAccountID
   ) external view returns (uint64 lpTokenBalance, uint64 usdNotionalInvested);
+
+  function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) external view returns (bool);
 }

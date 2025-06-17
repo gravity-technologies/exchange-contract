@@ -187,7 +187,8 @@ interface IAssertion {
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
     int64 vaultInitialSpotBalance,
-    VaultLpAssertion calldata managerAssertion
+    VaultLpAssertion calldata managerAssertion,
+    SubAccountAssertion calldata vaultSubAssertion
   ) external view;
 
   function assertVaultUpdate(
@@ -206,7 +207,8 @@ interface IAssertion {
     uint64 expectedTotalLpTokenSupply,
     Currency investmentCurrency,
     int64 expectedVaultSpotBalance,
-    VaultLpAssertion calldata investorAssertion
+    VaultLpAssertion calldata investorAssertion,
+    SubAccountAssertion calldata vaultSubAssertion
   ) external view;
 
   function assertVaultBurnLpToken(

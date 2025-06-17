@@ -442,7 +442,8 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
     int64 vaultInitialSpotBalance,
-    VaultLpAssertion calldata managerAssertion
+    VaultLpAssertion calldata managerAssertion,
+    SubAccountAssertion calldata vaultSubAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
 
@@ -477,6 +478,8 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
     // Check manager's LP state
     _assertVaultLp(vaultSub, managerAssertion, "ex vaultCreateManager");
+
+    _assertSubAccount(vaultSubAssertion);
   }
 
   function assertVaultUpdate(
@@ -514,7 +517,8 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint64 expectedTotalLpTokenSupply,
     Currency investmentCurrency,
     int64 expectedVaultSpotBalance,
-    VaultLpAssertion calldata investorAssertion
+    VaultLpAssertion calldata investorAssertion,
+    SubAccountAssertion calldata vaultSubAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
     require(vaultSub.isVault, "ex notVault");
@@ -527,6 +531,8 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
     // Check investor's LP state
     _assertVaultLp(vaultSub, investorAssertion, "ex vaultInvestInvestor");
+
+    _assertSubAccount(vaultSubAssertion);
   }
 
   function assertVaultBurnLpToken(
