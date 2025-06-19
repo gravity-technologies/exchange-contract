@@ -39,7 +39,7 @@ export interface DepositTxInfo {
   to_account_id: string
   token_currency: string
   num_tokens: string
-  currency: string
+  currency: number
 }
 
 export interface ExNumAccounts {
@@ -111,8 +111,8 @@ export interface ExConfig2D {
 
 export interface Asset {
   kind: string
-  underlying: string
-  quote: string
+  underlying: number
+  quote: number
   strike_price?: string
   expiration?: string
 }

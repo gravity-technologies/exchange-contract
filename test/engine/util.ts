@@ -1,8 +1,7 @@
 import { utils } from "ethers"
-import { Asset } from "./types"
-import { CurrencyToEnum, KindToEnum } from "./enums"
-import { TestCase } from "./types"
 import * as fs from "fs"
+import { KindToEnum } from "./enums"
+import { Asset, TestCase } from "./types"
 
 function getLSB(val: bigint, shift: number) {
   return Number((val >> BigInt(shift)) & BigInt(0xff))
@@ -11,8 +10,8 @@ function getLSB(val: bigint, shift: number) {
 export const toAssetID = ({ kind, underlying, quote, expiration, strike_price }: Asset) => {
   let msg = new Uint8Array()
   const k = KindToEnum[kind ?? "UNSPECIFIED"]
-  const u = CurrencyToEnum[underlying ?? "UNSPECIFIED"]
-  const q = CurrencyToEnum[quote ?? "UNSPECIFIED"]
+  const u = underlying
+  const q = quote
   const expiryBI = BigInt(expiration ?? 0)
   const strikeBI = BigInt(strike_price ?? 0)
 

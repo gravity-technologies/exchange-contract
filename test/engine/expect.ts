@@ -50,7 +50,9 @@ const ignoredExpectations = new Set(["ExSubAccountInitMargin", "ExSubAccountAPI"
 
 export async function validateExpectations(contract: Contract, expectations: Expectation[]) {
   for (let expectation of expectations ?? []) {
+    // console.log("validateExpectations", expectation)
     await validateExpectation(contract, expectation)
+    // console.log("OK")
   }
 }
 
@@ -326,10 +328,7 @@ async function expectSubAccountPosition(contract: Contract, expectations: ExSubA
 }
 
 async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccountSpot) {
-  const balance = await contract.getSubAccountSpotBalance(
-    BigInt(expectations.sub_account_id),
-    CurrencyToEnum[expectations.currency]
-  )
+  const balance = await contract.getSubAccountSpotBalance(BigInt(expectations.sub_account_id), expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
   // console.log("ExSpot: OK", bn(balance).toNumber(), expectations.balance)
 }
@@ -367,7 +366,7 @@ async function expectNotAccountRecoveryAddresses(contract: Contract, expectation
 }
 
 async function expectAccountSpot(contract: Contract, expectations: ExAccountSpot) {
-  const balance = await contract.getAccountSpotBalance(expectations.account_id, CurrencyToEnum[expectations.currency])
+  const balance = await contract.getAccountSpotBalance(expectations.account_id, expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
 }
 
@@ -424,7 +423,7 @@ async function expectOnboardedTransferAccount(contract: Contract, expectations: 
 }
 
 async function expectExchangeCurrencyBalance(contract: Contract, expectations: ExExchangeCurrencyBalance) {
-  const balance = await contract.getExchangeCurrencyBalance(CurrencyToEnum[expectations.currency])
+  const balance = await contract.getExchangeCurrencyBalance(expectations.currency)
   // expectations.balance is the sum of all spot balances of that currency, calculated in risk engine test
   // we cannot mint more fund than the total spot balance, which is the amount we hold
   expect(big(expectations.balance)).to.lessThanOrEqual(big(balance))
@@ -435,10 +434,6 @@ async function expectSubAccountSpotReal(contract: Contract, expectations: ExSubA
   expect(expectations.currency).to.equal("USDT")
   const value = await contract.getSubAccountValue(BigInt(expectations.sub_account_id))
   expect(big(expectations.balance)).to.equal(big(value))
-}
-
-function getBalanceDecimal(underlying: string) {
-  return getBalanceDecimalFromEnum(CurrencyToEnum[underlying])
 }
 
 function getBalanceDecimalFromEnum(currency: number) {
@@ -504,7 +499,7 @@ async function expectSubAccountPositionOptional(contract: Contract, expectations
 
   if (found) {
     const expectedPosSize =
-      Number(expectations.position.size) * 10 ** getBalanceDecimal(expectations.position.instrument.underlying)
+      Number(expectations.position.size) * 10 ** getBalanceDecimalFromEnum(expectations.position.instrument.underlying)
     expect(Number(actualBalance)).to.equal(expectedPosSize)
   } else {
     expect(expectations.position.size).to.equal("0")
@@ -512,12 +507,12 @@ async function expectSubAccountPositionOptional(contract: Contract, expectations
 }
 
 async function expectInsuranceFundLoss(contract: Contract, expectations: ExInsuranceFundLoss) {
-  const loss = await contract.getInsuranceFundLoss(CurrencyToEnum[expectations.currency])
+  const loss = await contract.getInsuranceFundLoss(expectations.currency)
   expect(big(expectations.amount)).to.equal(big(loss))
 }
 
 async function expectTotalClientEquity(contract: Contract, expectations: ExTotalClientEquity) {
-  const equity = await contract.getTotalClientEquity(CurrencyToEnum[expectations.currency])
+  const equity = await contract.getTotalClientEquity(expectations.currency)
   expect(big(expectations.amount)).to.equal(big(equity))
 }
 
@@ -536,7 +531,9 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
   }
 
   if (expectations.summary.settle_index_price != null && expectations.summary.settle_index_price != "") {
-    let assetID = big(toAssetID({ kind: "SPOT", underlying: expectations.summary.settle_currency, quote: "" }))
+    const quoteCurrency = CurrencyToEnum[expectations.summary.settle_currency ?? "UNSPECIFIED"]
+    const underlyingCurrency = CurrencyToEnum[expectations.summary.settle_currency ?? "UNSPECIFIED"]
+    let assetID = big(toAssetID({ kind: "SPOT", underlying: underlyingCurrency, quote: quoteCurrency }))
     let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
     const [price, found] = await contract.getMarkPrice(assetIDHex)
     expect(found).to.be.true
