@@ -174,15 +174,19 @@ interface IAssertion {
     SpotAssertion[] spots;
   }
 
+  struct VaultParamsAssertion {
+    uint32 managementFeeCentiBeeps;
+    uint32 performanceFeeCentiBeeps;
+    uint32 marketingFeeCentiBeeps;
+  }
+
   function assertVaultCreate(
     uint64 vaultID,
     address managerAccountID,
     Currency quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
-    uint32 managementFeeCentiBeeps,
-    uint32 performanceFeeCentiBeeps,
-    uint32 marketingFeeCentiBeeps,
+    VaultParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
@@ -191,12 +195,7 @@ interface IAssertion {
     SubAccountAssertion calldata vaultSubAssertion
   ) external view;
 
-  function assertVaultUpdate(
-    uint64 vaultID,
-    uint32 managementFeeCentiBeeps,
-    uint32 performanceFeeCentiBeeps,
-    uint32 marketingFeeCentiBeeps
-  ) external view;
+  function assertVaultUpdate(uint64 vaultID, VaultParamsAssertion calldata vaultParamsAssertion) external view;
 
   function assertVaultDelist(uint64 vaultID) external view;
 

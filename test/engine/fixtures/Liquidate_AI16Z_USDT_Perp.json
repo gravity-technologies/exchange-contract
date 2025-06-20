@@ -556,8 +556,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "AI16Z",
-                     "quote": "USDT"
+                     "underlying": 32,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -630,29 +630,29 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "AI16Z"
+                           "underlying": 32
                         },
                         "price": "60005000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "AI16Z",
-                           "quote": "USD"
+                           "underlying": 32,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDC"
+                           "underlying": 2
                         },
                         "price": "1000000000"
                      }
@@ -706,7 +706,7 @@
                "create_sub_account": {
                   "account": "0x7608d8aee4c3d510d7a790e9f7b5426f1f55fc07",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x7608d8aee4c3d510d7a790e9f7b5426f1f55fc07",
@@ -827,7 +827,7 @@
                "create_sub_account": {
                   "account": "0x1fcbc74415e918dd1f9b5e738a99ac063c085833",
                   "sub_account_id": "2000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x1fcbc74415e918dd1f9b5e738a99ac063c085833",
@@ -948,7 +948,7 @@
                "create_sub_account": {
                   "account": "0xae71aeb59d436bf6f20d4797360948b38d111f75",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xae71aeb59d436bf6f20d4797360948b38d111f75",
@@ -978,7 +978,7 @@
                "deposit": {
                   "tx_hash": "0xc25877374188bc74a4fd310cb1882b67ece27b4721bfd473600fc4eae33c7598",
                   "to_account_id": "0xae71aeb59d436bf6f20d4797360948b38d111f75",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000"
                }
             },
@@ -999,7 +999,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xae71aeb59d436bf6f20d4797360948b38d111f75",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "10000000000",
                   "signature": {
                      "signer": "0xae71aeb59d436bf6f20d4797360948b38d111f75",
@@ -1052,7 +1052,7 @@
                "create_sub_account": {
                   "account": "0x44a00f4967e35bc8b004fc2dc6a4b6414150cb75",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x44a00f4967e35bc8b004fc2dc6a4b6414150cb75",
@@ -1082,7 +1082,7 @@
                "deposit": {
                   "tx_hash": "0x8b99c5cc44f6bb96a269b4276615ef2208023229bc56a533b92e7d6dc693509e",
                   "to_account_id": "0x44a00f4967e35bc8b004fc2dc6a4b6414150cb75",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "20000000000"
                }
             },
@@ -1103,7 +1103,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x44a00f4967e35bc8b004fc2dc6a4b6414150cb75",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "20000000000",
                   "signature": {
                      "signer": "0x44a00f4967e35bc8b004fc2dc6a4b6414150cb75",
@@ -1141,8 +1141,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "AI16Z",
-                              "quote": "USDT"
+                              "underlying": 32,
+                              "quote": 3
                            },
                            "size": "3000000",
                            "limit_price": "60000000000000",
@@ -1195,8 +1195,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "AI16Z",
-                                    "quote": "USDT"
+                                    "underlying": 32,
+                                    "quote": 3
                                  },
                                  "size": "3000000",
                                  "limit_price": "60000000000000",
@@ -1253,7 +1253,12 @@
                         "mark_price": "60000000000000",
                         "index_price": "60005000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -1332,15 +1337,15 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "AI16Z"
+                           "underlying": 32
                         },
                         "price": "57100000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "AI16Z",
-                           "quote": "USD"
+                           "underlying": 32,
+                           "quote": 1
                         },
                         "price": "57100000000000"
                      }
@@ -1379,8 +1384,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "AI16Z",
-                              "quote": "USDT"
+                              "underlying": 32,
+                              "quote": 3
                            },
                            "size": "3000000",
                            "limit_price": "57100000000000",
@@ -1437,8 +1442,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "AI16Z",
-                                    "quote": "USDT"
+                                    "underlying": 32,
+                                    "quote": 3
                                  },
                                  "size": "3000000",
                                  "limit_price": "57100000000000",
@@ -1495,7 +1500,12 @@
                         "mark_price": "57100000000000",
                         "index_price": "57100000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [

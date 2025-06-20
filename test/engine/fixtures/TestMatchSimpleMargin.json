@@ -520,8 +520,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -592,8 +592,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -702,37 +702,37 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "59000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "ETH"
+                           "underlying": 4
                         },
                         "price": "2159000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000"
                         },
                         "price": "60005000000000"
@@ -740,8 +740,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -750,8 +750,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -760,8 +760,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -770,8 +770,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -780,8 +780,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "ETH",
-                           "quote": "USD"
+                           "underlying": 4,
+                           "quote": 1
                         },
                         "price": "2159000000000"
                      }
@@ -835,7 +835,7 @@
                "create_sub_account": {
                   "account": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
@@ -889,7 +889,7 @@
                "create_sub_account": {
                   "account": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -919,7 +919,7 @@
                "deposit": {
                   "tx_hash": "0x14db44c490bba4b862a94ae91505c8217364948359defa6cbb268d2ea8c969b2",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000"
                }
             },
@@ -940,7 +940,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -993,7 +993,7 @@
                "create_sub_account": {
                   "account": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -1023,7 +1023,7 @@
                "deposit": {
                   "tx_hash": "0x3fb4e885c4db555458bdf4944eb36eace62aae93d76b504874ad05cd1e3219ba",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000"
                }
             },
@@ -1044,7 +1044,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -1082,8 +1082,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "60015000000000",
@@ -1136,8 +1136,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "60015000000000",
@@ -1194,7 +1194,12 @@
                         "mark_price": "60000000000000",
                         "index_price": "59000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -1257,7 +1262,7 @@
                         "event_time": "0",
                         "sub_account_id": "1",
                         "margin_type": "SIMPLE_CROSS_MARGIN",
-                        "settle_currency": "USDT",
+                        "settle_currency": 3,
                         "unrealized_pnl": "-15000000",
                         "total_equity": "99985000000",
                         "initial_margin": "1200000000",
@@ -1265,7 +1270,7 @@
                         "available_balance": "98785000000",
                         "spot_balances": [
                            {
-                              "currency": "USDT",
+                              "currency": 3,
                               "balance": "100000000000",
                               "index_price": "1000000000"
                            }
@@ -1276,8 +1281,8 @@
                               "sub_account_id": "1",
                               "instrument": {
                                  "kind": "PERPETUAL",
-                                 "underlying": "BTC",
-                                 "quote": "USDT"
+                                 "underlying": 5,
+                                 "quote": 3
                               },
                               "size": "1000000000",
                               "notional": "60000000000",
@@ -1309,7 +1314,7 @@
                         "event_time": "0",
                         "sub_account_id": "2",
                         "margin_type": "SIMPLE_CROSS_MARGIN",
-                        "settle_currency": "USDT",
+                        "settle_currency": 3,
                         "unrealized_pnl": "15000000",
                         "total_equity": "200015000000",
                         "initial_margin": "1200000000",
@@ -1317,7 +1322,7 @@
                         "available_balance": "198800000000",
                         "spot_balances": [
                            {
-                              "currency": "USDT",
+                              "currency": 3,
                               "balance": "200000000000",
                               "index_price": "1000000000"
                            }
@@ -1328,8 +1333,8 @@
                               "sub_account_id": "2",
                               "instrument": {
                                  "kind": "PERPETUAL",
-                                 "underlying": "BTC",
-                                 "quote": "USDT"
+                                 "underlying": 5,
+                                 "quote": 3
                               },
                               "size": "-1000000000",
                               "notional": "-60000000000",
@@ -1370,7 +1375,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "800000000"
                      }
@@ -1437,7 +1442,7 @@
                         "event_time": "0",
                         "sub_account_id": "1",
                         "margin_type": "SIMPLE_CROSS_MARGIN",
-                        "settle_currency": "USDT",
+                        "settle_currency": 3,
                         "unrealized_pnl": "14985000000",
                         "total_equity": "114985000000",
                         "initial_margin": "1500000000",
@@ -1445,7 +1450,7 @@
                         "available_balance": "98500000000",
                         "spot_balances": [
                            {
-                              "currency": "USDT",
+                              "currency": 3,
                               "balance": "100000000000",
                               "index_price": "800000000"
                            }
@@ -1456,8 +1461,8 @@
                               "sub_account_id": "1",
                               "instrument": {
                                  "kind": "PERPETUAL",
-                                 "underlying": "BTC",
-                                 "quote": "USDT"
+                                 "underlying": 5,
+                                 "quote": 3
                               },
                               "size": "1000000000",
                               "notional": "75000000000",
@@ -2008,8 +2013,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2080,8 +2085,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -2190,37 +2195,37 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "59000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "ETH"
+                           "underlying": 4
                         },
                         "price": "2159000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000"
                         },
                         "price": "60005000000000"
@@ -2228,8 +2233,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -2238,8 +2243,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -2248,8 +2253,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -2258,8 +2263,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -2268,8 +2273,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "ETH",
-                           "quote": "USD"
+                           "underlying": 4,
+                           "quote": 1
                         },
                         "price": "2159000000000"
                      }
@@ -2323,7 +2328,7 @@
                "create_sub_account": {
                   "account": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
@@ -2377,7 +2382,7 @@
                "create_sub_account": {
                   "account": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -2407,7 +2412,7 @@
                "deposit": {
                   "tx_hash": "0x14db44c490bba4b862a94ae91505c8217364948359defa6cbb268d2ea8c969b2",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000"
                }
             },
@@ -2428,7 +2433,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -2481,7 +2486,7 @@
                "create_sub_account": {
                   "account": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -2511,7 +2516,7 @@
                "deposit": {
                   "tx_hash": "0x3fb4e885c4db555458bdf4944eb36eace62aae93d76b504874ad05cd1e3219ba",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000"
                }
             },
@@ -2532,7 +2537,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -2570,8 +2575,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "59980000000000",
@@ -2624,8 +2629,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "59980000000000",
@@ -2682,7 +2687,12 @@
                         "mark_price": "60000000000000",
                         "index_price": "59000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -2745,7 +2755,7 @@
                         "event_time": "0",
                         "sub_account_id": "1",
                         "margin_type": "SIMPLE_CROSS_MARGIN",
-                        "settle_currency": "USDT",
+                        "settle_currency": 3,
                         "unrealized_pnl": "20000000",
                         "total_equity": "100020000000",
                         "initial_margin": "1200000000",
@@ -2753,7 +2763,7 @@
                         "available_balance": "98800000000",
                         "spot_balances": [
                            {
-                              "currency": "USDT",
+                              "currency": 3,
                               "balance": "100000000000",
                               "index_price": "1000000000"
                            }
@@ -2764,8 +2774,8 @@
                               "sub_account_id": "1",
                               "instrument": {
                                  "kind": "PERPETUAL",
-                                 "underlying": "BTC",
-                                 "quote": "USDT"
+                                 "underlying": 5,
+                                 "quote": 3
                               },
                               "size": "1000000000",
                               "notional": "60000000000",
@@ -2797,7 +2807,7 @@
                         "event_time": "0",
                         "sub_account_id": "2",
                         "margin_type": "SIMPLE_CROSS_MARGIN",
-                        "settle_currency": "USDT",
+                        "settle_currency": 3,
                         "unrealized_pnl": "-20000000",
                         "total_equity": "199980000000",
                         "initial_margin": "1200000000",
@@ -2805,7 +2815,7 @@
                         "available_balance": "198780000000",
                         "spot_balances": [
                            {
-                              "currency": "USDT",
+                              "currency": 3,
                               "balance": "200000000000",
                               "index_price": "1000000000"
                            }
@@ -2816,8 +2826,8 @@
                               "sub_account_id": "2",
                               "instrument": {
                                  "kind": "PERPETUAL",
-                                 "underlying": "BTC",
-                                 "quote": "USDT"
+                                 "underlying": 5,
+                                 "quote": 3
                               },
                               "size": "-1000000000",
                               "notional": "-60000000000",
@@ -3368,8 +3378,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3440,8 +3450,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -3550,37 +3560,37 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "59000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "ETH"
+                           "underlying": 4
                         },
                         "price": "2159000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000"
                         },
                         "price": "60005000000000"
@@ -3588,8 +3598,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -3598,8 +3608,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -3608,8 +3618,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -3618,8 +3628,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -3628,8 +3638,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "ETH",
-                           "quote": "USD"
+                           "underlying": 4,
+                           "quote": 1
                         },
                         "price": "2159000000000"
                      }
@@ -3683,7 +3693,7 @@
                "create_sub_account": {
                   "account": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
@@ -3737,7 +3747,7 @@
                "create_sub_account": {
                   "account": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -3767,7 +3777,7 @@
                "deposit": {
                   "tx_hash": "0x14db44c490bba4b862a94ae91505c8217364948359defa6cbb268d2ea8c969b2",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000"
                }
             },
@@ -3788,7 +3798,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -3841,7 +3851,7 @@
                "create_sub_account": {
                   "account": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -3871,7 +3881,7 @@
                "deposit": {
                   "tx_hash": "0x3fb4e885c4db555458bdf4944eb36eace62aae93d76b504874ad05cd1e3219ba",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000"
                }
             },
@@ -3892,7 +3902,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -3930,8 +3940,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "23000000000",
                            "limit_price": "60000000000000",
@@ -3984,8 +3994,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "23000000000",
                                  "limit_price": "60000000000000",
@@ -4042,7 +4052,12 @@
                         "mark_price": "60000000000000",
                         "index_price": "59000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -4624,8 +4639,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4696,8 +4711,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -4806,37 +4821,37 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "59000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "ETH"
+                           "underlying": 4
                         },
                         "price": "2159000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000"
                         },
                         "price": "60005000000000"
@@ -4844,8 +4859,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -4854,8 +4869,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -4864,8 +4879,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -4874,8 +4889,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -4884,8 +4899,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "ETH",
-                           "quote": "USD"
+                           "underlying": 4,
+                           "quote": 1
                         },
                         "price": "2159000000000"
                      }
@@ -4939,7 +4954,7 @@
                "create_sub_account": {
                   "account": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
@@ -4993,7 +5008,7 @@
                "create_sub_account": {
                   "account": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -5023,7 +5038,7 @@
                "deposit": {
                   "tx_hash": "0x14db44c490bba4b862a94ae91505c8217364948359defa6cbb268d2ea8c969b2",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000"
                }
             },
@@ -5044,7 +5059,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -5097,7 +5112,7 @@
                "create_sub_account": {
                   "account": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -5127,7 +5142,7 @@
                "deposit": {
                   "tx_hash": "0x3fb4e885c4db555458bdf4944eb36eace62aae93d76b504874ad05cd1e3219ba",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000"
                }
             },
@@ -5148,7 +5163,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -5186,8 +5201,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "ETH",
-                              "quote": "USDT"
+                              "underlying": 4,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "3000000000000",
@@ -5240,8 +5255,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "ETH",
-                                    "quote": "USDT"
+                                    "underlying": 4,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "3000000000000",
@@ -5298,7 +5313,12 @@
                         "mark_price": "2159000000000",
                         "index_price": "2159000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -5880,8 +5900,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "BTC",
-                     "quote": "USDT"
+                     "underlying": 5,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -5952,8 +5972,8 @@
                "set_simple_cross_maintenance_margin_tiers": {
                   "asset_kuq": {
                      "kind": "PERPETUAL",
-                     "underlying": "ETH",
-                     "quote": "USDT"
+                     "underlying": 4,
+                     "quote": 3
                   },
                   "tiers": [
                      {
@@ -6062,37 +6082,37 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "BTC"
+                           "underlying": 5
                         },
                         "price": "59000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "ETH"
+                           "underlying": 4
                         },
                         "price": "2159000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "1000000000"
                      },
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "60000000000000"
                      },
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000"
                         },
                         "price": "60005000000000"
@@ -6100,8 +6120,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -6110,8 +6130,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -6120,8 +6140,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "45000000000000"
                         },
@@ -6130,8 +6150,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "12096000000000000",
                            "strike_price": "75000000000000"
                         },
@@ -6140,8 +6160,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "ETH",
-                           "quote": "USD"
+                           "underlying": 4,
+                           "quote": 1
                         },
                         "price": "2159000000000"
                      }
@@ -6195,7 +6215,7 @@
                "create_sub_account": {
                   "account": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
                   "sub_account_id": "1000",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x40b5949d3fa67fc0a68e3e278624260d6d977bb8",
@@ -6249,7 +6269,7 @@
                "create_sub_account": {
                   "account": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -6279,7 +6299,7 @@
                "deposit": {
                   "tx_hash": "0x14db44c490bba4b862a94ae91505c8217364948359defa6cbb268d2ea8c969b2",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000"
                }
             },
@@ -6300,7 +6320,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
                   "to_sub_account_id": "1",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "100000000000",
                   "signature": {
                      "signer": "0xefba788bf6ad9d98564d12c92a4e04815712b2a0",
@@ -6353,7 +6373,7 @@
                "create_sub_account": {
                   "account": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -6383,7 +6403,7 @@
                "deposit": {
                   "tx_hash": "0x3fb4e885c4db555458bdf4944eb36eace62aae93d76b504874ad05cd1e3219ba",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000"
                }
             },
@@ -6404,7 +6424,7 @@
                   "from_sub_account_id": "0",
                   "to_account_id": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
                   "to_sub_account_id": "2",
-                  "currency": "USDT",
+                  "currency": 3,
                   "num_tokens": "200000000000",
                   "signature": {
                      "signer": "0x033166133319cf3c595e5c6d3409c44a41dfccbc",
@@ -6442,8 +6462,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "BTC",
-                              "quote": "USDT"
+                              "underlying": 5,
+                              "quote": 3
                            },
                            "size": "23000000000",
                            "limit_price": "60000000000000",
@@ -6496,8 +6516,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "BTC",
-                                    "quote": "USDT"
+                                    "underlying": 5,
+                                    "quote": 3
                                  },
                                  "size": "23000000000",
                                  "limit_price": "60000000000000",
@@ -6554,7 +6574,12 @@
                         "mark_price": "60000000000000",
                         "index_price": "59000000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [
@@ -6589,8 +6614,8 @@
                         {
                            "instrument": {
                               "kind": "PERPETUAL",
-                              "underlying": "ETH",
-                              "quote": "USDT"
+                              "underlying": 4,
+                              "quote": 3
                            },
                            "size": "1000000000",
                            "limit_price": "3000000000000",
@@ -6643,8 +6668,8 @@
                               {
                                  "instrument": {
                                     "kind": "PERPETUAL",
-                                    "underlying": "ETH",
-                                    "quote": "USDT"
+                                    "underlying": 4,
+                                    "quote": 3
                                  },
                                  "size": "1000000000",
                                  "limit_price": "3000000000000",
@@ -6701,7 +6726,12 @@
                         "mark_price": "2159000000000",
                         "index_price": "2159000000000",
                         "interest_rate": 0,
-                        "forward_price": "0"
+                        "forward_price": "0",
+                        "asset_decimals": {
+                           "use_context_decimals": false,
+                           "underlying_balance_decimals": 0,
+                           "quote_balance_decimals": 0
+                        }
                      }
                   ],
                   "fee_charged": [

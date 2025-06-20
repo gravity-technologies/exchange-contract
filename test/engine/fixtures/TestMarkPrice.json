@@ -1120,7 +1120,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "BTC"
+                        "underlying": 5
                      },
                      "mark_price": null
                   },
@@ -1130,8 +1130,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": null
                   },
@@ -1701,15 +1701,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -1731,7 +1731,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -1741,8 +1741,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": "5000000000000"
                   },
@@ -2312,15 +2312,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -2342,7 +2342,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -2352,8 +2352,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": "5000000000000"
                   },
@@ -2923,15 +2923,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -2953,7 +2953,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -2963,8 +2963,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": "5000000000000"
                   },
@@ -3534,15 +3534,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -3564,7 +3564,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": null
                   },
@@ -3574,8 +3574,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": null
                   },
@@ -4145,15 +4145,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -4175,7 +4175,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": null
                   },
@@ -4185,8 +4185,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": null
                   },
@@ -4756,8 +4756,8 @@
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "60483600000000000"
                         },
                         "price": "30000000000000"
@@ -4765,7 +4765,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -4787,7 +4787,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -4797,8 +4797,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "FUTURE",
-                        "underlying": "BTC",
-                        "quote": "USDT",
+                        "underlying": 5,
+                        "quote": 3,
                         "expiration": "60483600000000000"
                      },
                      "mark_price": "15000000000000"
@@ -5369,8 +5369,8 @@
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "60483600000000001"
                         },
                         "price": "30000000000000"
@@ -5378,7 +5378,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -5400,7 +5400,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -5410,8 +5410,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "FUTURE",
-                        "underlying": "BTC",
-                        "quote": "USDT",
+                        "underlying": 5,
+                        "quote": 3,
                         "expiration": "60483600000000001"
                      },
                      "mark_price": "15000000000000"
@@ -5982,8 +5982,8 @@
                      {
                         "asset": {
                            "kind": "FUTURE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "1213199999999999"
                         },
                         "price": "30000000000000"
@@ -5991,7 +5991,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -6013,7 +6013,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": null
                   },
@@ -6023,8 +6023,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "FUTURE",
-                        "underlying": "BTC",
-                        "quote": "USDT",
+                        "underlying": 5,
+                        "quote": 3,
                         "expiration": "1213199999999999"
                      },
                      "mark_price": null
@@ -6595,8 +6595,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "60483600000000000",
                            "strike_price": "1234"
                         },
@@ -6605,7 +6605,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -6627,7 +6627,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -6637,8 +6637,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "CALL",
-                        "underlying": "BTC",
-                        "quote": "USDT",
+                        "underlying": 5,
+                        "quote": 3,
                         "expiration": "60483600000000000",
                         "strike_price": "1234"
                      },
@@ -6650,8 +6650,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "CALL",
-                        "underlying": "BTC",
-                        "quote": "USD",
+                        "underlying": 5,
+                        "quote": 1,
                         "expiration": "60483600000000000",
                         "strike_price": "1234"
                      },
@@ -7223,8 +7223,8 @@
                      {
                         "asset": {
                            "kind": "CALL",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "3599999999999",
                            "strike_price": "1234"
                         },
@@ -7233,7 +7233,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -7255,7 +7255,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": null
                   },
@@ -7265,8 +7265,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "CALL",
-                        "underlying": "BTC",
-                        "quote": "USDT",
+                        "underlying": 5,
+                        "quote": 3,
                         "expiration": "3599999999999",
                         "strike_price": "1234"
                      },
@@ -7278,8 +7278,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "CALL",
-                        "underlying": "BTC",
-                        "quote": "USD",
+                        "underlying": 5,
+                        "quote": 1,
                         "expiration": "3599999999999",
                         "strike_price": "1234"
                      },
@@ -7851,8 +7851,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "ETH",
-                           "quote": "USD",
+                           "underlying": 4,
+                           "quote": 1,
                            "expiration": "60483600000000000",
                            "strike_price": "1234"
                         },
@@ -7861,7 +7861,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -7883,7 +7883,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -7893,8 +7893,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PUT",
-                        "underlying": "ETH",
-                        "quote": "USDT",
+                        "underlying": 4,
+                        "quote": 3,
                         "expiration": "60483600000000000",
                         "strike_price": "1234"
                      },
@@ -7906,8 +7906,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PUT",
-                        "underlying": "ETH",
-                        "quote": "USD",
+                        "underlying": 4,
+                        "quote": 1,
                         "expiration": "60483600000000000",
                         "strike_price": "1234"
                      },
@@ -8479,8 +8479,8 @@
                      {
                         "asset": {
                            "kind": "PUT",
-                           "underlying": "ETH",
-                           "quote": "USD",
+                           "underlying": 4,
+                           "quote": 1,
                            "expiration": "3599999999999",
                            "strike_price": "1234"
                         },
@@ -8489,7 +8489,7 @@
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -8511,7 +8511,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": null
                   },
@@ -8521,8 +8521,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PUT",
-                        "underlying": "ETH",
-                        "quote": "USDT",
+                        "underlying": 4,
+                        "quote": 3,
                         "expiration": "3599999999999",
                         "strike_price": "1234"
                      },
@@ -8534,8 +8534,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PUT",
-                        "underlying": "ETH",
-                        "quote": "USD",
+                        "underlying": 4,
+                        "quote": 1,
                         "expiration": "3599999999999",
                         "strike_price": "1234"
                      },
@@ -9107,15 +9107,15 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "10000000000000"
                      },
                      {
                         "asset": {
                            "kind": "SPOT",
-                           "underlying": "USDT"
+                           "underlying": 3
                         },
                         "price": "2000000000"
                      }
@@ -9137,7 +9137,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -9147,8 +9147,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": "5000000000000"
                   },
@@ -9170,8 +9170,8 @@
                      {
                         "asset": {
                            "kind": "PERPETUAL",
-                           "underlying": "BTC",
-                           "quote": "USD"
+                           "underlying": 5,
+                           "quote": 1
                         },
                         "price": "20000000000000"
                      }
@@ -9193,7 +9193,7 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SPOT",
-                        "underlying": "USDT"
+                        "underlying": 3
                      },
                      "mark_price": "2000000000"
                   },
@@ -9203,8 +9203,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "PERPETUAL",
-                        "underlying": "BTC",
-                        "quote": "USDT"
+                        "underlying": 5,
+                        "quote": 3
                      },
                      "mark_price": "10000000000000"
                   },
@@ -9774,8 +9774,8 @@
                      {
                         "asset": {
                            "kind": "RATE",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "3600000000000"
                         },
                         "price": "10000000000000"
@@ -9798,8 +9798,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "RATE",
-                        "underlying": "BTC",
-                        "quote": "USD",
+                        "underlying": 5,
+                        "quote": 1,
                         "expiration": "3600000000000"
                      },
                      "mark_price": null
@@ -10370,8 +10370,8 @@
                      {
                         "asset": {
                            "kind": "SETTLEMENT",
-                           "underlying": "BTC",
-                           "quote": "USD",
+                           "underlying": 5,
+                           "quote": 1,
                            "expiration": "3600000000000"
                         },
                         "price": "10000000000000"
@@ -10394,8 +10394,8 @@
                   "expect": {
                      "asset_dto": {
                         "kind": "SETTLEMENT",
-                        "underlying": "BTC",
-                        "quote": "USD",
+                        "underlying": 5,
+                        "quote": 1,
                         "expiration": "3600000000000"
                      },
                      "mark_price": null

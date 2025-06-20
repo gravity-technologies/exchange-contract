@@ -494,7 +494,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -1046,7 +1046,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x62be3cc048b693ecce96a5475ca66d6acecf89bb",
@@ -1562,7 +1562,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "ISOLATED_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -2078,7 +2078,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "ISOLATED_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -2594,7 +2594,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "0",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -3110,7 +3110,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDC",
+                  "quote_currency": 2,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -3626,7 +3626,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -3674,7 +3674,7 @@
                "create_account_with_sub_account": {
                   "account": "0x62be3cc048b693ecce96a5475ca66d6acecf89bb",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x62be3cc048b693ecce96a5475ca66d6acecf89bb",
@@ -4214,7 +4214,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -4730,7 +4730,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -4785,7 +4785,7 @@
                "create_account_with_sub_account": {
                   "account": "0x62be3cc048b693ecce96a5475ca66d6acecf89bb",
                   "sub_account_id": "2",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0x62be3cc048b693ecce96a5475ca66d6acecf89bb",
@@ -5327,7 +5327,7 @@
                "create_account_with_sub_account": {
                   "account": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
                   "sub_account_id": "1",
-                  "quote_currency": "USDT",
+                  "quote_currency": 3,
                   "margin_type": "SIMPLE_CROSS_MARGIN",
                   "signature": {
                      "signer": "0xf9da9c4648588edca9235cb33933911b36b8f55f",
@@ -5355,7 +5355,7 @@
                {
                   "expect": {
                      "sub_account_id": "1",
-                     "currency": "USDT",
+                     "currency": 3,
                      "balance": "0"
                   },
                   "name": "ExSubAccountSpot"

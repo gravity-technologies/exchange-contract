@@ -437,9 +437,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     Currency quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
-    uint32 managementFeeCentiBeeps,
-    uint32 performanceFeeCentiBeeps,
-    uint32 marketingFeeCentiBeeps,
+    VaultParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
@@ -464,9 +462,9 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
     require(
       vaultInfo.status == VaultStatus.ACTIVE &&
-        vaultInfo.managementFeeCentiBeeps == managementFeeCentiBeeps &&
-        vaultInfo.performanceFeeCentiBeeps == performanceFeeCentiBeeps &&
-        vaultInfo.marketingFeeCentiBeeps == marketingFeeCentiBeeps &&
+        vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
+        vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
+        vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps &&
         vaultInfo.lastFeeSettlementTimestamp == lastFeeSettlementTimestamp &&
         vaultInfo.totalLpTokenSupply == totalLpTokenSupply,
       "ex vaultCreateInfo"
@@ -484,20 +482,15 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     _assertSubAccount(vaultSubAssertion);
   }
 
-  function assertVaultUpdate(
-    uint64 vaultID,
-    uint32 managementFeeCentiBeeps,
-    uint32 performanceFeeCentiBeeps,
-    uint32 marketingFeeCentiBeeps
-  ) external view {
+  function assertVaultUpdate(uint64 vaultID, VaultParamsAssertion calldata vaultParamsAssertion) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
     require(vaultSub.isVault, "ex notVault");
 
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
     require(
-      vaultInfo.managementFeeCentiBeeps == managementFeeCentiBeeps &&
-        vaultInfo.performanceFeeCentiBeeps == performanceFeeCentiBeeps &&
-        vaultInfo.marketingFeeCentiBeeps == marketingFeeCentiBeeps,
+      vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
+        vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
+        vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps,
       "ex vaultUpdate"
     );
   }
