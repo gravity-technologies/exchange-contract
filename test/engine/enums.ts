@@ -39,8 +39,13 @@ export const CurrencyToEnum: { [cur: string]: number } = {
   PENDLE: 37,
   UXLINK: 38,
   KAITO: 39,
-  IP: 40
+  IP: 40,
 }
+
+// CurrencyIDToName provides a reverse lookup from currency ID to currency name
+export const CurrencyIDToName: { [id: number]: string } = Object.fromEntries(
+  Object.entries(CurrencyToEnum).map(([name, id]) => [id, name])
+)
 
 export const MarginTypeToEnum: { [cur: string]: number } = {
   SIMPLE_CROSS_MARGIN: 2,

@@ -3,10 +3,12 @@ import { L2TokenInfo } from "../../deploy/testutil"
 import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridge"
 import { DepositTxInfo, TestStep } from "./types"
 import { scaleBigInt } from "./util"
+import { CurrencyIDToName } from "./enums"
 
 export function isDeposit(step: TestStep) {
   return step.tx != undefined && step.tx.type == "DEPOSIT"
 }
+
 // finalizeDeposit will be called as a L1 -> L2 transaction on
 // the L2 shared bridge as part of the deposit process.
 // The BridgeMint event from L2StandardERC20 triggers a deposit
@@ -16,7 +18,7 @@ export function isDeposit(step: TestStep) {
 export async function mockFinalizeDeposit(
   l2SharedBridgeAsL1Bridge: L2SharedBridge,
   deposit: DepositTxInfo,
-  exchangeContract: Contract,
+  exchangeContract: Contract
 ) {
   const currency = deposit.currency
 
@@ -26,7 +28,7 @@ export async function mockFinalizeDeposit(
     L2TokenInfo[currency].erc20Decimals
   )
 
-  const to_account_id = ethers.utils.hexZeroPad(deposit.to_account_id, 20);
+  const to_account_id = ethers.utils.hexZeroPad(deposit.to_account_id, 20)
 
   if (currency in L2TokenInfo) {
     const depositProxy = await exchangeContract.getDepositProxy(to_account_id)
@@ -43,9 +45,10 @@ export async function mockFinalizeDeposit(
   }
 }
 
-function encodedTokenData(name: string, symbol: string, decimals: number) {
+function encodedTokenData(name: string, currencyID: number, decimals: number) {
   const abiCoder = ethers.utils.defaultAbiCoder
   const encodedName = abiCoder.encode(["string"], [name])
+  const symbol = CurrencyIDToName[currencyID]
   const encodedSymbol = abiCoder.encode(["string"], [symbol])
   const encodedDecimals = abiCoder.encode(["uint8"], [decimals])
   return abiCoder.encode(["bytes", "bytes", "bytes"], [encodedName, encodedSymbol, encodedDecimals])
