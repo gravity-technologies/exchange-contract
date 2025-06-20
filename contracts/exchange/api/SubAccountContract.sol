@@ -5,8 +5,9 @@ import "./BaseContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
+import "../interfaces/ISubAccount.sol";
 
-contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlement {
+contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, FundingAndSettlement {
   int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9; // 31 days
 
   // DeriskToMaintenanceMarginRatio constants
@@ -31,22 +32,34 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
-    Account storage acc = state.accounts[accountID];
-    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
-    require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
-    require(acc.id != address(0), "account does not exist");
-    require(subAccountID != 0, "invalid subaccount id");
-    SubAccount storage sub = state.subAccounts[subAccountID];
-    require(sub.accountID == address(0), "subaccount already exists");
-    require(!_isBridgingPartnerAccount(accountID), "bridging partners cannot have subaccount");
-
-    // requires that the user is an account admin
-    require(acc.signers[sig.signer] & AccountPermAdmin > 0, "not account admin");
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashCreateSubAccount(accountID, subAccountID, quoteCurrency, marginType, sig.nonce, sig.expiration);
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
+
+    _validateAndCreateBaseSubAccount(timestamp, accountID, subAccountID, quoteCurrency, marginType, sig.signer);
+  }
+
+  function _validateAndCreateBaseSubAccount(
+    int64 timestamp,
+    address accountID,
+    uint64 subAccountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    address signer
+  ) internal returns (SubAccount storage sub) {
+    Account storage acc = state.accounts[accountID];
+    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
+    require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
+    require(acc.id != address(0), "account does not exist");
+    require(subAccountID != 0, "invalid subaccount id");
+    sub = state.subAccounts[subAccountID];
+    require(sub.accountID == address(0), "subaccount already exists");
+    require(!_isBridgingPartnerAccount(accountID), "bridging partners cannot have subaccount");
+
+    // requires that the user is an account admin
+    require(signerHasPerm(acc.signers, signer, AccountPermAdmin), "not account admin");
 
     // Create subaccount
     sub.id = subAccountID;
@@ -54,9 +67,9 @@ contract SubAccountContract is BaseContract, ConfigContract, FundingAndSettlemen
     sub.marginType = marginType;
     sub.quoteCurrency = quoteCurrency;
     sub.lastAppliedFundingTimestamp = timestamp;
+
     // We will not create any authorizedSigners in subAccount upon creation.
     // All account admins are presumably authorizedSigners
-
     acc.subAccounts.push(subAccountID);
   }
 

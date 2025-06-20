@@ -2,8 +2,9 @@ pragma solidity ^0.8.20;
 
 import "./ConfigContract.sol";
 import "../types/DataStructure.sol";
+import "../interfaces/ICurrency.sol";
 
-contract CurrencyContract is ConfigContract {
+contract CurrencyContract is ICurrency, ConfigContract {
   function addCurrency(
     int64 timestamp,
     uint64 txID,

@@ -262,6 +262,32 @@ export interface ExTotalClientEquity {
   currency: string
 }
 
+export interface ExVaultParams {
+  vault_id: string
+  params_specs: {
+    management_fee_centi_beeps: string
+    performance_fee_centi_beeps: string
+    marketing_fee_centi_beeps: string
+  }
+}
+
+export interface ExVaultStatus {
+  vault_id: string
+  status: string  // "ACTIVE", "DELISTED", or "CLOSED"
+}
+
+export interface ExVaultTotalLpTokenSupply {
+  vault_id: string
+  total_lp_token_supply: string
+}
+
+export interface ExVaultLpInfo {
+  vault_id: string
+  lp_account_id: string
+  lp_token_balance: string
+  usd_notional_invested: string
+}
+
 export interface ExSubAccountSummaryOptional {
   summary: {
     event_time: string
@@ -298,40 +324,44 @@ export interface ExCurrencyCount {
 export interface Expectation {
   name: string
   expect:
-    | ExNumAccounts
-    | ExAccountSigners
-    | ExAccountMultiSigThreshold
-    | ExAccountWithdrawalAddresses
-    | ExSessionKeys
-    | ExConfig1D
-    | ExConfig2D
-    | ExConfigSchedule
-    | ExConfigScheduleAbsent
-    | ExSubAccountSigners
-    | ExSubAccountMarginType
-    | ExFundingIndex
-    | ExMarkPrice
-    | ExInterestRate
-    | ExFundingTimeDelta
-    | ExSubAccountValue
-    | ExSubAccountPosition
-    | ExSubAccountSpot
-    | ExSettlementPrice
-    | ExAccountRecoveryAddresses
-    | ExNotAccountRecoveryAddresses
-    | ExAccountSpot
-    | ExSimpleCrossMaintenanceMarginTiers
-    | ExSimpleCrossMaintenanceMarginTimelockEndTime
-    | ExSimpleCrossMaintenanceMarginTiersNoTimelock
-    | ExSubAccountMaintMargin
-    | ExOnboardedTransferAccount
-    | ExSubAccountSummaryOptional
-    | ExSubAccountSpotReal
-    | ExSubAccountPositionOptional
-    | ExNumSubAccountPositions
-    | ExInsuranceFundLoss
-    | ExTotalClientEquity
-    | ExSubAccountUnderDeriskMargin
-    | ExCurrencyConfig
-    | ExCurrencyCount
+  | ExNumAccounts
+  | ExAccountSigners
+  | ExAccountMultiSigThreshold
+  | ExAccountWithdrawalAddresses
+  | ExSessionKeys
+  | ExConfig1D
+  | ExConfig2D
+  | ExConfigSchedule
+  | ExConfigScheduleAbsent
+  | ExSubAccountSigners
+  | ExSubAccountMarginType
+  | ExFundingIndex
+  | ExMarkPrice
+  | ExInterestRate
+  | ExFundingTimeDelta
+  | ExSubAccountValue
+  | ExSubAccountPosition
+  | ExSubAccountSpot
+  | ExSettlementPrice
+  | ExAccountRecoveryAddresses
+  | ExNotAccountRecoveryAddresses
+  | ExAccountSpot
+  | ExSimpleCrossMaintenanceMarginTiers
+  | ExSimpleCrossMaintenanceMarginTimelockEndTime
+  | ExSimpleCrossMaintenanceMarginTiersNoTimelock
+  | ExSubAccountMaintMargin
+  | ExOnboardedTransferAccount
+  | ExSubAccountSummaryOptional
+  | ExSubAccountSpotReal
+  | ExSubAccountPositionOptional
+  | ExNumSubAccountPositions
+  | ExInsuranceFundLoss
+  | ExTotalClientEquity
+  | ExVaultParams
+  | ExVaultStatus
+  | ExVaultTotalLpTokenSupply
+  | ExVaultLpInfo
+  | ExSubAccountUnderDeriskMargin
+  | ExCurrencyConfig
+  | ExCurrencyCount
 }

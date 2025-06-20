@@ -31,6 +31,9 @@ import "./scripts/upgrade-exchange-through-l1-governance";
 import "./scripts/replay-tx";
 import "./scripts/parse-tx";
 import "./scripts/fork";
+import "./scripts/migrate-diamond-through-l1-governance";
+import "./scripts/check-diamond-facets";
+
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
   networks: {
@@ -76,6 +79,11 @@ const config: HardhatUserConfig = {
       optimizer: {
         enabled: true,
         runs: 5,
+      },
+      outputSelection: {
+        "*": {
+          "*": ["storageLayout"],
+        },
       },
     },
   },
