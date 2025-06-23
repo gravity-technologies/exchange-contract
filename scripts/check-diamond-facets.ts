@@ -4,8 +4,10 @@ import {
     createProviders,
     generateDiamondCutDataFromDiff,
     getLocalFacetInfo,
+    getLocalFacetSigHashToSigMapping,
     getOnChainFacetInfo,
     validateHybridProxy,
+    enrichDiamondCutActionsWithSignatures,
 } from "./utils"
 
 task("check-diamond-facets", "check diamond facets")
@@ -21,6 +23,7 @@ task("check-diamond-facets", "check diamond facets")
         console.log("On-chain facets: ", onChainFacetInfo)
 
         const localFacetInfo = await getLocalFacetInfo(hre)
+        const sigHashToSigMapping = await getLocalFacetSigHashToSigMapping(hre)
 
         console.log("Local facets: ", localFacetInfo)
 
@@ -30,10 +33,13 @@ task("check-diamond-facets", "check diamond facets")
             throw new Error("Invalid diamond cut data")
         }
 
-        const { add, replace, remove, facetsToDeploy } = diamondCutData;
+        const enrichedDiamondCutData = await enrichDiamondCutActionsWithSignatures(
+            diamondCutData,
+            sigHashToSigMapping
+        );
 
-        console.log("Add actions: ", add)
-        console.log("Replace actions: ", replace)
-        console.log("Remove actions: ", remove)
-        console.log("Facets to deploy: ", facetsToDeploy)
+        console.log("Add actions: ", enrichedDiamondCutData.add)
+        console.log("Replace actions: ", enrichedDiamondCutData.replace)
+        console.log("Remove actions: ", enrichedDiamondCutData.remove)
+        console.log("Facets to deploy: ", enrichedDiamondCutData.facetsToDeploy)
     })

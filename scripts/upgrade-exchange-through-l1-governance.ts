@@ -1,18 +1,14 @@
 import { task } from "hardhat/config"
 
-import { ethers, Wallet as L1Wallet, providers as l1Providers, BigNumber, Contract } from "ethers"
-import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
+import { ethers, Wallet as L1Wallet, BigNumber, Contract } from "ethers"
+import { Wallet as L2Wallet } from "zksync-ethers"
 import {
-  ADDRESS_ONE,
-  create2DeployFromL1NoFactoryDeps,
-  computeL2Create2Address,
   createProviders,
   getL1ToL2TxInfo,
   encodeTransparentProxyUpgradeTo,
   getBaseToken,
   getGovernanceCalldata,
   scheduleAndExecuteGovernanceOp,
-  approveL1SharedBridgeIfNeeded,
   getOnChainFacetInfo,
   getLocalFacetInfo,
   generateDiamondCutDataFromDiff,
@@ -20,10 +16,8 @@ import {
   FacetCutAction,
 } from "./utils"
 
-import { hashBytecode } from "zksync-web3/build/src/utils"
 
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
-import { ExchangeFacetInfos } from "./diamond-info"
 import { Interface } from "ethers/lib/utils"
 
 // deploy target on L2 first
@@ -82,21 +76,6 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     console.log("Replace:", replaceCommands)
     console.log("Remove:", removeCommands)
     console.log("Artifacts to deploy:", artifactsToDeploy)
-
-    const readline = require('readline').createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    await new Promise((resolve) => {
-      readline.question('Do you want to proceed with this upgrade? (y/n): ', (answer: string) => {
-        if (answer.toLowerCase() !== 'y') {
-          throw new Error('Upgrade cancelled by user')
-        }
-        readline.close()
-        resolve(null)
-      })
-    })
 
     const deployedContracts = new Map<string, string>();
 

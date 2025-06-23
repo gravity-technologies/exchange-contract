@@ -527,6 +527,34 @@ export async function getLocalFacetInfo(
   return localFacetInfo
 }
 
+export async function getLocalFacetSigHashToSigMapping(
+  hre: HardhatRuntimeEnvironment,
+) {
+  const allLocalFacets = [
+    // diamond cut is initialized at diamond migration
+    // so not part of the exchange facet info
+    {
+      facet: "DiamondCutFacet",
+      interface: "IDiamondCut"
+    },
+    ...ExchangeFacetInfos
+  ]
+
+  const sigHashToSigMapping: { [key: string]: string } = {}
+
+  await Promise.all(allLocalFacets.map(async (facetInfo) => {
+    const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
+    const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
+
+    Object.keys(facetInterface.functions).forEach((fn) => {
+      const sigHash = facetInterface.getSighash(fn)
+      sigHashToSigMapping[sigHash] = fn
+    })
+  }))
+
+  return sigHashToSigMapping
+}
+
 export async function validateFacetStorage(hre: HardhatRuntimeEnvironment) {
   const contractStorage = await getAbstractStorage(hre, "contracts/exchange/GRVTExchange.sol", "GRVTExchange");
   for (const facet of ExchangeFacetInfos) {
@@ -550,4 +578,34 @@ async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, 
   })
 
   return storage;
+}
+
+export async function enrichDiamondCutActionsWithSignatures(
+  diamondCutData: {
+    add: { [facet: string]: string[] },
+    replace: { [facet: string]: string[] },
+    remove: string[],
+    facetsToDeploy: string[]
+  },
+  sigHashToSigMapping: { [key: string]: string }
+) {
+  const enrichActions = (actions: { [facet: string]: string[] }) => {
+    const enriched: { [facet: string]: Array<[string, string]> } = {}
+
+    for (const [facet, selectors] of Object.entries(actions)) {
+      enriched[facet] = selectors.map(selector => [
+        selector,
+        sigHashToSigMapping[selector] || 'unknown'
+      ])
+    }
+
+    return enriched
+  }
+
+  return {
+    add: enrichActions(diamondCutData.add),
+    replace: enrichActions(diamondCutData.replace),
+    remove: diamondCutData.remove,
+    facetsToDeploy: diamondCutData.facetsToDeploy
+  }
 }
