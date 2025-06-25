@@ -204,6 +204,10 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   /// @dev compute the derisk margin in settle currency (and settle decimals), and return true if the subaccount is deriskable
   function _isDeriskable(int64 timestamp, SubAccount storage subAccount) internal view returns (bool) {
+    if (subAccount.isVault && subAccount.vaultInfo.status == VaultStatus.DELISTED) {
+      return true;
+    }
+
     if (subAccount.lastDeriskTimestamp + DERISK_WINDOW_NANOS > timestamp) {
       return true;
     }
