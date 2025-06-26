@@ -72,7 +72,11 @@ enum Currency {
   PENDLE, // 37
   UXLINK, // 38
   KAITO, // 39
-  IP // 40
+  IP, // 40
+  HYPE, // 41
+  LAUNCHCOIN, // 42
+  MOODENG, // 43
+  UNI // 44
 }
 
 function currencyStart() pure returns (Currency) {
