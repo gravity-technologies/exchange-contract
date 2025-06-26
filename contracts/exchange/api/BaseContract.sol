@@ -247,7 +247,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.PENDLE ||
       currency == Currency.UXLINK ||
       currency == Currency.KAITO ||
-      currency == Currency.IP
+      currency == Currency.IP ||
+      currency == Currency.HYPE ||
+      currency == Currency.LAUNCHCOIN ||
+      currency == Currency.MOODENG ||
+      currency == Currency.UNI
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
