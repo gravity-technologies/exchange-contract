@@ -4,8 +4,9 @@ import "./ConfigContract.sol";
 import "./signature/generated/AccountSig.sol";
 import "./signature/generated/CombinedAccountSig.sol";
 import "../types/DataStructure.sol";
+import "../interfaces/IAccount.sol";
 
-contract AccountContract is ConfigContract {
+contract AccountContract is IAccount, ConfigContract {
   /// @notice Create a new account
   ///
   /// @param timestamp The timestamp of the transaction
@@ -219,6 +220,7 @@ contract AccountContract is ConfigContract {
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
   /// @param accountID The account ID
+  /// @param transferAccountID The account ID to transfer to
   /// @param nonce The nonce of the transaction
   /// @param sigs The signatures of the acting users
   function addTransferAccount(

@@ -4,8 +4,9 @@ import "./ConfigContract.sol";
 import "../types/DataStructure.sol";
 import "./signature/generated/MarginSig.sol";
 import "../util/BIMath.sol";
+import "../interfaces/IMarginConfig.sol";
 
-contract MarginConfigContract is ConfigContract {
+contract MarginConfigContract is IMarginConfig, ConfigContract {
   using BIMath for BI;
 
   uint private constant MAX_M_MARGIN_TIERS = 12;

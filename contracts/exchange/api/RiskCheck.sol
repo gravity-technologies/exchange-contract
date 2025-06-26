@@ -204,6 +204,10 @@ contract RiskCheck is BaseContract, MarginConfigContract {
 
   /// @dev compute the derisk margin in settle currency (and settle decimals), and return true if the subaccount is deriskable
   function _isDeriskable(int64 timestamp, SubAccount storage subAccount) internal view returns (bool) {
+    if (subAccount.isVault && subAccount.vaultInfo.status == VaultStatus.DELISTED) {
+      return true;
+    }
+
     if (subAccount.lastDeriskTimestamp + DERISK_WINDOW_NANOS > timestamp) {
       return true;
     }
@@ -214,10 +218,13 @@ contract RiskCheck is BaseContract, MarginConfigContract {
     BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
 
     // Compute the derisk margin
-    // TODO: if subAccount is vault, ratio = DERISK_MM_RATIO_VAULT
-    uint64 ratio = subAccount.deriskToMaintenanceMarginRatio == 0
-      ? DERISK_MM_RATIO_DEFAULT
-      : subAccount.deriskToMaintenanceMarginRatio;
+    uint64 ratio = DERISK_MM_RATIO_DEFAULT;
+    if (subAccount.isVault) {
+      ratio = DERISK_MM_RATIO_VAULT;
+    } else if (subAccount.deriskToMaintenanceMarginRatio != 0) {
+      ratio = subAccount.deriskToMaintenanceMarginRatio;
+    }
+
     BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
     uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
 

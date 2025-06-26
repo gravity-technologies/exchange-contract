@@ -38,15 +38,19 @@ import {
   ExNumSubAccountPositions,
   ExInsuranceFundLoss,
   ExTotalClientEquity,
+  ExVaultParams,
+  ExVaultStatus,
+  ExVaultTotalLpTokenSupply,
+  ExVaultLpInfo,
   ExSubAccountUnderDeriskMargin,
   ExCurrencyConfig,
   ExCurrencyCount,
 } from "./types"
-import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum } from "./enums"
+import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
 
 // These expectations are only in risk
-const ignoredExpectations = new Set(["ExSubAccountInitMargin", "ExSubAccountAPI"])
+const ignoredExpectations = new Set(["ExSubAccountInitMargin", "ExSubAccountAPI", "ExpectInstrumentMinSize", "ExSubAccountSpotReal"])
 
 export async function validateExpectations(contract: Contract, expectations: Expectation[]) {
   for (let expectation of expectations ?? []) {
@@ -143,6 +147,14 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSubAccountSummaryOptional(contract, expectation.expect as ExSubAccountSummaryOptional)
     case "ExNumSubAccountPositions":
       return expectNumSubAccountPositions(contract, expectation.expect as ExNumSubAccountPositions)
+    case "ExVaultParams":
+      return expectVaultParams(contract, expectation.expect as ExVaultParams)
+    case "ExVaultStatus":
+      return expectVaultStatus(contract, expectation.expect as ExVaultStatus)
+    case "ExVaultTotalLpTokenSupply":
+      return expectVaultTotalLpTokenSupply(contract, expectation.expect as ExVaultTotalLpTokenSupply)
+    case "ExVaultLpInfo":
+      return expectVaultLpInfo(contract, expectation.expect as ExVaultLpInfo)
     case "ExSubAccountUnderDeriskMargin":
       return expectSubAccountUnderDeriskMargin(contract, expectation.expect as ExSubAccountUnderDeriskMargin)
     case "ExCurrencyConfig":
@@ -551,6 +563,62 @@ async function expectSubAccountSummaryOptional(contract: Contract, expectations:
 async function expectNumSubAccountPositions(contract: Contract, expectations: ExNumSubAccountPositions) {
   const numPositions = await contract.getSubAccountPositionCount(BigInt(expectations.sub_account_id))
   expect(numPositions).to.equal(expectations.num_positions)
+}
+
+// Add implementations for vault-related expectations
+async function expectVaultParams(contract: Contract, expectations: ExVaultParams) {
+  // First check if the sub account exists and is a vault
+  const isVault = await contract.isVault(BigInt(expectations.vault_id))
+  expect(isVault).to.be.true
+
+  // Get vault fees and check them against expectations
+  const [managementFee, performanceFee, marketingFee] = await contract.getVaultFees(BigInt(expectations.vault_id))
+  if (expectations.params_specs.management_fee_centi_beeps != "") {
+    expect(managementFee / 10000).to.equal(Number(expectations.params_specs.management_fee_centi_beeps))
+  }
+  if (expectations.params_specs.performance_fee_centi_beeps != "") {
+    expect(performanceFee / 10000).to.equal(Number(expectations.params_specs.performance_fee_centi_beeps))
+  }
+  if (expectations.params_specs.marketing_fee_centi_beeps != "") {
+    expect(marketingFee / 10000).to.equal(Number(expectations.params_specs.marketing_fee_centi_beeps))
+  }
+}
+
+async function expectVaultStatus(contract: Contract, expectations: ExVaultStatus) {
+  // Verify the vault exists
+  const isVault = await contract.isVault(BigInt(expectations.vault_id))
+  expect(isVault).to.be.true
+
+  // Get vault status and check it
+  const status = await contract.getVaultStatus(BigInt(expectations.vault_id))
+
+  // Convert status string to enum value using the VaultStatusToEnum mapping
+  expect(status).to.equal(VaultStatusToEnum[expectations.status])
+}
+
+async function expectVaultTotalLpTokenSupply(contract: Contract, expectations: ExVaultTotalLpTokenSupply) {
+  // Verify the vault exists
+  const isVault = await contract.isVault(BigInt(expectations.vault_id))
+  expect(isVault).to.be.true
+
+  // Get total LP token supply and check it
+  const totalSupply = await contract.getVaultTotalLpTokenSupply(BigInt(expectations.vault_id))
+  expect(big(totalSupply)).to.equal(big(expectations.total_lp_token_supply))
+}
+
+async function expectVaultLpInfo(contract: Contract, expectations: ExVaultLpInfo) {
+  // Verify the vault exists
+  const isVault = await contract.isVault(BigInt(expectations.vault_id))
+  expect(isVault).to.be.true
+
+  // Get LP info and check it
+  const [lpTokenBalance, usdNotionalInvested] = await contract.getVaultLpInfo(
+    BigInt(expectations.vault_id),
+    expectations.lp_account_id
+  )
+
+  expect(big(lpTokenBalance)).to.equal(big(expectations.lp_token_balance))
+  expect(big(usdNotionalInvested)).to.equal(big(expectations.usd_notional_invested))
 }
 
 async function expectSubAccountUnderDeriskMargin(contract: Contract, expectations: ExSubAccountUnderDeriskMargin) {

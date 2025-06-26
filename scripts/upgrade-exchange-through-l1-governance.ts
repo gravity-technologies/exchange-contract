@@ -1,32 +1,36 @@
 import { task } from "hardhat/config"
 
-import { ethers, Wallet as L1Wallet, providers as l1Providers, BigNumber } from "ethers"
-import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
+import { ethers, Wallet as L1Wallet, BigNumber, Contract } from "ethers"
+import { Wallet as L2Wallet } from "zksync-ethers"
 import {
-  ADDRESS_ONE,
-  create2DeployFromL1NoFactoryDeps,
-  computeL2Create2Address,
   createProviders,
   getL1ToL2TxInfo,
-  getTransparentProxyUpgradeCalldata,
+  encodeTransparentProxyUpgradeTo,
   getBaseToken,
   getGovernanceCalldata,
   scheduleAndExecuteGovernanceOp,
+  getOnChainFacetInfo,
+  getLocalFacetInfo,
+  generateDiamondCutDataFromDiff,
+  deployFromL1NoFactoryDepsNoConstructor,
+  FacetCutAction,
 } from "./utils"
 
-import { hashBytecode } from "zksync-web3/build/src/utils"
 
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
+import { Interface } from "ethers/lib/utils"
 
 // deploy target on L2 first
 task("deploy-l2-new-target", "Deploy new target on L2")
   .addParam("chainId", "chainId")
   .addParam("l1DeployerPrivateKey", "l1DeployerPrivateKey")
   .addParam("l1GovernanceAdminPrivateKey", "l1GovernanceAdminPrivateKey")
+  .addParam("l1NonProxyGovernanceAdminPrivateKey", "l1NonProxyGovernanceAdminPrivateKey")
   .addParam("l2OperatorPrivateKey", "l2OperatorPrivateKey")
   .addParam("bridgeHub", "bridgeHub")
   .addParam("l1SharedBridge", "l1SharedBridge")
   .addParam("governance", "governance")
+  .addParam("nonProxyGovernance", "nonProxyGovernance")
   .addParam("exchangeProxy", "exchangeProxy")
   .addParam("saltPreImage", "saltPreImage")
   .setAction(async (taskArgs, hre) => {
@@ -34,10 +38,12 @@ task("deploy-l2-new-target", "Deploy new target on L2")
       chainId,
       l1DeployerPrivateKey,
       l1GovernanceAdminPrivateKey,
+      l1NonProxyGovernanceAdminPrivateKey,
       l2OperatorPrivateKey,
       bridgeHub,
       l1SharedBridge,
-      governance,
+      governance: proxyGovernance,
+      nonProxyGovernance,
       exchangeProxy,
       saltPreImage,
     } = taskArgs
@@ -47,52 +53,92 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     const l2Deployer = new Deployer(hre, l2Operator)
 
     const l1GovernanceAdmin = new L1Wallet(l1GovernanceAdminPrivateKey!, l1Provider)
+    const l1NonProxyGovernanceAdmin = new L1Wallet(l1NonProxyGovernanceAdminPrivateKey!, l1Provider)
+
     const l1Deployer = new L1Wallet(l1DeployerPrivateKey!, l1Provider)
 
     const salt = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(saltPreImage))
     console.log("CREATE2 salt: ", salt)
     console.log("CREATE2 salt preimage: ", saltPreImage)
 
-    // TODO: add balance check(l1Deployer, l1GovernanceAdmin, governance)
+    const onChainFacetInfo = await getOnChainFacetInfo(hre, exchangeProxy, l2Provider)
+    const localFacetInfo = await getLocalFacetInfo(hre)
 
-    // deploy an instance of the exchange to L2 only to save the code on chain
-    // actual deployment to be done through L1
-    const exchangeArtifact = await l2Deployer.loadArtifact("GRVTExchange")
-    const exchangeCodehash = hashBytecode(exchangeArtifact.bytecode)
-    const exchangeImpl = await l2Deployer.deploy(exchangeArtifact, [])
+    const { add: addCommands, replace: replaceCommands, remove: removeCommands, facetsToDeploy } = generateDiamondCutDataFromDiff(onChainFacetInfo, localFacetInfo)
 
-    const newExchangeImplConstructorData = ethers.utils.arrayify("0x")
-    const expectedNewExchangeImplAddress = computeL2Create2Address(
-      l1Deployer.address,
-      exchangeArtifact.bytecode,
-      newExchangeImplConstructorData,
-      salt
+    const artifactsToDeploy = [
+      "GRVTExchange",
+      ...facetsToDeploy
+    ]
+
+    console.log("Diamond cut data:")
+    console.log("Add:", addCommands)
+    console.log("Replace:", replaceCommands)
+    console.log("Remove:", removeCommands)
+    console.log("Artifacts to deploy:", artifactsToDeploy)
+
+    const deployedContracts = new Map<string, string>();
+
+    for (const artifactName of artifactsToDeploy) {
+      const result = await deployFromL1NoFactoryDepsNoConstructor(
+        hre,
+        chainId,
+        bridgeHub,
+        l1SharedBridge,
+        l1Deployer,
+        l2Deployer,
+        artifactName,
+        salt
+      );
+
+      deployedContracts.set(artifactName, result.address);
+    }
+
+    const diamondCut = [];
+    for (const facet of Object.keys(addCommands)) {
+      const address = deployedContracts.get(facet)!
+      diamondCut.push({
+        facetAddress: address,
+        action: FacetCutAction.Add,
+        functionSelectors: addCommands[facet]
+      })
+    }
+
+    for (const facet of Object.keys(replaceCommands)) {
+      const address = deployedContracts.get(facet)!
+      diamondCut.push({
+        facetAddress: address,
+        action: FacetCutAction.Replace,
+        functionSelectors: replaceCommands[facet]
+      })
+    }
+
+    if (removeCommands.length > 0) {
+      diamondCut.push({
+        facetAddress: ethers.constants.AddressZero,
+        action: FacetCutAction.Remove,
+        functionSelectors: removeCommands
+      })
+    }
+
+    const exchangeContractAsDiamondCut = new Contract(
+      exchangeProxy,
+      (await hre.artifacts.readArtifact("IDiamondCut")).abi,
+      l2Operator
     )
-    console.log("Exchange codehash: ", ethers.utils.hexlify(exchangeCodehash))
-    console.log("Expected exchange impl address: ", expectedNewExchangeImplAddress)
 
-    // deploy an instance of the exchange impl with CREATE2
-    const newExchangeImplDepTx = await create2DeployFromL1NoFactoryDeps(
-      hre,
-      chainId,
-      bridgeHub,
-      l1SharedBridge,
-      l1Deployer,
-      exchangeArtifact.bytecode,
-      newExchangeImplConstructorData,
-      salt,
-      1000000
-    )
-    const newExchangeImplDepTxReceipt = await newExchangeImplDepTx.wait()
+    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchange")
+    const exchangeInterface = new Interface(exchangeArtifact.abi)
 
-    console.log("Exchange impl deployment tx hash: ", newExchangeImplDepTx.hash)
-    console.log("Exchange impl deployment stauts: ", newExchangeImplDepTxReceipt.status)
+    const grvtExchangeImplAddress = deployedContracts.get("GRVTExchange")!
+
+    const baseToken = await getBaseToken(chainId, bridgeHub, l1Provider)
+    const gasPrice = await l1Provider.getGasPrice()
 
     // schedule governance operation with 2 steps
     // approve l1SharedBridge to spend max amount of token
     // upgrade proxy to new target
-    const gasPrice = await l1Provider.getGasPrice()
-    const governanceCalls = [
+    const proxyGovernanceCalls = [
       {
         target: await getBaseToken(chainId, bridgeHub, l1Provider),
         data: new ethers.utils.Interface(["function approve(address,uint256)"]).encodeFunctionData("approve", [
@@ -105,31 +151,77 @@ task("deploy-l2-new-target", "Deploy new target on L2")
         chainId,
         bridgeHub,
         exchangeProxy,
-        await getTransparentProxyUpgradeCalldata(hre, expectedNewExchangeImplAddress),
+        await encodeTransparentProxyUpgradeTo(hre, grvtExchangeImplAddress),
         ethers.constants.AddressZero,
-        gasPrice.mul(100), // use high gas price for L2 transaction to ensure the transaction is included
+        gasPrice.mul(10000), // use high gas price for L2 transaction to ensure the transaction is included
         BigNumber.from(1000000),
         l1Provider
       ),
     ]
 
-    const operation = {
-      calls: governanceCalls,
+    const proxyGovOperation = {
+      calls: proxyGovernanceCalls,
       predecessor: ethers.constants.HashZero,
       salt: salt, // use the same salt for both create 2 and governance operation
     }
 
-    const { scheduleTxReceipt, executeTxReceipt } = await scheduleAndExecuteGovernanceOp(
-      governance,
+    const { scheduleTxReceipt: proxyGovScheduleTxReceipt, executeTxReceipt: proxyGovExecuteTxReceipt } = await scheduleAndExecuteGovernanceOp(
+      proxyGovernance,
       l1GovernanceAdmin,
-      operation
+      proxyGovOperation
     )
 
-    console.log("Governance operation schedule txhash: ", scheduleTxReceipt.transactionHash)
-    console.log("Governance operation schedule status: ", scheduleTxReceipt.status)
+    console.log("Proxy governance operation schedule txhash: ", proxyGovScheduleTxReceipt.transactionHash)
+    console.log("Proxy governance operation schedule status: ", proxyGovScheduleTxReceipt.status)
 
-    console.log("Governance operation execution txhash: ", executeTxReceipt.transactionHash)
-    console.log("Governance operation execution status: ", executeTxReceipt.status)
+    console.log("Proxy governance operation execution txhash: ", proxyGovExecuteTxReceipt.transactionHash)
+    console.log("Proxy governance operation execution status: ", proxyGovExecuteTxReceipt.status)
 
-    console.log("calldata: ", await getGovernanceCalldata(operation, l1Provider))
+    console.log("Proxy governance calldata: ", await getGovernanceCalldata(proxyGovOperation, l1Provider))
+
+    const nonProxyGovernanceCalls = [
+      {
+        target: baseToken,
+        data: new ethers.utils.Interface(["function approve(address,uint256)"]).encodeFunctionData("approve", [
+          l1SharedBridge,
+          ethers.constants.MaxUint256,
+        ]),
+        value: 0,
+      },
+      await getL1ToL2TxInfo(
+        chainId,
+        bridgeHub,
+        exchangeProxy,
+        exchangeContractAsDiamondCut.interface.encodeFunctionData("diamondCut", [
+          diamondCut,
+          ethers.constants.AddressZero,
+          "0x"
+        ]),
+        ethers.constants.AddressZero,
+        gasPrice.mul(10000), // use high gas price for L2 transaction to ensure the transaction is included
+        BigNumber.from(5000000),
+        l1Provider
+      ),
+    ]
+
+    const nonProxyGovOperation = {
+      calls: nonProxyGovernanceCalls,
+      predecessor: ethers.constants.HashZero,
+      salt: salt, // use the same salt for both create 2 and governance operation
+    }
+
+    const { scheduleTxReceipt: nonProxyGovScheduleTxReceipt, executeTxReceipt: nonProxyGovExecuteTxReceipt } = await scheduleAndExecuteGovernanceOp(
+      nonProxyGovernance,
+      l1NonProxyGovernanceAdmin,
+      nonProxyGovOperation
+    )
+
+    console.log("Non-proxy governance operation schedule txhash: ", nonProxyGovScheduleTxReceipt.transactionHash)
+    console.log("Non-proxy governance operation schedule status: ", nonProxyGovScheduleTxReceipt.status)
+
+    console.log("Non-proxy governance operation execution txhash: ", nonProxyGovExecuteTxReceipt.transactionHash)
+    console.log("Non-proxy governance operation execution status: ", nonProxyGovExecuteTxReceipt.status)
+
+    console.log("Non-proxy governance calldata: ", await getGovernanceCalldata(nonProxyGovOperation, l1Provider))
+
   })

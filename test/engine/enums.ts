@@ -81,5 +81,12 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   L_2_SHARED_BRIDGE_ADDRESS: 14,
   SIMPLE_CROSS_FUTURES_INITIAL_MARGIN: 15,
   WITHDRAWAL_FEE: 16,
-  BRIDGING_PARTNER_ADDRESSES: 17,
+  BRIDGING_PARTNER_ADDRESSES: 17
+};
+
+export const VaultStatusToEnum: { [status: string]: number } = {
+  UNSPECIFIED: 0,
+  ACTIVE: 1,
+  DELISTED: 2,
+  CLOSED: 3
 }

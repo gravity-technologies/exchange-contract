@@ -43,6 +43,41 @@ library BIMath {
     return c;
   }
 
+  uint256 constant POW_SCALE_DECIMALS = 12;
+
+  /**
+   * @dev Calculate base raised to the power of exponent (base^exponent)
+   * @param base The base value
+   * @param exponent The exponent to raise the base to
+   * @return BI value representing base^exponent
+   * Uses the binary exponentiation algorithm for O(log n) complexity
+   * Scales to POW_SCALE_DECIMALS decimal places before and after each multiplication
+   */
+  function pow(BI memory base, uint exponent) internal pure returns (BI memory) {
+    if (exponent == 0) return one();
+    if (exponent == 1) return scale(base, POW_SCALE_DECIMALS); // Scale to 12 decimal places
+
+    BI memory result = one();
+    BI memory currentBase = scale(base, POW_SCALE_DECIMALS); // Scale base to 12 decimal places initially
+
+    while (exponent > 0) {
+      if (exponent % 2 == 1) {
+        // If exponent is odd, multiply result by currentBase
+        result = mul(result, currentBase);
+        result = scale(result, POW_SCALE_DECIMALS); // Scale result back to 12 decimal places
+      }
+
+      // Square the base for the next iteration
+      currentBase = mul(currentBase, currentBase);
+      currentBase = scale(currentBase, POW_SCALE_DECIMALS); // Scale currentBase back to 12 decimal places
+
+      // Integer division by 2
+      exponent /= 2;
+    }
+
+    return result;
+  }
+
   function scale(BI memory a, uint256 d) internal pure returns (BI memory) {
     if (a.dec > d) return BI(a.val / SafeCast.toInt256(10 ** (a.dec - d)), d);
     return BI(a.val * SafeCast.toInt256(10 ** (d - a.dec)), d);
@@ -113,6 +148,22 @@ library BIMath {
 
   function half() internal pure returns (BI memory) {
     return BI(int256(5), 1);
+  }
+
+  function fromUint64(uint64 a, uint decimals) internal pure returns (BI memory) {
+    return BI(int(uint(a)), decimals);
+  }
+
+  function fromInt64(int64 a, uint decimals) internal pure returns (BI memory) {
+    return BI(int(a), decimals);
+  }
+
+  function fromUint32(uint32 a, uint decimals) internal pure returns (BI memory) {
+    return BI(int(uint(a)), decimals);
+  }
+
+  function fromInt32(int32 a, uint decimals) internal pure returns (BI memory) {
+    return BI(int(a), decimals);
   }
 
   function floor(BI memory b) internal pure returns (BI memory) {

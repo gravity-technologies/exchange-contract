@@ -38,12 +38,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
   /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  /// @custom:oz-upgrades-unsafe-allow state-variable-assignment
   bytes32 private immutable DOMAIN_HASH =
     keccak256(
       abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
     );
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
+  int64 internal constant ONE_DAY_NANOS = 24 * 60 * 60 * 1e9;
 
   /// @dev The maximum signature expiry time for all signatures except TPSL orders
   int64 private constant THIRTY_DAY_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
@@ -81,6 +84,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _requireSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
     SubAccount storage sub = state.subAccounts[subAccID];
     require(sub.id != 0, "subaccount does not exist");
+    return sub;
+  }
+
+  function _requireVaultSubAccount(uint64 subAccID) internal view returns (SubAccount storage) {
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    require(sub.isVault, "subaccount is not a vault");
     return sub;
   }
 
@@ -341,7 +350,14 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
 
-    return _getSpotPriceBI(spot).div(_getSpotPriceBI(quote));
+    BI memory spotPriceInUsd = _getSpotPriceBI(spot);
+
+    if (quote == Currency.USD) {
+      return spotPriceInUsd;
+    }
+
+    BI memory quotePriceInUsd = _getSpotPriceBI(quote);
+    return spotPriceInUsd.div(quotePriceInUsd);
   }
 
   function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
@@ -352,6 +368,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
   function _getSpotPriceBI(Currency spot) internal view returns (BI memory) {
+    if (spot == Currency.USD) {
+      return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
+    }
     (uint64 price, bool ok) = _getSpotPrice9Dec(spot);
     require(ok, "mark price not found");
     return BI(int256(uint(price)), PRICE_DECIMALS);
@@ -492,6 +511,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       total = total.add(balanceValueInQuote);
     }
     return total;
+  }
+
+  function _getSubAccountValueInUSD(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getSubAccountValueInQuote(sub);
+    return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
   }
 
   /// @dev Get the total value of a sub account in quote currency

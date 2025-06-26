@@ -1,13 +1,10 @@
 import { task } from "hardhat/config"
 import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 import { ethers } from "ethers"
-import { Interface } from "ethers/lib/utils"
 
 import { L2SharedBridgeFactory } from "../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
 import { IBridgehubFactory } from "../lib/era-contracts/l1-contracts/typechain/IBridgehubFactory"
-import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import { createProviders } from "./utils"
-import { bridge } from "../typechain-types/lib/era-contracts/l2-contracts/contracts"
 
 task("set-exchange-address", "Set exchange address")
   .addParam("l2SharedBridge", "l2SharedBridge")
