@@ -31,6 +31,7 @@
     "dependencies": "surya dependencies -i GRVTExchange contracts/exchange/GRVTExchange.sol > analysis/c3linearization.txt"
   },
   "devDependencies": {
+    "@ethersproject/signing-key": "^5.7.0",
     "@matterlabs/hardhat-zksync-chai-matchers": "^1.2.1",
     "@matterlabs/hardhat-zksync-deploy": "0.7.0",
     "@matterlabs/hardhat-zksync-node": "^0.0.1",
@@ -50,6 +51,7 @@
     "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",
     "dotenv": "^16.4.5",
+    "elliptic": "6.6.1",
     "ethers": "^5.7.2",
     "hardhat": "^2.12.4",
     "mocha": "^10.3.0",
@@ -62,5 +64,8 @@
     "zksync-ethers": "^5.0.0",
     "zksync-web3": "^0.15.4"
   },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447",
+  "resolutions": {
+    "elliptic": "6.6.1"
+  }
 }
