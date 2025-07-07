@@ -76,7 +76,9 @@ enum Currency {
   HYPE, // 41
   LAUNCHCOIN, // 42
   MOODENG, // 43
-  UNI // 44
+  UNI, // 44
+  SAHARA, // 45
+  H // 46
 }
 
 function currencyStart() pure returns (Currency) {
