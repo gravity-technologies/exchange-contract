@@ -260,7 +260,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.HYPE ||
       currency == Currency.LAUNCHCOIN ||
       currency == Currency.MOODENG ||
-      currency == Currency.UNI
+      currency == Currency.UNI ||
+      currency == Currency.SAHARA ||
+      currency == Currency.H
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
