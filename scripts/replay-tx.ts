@@ -26,7 +26,7 @@ task("replay", "Replay a specific transaction locally")
     await hre.run("compile")
 
     // Load GRVTExchange test artifact
-    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchangeTest")
+    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchange")
 
     const overrideJson = {
       abi: exchangeArtifact.abi,
@@ -35,8 +35,8 @@ task("replay", "Replay a specific transaction locally")
       },
       methodIdentifiers: {},
       storageLayout: {
-          storage: [],
-          types: {}
+        storage: [],
+        types: {}
       },
       userdoc: {},
       devdoc: {},
@@ -50,7 +50,7 @@ task("replay", "Replay a specific transaction locally")
 
     const tx = await l2Provider.getTransaction(taskArgs.txHash)
     if (!tx) {
-        throw new Error(`Transaction ${taskArgs.txHash} not found`)
+      throw new Error(`Transaction ${taskArgs.txHash} not found`)
     }
 
     const implAddressBytes = await l2Provider.getStorageAt(exchangeAddr, IMPLEMENTATION_SLOT, tx.blockNumber!)
@@ -75,6 +75,7 @@ task("replay", "Replay a specific transaction locally")
       "run",
       "--",
       "--override-bytecodes-dir=" + tempDir,
+      "-vv",
       "replay_tx",
       "--fork-url",
       (hre.network.config as HttpNetworkConfig).url,
