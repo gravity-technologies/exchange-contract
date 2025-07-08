@@ -112,21 +112,8 @@ contract MarginConfigContract is IMarginConfig, ConfigContract {
     return ListMarginTiersBI({kud: kud, tiers: biTiers});
   }
 
-  function _getListMarginTiersBIFromStorage(bytes32 kud) internal view returns (ListMarginTiersBI memory) {
-    ListMarginTiersBIStorage storage storageTiers = state.simpleCrossMaintenanceMarginTiers[kud];
-    ListMarginTiersBI memory result = ListMarginTiersBI({
-      kud: storageTiers.kud,
-      tiers: new MarginTierBI[](storageTiers.tiers.length)
-    });
-
-    for (uint i = 0; i < storageTiers.tiers.length; i++) {
-      result.tiers[i] = MarginTierBI({
-        bracketStart: storageTiers.tiers[i].bracketStart,
-        rate: storageTiers.tiers[i].rate
-      });
-    }
-
-    return result;
+  function _getListMarginTiersBIStorageRef(bytes32 kud) internal view returns (ListMarginTiersBIStorage storage) {
+    return state.simpleCrossMaintenanceMarginTiers[kud];
   }
 
   function _setListMarginTiersBIToStorage(bytes32 kud, ListMarginTiersBI memory tiersBI) private {
@@ -144,40 +131,47 @@ contract MarginConfigContract is IMarginConfig, ConfigContract {
     bytes32 kud,
     ListMarginTiersBI memory toMt
   ) private view returns (int64) {
-    ListMarginTiersBI memory fromMt = _getListMarginTiersBIFromStorage(kud);
+    ListMarginTiersBIStorage storage fromMtStorage = _getListMarginTiersBIStorageRef(kud);
 
-    if (_isMarginRequirementIncreasedAtSomeSize(fromMt, toMt)) {
+    if (_isMarginRequirementIncreasedAtSomeSize(fromMtStorage, toMt)) {
       return SIMPLE_CROSS_MAINTENANCE_MARGIN_TIERS_LOCK_DURATION;
     }
     return 0;
   }
 
   function _isMarginRequirementIncreasedAtSomeSize(
-    ListMarginTiersBI memory fromMt,
+    ListMarginTiersBIStorage storage fromMtStorage,
     ListMarginTiersBI memory toMt
-  ) private pure returns (bool) {
-    if (fromMt.tiers.length == 0 || toMt.tiers.length == 0) {
+  ) private view returns (bool) {
+    if (fromMtStorage.tiers.length == 0 || toMt.tiers.length == 0) {
       return false;
     }
 
     // Check at each bracket start
-    for (uint i = 0; i < fromMt.tiers.length; i++) {
+    for (uint i = 0; i < fromMtStorage.tiers.length; i++) {
       if (
-        BIMath.cmp(_blendedMM(toMt, fromMt.tiers[i].bracketStart), _blendedMM(fromMt, fromMt.tiers[i].bracketStart)) > 0
+        BIMath.cmp(
+          _blendedMM(toMt, fromMtStorage.tiers[i].bracketStart),
+          _blendedMMFromStorage(fromMtStorage, fromMtStorage.tiers[i].bracketStart)
+        ) > 0
       ) {
         return true;
       }
     }
     for (uint i = 0; i < toMt.tiers.length; i++) {
       if (
-        BIMath.cmp(_blendedMM(toMt, toMt.tiers[i].bracketStart), _blendedMM(fromMt, toMt.tiers[i].bracketStart)) > 0
+        BIMath.cmp(
+          _blendedMM(toMt, toMt.tiers[i].bracketStart),
+          _blendedMMFromStorage(fromMtStorage, toMt.tiers[i].bracketStart)
+        ) > 0
       ) {
         return true;
       }
     }
 
     // Compare the last tier's rate
-    return BIMath.cmp(toMt.tiers[toMt.tiers.length - 1].rate, fromMt.tiers[fromMt.tiers.length - 1].rate) > 0;
+    return
+      BIMath.cmp(toMt.tiers[toMt.tiers.length - 1].rate, fromMtStorage.tiers[fromMtStorage.tiers.length - 1].rate) > 0;
   }
 
   function _getPositionMM(
@@ -189,7 +183,49 @@ contract MarginConfigContract is IMarginConfig, ConfigContract {
     return _blendedMM(mt, notional);
   }
 
+  function _getPositionMMFromStorage(
+    ListMarginTiersBIStorage storage mt,
+    BI memory sizeBI,
+    BI memory markPriceBI
+  ) internal view returns (BI memory) {
+    BI memory notional = sizeBI.mul(markPriceBI);
+    return _blendedMMFromStorage(mt, notional);
+  }
+
   function _blendedMM(ListMarginTiersBI memory mt, BI memory notional) internal pure returns (BI memory) {
+    if (mt.tiers.length == 0) {
+      return BIMath.zero();
+    }
+
+    BI memory margin = BIMath.zero();
+    BI memory prevStart = BIMath.zero();
+    BI memory prevRate = mt.tiers[0].rate;
+    BI memory bracketSize;
+
+    for (uint i = 0; i < mt.tiers.length; i++) {
+      if (BIMath.cmp(notional, mt.tiers[i].bracketStart) <= 0) {
+        bracketSize = BIMath.sub(notional, prevStart);
+        margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
+        return margin;
+      }
+
+      bracketSize = BIMath.sub(mt.tiers[i].bracketStart, prevStart);
+      margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
+
+      prevStart = mt.tiers[i].bracketStart;
+      prevRate = mt.tiers[i].rate;
+    }
+
+    BI memory lastBracketSize = BIMath.sub(notional, prevStart);
+    margin = BIMath.add(margin, BIMath.mul(lastBracketSize, prevRate));
+
+    return margin;
+  }
+
+  function _blendedMMFromStorage(
+    ListMarginTiersBIStorage storage mt,
+    BI memory notional
+  ) internal view returns (BI memory) {
     if (mt.tiers.length == 0) {
       return BIMath.zero();
     }

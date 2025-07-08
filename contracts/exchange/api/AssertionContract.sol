@@ -381,22 +381,25 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
   // Assertions for MarginConfig Contract
   function assertSetSimpleCrossMMTiers(bytes32 kud, MarginTierAssertion[] calldata expectedTiers) external view {
-    ListMarginTiersBI memory tiers = _getListMarginTiersBIFromStorage(kud);
-    require(tiers.tiers.length == expectedTiers.length, "ex setSimpleCrossMMLenMismatch");
+    ListMarginTiersBIStorage storage tiersStorage = _getListMarginTiersBIStorageRef(kud);
+    require(tiersStorage.tiers.length == expectedTiers.length, "ex setSimpleCrossMMLenMismatch");
     require(state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == 0, "ex setSimpleCrossMMNotScheduled");
 
-    for (uint i; i < tiers.tiers.length; ++i) {
+    for (uint i; i < tiersStorage.tiers.length; ++i) {
       MarginTierAssertion calldata exTier = expectedTiers[i];
-      MarginTierBI memory tier = tiers.tiers[i];
 
       // Compare bracketStart
-      BI memory bracketStart = tier.bracketStart;
       uint qDec = _getBalanceDecimal(assetGetQuote(kud));
-      require(bracketStart.toUint64(qDec) == exTier.bracketStart, "ex setSimpleCrossMMTierBracket");
+      require(
+        tiersStorage.tiers[i].bracketStart.toUint64(qDec) == exTier.bracketStart,
+        "ex setSimpleCrossMMTierBracket"
+      );
 
       // Compare rate
-      BI memory rate = tier.rate;
-      require(rate.toUint64(CENTIBEEP_DECIMALS) == uint64(exTier.rate), "ex setSimpleCrossMMTierRate");
+      require(
+        tiersStorage.tiers[i].rate.toUint64(CENTIBEEP_DECIMALS) == uint64(exTier.rate),
+        "ex setSimpleCrossMMTierRate"
+      );
     }
   }
 

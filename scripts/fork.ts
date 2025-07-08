@@ -17,7 +17,7 @@ task("fork", "Fork network with implementation contract")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
     const exchangeAddr = taskArgs.exchangeAddr ||
-    (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
@@ -27,7 +27,7 @@ task("fork", "Fork network with implementation contract")
     await hre.run("compile")
 
     // Load GRVTExchange test artifact
-    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchangeTest")
+    const exchangeArtifact = await hre.artifacts.readArtifact("GRVTExchange")
 
     const overrideJson = {
       abi: exchangeArtifact.abi,
@@ -36,8 +36,8 @@ task("fork", "Fork network with implementation contract")
       },
       methodIdentifiers: {},
       storageLayout: {
-          storage: [],
-          types: {}
+        storage: [],
+        types: {}
       },
       userdoc: {},
       devdoc: {},
