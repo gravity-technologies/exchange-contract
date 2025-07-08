@@ -153,12 +153,12 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContract, RiskChe
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
     uint64 qDec = _getBalanceDecimal(assetGetQuote(kuq));
-    ListMarginTiersBI memory tiers = _getListMarginTiersBIFromStorage(kuq);
-    MarginTier[] memory result = new MarginTier[](tiers.tiers.length);
-    for (uint i = 0; i < tiers.tiers.length; i++) {
+    ListMarginTiersBIStorage storage tiersStorage = _getListMarginTiersBIStorageRef(kuq);
+    MarginTier[] memory result = new MarginTier[](tiersStorage.tiers.length);
+    for (uint i = 0; i < tiersStorage.tiers.length; i++) {
       result[i] = MarginTier({
-        bracketStart: tiers.tiers[i].bracketStart.toUint64(qDec),
-        rate: SafeCast.toUint32(SafeCast.toUint256(tiers.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
+        bracketStart: tiersStorage.tiers[i].bracketStart.toUint64(qDec),
+        rate: SafeCast.toUint32(SafeCast.toUint256(tiersStorage.tiers[i].rate.toInt256(CENTIBEEP_DECIMALS)))
       });
     }
     return result;
