@@ -334,7 +334,8 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint64 redeemedInUsdAfterFee = redeemedInUsd - performanceFeeInUsd;
 
     uint64 lpDec = _getLpTokenDecimal();
-    BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, lpDec);
+    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, usdDec);
 
     int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, tokenCurrency).toInt64(
       _getBalanceDecimal(tokenCurrency)
@@ -352,9 +353,9 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
 
     uint64 lpDec = _getLpTokenDecimal();
     BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, lpDec);
-
+    BI memory lpTokenPriceInUsdBI = vaultEquityInUsd.div(totalLpTokenSupplyBI);
     BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, lpDec);
-    BI memory usdRedeemedBI = numLpTokensBI.mul(vaultEquityInUsd).div(totalLpTokenSupplyBI);
+    BI memory usdRedeemedBI = numLpTokensBI.mul(lpTokenPriceInUsdBI);
 
     return usdRedeemedBI.toUint64(lpDec);
   }
