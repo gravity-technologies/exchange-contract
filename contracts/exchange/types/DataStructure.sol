@@ -79,7 +79,10 @@ enum Currency {
   UNI, // 44
   SAHARA, // 45
   H, // 46
-  PUMP // 47
+  PUMP, // 47
+  AVAX, // 48
+  CRV, // 49
+  SEI // 50
 }
 
 function currencyStart() pure returns (Currency) {
