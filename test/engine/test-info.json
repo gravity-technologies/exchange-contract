@@ -1,0 +1,13 @@
+{
+    "risk_only_constraints": [
+        "vault valuation cap too high",
+        "vault min redemption period too high",
+        "vault max redemption period too low",
+        "vault max redemption period too high",
+        "vault max redemption period less than min redemption period",
+        "auto redemption barrier too low",
+        "auto redemption barrier too high",
+        "vault reward sharing ratio cannot be decreased",
+        "invalid reward sharing ratio"
+    ]
+}
