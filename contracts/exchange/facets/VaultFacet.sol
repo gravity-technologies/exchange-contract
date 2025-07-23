@@ -86,28 +86,39 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     _setSequence(timestamp, txID);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
-    _requireSubAccountPermission(vaultSub, sig.signer, SubAccountPermAdmin);
 
     require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can be updated");
 
-    // ---------- Signature Verification -----------
-    bytes32 hash = hashVaultUpdate(
-      vaultID,
-      managementFeeCentiBeeps,
-      performanceFeeCentiBeeps,
-      marketingFeeCentiBeeps,
-      sig.nonce,
-      sig.expiration
-    );
-    _preventReplay(hash, sig);
-    // ------- End of Signature Verification -------
+    // Only perform signature verification and permission check if there are actual changes
+    if (
+      _hasVaultParamChanges(
+        vaultSub.vaultInfo,
+        managementFeeCentiBeeps,
+        performanceFeeCentiBeeps,
+        marketingFeeCentiBeeps
+      )
+    ) {
+      _requireSubAccountPermission(vaultSub, sig.signer, SubAccountPermAdmin);
 
-    _validateAndUpdateVaultParams(
-      vaultSub.vaultInfo,
-      managementFeeCentiBeeps,
-      performanceFeeCentiBeeps,
-      marketingFeeCentiBeeps
-    );
+      // ---------- Signature Verification -----------
+      bytes32 hash = hashVaultUpdate(
+        vaultID,
+        managementFeeCentiBeeps,
+        performanceFeeCentiBeeps,
+        marketingFeeCentiBeeps,
+        sig.nonce,
+        sig.expiration
+      );
+      _preventReplay(hash, sig);
+      // ------- End of Signature Verification -------
+
+      _validateAndUpdateVaultParams(
+        vaultSub.vaultInfo,
+        managementFeeCentiBeeps,
+        performanceFeeCentiBeeps,
+        marketingFeeCentiBeeps
+      );
+    }
   }
 
   function _validateAndUpdateVaultParams(
@@ -515,6 +526,18 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     BI memory managementFeeDailyFactorBI = managementFeeAnnualFactorBI.div(BI(365, 0));
     BI memory managementFeeDailyMultiplierBI = managementFeeDailyFactorBI.add(BIMath.one());
     return managementFeeDailyMultiplierBI.pow(daysSinceLastFeeSettlement).sub(BIMath.one());
+  }
+
+  function _hasVaultParamChanges(
+    VaultInfo storage vaultInfo,
+    uint32 newManagementFeeCentiBeeps,
+    uint32 newPerformanceFeeCentiBeeps,
+    uint32 newMarketingFeeCentiBeeps
+  ) internal view returns (bool) {
+    return
+      (newManagementFeeCentiBeeps != vaultInfo.managementFeeCentiBeeps) ||
+      (newPerformanceFeeCentiBeeps != vaultInfo.performanceFeeCentiBeeps) ||
+      (newMarketingFeeCentiBeeps != vaultInfo.marketingFeeCentiBeeps);
   }
 
   function _getLpTokenDecimal() internal view returns (uint64) {

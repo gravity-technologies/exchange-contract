@@ -514,7 +514,8 @@ async function expectSubAccountPositionOptional(contract: Contract, expectations
       Number(expectations.position.size) * 10 ** getBalanceDecimalFromEnum(expectations.position.instrument.underlying)
     expect(Number(actualBalance)).to.equal(expectedPosSize)
   } else {
-    expect(expectations.position.size).to.equal("0")
+    // Accept both "0" and "0.0" as zero, and compare as numbers
+    expect(Number(expectations.position.size)).to.equal(0)
   }
 }
 

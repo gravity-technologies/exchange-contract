@@ -5,6 +5,7 @@ import { expectToThrowAsync } from "../util"
 import { validateExpectations } from "./expect"
 import { TestCase, TestStep } from "./types"
 import { isDeposit, mockFinalizeDeposit } from "./deposit"
+import * as testInfo from "./test-info.json"
 
 const GAS_LIMIT = 2100000000
 const DEBUG = false
@@ -30,6 +31,15 @@ async function executeTestStep(
   l2SharedBridgeAsL1Bridge: L2SharedBridge
 ) {
   if (step.tx_data === "") {
+    await validateExpectations(exchangeContract, step.expectations)
+    return
+  }
+
+  // Check if this is a risk-only constraint that should be skipped
+  if (step.error !== "" && testInfo.risk_only_constraints.includes(step.error)) {
+    if (DEBUG) {
+      console.log(`Skipping transaction for risk-only constraint: ${step.error}`)
+    }
     await validateExpectations(exchangeContract, step.expectations)
     return
   }
