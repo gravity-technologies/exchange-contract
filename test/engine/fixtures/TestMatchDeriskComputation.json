@@ -2506,7 +2506,8 @@
                            }
                         },
                         "broker": "UNSPECIFIED",
-                        "source": "UNSPECIFIED"
+                        "source": "UNSPECIFIED",
+                        "is_ecn": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -2560,7 +2561,8 @@
                                  }
                               },
                               "broker": "UNSPECIFIED",
-                              "source": "UNSPECIFIED"
+                              "source": "UNSPECIFIED",
+                              "is_ecn": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -2735,7 +2737,8 @@
                            }
                         },
                         "broker": "UNSPECIFIED",
-                        "source": "UNSPECIFIED"
+                        "source": "UNSPECIFIED",
+                        "is_ecn": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -2789,7 +2792,8 @@
                                  }
                               },
                               "broker": "UNSPECIFIED",
-                              "source": "UNSPECIFIED"
+                              "source": "UNSPECIFIED",
+                              "is_ecn": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -2925,7 +2929,8 @@
                            }
                         },
                         "broker": "UNSPECIFIED",
-                        "source": "UNSPECIFIED"
+                        "source": "UNSPECIFIED",
+                        "is_ecn": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -2979,7 +2984,8 @@
                                  }
                               },
                               "broker": "UNSPECIFIED",
-                              "source": "UNSPECIFIED"
+                              "source": "UNSPECIFIED",
+                              "is_ecn": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -4358,7 +4364,8 @@
                            }
                         },
                         "broker": "UNSPECIFIED",
-                        "source": "UNSPECIFIED"
+                        "source": "UNSPECIFIED",
+                        "is_ecn": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -4412,7 +4419,8 @@
                                  }
                               },
                               "broker": "UNSPECIFIED",
-                              "source": "UNSPECIFIED"
+                              "source": "UNSPECIFIED",
+                              "is_ecn": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -4587,7 +4595,8 @@
                            }
                         },
                         "broker": "UNSPECIFIED",
-                        "source": "UNSPECIFIED"
+                        "source": "UNSPECIFIED",
+                        "is_ecn": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -4641,7 +4650,8 @@
                                  }
                               },
                               "broker": "UNSPECIFIED",
-                              "source": "UNSPECIFIED"
+                              "source": "UNSPECIFIED",
+                              "is_ecn": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
