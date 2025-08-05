@@ -442,6 +442,34 @@ contract ConfigContract is IConfig, BaseContract {
       return rules[0].lockDuration;
     }
 
+    // always allow decreasing min fee immediately
+    if (
+      key == ConfigID.FUTURES_MAKER_FEE_MINIMUM ||
+      key == ConfigID.FUTURES_TAKER_FEE_MINIMUM ||
+      key == ConfigID.OPTIONS_MAKER_FEE_MINIMUM ||
+      key == ConfigID.OPTIONS_TAKER_FEE_MINIMUM
+    ) {
+      (int32 currentVal, bool ok) = _getCentibeepConfig2D(key, subKey);
+      if (!ok) {
+        return 0;
+      }
+      int32 newValInt = _configToCentibeep(newVal);
+      if (newValInt < currentVal) {
+        return 0;
+      }
+    }
+
+    if (key == ConfigID.WITHDRAWAL_FEE) {
+      (uint64 currentVal, bool ok) = _getUintConfig(ConfigID.WITHDRAWAL_FEE);
+      if (!ok) {
+        return 0;
+      }
+      uint64 newValInt = _configToUint(newVal);
+      if (newValInt < currentVal) {
+        return 0;
+      }
+    }
+
     // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
     if (typ == ConfigType.ADDRESS) {
