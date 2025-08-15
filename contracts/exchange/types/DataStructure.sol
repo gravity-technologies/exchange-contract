@@ -83,6 +83,12 @@ enum Currency {
   AVAX, // 48
   CRV, // 49
   SEI // 50
+  LTC, // 51
+  HBAR, // 52
+  ONDO, // 53
+  CFX, // 54
+  PROVE, // 55
+  MNT // 56
 }
 
 function currencyStart() pure returns (Currency) {
