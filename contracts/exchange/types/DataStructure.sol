@@ -82,7 +82,7 @@ enum Currency {
   PUMP, // 47
   AVAX, // 48
   CRV, // 49
-  SEI // 50
+  SEI, // 50
   LTC, // 51
   HBAR, // 52
   ONDO, // 53
