@@ -196,10 +196,12 @@ struct State {
   address[] bridgingPartners;
   // Currency Configs
   mapping(uint16 => CurrencyConfig) currencyConfigs;
+  // The ID of the last mark price tick. We maintain the invariant that mark price tick ID is always increasing
+  uint64 lastMarkPriceTickID;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-  uint256[48] __gap;
+  uint256[47] __gap;
 }
 
 struct CurrencyConfig {
