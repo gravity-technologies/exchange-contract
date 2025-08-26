@@ -13,8 +13,13 @@ contract CurrencyContract is ICurrency, ConfigContract {
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
     require(id > 0, "invalid currency id");
-    require(state.currencyConfigs[id].id == 0, "currency already exists");
     CurrencyConfig storage config = state.currencyConfigs[id];
+
+    if (config.id != 0) {
+      require(config.balanceDecimals == balanceDecimals, "change of decimals is not allowed");
+      return; // no update needed
+    }
+
     config.id = id;
     config.balanceDecimals = balanceDecimals;
 
