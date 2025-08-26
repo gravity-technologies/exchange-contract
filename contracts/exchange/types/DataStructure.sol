@@ -88,7 +88,8 @@ enum Currency {
   ONDO, // 53
   CFX, // 54
   PROVE, // 55
-  MNT // 56
+  MNT, // 56
+  WLFI // 57
 }
 
 function currencyStart() pure returns (Currency) {
