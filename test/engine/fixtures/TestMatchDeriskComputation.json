@@ -2843,11 +2843,11 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {
@@ -3035,11 +3035,11 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"1","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"1","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-1","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-1","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {
@@ -4701,11 +4701,11 @@
             "error": "",
             "expectations": [
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"1","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {
-                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":""},"sub_account_names":[]},
+                  "expect": {"position":{"event_time":"0","sub_account_id":"2","instrument":{"kind":"PERPETUAL","underlying":5,"quote":3},"size":"-2","notional":"","entry_price":"","exit_price":"","mark_price":"","unrealized_pnl":"","realized_pnl":"","total_pnl":"","roi":"","quote_index_price":"","est_liquidation_price":"","leverage":"","cumulative_fee":"","cumulative_realized_funding_payment":""},"sub_account_names":[]},
                   "name": "ExSubAccountPositionOptional"
                },
                {

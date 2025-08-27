@@ -122,4 +122,8 @@ interface IGetter {
   function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) external view returns (bool);
 
   function getCurrencyDecimals(uint16 id) external view returns (uint16);
+
+  function vaultIsCrossExchange(uint64 vaultID) external view returns (bool);
+
+  function getVaultManagerAttestedSharePrice(uint64 vaultID) external view returns (uint64);
 }

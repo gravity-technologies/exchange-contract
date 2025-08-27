@@ -20,6 +20,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint32 marketingFeeCentiBeeps,
     Currency initialInvestmentCurrency,
     uint64 initialInvestmentNumTokens,
+    bool isCrossExchange,
     Signature calldata sig
   ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
@@ -35,6 +36,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       marketingFeeCentiBeeps,
       initialInvestmentCurrency,
       initialInvestmentNumTokens,
+      isCrossExchange,
       sig.nonce,
       sig.expiration
     );
@@ -72,6 +74,10 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     Account storage managerAcc = _requireAccount(managerAccountID);
 
     _investAndMintLpToken(vaultSub, managerAcc, initialInvestmentCurrency, initialInvestmentNumTokens);
+    if (isCrossExchange) {
+      vaultSub.vaultInfo.managerAttestedSharePrice = _getLpTokenPriceInUsd(vaultSub);
+      vaultSub.vaultInfo.isCrossExchange = isCrossExchange;
+    }
   }
 
   function vaultUpdate(
@@ -248,8 +254,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       return (amountInUsd, amountInUsd);
     }
 
-    BI memory vaultEquityBeforeInUsd = _getSubAccountValueInUSD(vaultSub);
-    require(vaultEquityBeforeInUsd.isPositive(), "vault equity is not positive");
+    BI memory vaultEquityBeforeInUsd = _getVaultTotalEquityInUsdBI(vaultSub);
 
     BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, lpDec);
     BI memory lpTokensToMintBI = amountInUsdBI.mul(totalLpTokenSupplyBI).div(vaultEquityBeforeInUsd);
@@ -358,8 +363,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
   }
 
   function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {
-    BI memory vaultEquityInUsd = _getSubAccountValueInUSD(vaultSub);
-    require(vaultEquityInUsd.isPositive(), "vault equity is not positive");
+    BI memory vaultEquityInUsd = _getVaultTotalEquityInUsdBI(vaultSub);
 
     uint64 lpDec = _getLpTokenDecimal();
     BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultSub.vaultInfo.totalLpTokenSupply, lpDec);
@@ -407,8 +411,6 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     VaultLpInfo storage lpInfo = vaultInfo.lpInfos[accountID];
     require(lpInfo.lpTokenBalance >= lpTokenToBurn, "insufficient LP tokens");
 
-    costOfLpTokenBurntInUsd = _calculateCostOfLpTokenBurntInUsd(lpInfo, lpTokenToBurn);
-
     vaultInfo.totalLpTokenSupply -= lpTokenToBurn;
 
     lpInfo.usdNotionalInvested -= costOfLpTokenBurntInUsd;
@@ -439,6 +441,61 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
 
     _settleManagementFee(timestamp, vaultSub, marketingFeeChargedInLpToken);
+  }
+
+  function vaultCrossExchangeUpdate(
+    int64 timestamp,
+    uint64 txID,
+    uint64 vaultID,
+    uint64 totalEquity,
+    uint64 numLpTokens,
+    uint64 sharePrice,
+    int64 lastUpdateTimestamp,
+    Signature calldata sig
+  ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+
+    SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
+
+    require(vaultSub.vaultInfo.isCrossExchange, "vault is not cross-exchange");
+
+    // Consistency checks
+    require(vaultSub.vaultInfo.totalLpTokenSupply == numLpTokens, "vault cross-exchange update: numLpTokens mismatch");
+
+    // Share price consistency check
+    {
+      uint64 usdDec = _getBalanceDecimal(Currency.USD);
+      uint64 lpDec = _getLpTokenDecimal();
+
+      BI memory totalEquityBI = BIMath.fromUint64(totalEquity, usdDec);
+      BI memory numLpTokensBI = BIMath.fromUint64(numLpTokens, lpDec);
+      BI memory attestedSharePriceBI = BIMath.fromUint64(sharePrice, PRICE_DECIMALS);
+
+      // Scale totalEquity to price decimals
+      totalEquityBI = totalEquityBI.scale(PRICE_DECIMALS);
+      BI memory calculatedSharePriceBI = totalEquityBI.div(numLpTokensBI);
+
+      require(
+        calculatedSharePriceBI.cmp(attestedSharePriceBI) == 0,
+        "vault cross-exchange update: share price mismatch"
+      );
+    }
+
+    // ---------- Signature Verification -----------
+    _requireSubAccountPermission(vaultSub, sig.signer, SubAccountPermAdmin);
+
+    bytes32 hash = hashVaultCrossExchangeUpdate(
+      vaultID,
+      totalEquity,
+      numLpTokens,
+      sharePrice,
+      lastUpdateTimestamp,
+      sig.nonce,
+      sig.expiration
+    );
+    _preventReplay(hash, sig);
+    // ------- End of Signature Verification -------
+    vaultSub.vaultInfo.managerAttestedSharePrice = sharePrice;
   }
 
   function _settleManagementFee(
@@ -543,5 +600,54 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
   function _getLpTokenDecimal() internal view returns (uint64) {
     // lp token has the same decimal as USD
     return _getBalanceDecimal(Currency.USD);
+  }
+
+  function _getVaultTotalEquityInUsdBI(SubAccount storage vaultSub) internal view returns (BI memory) {
+    VaultInfo storage vaultInfo = vaultSub.vaultInfo;
+    if (vaultInfo.isCrossExchange) {
+      // For cross-exchange vaults, equity = share price * total LP supply (scaled to USD decimals)
+
+      uint64 usdDec = _getBalanceDecimal(Currency.USD);
+      uint64 lpDec = _getLpTokenDecimal();
+
+      BI memory vaultSharePriceInUsdBI = BIMath.fromUint64(vaultInfo.managerAttestedSharePrice, PRICE_DECIMALS);
+      BI memory vaultTotalLpTokenSupplyBI = BIMath.fromUint64(vaultInfo.totalLpTokenSupply, lpDec);
+      BI memory equity = vaultSharePriceInUsdBI.mul(vaultTotalLpTokenSupplyBI).scale(usdDec);
+      return equity;
+    }
+
+    BI memory vaultEquityUSDBI = _getSubAccountValueInUSD(vaultSub);
+    require(vaultEquityUSDBI.isPositive(), "vault equity is not positive");
+
+    return vaultEquityUSDBI;
+  }
+
+  function _getLpTokenPriceInUsd(SubAccount storage vaultSub) internal view returns (uint64) {
+    return _getLpTokenPriceInUsdBI(vaultSub).toUint64(PRICE_DECIMALS);
+  }
+
+  function _getLpTokenPriceInUsdBI(SubAccount storage vaultSub) internal view returns (BI memory) {
+    VaultInfo storage vaultInfo = vaultSub.vaultInfo;
+
+    if (vaultInfo.isCrossExchange) {
+      // For cross-exchange vaults, the share price is attested by the manager
+      return BIMath.fromUint64(vaultInfo.managerAttestedSharePrice, PRICE_DECIMALS);
+    }
+
+    uint64 lpDec = _getLpTokenDecimal();
+    BI memory totalLpTokenSupplyBI = BIMath.fromUint64(vaultInfo.totalLpTokenSupply, lpDec);
+
+    if (totalLpTokenSupplyBI.isZero()) {
+      // If no LP tokens, return 1 (scaled to price decimals)
+      return BIMath.one().scale(PRICE_DECIMALS);
+    }
+
+    BI memory vaultEquityUSDBI = _getVaultTotalEquityInUsdBI(vaultSub);
+
+    if (_getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(FeatureFlagID.VAULT_LP_SHARE_PRICE_9_DECIMALS))) {
+      vaultEquityUSDBI = vaultEquityUSDBI.scale(PRICE_DECIMALS);
+    }
+
+    return vaultEquityUSDBI.div(totalLpTokenSupplyBI);
   }
 }

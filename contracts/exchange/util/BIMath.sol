@@ -107,6 +107,10 @@ library BIMath {
     return a.val < 0;
   }
 
+  function isZero(BI memory a) internal pure returns (bool) {
+    return a.val == 0;
+  }
+
   function toInt256(BI memory a, uint decimals) internal pure returns (int256) {
     if (a.dec == decimals) return a.val;
     if (a.dec > decimals) return a.val / (int256(10) ** (a.dec - decimals));

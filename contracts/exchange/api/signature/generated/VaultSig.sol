@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 import "../../../types/DataStructure.sol";
 
 bytes32 constant _VAULT_CREATE_H = keccak256(
-  "VaultCreate(uint64 vaultID,address managerAccountID,uint8 quoteCurrency,uint8 marginType,uint32 managementFeeCentiBeeps,uint32 performanceFeeCentiBeeps,uint32 marketingFeeCentiBeeps,uint8 initialInvestmentCurrency,uint64 initialInvestmentNumTokens,uint32 nonce,int64 expiration)"
+  "VaultCreate(uint64 vaultID,address managerAccountID,uint8 quoteCurrency,uint8 marginType,uint32 managementFeeCentiBeeps,uint32 performanceFeeCentiBeeps,uint32 marketingFeeCentiBeeps,uint8 initialInvestmentCurrency,uint64 initialInvestmentNumTokens,bool isCrossExchange,uint32 nonce,int64 expiration)"
 );
 
 function hashVaultCreate(
@@ -16,6 +16,7 @@ function hashVaultCreate(
   uint32 marketingFeeCentiBeeps,
   Currency initialInvestmentCurrency,
   uint64 initialInvestmentNumTokens,
+  bool isCrossExchange,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
@@ -32,6 +33,7 @@ function hashVaultCreate(
         marketingFeeCentiBeeps,
         uint8(initialInvestmentCurrency),
         initialInvestmentNumTokens,
+        isCrossExchange,
         nonce,
         expiration
       )
@@ -107,4 +109,32 @@ function hashVaultRedeem(
 ) pure returns (bytes32) {
   return
     keccak256(abi.encode(_VAULT_REDEEM_H, vaultID, uint8(tokenCurrency), numLpTokens, accountID, nonce, expiration));
+}
+
+bytes32 constant _VAULT_CROSS_EXCHANGE_UPDATE_H = keccak256(
+  "VaultCrossExchangeUpdate(uint64 vaultID,uint64 totalEquity,uint64 numLpTokens,uint64 sharePrice,int64 lastUpdateTimestamp,uint32 nonce,int64 expiration)"
+);
+
+function hashVaultCrossExchangeUpdate(
+  uint64 vaultID,
+  uint64 totalEquity,
+  uint64 numLpTokens,
+  uint64 sharePrice,
+  int64 lastUpdateTimestamp,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(
+        _VAULT_CROSS_EXCHANGE_UPDATE_H,
+        vaultID,
+        totalEquity,
+        numLpTokens,
+        sharePrice,
+        lastUpdateTimestamp,
+        nonce,
+        expiration
+      )
+    );
 }
