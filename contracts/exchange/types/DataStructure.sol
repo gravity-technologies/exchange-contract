@@ -89,7 +89,8 @@ enum Currency {
   CFX, // 54
   PROVE, // 55
   MNT, // 56
-  WLFI // 57
+  WLFI, // 57
+  LINEA // 58
 }
 
 function currencyStart() pure returns (Currency) {
