@@ -462,10 +462,6 @@ contract ConfigContract is IConfig, BaseContract {
       return rules[0].lockDuration;
     }
 
-    if (key == ConfigID.FEATURE_FLAGS) {
-      return 0;
-    }
-
     // always allow decreasing min fee immediately
     if (
       key == ConfigID.FUTURES_MAKER_FEE_MINIMUM ||
