@@ -1297,7 +1297,9 @@
                               "roi": -249,
                               "quote_index_price": "1000000000",
                               "est_liquidation_price": "0",
-                              "leverage": 10000000
+                              "leverage": 10000000,
+                              "cumulative_fee": "0",
+                              "cumulative_realized_funding_payment": "0"
                            }
                         ],
                         "settle_index_price": "1000000000",
@@ -1349,7 +1351,9 @@
                               "roi": 249,
                               "quote_index_price": "1000000000",
                               "est_liquidation_price": "258815550000000",
-                              "leverage": 10000000
+                              "leverage": 10000000,
+                              "cumulative_fee": "0",
+                              "cumulative_realized_funding_payment": "0"
                            }
                         ],
                         "settle_index_price": "1000000000",
@@ -1477,7 +1481,9 @@
                               "roi": 249687,
                               "quote_index_price": "800000000",
                               "est_liquidation_price": "0",
-                              "leverage": 10000000
+                              "leverage": 10000000,
+                              "cumulative_fee": "0",
+                              "cumulative_realized_funding_payment": "0"
                            }
                         ],
                         "settle_index_price": "800000000",
@@ -2792,7 +2798,9 @@
                               "roi": 333,
                               "quote_index_price": "1000000000",
                               "est_liquidation_price": "0",
-                              "leverage": 10000000
+                              "leverage": 10000000,
+                              "cumulative_fee": "0",
+                              "cumulative_realized_funding_payment": "0"
                            }
                         ],
                         "settle_index_price": "1000000000",
@@ -2844,7 +2852,9 @@
                               "roi": -333,
                               "quote_index_price": "1000000000",
                               "est_liquidation_price": "258780549999999",
-                              "leverage": 10000000
+                              "leverage": 10000000,
+                              "cumulative_fee": "0",
+                              "cumulative_realized_funding_payment": "0"
                            }
                         ],
                         "settle_index_price": "1000000000",

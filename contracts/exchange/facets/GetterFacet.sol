@@ -264,4 +264,16 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContract, RiskChe
   function getCurrencyDecimals(uint16 id) public view returns (uint16) {
     return state.currencyConfigs[id].balanceDecimals;
   }
+
+  function vaultIsCrossExchange(uint64 vaultID) public view returns (bool) {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+    return sub.vaultInfo.isCrossExchange;
+  }
+
+  function getVaultManagerAttestedSharePrice(uint64 vaultID) public view returns (uint64) {
+    SubAccount storage sub = _requireSubAccount(vaultID);
+    require(sub.isVault, "Not a vault");
+    return sub.vaultInfo.managerAttestedSharePrice;
+  }
 }

@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 import "./BaseContract.sol";
 import "../types/DataStructure.sol";
 import "./signature/generated/ConfigSig.sol";
-import {ConfigID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
+import {ConfigID, FeatureFlagID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
 import {L2ContractHelper} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 import "../interfaces/IConfig.sol";
@@ -184,6 +184,10 @@ contract ConfigContract is IConfig, BaseContract {
     return bytes32(uint256(v));
   }
 
+  function _featureFlagToConfig(FeatureFlagID v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
+  }
+
   function _addressToConfig(address v) internal pure returns (bytes32) {
     return bytes32(uint(uint160(v)));
   }
@@ -330,6 +334,21 @@ contract ConfigContract is IConfig, BaseContract {
     );
   }
 
+  function _initializeFeatureFlagsConfigSettingIfNeeded() internal {
+    ConfigSetting storage setting = state.configSettings[ConfigID.FEATURE_FLAGS];
+    if (setting.typ != ConfigType.UNSPECIFIED) {
+      return;
+    }
+
+    setting.typ = ConfigType.BOOL2D;
+    Rule[] storage rules = setting.rules;
+    // This config does not have timelock as it is controlled by GRVT
+    ConfigTimelockRule storage rule = rules.push();
+    rule.lockDuration = 0;
+    rule.deltaPositive = 0;
+    rule.deltaNegative = 0;
+  }
+
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
     ConfigSetting storage setting = state.configSettings[key];
     ConfigType typ = setting.typ;
@@ -405,6 +424,7 @@ contract ConfigContract is IConfig, BaseContract {
     _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
+    _initializeFeatureFlagsConfigSettingIfNeeded();
     ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
 
     int64 lockDuration = _getLockDuration(key, subKey, value);

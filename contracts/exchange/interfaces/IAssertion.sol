@@ -174,7 +174,15 @@ interface IAssertion {
     SpotAssertion[] spots;
   }
 
-  struct VaultParamsAssertion {
+  struct VaultCreateParamsAssertion {
+    uint32 managementFeeCentiBeeps;
+    uint32 performanceFeeCentiBeeps;
+    uint32 marketingFeeCentiBeeps;
+    bool isCrossExchange;
+    uint64 managerAttestedSharePrice;
+  }
+
+  struct VaultUpdateParamsAssertion {
     uint32 managementFeeCentiBeeps;
     uint32 performanceFeeCentiBeeps;
     uint32 marketingFeeCentiBeeps;
@@ -186,7 +194,7 @@ interface IAssertion {
     Currency quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
-    VaultParamsAssertion calldata vaultParamsAssertion,
+    VaultCreateParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
@@ -195,7 +203,7 @@ interface IAssertion {
     SubAccountAssertion calldata vaultSubAssertion
   ) external view;
 
-  function assertVaultUpdate(uint64 vaultID, VaultParamsAssertion calldata vaultParamsAssertion) external view;
+  function assertVaultUpdate(uint64 vaultID, VaultUpdateParamsAssertion calldata vaultParamsAssertion) external view;
 
   function assertVaultDelist(uint64 vaultID) external view;
 
@@ -233,6 +241,8 @@ interface IAssertion {
     VaultLpAssertion calldata managerAssertion,
     VaultLpAssertion calldata feeAccountAssertion
   ) external view;
+
+  function assertVaultCrossExchangeUpdate(uint64 vaultID, uint64 expectedManagerAttestedSharePrice) external view;
 
   function assertSetDeriskToMaintenanceMarginRatio(
     uint64 subAccountID,

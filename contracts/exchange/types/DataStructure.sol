@@ -280,7 +280,9 @@ struct VaultInfo {
   uint32 performanceFeeCentiBeeps;
   uint32 marketingFeeCentiBeeps;
   VaultStatus status;
-  uint256[49] __gap;
+  bool isCrossExchange;
+  uint64 managerAttestedSharePrice;
+  uint256[47] __gap;
 }
 
 struct VaultLpInfo {
@@ -400,7 +402,9 @@ enum ConfigID {
   // Withdrawal Fee Configs
   WITHDRAWAL_FEE, // 16, has timelock
   // Bridging partner accounts can transfer from and withdraw to any address
-  BRIDGING_PARTNER_ADDRESSES // 17, no timelock on add, has timelock on remove
+  BRIDGING_PARTNER_ADDRESSES, // 17, no timelock on add, has timelock on remove
+  // Feature flags
+  FEATURE_FLAGS // 18, no timelock
 }
 
 struct ConfigValue {
@@ -417,6 +421,11 @@ struct ConfigSetting {
   ConfigTimelockRule[] rules;
   // the schedules where we can change this config.
   mapping(bytes32 => ConfigSchedule) schedules;
+}
+
+enum FeatureFlagID {
+  UNSPECIFIED,
+  VAULT_LP_SHARE_PRICE_9_DECIMALS
 }
 
 struct MarginTier {

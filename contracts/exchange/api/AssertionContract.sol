@@ -440,7 +440,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     Currency quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
-    VaultParamsAssertion calldata vaultParamsAssertion,
+    VaultCreateParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
     Currency initialInvestmentCurrency,
@@ -462,16 +462,20 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     );
 
     // Check vault info properties
-    VaultInfo storage vaultInfo = vaultSub.vaultInfo;
-    require(
-      vaultInfo.status == VaultStatus.ACTIVE &&
-        vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
-        vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
-        vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps &&
-        vaultInfo.lastFeeSettlementTimestamp == lastFeeSettlementTimestamp &&
-        vaultInfo.totalLpTokenSupply == totalLpTokenSupply,
-      "ex vaultCreateInfo"
-    );
+    {
+      VaultInfo storage vaultInfo = vaultSub.vaultInfo;
+      require(
+        vaultInfo.status == VaultStatus.ACTIVE &&
+          vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
+          vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
+          vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps &&
+          vaultInfo.lastFeeSettlementTimestamp == lastFeeSettlementTimestamp &&
+          vaultInfo.totalLpTokenSupply == totalLpTokenSupply &&
+          vaultInfo.isCrossExchange == vaultParamsAssertion.isCrossExchange &&
+          vaultInfo.managerAttestedSharePrice == vaultParamsAssertion.managerAttestedSharePrice,
+        "ex vaultCreateInfo"
+      );
+    }
 
     // Check vault spot balance
     require(
@@ -485,7 +489,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     _assertSubAccount(vaultSubAssertion);
   }
 
-  function assertVaultUpdate(uint64 vaultID, VaultParamsAssertion calldata vaultParamsAssertion) external view {
+  function assertVaultUpdate(uint64 vaultID, VaultUpdateParamsAssertion calldata vaultParamsAssertion) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
     require(vaultSub.isVault, "ex notVault");
 
@@ -612,5 +616,12 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view {
     CurrencyConfig storage config = state.currencyConfigs[id];
     require(config.id == id && config.balanceDecimals == balanceDecimals, "ex addCurrency");
+  }
+
+  function assertVaultCrossExchangeUpdate(uint64 vaultID, uint64 expectedManagerAttestedSharePrice) external view {
+    require(
+      state.subAccounts[vaultID].vaultInfo.managerAttestedSharePrice == expectedManagerAttestedSharePrice,
+      "ex vaultCrossExchangeUpdate"
+    );
   }
 }

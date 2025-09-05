@@ -15,6 +15,7 @@ interface IVault {
     uint32 marketingFeeCentiBeeps,
     Currency initialInvestmentCurrency,
     uint64 initialInvestmentNumTokens,
+    bool isCrossExchange,
     Signature calldata sig
   ) external;
 
@@ -67,5 +68,16 @@ interface IVault {
     uint64 txID,
     uint64 vaultID,
     uint64 marketingFeeChargedInLpToken
+  ) external;
+
+  function vaultCrossExchangeUpdate(
+    int64 timestamp,
+    uint64 txID,
+    uint64 vaultID,
+    uint64 totalEquity,
+    uint64 numLpTokens,
+    uint64 sharePrice,
+    int64 lastUpdateTimestamp,
+    Signature calldata sig
   ) external;
 }
