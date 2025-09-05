@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 import "../../../types/DataStructure.sol";
 
 bytes32 constant _VAULT_CREATE_H = keccak256(
-  "VaultCreate(uint64 vaultID,address managerAccountID,uint8 quoteCurrency,uint8 marginType,uint32 managementFeeCentiBeeps,uint32 performanceFeeCentiBeeps,uint32 marketingFeeCentiBeeps,uint8 initialInvestmentCurrency,uint64 initialInvestmentNumTokens,bool isCrossExchange,uint32 nonce,int64 expiration)"
+  "VaultCreate(uint64 vaultID,address managerAccountID,uint8 quoteCurrency,uint8 marginType,uint32 managementFeeCentiBeeps,uint32 performanceFeeCentiBeeps,uint32 marketingFeeCentiBeeps,uint8 initialInvestmentCurrency,uint64 initialInvestmentNumTokens,uint32 nonce,int64 expiration)"
 );
 
 function hashVaultCreate(
@@ -16,7 +16,6 @@ function hashVaultCreate(
   uint32 marketingFeeCentiBeeps,
   Currency initialInvestmentCurrency,
   uint64 initialInvestmentNumTokens,
-  bool isCrossExchange,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
@@ -33,7 +32,6 @@ function hashVaultCreate(
         marketingFeeCentiBeeps,
         uint8(initialInvestmentCurrency),
         initialInvestmentNumTokens,
-        isCrossExchange,
         nonce,
         expiration
       )

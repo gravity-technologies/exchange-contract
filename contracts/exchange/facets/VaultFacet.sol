@@ -36,7 +36,6 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       marketingFeeCentiBeeps,
       initialInvestmentCurrency,
       initialInvestmentNumTokens,
-      isCrossExchange,
       sig.nonce,
       sig.expiration
     );
