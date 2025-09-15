@@ -195,8 +195,86 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   // Check if the signer has certain permissions on an account
+  function hasAccountPermission(
+    Account storage account,
+    address signer,
+    uint64 requiredPerm
+  ) internal view returns (bool) {
+    return account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0;
+  }
+
+  // Check if the signer has certain permissions on an account
   function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
-    require(account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0, "no permission");
+    require(hasAccountPermission(account, signer, requiredPerm), "no permission");
+  }
+
+  /// @notice Helper function to resolve effective signer from session key or direct signer
+  /// @dev Returns the main signer if a valid session exists, otherwise returns the original signer
+  /// @param signer The signer address (could be session key or main signer)
+  /// @param timestamp The current timestamp for session expiry validation
+  /// @return effectiveSigner The resolved signer address
+  /// @return hasValidSession Whether a valid session was found
+  function _resolveEffectiveSigner(
+    address signer,
+    int64 timestamp
+  ) internal view returns (address effectiveSigner, bool hasValidSession) {
+    Session storage session = state.sessions[signer];
+    bool sessionFound = session.expiry != 0;
+    bool sessionValid = session.expiry > timestamp;
+
+    if (sessionFound && sessionValid) {
+      return (session.subAccountSigner, true);
+    }
+
+    return (signer, false);
+  }
+
+  /// @notice Checks if a signer or session key has required account permissions
+  /// @dev First checks if signer is a session key with valid expiry, then checks main signer permissions
+  /// @dev Falls back to checking signer directly if no valid session found
+  /// @param account The account to check permissions for
+  /// @param signer The signer address (could be session key or main signer)
+  /// @param requiredPerm The required permission bitmask
+  /// @param timestamp The current timestamp for session expiry validation
+  function _requireSignerOrSessionKeyAccountPerm(
+    Account storage account,
+    address signer,
+    uint64 requiredPerm,
+    int64 timestamp
+  ) internal view {
+    (address effectiveSigner, bool hasValidSession) = _resolveEffectiveSigner(signer, timestamp);
+
+    // If we have a valid session, try the main signer first
+    if (hasValidSession && hasAccountPermission(account, effectiveSigner, requiredPerm)) {
+      return;
+    }
+
+    // fallback to checking signer directly
+    _requireAccountPermission(account, signer, requiredPerm);
+  }
+
+  /// @notice Checks if a signer or session key has required subaccount permissions
+  /// @dev First checks if signer is a session key with valid expiry, then checks main signer permissions
+  /// @dev Falls back to checking signer directly if no valid session found
+  /// @param sub The subaccount to check permissions for
+  /// @param signer The signer address (could be session key or main signer)
+  /// @param requiredPerm The required permission bitmask
+  /// @param timestamp The current timestamp for session expiry validation
+  function _requireSignerOrSessionKeySubAccountPerm(
+    SubAccount storage sub,
+    address signer,
+    uint64 requiredPerm,
+    int64 timestamp
+  ) internal view {
+    (address effectiveSigner, bool hasValidSession) = _resolveEffectiveSigner(signer, timestamp);
+
+    // If we have a valid session, try the main signer first
+    if (hasValidSession && hasSubAccountPermission(sub, effectiveSigner, requiredPerm)) {
+      return;
+    }
+
+    // fallback to checking signer directly
+    _requireSubAccountPermission(sub, signer, requiredPerm);
   }
 
   // Check if the caller has certain permissions on a subaccount
