@@ -302,7 +302,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
-    require(!toSubAcc.isVault, "no transfer to vault subaccount");
+    require(!toSubAcc.isVault || toSubAcc.vaultInfo.isCrossExchange, "no transfer to on-exchange vault subaccount");
 
     _requireSubAccountUnderAccount(toSubAcc, toAccID);
     _doTransferMainToSub(fromAcc, toSubAcc, currency, numTokens);
@@ -332,7 +332,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
-    require(!fromSub.isVault, "transfer from vault subaccount");
+    require(!fromSub.isVault || fromSub.vaultInfo.isCrossExchange, "transfer from on-exchange vault subaccount");
     _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
@@ -374,8 +374,8 @@ abstract contract TransferContract is ITransfer, TradeContract {
     _requireSubAccountUnderAccount(toSub, toAccID);
 
     require(numTokens >= 0, "invalid transfer amount");
-    require(!fromSub.isVault, "transfer from vault subaccount");
-    require(!toSub.isVault, "transfer to vault subaccount");
+    require(!fromSub.isVault || fromSub.vaultInfo.isCrossExchange, "transfer from on-exchange vault subaccount");
+    require(!toSub.isVault || toSub.vaultInfo.isCrossExchange, "transfer to on-exchange vault subaccount");
 
     _fundAndSettle(fromSub);
     _fundAndSettle(toSub);

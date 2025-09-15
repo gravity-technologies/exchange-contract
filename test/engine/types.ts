@@ -321,6 +321,33 @@ export interface ExCurrencyCount {
   count: number
 }
 
+export interface ExVaultIsCrossExchange {
+  vault_id: string
+  is_cross_exchange: boolean
+}
+
+export interface ExVaultManagerAttestedSharePrice {
+  vault_id: string
+  manager_attested_share_price: string
+}
+
+export interface ExVaultLastUpdateTimestampIncreased {
+  vault_id: string
+  last_update_timestamp: string
+}
+
+export interface ExVaultAllTimePnl {
+  vault_id: string
+  all_time_pnl: string
+}
+
+export interface ExIfAccountHasVaultPosition {
+  account_id: string
+  vault_id: string
+  has_position: boolean
+}
+
+
 export interface Expectation {
   name: string
   expect:
@@ -364,4 +391,9 @@ export interface Expectation {
   | ExSubAccountUnderDeriskMargin
   | ExCurrencyConfig
   | ExCurrencyCount
+  | ExVaultIsCrossExchange
+  | ExVaultManagerAttestedSharePrice
+  | ExVaultLastUpdateTimestampIncreased
+  | ExVaultAllTimePnl
+  | ExIfAccountHasVaultPosition
 }

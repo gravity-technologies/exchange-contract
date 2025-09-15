@@ -45,6 +45,11 @@ import {
   ExSubAccountUnderDeriskMargin,
   ExCurrencyConfig,
   ExCurrencyCount,
+  ExVaultAllTimePnl,
+  ExIfAccountHasVaultPosition,
+  ExVaultLastUpdateTimestampIncreased,
+  ExVaultIsCrossExchange,
+  ExVaultManagerAttestedSharePrice,
 } from "./types"
 import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
@@ -161,6 +166,16 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectCurrencyConfig(contract, expectation.expect as ExCurrencyConfig)
     case "ExCurrencyCount":
       return expectCurrencyCount(contract, expectation.expect as ExCurrencyCount)
+    case "ExVaultIsCrossExchange":
+      return expectVaultIsCrossExchange(contract, expectation.expect as ExVaultIsCrossExchange)
+    case "ExVaultManagerAttestedSharePrice":
+      return expectVaultManagerAttestedSharePrice(contract, expectation.expect as ExVaultManagerAttestedSharePrice)
+    case "ExVaultLastUpdateTimestampIncreased":
+      return expectVaultLastUpdateTimestampIncreased(contract, expectation.expect as ExVaultLastUpdateTimestampIncreased)
+    case "ExVaultAllTimePnl":
+      return expectVaultAllTimePnl(contract, expectation.expect as ExVaultAllTimePnl)
+    case "ExIfAccountHasVaultPosition":
+      return expectIfAccountHasVaultPosition(contract, expectation.expect as ExIfAccountHasVaultPosition)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -636,6 +651,29 @@ async function expectCurrencyConfig(contract: Contract, expectations: ExCurrency
 }
 
 async function expectCurrencyCount(contract: Contract, expectations: ExCurrencyCount) {
+  // This is only implemented in risk, and not in contract (intentional)
+}
+
+async function expectVaultIsCrossExchange(contract: Contract, expectations: ExVaultIsCrossExchange) {
+  const isCrossExchange = await contract.vaultIsCrossExchange(BigInt(expectations.vault_id))
+  expect(isCrossExchange).to.equal(expectations.is_cross_exchange)
+}
+
+async function expectVaultManagerAttestedSharePrice(contract: Contract, expectations: ExVaultManagerAttestedSharePrice) {
+  const managerAttestedSharePrice = await contract.getVaultManagerAttestedSharePrice(BigInt(expectations.vault_id))
+  expect(big(managerAttestedSharePrice)).to.equal(big(expectations.manager_attested_share_price))
+}
+
+async function expectVaultLastUpdateTimestampIncreased(contract: Contract, expectations: ExVaultLastUpdateTimestampIncreased) {
+  // This is only implemented in risk, and not in contract (intentional)
+}
+
+async function expectVaultAllTimePnl(contract: Contract, expectations: ExVaultAllTimePnl) {
+  // This is only implemented in risk, and not in contract (intentional)
+}
+
+
+async function expectIfAccountHasVaultPosition(contract: Contract, expectations: ExIfAccountHasVaultPosition) {
   // This is only implemented in risk, and not in contract (intentional)
 }
 
