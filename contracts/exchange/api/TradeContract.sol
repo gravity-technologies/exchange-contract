@@ -13,18 +13,18 @@ import "../interfaces/ITrade.sol";
 abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
-  int32 internal constant TRADE_FEE_CAP_RATE_BPS = 2000;
+  int32 internal constant _TRADE_FEE_CAP_RATE_BPS = 2000;
   // Liquidation Fee:
   // 0.25% = 25 bps on option index notional
   // 0.70% = 70 bps otherwise
-  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OPTION = 2500;
-  int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
-  int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
+  int32 internal constant _LIQUIDATION_FEE_CAP_RATE_BPS_OPTION = 2500;
+  int32 internal constant _LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
+  int32 internal constant _PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
 
   /// @dev The maximum signature expiry time for orders. This is deliberately laxer than the expiry for order in risk
   /// In risk normal orders have a 30 day expiry, and TPSL orders have a 180 day expiry.
   /// Orders passing risk expiry validation also pass contract expiry validation
-  int64 private constant ONE_HUNDRED_EIGHTY_DAY_EXPIRY = 180 * 24 * ONE_HOUR_NANOS;
+  int64 private constant _ONE_HUNDRED_EIGHTY_DAY_EXPIRY = 180 * 24 * ONE_HOUR_NANOS;
 
   struct OrderCalculationResult {
     uint64[] matchedSizes;
@@ -275,7 +275,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // Check the order signature
     bytes32 orderHash = hashOrder(order);
     Signature calldata sig = order.signature;
-    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + ONE_HUNDRED_EIGHTY_DAY_EXPIRY), "expired");
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + _ONE_HUNDRED_EIGHTY_DAY_EXPIRY), "expired");
     _requireValidNoExipry(orderHash, sig);
 
     // Check that the signer has trade permission
@@ -334,9 +334,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
 
     // Check that the fee paid is within the cap of 20 bps
-    int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
+    int32 feeCapRate = _TRADE_FEE_CAP_RATE_BPS;
     if (order.isLiquidation) {
-      feeCapRate = LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
+      feeCapRate = _LIQUIDATION_FEE_CAP_RATE_BPS_OTHER;
     }
     BI memory feeCapRateBI = _bpsToDecimal(feeCapRate);
     int64 totalFeeCap = _calculateBaseFee(calcResult.tradeNotional, feeCapRateBI, qDec);
@@ -376,7 +376,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
       // Step 3: Remove position if empty
       if (pos.balance == 0) {
-        removePos(sub, leg.assetID);
+        _removePos(sub, leg.assetID);
       }
     }
 
@@ -400,7 +400,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function removePos(SubAccount storage sub, bytes32 assetID) private {
+  function _removePos(SubAccount storage sub, bytes32 assetID) private {
     Kind kind = assetGetKind(assetID);
     if (kind == Kind.PERPS) {
       remove(sub.perps, assetID);
