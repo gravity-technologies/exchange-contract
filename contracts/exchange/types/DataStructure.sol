@@ -90,7 +90,15 @@ enum Currency {
   PROVE, // 55
   MNT, // 56
   WLFI, // 57
-  LINEA // 58
+  LINEA, // 58
+  ASTER, // 59
+  AVNT, // 60
+  BARD, // 61
+  DOT, // 62
+  EIGEN, // 63
+  LA, // 64
+  NEAR, // 65
+  W // 66
 }
 
 function currencyStart() pure returns (Currency) {
