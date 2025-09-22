@@ -206,7 +206,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     _setSequence(timestamp, txID);
 
     Account storage account = _requireAccount(accountID);
-    _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
+    _requireSignerOrSessionKeyAccountPerm(account, sig.signer, AccountPermVaultInvestor, timestamp);
 
     SubAccount storage vaultSub = _requireVaultSubAccount(vaultID);
     require(vaultSub.vaultInfo.status == VaultStatus.ACTIVE, "only active vault can accept investment");
@@ -322,7 +322,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     // this is because the closed vaults does not have any positions and cannot trade any more
     // so GRVT can redeem closed vaults for users
     if (vaultSub.vaultInfo.status != VaultStatus.CLOSED) {
-      _requireAccountPermission(account, sig.signer, AccountPermVaultInvestor);
+      _requireSignerOrSessionKeyAccountPerm(account, sig.signer, AccountPermVaultInvestor, timestamp);
 
       // ---------- Signature Verification -----------
       bytes32 hash = hashVaultRedeem(vaultID, tokenCurrency, numLpTokens, accountID, sig.nonce, sig.expiration);
