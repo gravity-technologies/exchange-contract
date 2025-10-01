@@ -8,6 +8,8 @@
         "auto redemption barrier too low",
         "auto redemption barrier too high",
         "vault reward sharing ratio cannot be decreased",
-        "invalid reward sharing ratio"
+        "invalid reward sharing ratio",
+        "vault is not locked",
+        "vault is locked"
     ]
 }

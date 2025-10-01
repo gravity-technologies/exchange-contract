@@ -298,7 +298,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.SOL ||
       currency == Currency.BNB ||
       currency == Currency.AAVE ||
-      currency == Currency.LTC
+      currency == Currency.LTC ||
+      currency == Currency.BCH
     ) {
       decimals = 9;
     } else if (
@@ -352,7 +353,16 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.PROVE ||
       currency == Currency.MNT ||
       currency == Currency.WLFI ||
-      currency == Currency.LINEA
+      currency == Currency.LINEA ||
+      currency == Currency.ASTER ||
+      currency == Currency.AVNT ||
+      currency == Currency.BARD ||
+      currency == Currency.DOT ||
+      currency == Currency.EIGEN ||
+      currency == Currency.LA ||
+      currency == Currency.NEAR ||
+      currency == Currency.W ||
+      currency == Currency.XPL
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
