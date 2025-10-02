@@ -241,13 +241,13 @@ abstract contract TransferContract is ITransfer, TradeContract {
       require(fromSubID != toSubID, "self transfer");
       if (fromSubID == 0) {
         // 1.1 Main -> Sub
-        _transferMainToSub(fromAccID, toAccID, toSubID, currency, numTokensSigned, sig);
+        _transferMainToSub(timestamp, fromAccID, toAccID, toSubID, currency, numTokensSigned, sig);
       } else if (toSubID == 0) {
         // 1.2 Sub -> Main
-        _transferSubToMain(fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToMain(timestamp, fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       } else {
         // 1.3 Sub -> Sub
-        _transferSubToSub(fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToSub(timestamp, fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
       }
     } else {
       // 2. Different accounts
@@ -291,6 +291,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   function _transferMainToSub(
+    int64 timestamp,
     address fromAccID,
     address toAccID,
     uint64 toSubID,
@@ -299,7 +300,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     Signature calldata sig
   ) private {
     Account storage fromAcc = _requireAccount(fromAccID);
-    _requireAccountPermission(fromAcc, sig.signer, AccountPermInternalTransfer);
+    _requireSignerOrSessionKeyAccountPerm(fromAcc, sig.signer, AccountPermInternalTransfer, timestamp);
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
     require(!toSubAcc.isVault || toSubAcc.vaultInfo.isCrossExchange, "no transfer to on-exchange vault subaccount");
@@ -324,6 +325,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   function _transferSubToMain(
+    int64 timestamp,
     uint64 fromSubID,
     address fromAccID,
     address toAccID,
@@ -333,7 +335,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     require(!fromSub.isVault || fromSub.vaultInfo.isCrossExchange, "transfer from on-exchange vault subaccount");
-    _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
+    _requireSignerOrSessionKeySubAccountPerm(fromSub, sig.signer, SubAccountPermTransfer, timestamp);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
     Account storage toAcc = _requireAccount(toAccID);
@@ -358,6 +360,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   function _transferSubToSub(
+    int64 timestamp,
     uint64 fromSubID,
     uint64 toSubID,
     address fromAccID,
@@ -367,7 +370,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
-    _requireSubAccountPermission(fromSub, sig.signer, SubAccountPermTransfer);
+    _requireSignerOrSessionKeySubAccountPerm(fromSub, sig.signer, SubAccountPermTransfer, timestamp);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
     SubAccount storage toSub = _requireSubAccount(toSubID);
