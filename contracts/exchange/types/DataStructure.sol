@@ -100,7 +100,8 @@ enum Currency {
   NEAR, // 65
   W, // 66
   BCH, // 67
-  XPL // 68
+  XPL, // 68
+  APEX // 69
 }
 
 function currencyStart() pure returns (Currency) {
