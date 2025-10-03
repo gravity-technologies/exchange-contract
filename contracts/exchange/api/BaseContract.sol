@@ -362,7 +362,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.LA ||
       currency == Currency.NEAR ||
       currency == Currency.W ||
-      currency == Currency.XPL
+      currency == Currency.XPL ||
+      currency == Currency.APEX
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
