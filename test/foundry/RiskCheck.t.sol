@@ -33,7 +33,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -61,7 +69,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -89,7 +105,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -117,7 +141,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -163,7 +195,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -206,7 +246,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });
@@ -260,7 +308,15 @@ contract RiskCheckTest is Test, RiskCheck {
       postOnly: false,
       reduceOnly: false,
       legs: legs,
-      signature: Signature({signer: address(0), r: bytes32(0), s: bytes32(0), v: 0, expiration: 0, nonce: 0}),
+      signature: Signature({
+        signer: address(0),
+        r: bytes32(0),
+        s: bytes32(0),
+        v: 0,
+        expiration: 0,
+        nonce: 0,
+        chainId: 0
+      }),
       isLiquidation: false,
       isDerisk: true
     });

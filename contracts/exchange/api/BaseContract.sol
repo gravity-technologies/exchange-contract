@@ -37,19 +37,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   bytes32 private constant EIP712_DOMAIN_TYPEHASH =
     keccak256("EIP712Domain(string name,string version,uint256 chainId)");
-  /// @dev This value will be replaced with the chainID specified in hardhat.config.ts when compiling the contract
+
+  uint256 private constant CHAIN_ID_ETHEREUM = 1;
+  uint256 private constant CHAIN_ID_SEPOLIA = 11155111;
+
   /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
   /// @custom:oz-upgrades-unsafe-allow state-variable-assignment
-  bytes32 private immutable DOMAIN_HASH =
-    keccak256(
-      abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), block.chainid)
-    );
+  bytes32 private immutable DOMAIN_SEPARATOR_NATIVE = _computeDomainSeparator(block.chainid);
+
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  /// @custom:oz-upgrades-unsafe-allow state-variable-assignment
+  bytes32 private immutable DOMAIN_SEPARATOR_ETHEREUM = _computeDomainSeparator(CHAIN_ID_ETHEREUM);
+
+  /// @custom:oz-upgrades-unsafe-allow state-variable-immutable
+  /// @custom:oz-upgrades-unsafe-allow state-variable-assignment
+  bytes32 private immutable DOMAIN_SEPARATOR_SEPOLIA = _computeDomainSeparator(CHAIN_ID_SEPOLIA);
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
   int64 internal constant ONE_DAY_NANOS = 24 * 60 * 60 * 1e9;
 
   /// @dev The maximum signature expiry time for all signatures except TPSL orders
   int64 private constant THIRTY_DAY_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
+
+  bytes32 internal constant TRUE_BYTES32 = bytes32(uint256(1));
+  bytes32 internal constant FALSE_BYTES32 = bytes32(uint256(0));
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
@@ -173,9 +184,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal view {
-    bytes32 digest = keccak256(abi.encodePacked(abi.encodePacked("\x19\x01", DOMAIN_HASH), hash));
+    _requireSupportedEIP712ChainID(sig.chainId);
+    bytes32 digest = keccak256(
+      abi.encodePacked(abi.encodePacked("\x19\x01", _getDomainSeparatorHash(sig.chainId)), hash)
+    );
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
+  }
+
+  function _getDomainSeparatorHash(uint256 chainId) internal view returns (bytes32) {
+    if (_isNativeChainID(chainId)) {
+      return DOMAIN_SEPARATOR_NATIVE;
+    }
+    if (chainId == CHAIN_ID_ETHEREUM) {
+      return DOMAIN_SEPARATOR_ETHEREUM;
+    }
+    if (chainId == CHAIN_ID_SEPOLIA) {
+      return DOMAIN_SEPARATOR_SEPOLIA;
+    }
+    return _computeDomainSeparator(chainId);
+  }
+
+  function _computeDomainSeparator(uint256 chainId) internal pure returns (bytes32) {
+    return
+      keccak256(abi.encode(EIP712_DOMAIN_TYPEHASH, keccak256(bytes("GRVT Exchange")), keccak256(bytes("0")), chainId));
   }
 
   // Check if the signer has certain permissions on a subaccount
@@ -649,5 +681,28 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       total = total.add(balance.mul(assetPrice));
     }
     return total;
+  }
+
+  function _uintToConfig(uint256 v) internal pure returns (bytes32) {
+    return bytes32(v);
+  }
+
+  function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
+    return state.config2DValues[key][subKey].val == TRUE_BYTES32;
+  }
+
+  function _isNativeChainID(uint256 chainId) internal view returns (bool) {
+    return chainId == 0 || chainId == block.chainid;
+  }
+
+  function _isSupportedEIP712ChainID(uint256 chainId) internal view returns (bool) {
+    if (_isNativeChainID(chainId)) {
+      return true;
+    }
+    return _getBoolConfig2D(ConfigID.EIP712_CHAIN_ID, _uintToConfig(chainId));
+  }
+
+  function _requireSupportedEIP712ChainID(uint256 chainId) internal view {
+    require(_isSupportedEIP712ChainID(chainId), "unsupported EIP712 chain ID");
   }
 }

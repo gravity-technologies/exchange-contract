@@ -64,8 +64,6 @@ contract ConfigContract is IConfig, BaseContract {
   int32 private constant ONE_BEEP = 100;
   int32 private constant ONE_PERCENT = 10000;
   uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
-  bytes32 private constant TRUE_BYTES32 = bytes32(uint256(1));
-  bytes32 private constant FALSE_BYTES32 = bytes32(uint256(0));
   // The default fallback value which is a zero value array
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
@@ -108,10 +106,6 @@ contract ConfigContract is IConfig, BaseContract {
       c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
     }
     return (_configToCentibeep(c.val), c.isSet);
-  }
-
-  function _uintToConfig(uint64 v) internal pure returns (bytes32) {
-    return bytes32(uint256(v));
   }
 
   function _configToUint(bytes32 v) internal pure returns (uint64) {
@@ -174,10 +168,6 @@ contract ConfigContract is IConfig, BaseContract {
 
   function _getBoolConfig(ConfigID key) internal view returns (bool) {
     return state.config1DValues[key].val == TRUE_BYTES32;
-  }
-
-  function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
-    return state.config2DValues[key][subKey].val == TRUE_BYTES32;
   }
 
   function _currencyToConfig(Currency v) internal pure returns (bytes32) {
@@ -334,19 +324,28 @@ contract ConfigContract is IConfig, BaseContract {
     );
   }
 
-  function _initializeFeatureFlagsConfigSettingIfNeeded() internal {
+  function _initializeNewConfigSettingIfNeeded() internal {
     ConfigSetting storage setting = state.configSettings[ConfigID.FEATURE_FLAGS];
-    if (setting.typ != ConfigType.UNSPECIFIED) {
-      return;
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
     }
 
-    setting.typ = ConfigType.BOOL2D;
-    Rule[] storage rules = setting.rules;
-    // This config does not have timelock as it is controlled by GRVT
-    ConfigTimelockRule storage rule = rules.push();
-    rule.lockDuration = 0;
-    rule.deltaPositive = 0;
-    rule.deltaNegative = 0;
+    setting = state.configSettings[ConfigID.EIP712_CHAIN_ID];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
   }
 
   function _requireValidConfigSetting(ConfigID key, bytes32 subKey) internal view returns (ConfigSetting storage) {
@@ -424,7 +423,7 @@ contract ConfigContract is IConfig, BaseContract {
     _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
     // ------- End of Signature Verification -------
 
-    _initializeFeatureFlagsConfigSettingIfNeeded();
+    _initializeNewConfigSettingIfNeeded();
     ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
 
     int64 lockDuration = _getLockDuration(key, subKey, value);

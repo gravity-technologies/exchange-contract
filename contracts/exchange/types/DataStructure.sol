@@ -154,6 +154,7 @@ struct Signature {
   // Timestamp after which this signature expires. Use 0 for no expiration.
   int64 expiration;
   uint32 nonce;
+  uint256 chainId;
 }
 
 // sub_signer -> session_signer
@@ -415,7 +416,8 @@ enum ConfigID {
   // Bridging partner accounts can transfer from and withdraw to any address
   BRIDGING_PARTNER_ADDRESSES, // 17, no timelock on add, has timelock on remove
   // Feature flags
-  FEATURE_FLAGS // 18, no timelock
+  FEATURE_FLAGS, // 18, no timelock
+  EIP712_CHAIN_ID // 19, no timelock
 }
 
 struct ConfigValue {

@@ -83,6 +83,7 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   WITHDRAWAL_FEE: 16,
   BRIDGING_PARTNER_ADDRESSES: 17,
   FEATURE_FLAGS: 18,
+  EIP_712_CHAIN_ID: 19,
 };
 
 export const VaultStatusToEnum: { [status: string]: number } = {
