@@ -299,7 +299,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.BNB ||
       currency == Currency.AAVE ||
       currency == Currency.LTC ||
-      currency == Currency.BCH
+      currency == Currency.BCH ||
+      currency == Currency.ZEC
     ) {
       decimals = 9;
     } else if (
