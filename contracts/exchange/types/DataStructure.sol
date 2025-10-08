@@ -102,7 +102,10 @@ enum Currency {
   BCH, // 67
   XPL, // 68
   APEX, // 69
-  ZEC // 70
+  ZEC, // 70
+  BLESS, // 71
+  COAI, // 72
+  STRK // 73
 }
 
 function currencyStart() pure returns (Currency) {
