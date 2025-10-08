@@ -6,14 +6,12 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
 
-// The maximum number of maintenance margin tiers
-uint256 constant MAX_M_MARGIN_TIERS = 12;
 uint64 constant DERISK_MM_RATIO_VAULT = 2_000_000; // 2x
 uint64 constant DERISK_MM_RATIO_DEFAULT = 1_000_000; // 1x
 uint256 constant DERISK_RATIO_DECIMALS = 6;
 int64 constant DERISK_WINDOW_NANOS = 60 * 1_000_000_000; // 1 minute
 
-contract RiskCheck is BaseContract, MarginConfigContract {
+contract RiskCheck is BaseContract, MarginConfigContractGetter {
   using BIMath for BI;
 
   function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {

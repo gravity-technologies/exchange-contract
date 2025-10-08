@@ -4173,7 +4173,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -4230,7 +4231,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -4425,7 +4427,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "PENDING",
@@ -4486,7 +4489,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -7375,7 +7379,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -7432,7 +7437,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -7586,7 +7592,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -7643,7 +7650,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -9128,7 +9136,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -9185,7 +9194,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",

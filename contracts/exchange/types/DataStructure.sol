@@ -213,10 +213,12 @@ struct State {
   address[] bridgingPartners;
   // Currency Configs
   mapping(uint16 => CurrencyConfig) currencyConfigs;
+  // Per instrument funding configs (funding V2)
+  mapping(bytes32 => FundingInfo) fundingConfigs;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-  uint256[48] __gap;
+  uint256[47] __gap;
 }
 
 struct CurrencyConfig {
@@ -548,4 +550,30 @@ struct SettlementTick {
   int256 value;
   bool isFinal;
   Signature signature;
+}
+
+// Calldata
+struct AssetFundingInfo {
+  bytes32 asset;
+  int32 fundingRateHighCentiBeeps;
+  int32 fundingRateLowCentiBeeps;
+  int64 updateTime;
+  uint8 intervalHours;
+}
+
+// Persisted in storage, with one less field and an optimized layout than AssetFundingInfo
+// For optimal packing, order from largest to smallest types
+struct FundingInfo {
+  int64 updateTime;
+  int32 fundingRateHighCentiBeeps;
+  int32 fundingRateLowCentiBeeps;
+  uint8 intervalHours;
+}
+
+struct FundingRateEntry {
+  bytes32 asset;
+  int32 fundingRateCentiBeeps;
+  uint8 intervalHours;
+  int64 intervalStart;
+  int64 intervalEnd;
 }

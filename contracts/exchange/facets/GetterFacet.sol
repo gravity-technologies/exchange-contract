@@ -5,7 +5,7 @@ import "../api/MarginConfigContract.sol";
 import "../api/CurrencyContract.sol";
 import "../interfaces/IGetter.sol";
 
-contract GetterFacet is IGetter, CurrencyContract, MarginConfigContract, RiskCheck {
+contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, RiskCheck {
   using BIMath for BI;
 
   function getAccountResult(address accID) public view returns (AccountResult memory) {

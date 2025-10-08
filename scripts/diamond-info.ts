@@ -10,6 +10,21 @@ export const ExchangeFacetInfos = [
         interface: "IGetter"
     },
     {
+        file: "contracts/exchange/facets/CurrencyFacet.sol",
+        facet: "CurrencyFacet",
+        interface: "ICurrency"
+    },
+    {
+        file: "contracts/exchange/facets/FundingConfigFacet.sol",
+        facet: "FundingConfigFacet",
+        interface: "IFundingConfig"
+    },
+    {
+        file: "contracts/exchange/facets/MarginConfigSetters.sol",
+        facet: "MarginConfigSettersFacet",
+        interface: "IMarginConfig"
+    },
+    {
         file: "contracts/exchange/facets/VaultFacet.sol",
         facet: "VaultFacet",
         interface: "IVault"

@@ -4,7 +4,6 @@ import "./api/AccountContract.sol";
 import "./api/SubAccountContract.sol";
 import "./api/OracleContract.sol";
 import "./api/TransferContract.sol";
-import "./api/CurrencyContract.sol";
 import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {DepositProxy} from "../DepositProxy.sol";
@@ -15,7 +14,6 @@ import {IDiamondCut} from "./interfaces/IDiamondCut.sol";
 
 contract GRVTExchange is
   Initializable,
-  CurrencyContract,
   AccountContract,
   SubAccountContract,
   OracleContract,
