@@ -105,7 +105,10 @@ enum Currency {
   ZEC, // 70
   BLESS, // 71
   COAI, // 72
-  STRK // 73
+  STRK, // 73
+  SPX, // 74
+  LDO, // 75
+  APT // 76
 }
 
 function currencyStart() pure returns (Currency) {
