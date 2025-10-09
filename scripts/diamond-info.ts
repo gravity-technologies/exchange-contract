@@ -18,5 +18,10 @@ export const ExchangeFacetInfos = [
         file: "contracts/exchange/facets/WalletRecoveryFacet.sol",
         facet: "WalletRecoveryFacet",
         interface: "IWalletRecovery"
+    },
+    {
+        file: "contracts/exchange/facets/SimulationFacet.sol",
+        facet: "SimulationFacet",
+        interface: "ISimulation"
     }
 ]
