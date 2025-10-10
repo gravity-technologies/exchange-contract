@@ -17,8 +17,8 @@ contract OracleContract is IOracle, ConfigContract {
   /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
   int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
   uint8 private constant DEFAULT_FUNDING_INTERVAL_HOURS = 8;
-  int32 private constant DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS = 3_00_00_00;
-  int32 private constant DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS = -3_000_000;
+  int32 private constant DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS = 3_00_00_00; // 3%
+  int32 private constant DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS = -3_00_00_00; // -3%
 
   /// @dev set the system timestamp and last transactionID.
   /// Require timestamp and the transactionID to increase
@@ -62,7 +62,7 @@ contract OracleContract is IOracle, ConfigContract {
       Kind kind = assetGetKind(assetID);
 
       // Only spot, futures, and options are allowed to have mark prices
-      if (!(uint(kind) > 0 && uint(kind) < 6)) {
+      if (uint(kind) == 0 || uint(kind) >= 6) {
         revert WrongKind();
       }
 
@@ -73,7 +73,7 @@ contract OracleContract is IOracle, ConfigContract {
 
       // If instrument has expired, mark price should not be updated
       int64 expiry = assetGetExpiration(assetID);
-      if (!(expiry == 0 || expiry >= timestamp)) {
+      if (expiry != 0 && expiry < timestamp) {
         revert InvalidExpiry();
       }
 
@@ -94,6 +94,11 @@ contract OracleContract is IOracle, ConfigContract {
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
+
+    // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
+    if (sig.expiration < state.prices.fundingTime + ONE_MINUTE_NANOS) {
+      revert FundingTickTooSoon();
+    }
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
@@ -170,13 +175,15 @@ contract OracleContract is IOracle, ConfigContract {
       // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
       FundingInfo storage cfg = state.fundingConfigs[assetID];
       bool hasFundingConfig = cfg.intervalHours > 0;
-      uint8 intervalHours = hasFundingConfig ? cfg.intervalHours : DEFAULT_FUNDING_INTERVAL_HOURS;
-      int32 fundingRateHighCentiBeeps = hasFundingConfig ? cfg.fundingRateHighCentiBeeps : DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS;
-      int32 fundingRateLowCentiBeeps = hasFundingConfig ? cfg.fundingRateLowCentiBeeps : DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS;
+      int32 fundingRateHighCentiBeeps = hasFundingConfig
+        ? cfg.fundingRateHighCentiBeeps
+        : DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS;
+      int32 fundingRateLowCentiBeeps = hasFundingConfig
+        ? cfg.fundingRateLowCentiBeeps
+        : DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS;
 
-      int64 expectedDuration = int64(uint64(intervalHours)) * ONE_HOUR_NANOS;
+      int64 expectedDuration = int64(uint64(entry.intervalHours)) * ONE_HOUR_NANOS;
       int64 actualDuration = entry.intervalEnd - entry.intervalStart;
-
       // actualDuration can >= expectedDuration because of clusterTick mechanics
       if (actualDuration < expectedDuration) {
         revert IntervalDurationMismatch();
@@ -206,7 +213,7 @@ contract OracleContract is IOracle, ConfigContract {
       revert NotOracleSigner();
     }
 
-    if (!(sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp)) {
+    if (sig.expiration < timestamp - MAX_PRICE_TICK_SIG_EXPIRY || sig.expiration > timestamp) {
       revert PriceTickExpired();
     }
 
@@ -219,17 +226,12 @@ contract OracleContract is IOracle, ConfigContract {
   }
 
   function _verifyFundingTickSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
-    if (sig.expiration < state.prices.fundingTime + ONE_MINUTE_NANOS) {
-      revert FundingTickTooSoon();
-    }
-
     if (!_getBoolConfig2D(ConfigID.MARKET_DATA_ADDRESS, _addressToConfig(sig.signer))) {
       revert NotMarketDataSigner();
     }
 
-    if (!(sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp)) {
-      revert SignatureExpired();
+    if (sig.expiration < timestamp - MAX_PRICE_TICK_SIG_EXPIRY || sig.expiration > timestamp) {
+      revert InvalidSignatureExpiry();
     }
 
     // Prevent replay
