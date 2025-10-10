@@ -27,7 +27,7 @@ error PayloadAlreadyExecuted();
 error FundingHighConfigMissing();
 error FundingLowConfigMissing();
 error PriceTickExpired();
-error SignatureExpired();
+error InvalidSignatureExpiry();
 error NotKUQAsset();
 error EmptyMarginTiers();
 error TooManyMarginTiers();
