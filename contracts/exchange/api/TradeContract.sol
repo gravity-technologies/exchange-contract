@@ -71,7 +71,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     Trade calldata trade,
     MakerTradeMatch calldata makerMatch,
     OrderCalculationResult memory takerCalcResult
-  ) private returns (OrderCalculationResult memory makerCalcResult) {
+  ) private pure returns (OrderCalculationResult memory makerCalcResult) {
     makerCalcResult.matchedSizes = makerMatch.matchedSize;
     makerCalcResult.legSpotDelta = new BI[](makerMatch.makerOrder.legs.length);
 
@@ -223,7 +223,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private {
+  function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private view {
     if (!sub.isVault) {
       return;
     }

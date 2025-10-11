@@ -25,4 +25,17 @@ interface IOracle {
     PriceEntry[] calldata prices,
     Signature calldata sig
   ) external;
+
+  /// @dev Update the funding prices for perpetuals
+  ///
+  /// @param timestamp the timestamp of the price tick
+  /// @param txID the transaction ID of the price tick
+  /// @param entries the funding tick values
+  /// @param sig the signature of the price tick
+  function fundingTickV2(
+    int64 timestamp,
+    uint64 txID,
+    FundingRateEntry[] calldata entries,
+    Signature calldata sig
+  ) external;
 }

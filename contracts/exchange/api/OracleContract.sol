@@ -7,6 +7,7 @@ import "../types/DataStructure.sol";
 import "../util/Asset.sol";
 import "../util/BIMath.sol";
 import "../interfaces/IOracle.sol";
+import "../common/Error.sol";
 
 contract OracleContract is IOracle, ConfigContract {
   using BIMath for BI;
@@ -15,14 +16,21 @@ contract OracleContract is IOracle, ConfigContract {
 
   /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
   int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
+  uint8 private constant DEFAULT_FUNDING_INTERVAL_HOURS = 8;
+  int32 private constant DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS = 3_00_00_00; // 3%
+  int32 private constant DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS = -3_00_00_00; // -3%
 
   /// @dev set the system timestamp and last transactionID.
   /// Require timestamp and the transactionID to increase
   /// This is in contrast to _setSequence in BaseContract, where the transactionID to be in sequence without any gap
   /// This is because a mark price tick can be skipped if superceded before being used.
   function _setSequenceMarkPriceTick(int64 timestamp, uint64 txID) private {
-    require(timestamp >= state.timestamp, "invalid timestamp");
-    require(txID > state.lastTxID, "invalid txID");
+    if (timestamp < state.timestamp) {
+      revert InvalidTimestamp();
+    }
+    if (txID <= state.lastTxID) {
+      revert InvalidTxId();
+    }
     state.timestamp = timestamp;
     state.lastTxID = txID;
   }
@@ -54,14 +62,20 @@ contract OracleContract is IOracle, ConfigContract {
       Kind kind = assetGetKind(assetID);
 
       // Only spot, futures, and options are allowed to have mark prices
-      require(uint(kind) > 0 && uint(kind) < 6, "wrong kind");
+      if (uint(kind) == 0 || uint(kind) >= 6) {
+        revert WrongKind();
+      }
 
       // Non-Spot assets must be quoted in USD
-      require(kind == Kind.SPOT || assetGetQuote(assetID) == Currency.USD, "spot price must be quoted in USD");
+      if (kind != Kind.SPOT && assetGetQuote(assetID) != Currency.USD) {
+        revert SpotPriceNotUSD();
+      }
 
       // If instrument has expired, mark price should not be updated
       int64 expiry = assetGetExpiration(assetID);
-      require(expiry == 0 || expiry >= timestamp, "invalid expiry");
+      if (expiry != 0 && expiry < timestamp) {
+        revert InvalidExpiry();
+      }
 
       marks[assetID] = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
     }
@@ -81,6 +95,11 @@ contract OracleContract is IOracle, ConfigContract {
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
 
+    // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
+    if (sig.expiration < state.prices.fundingTime + ONE_MINUTE_NANOS) {
+      revert FundingTickTooSoon();
+    }
+
     // ---------- Signature Verification -----------
     bytes32 hash = hashOraclePrice(sig.expiration, prices);
     _verifyFundingTickSig(timestamp, hash, sig);
@@ -91,17 +110,25 @@ contract OracleContract is IOracle, ConfigContract {
     for (uint i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
       // Verify
-      require(assetGetKind(assetID) == Kind.PERPS && assetGetQuote(assetID) != Currency.USD, "wrong kind or quote");
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+        revert WrongKindOrQuote();
+      }
 
       // Funding rate must be within the configured range
       // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
       bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
-      require(highFound, "fundingHigh not found");
+      if (!highFound) {
+        revert FundingHighConfigMissing();
+      }
       (int64 fundingLow, bool lowFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_LOW, subKey);
-      require(lowFound, "fundingLow not found");
+      if (!lowFound) {
+        revert FundingLowConfigMissing();
+      }
       int64 newFunding = SafeCast.toInt64(prices[i].value);
-      require(newFunding >= fundingLow && newFunding <= fundingHigh, "funding index out of range");
+      if (newFunding < fundingLow || newFunding > fundingHigh) {
+        revert FundingIndexOutOfRange();
+      }
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
@@ -114,33 +141,103 @@ contract OracleContract is IOracle, ConfigContract {
     state.prices.fundingTime = sig.expiration;
   }
 
-  function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    require(_getBoolConfig2D(ConfigID.ORACLE_ADDRESS, _addressToConfig(sig.signer)), "signer is not oracle");
+  /// @dev Update the funding prices for perpetuals
+  ///
+  /// @param timestamp the timestamp of the price tick
+  /// @param txID the transaction ID of the price tick
+  /// @param entries the funding tick values
+  /// @param sig the signature of the price tick
+  function fundingTickV2(
+    int64 timestamp,
+    uint64 txID,
+    FundingRateEntry[] calldata entries,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
 
-    require(
-      sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp,
-      "price tick expired"
-    );
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashFundingTickV2(entries, sig.nonce, sig.expiration);
+    _verifyFundingTickSig(timestamp, hash, sig);
+    // ------- End of Signature Verification -------
+
+    // Validation
+    mapping(bytes32 => int64) storage fundings = state.prices.fundingIndex;
+    uint len = entries.length;
+    for (uint i; i < len; ++i) {
+      FundingRateEntry calldata entry = entries[i];
+      bytes32 assetID = entry.asset;
+      // Verify
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+        revert WrongKindOrQuote();
+      }
+
+      // Funding rate must be within the configured range
+      // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
+      FundingInfo storage cfg = state.fundingConfigs[assetID];
+      bool hasFundingConfig = cfg.intervalHours > 0;
+      int32 fundingRateHighCentiBeeps = hasFundingConfig
+        ? cfg.fundingRateHighCentiBeeps
+        : DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS;
+      int32 fundingRateLowCentiBeeps = hasFundingConfig
+        ? cfg.fundingRateLowCentiBeeps
+        : DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS;
+
+      int64 expectedDuration = int64(uint64(entry.intervalHours)) * ONE_HOUR_NANOS;
+      int64 actualDuration = entry.intervalEnd - entry.intervalStart;
+      // actualDuration can >= expectedDuration because of clusterTick mechanics
+      if (actualDuration < expectedDuration) {
+        revert IntervalDurationMismatch();
+      }
+      if (
+        entry.fundingRateCentiBeeps < fundingRateLowCentiBeeps ||
+        entry.fundingRateCentiBeeps > fundingRateHighCentiBeeps
+      ) {
+        revert FundingRateOutOfRange();
+      }
+
+      // Update
+      // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
+      BI memory markPrice = _requireAssetPriceBI(assetID);
+
+      // V2: Apply funding rate directly without 480 divisor
+      // Rate already represents the full interval amount (1h/2h/4h/8h)
+      BI memory fundingRatePct = BI(entry.fundingRateCentiBeeps, CENTIBEEP_DECIMALS);
+      BI memory fundingIndexChange = markPrice.mul(fundingRatePct);
+      fundings[assetID] += fundingIndexChange.toInt64(PRICE_DECIMALS);
+    }
+    state.prices.fundingTime = sig.expiration;
+  }
+
+  function _verifyPriceUpdateSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
+    if (!_getBoolConfig2D(ConfigID.ORACLE_ADDRESS, _addressToConfig(sig.signer))) {
+      revert NotOracleSigner();
+    }
+
+    if (sig.expiration < timestamp - MAX_PRICE_TICK_SIG_EXPIRY || sig.expiration > timestamp) {
+      revert PriceTickExpired();
+    }
 
     // Prevent replay
-    require(!state.replay.executed[hash], "replayed payload");
+    if (state.replay.executed[hash]) {
+      revert PayloadAlreadyExecuted();
+    }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
   }
 
   function _verifyFundingTickSig(int64 timestamp, bytes32 hash, Signature calldata sig) internal {
-    // IMPT: This is important to prevent funding ticks from coming in at quick succession to manipulate funding index
-    require(sig.expiration >= state.prices.fundingTime + ONE_MINUTE_NANOS, "funding reate less than 1 minute apart");
+    if (!_getBoolConfig2D(ConfigID.MARKET_DATA_ADDRESS, _addressToConfig(sig.signer))) {
+      revert NotMarketDataSigner();
+    }
 
-    require(_getBoolConfig2D(ConfigID.MARKET_DATA_ADDRESS, _addressToConfig(sig.signer)), "signer is not market data");
-
-    require(
-      sig.expiration >= timestamp - MAX_PRICE_TICK_SIG_EXPIRY && sig.expiration <= timestamp,
-      "signature expired"
-    );
+    if (sig.expiration < timestamp - MAX_PRICE_TICK_SIG_EXPIRY || sig.expiration > timestamp) {
+      revert InvalidSignatureExpiry();
+    }
 
     // Prevent replay
-    require(!state.replay.executed[hash], "replayed payload");
+    if (state.replay.executed[hash]) {
+      revert PayloadAlreadyExecuted();
+    }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
   }

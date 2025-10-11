@@ -39994,7 +39994,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -40051,7 +40052,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -41323,7 +41325,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -41380,7 +41383,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -42652,7 +42656,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -42709,7 +42714,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -43981,7 +43987,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -44038,7 +44045,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -45310,7 +45318,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -45367,7 +45376,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -46613,7 +46623,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -46670,7 +46681,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -47916,7 +47928,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -47973,7 +47986,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -48125,7 +48139,10 @@
                         },
                         "funding_rate": 500,
                         "mark_price": "60000000000000",
-                        "funding_rate_8_h_avg": 0
+                        "funding_rate_8_h_avg": 0,
+                        "funding_interval_hours": 0,
+                        "funding_interval_start": "0",
+                        "funding_interval_end": "0"
                      }
                   ],
                   "signature": {
@@ -48136,7 +48153,8 @@
                      "expiration": "10886520000000026",
                      "nonce": 1743646812,
                      "chain_id": "0"
-                  }
+                  },
+                  "version_payload": 0
                }
             },
             "tx_data": "0xcbec9f790000000000000000000000000000000000000000000000000026ad3b7570b01a000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000140000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e309e50f301e63a94c0ad4c60998c1ba0db778e2eed3fd8e6ae9109087d19cfa5b31996337df2448aa3a3fdcd396edd887465f80c86d9e914a04d8134bb3d3bd48000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000026ad3b7570b01a0000000000000000000000000000000000000000000000000000000067edf05c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000001f4",
@@ -49281,7 +49299,8 @@
                         "broker": "UNSPECIFIED",
                         "source": "UNSPECIFIED",
                         "is_ecn": false,
-                        "is_position_transfer": false
+                        "is_position_transfer": false,
+                        "allow_crossing": false
                      },
                      "state": {
                         "status": "UNSPECIFIED",
@@ -49338,7 +49357,8 @@
                               "broker": "UNSPECIFIED",
                               "source": "UNSPECIFIED",
                               "is_ecn": false,
-                              "is_position_transfer": false
+                              "is_position_transfer": false,
+                              "allow_crossing": false
                            },
                            "state": {
                               "status": "UNSPECIFIED",
@@ -49490,7 +49510,10 @@
                         },
                         "funding_rate": 500,
                         "mark_price": "60000000000000",
-                        "funding_rate_8_h_avg": 0
+                        "funding_rate_8_h_avg": 0,
+                        "funding_interval_hours": 0,
+                        "funding_interval_start": "0",
+                        "funding_interval_end": "0"
                      }
                   ],
                   "signature": {
@@ -49501,7 +49524,8 @@
                      "expiration": "10886520000000026",
                      "nonce": 149904757,
                      "chain_id": "0"
-                  }
+                  },
+                  "version_payload": 0
                }
             },
             "tx_data": "0xcbec9f790000000000000000000000000000000000000000000000000026ad3b7570b01a000000000000000000000000000000000000000000000000000000000000001a0000000000000000000000000000000000000000000000000000000000000140000000000000000000000000215ec976846b3c68daedf93ba35d725a0e2c98e309e50f301e63a94c0ad4c60998c1ba0db778e2eed3fd8e6ae9109087d19cfa5b31996337df2448aa3a3fdcd396edd887465f80c86d9e914a04d8134bb3d3bd48000000000000000000000000000000000000000000000000000000000000001b0000000000000000000000000000000000000000000000000026ad3b7570b01a0000000000000000000000000000000000000000000000000000000008ef5d7500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000001f4",

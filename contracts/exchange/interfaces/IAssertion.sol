@@ -250,4 +250,6 @@ interface IAssertion {
   ) external view;
 
   function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view;
+
+  function assertUpdateFundingInfo(AssetFundingInfo[] calldata expectedFundingInfos) external view;
 }

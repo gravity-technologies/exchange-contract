@@ -1,5 +1,6 @@
 pragma solidity ^0.8.20;
 
+import "./AssertionError.sol";
 import "./RiskCheck.sol";
 import "../types/PositionMap.sol";
 import "../types/DataStructure.sol";
@@ -10,21 +11,26 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   using BIMath for BI;
 
   function assertLastTxID(uint64 expectedLastTxID) external view {
-    require(state.lastTxID == expectedLastTxID, "ex lastTxID");
+    if (state.lastTxID != expectedLastTxID) {
+      revert AssertionLastTxIdMismatch();
+    }
   }
 
   // Assertions for Account Contract
   function assertCreateAccount(address accountID, address signer) external view {
     Account storage account = state.accounts[accountID];
-    require(
-      account.id == accountID &&
-        account.multiSigThreshold == 1 &&
-        account.adminCount == 1 &&
-        account.subAccounts.length == 0,
-      "ex createAcc"
-    );
+    if (
+      account.id != accountID ||
+      account.multiSigThreshold != 1 ||
+      account.adminCount != 1 ||
+      account.subAccounts.length != 0
+    ) {
+      revert AssertionCreateAccountMismatch();
+    }
 
-    require(account.signers[signer] == AccountPermAdmin, "ex signerNotAdmin");
+    if (account.signers[signer] != AccountPermAdmin) {
+      revert AssertionSignerNotAdmin();
+    }
   }
 
   function assertCreateAccountWithSubAccount(
@@ -36,71 +42,97 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   ) external view {
     // Verify account creation
     Account storage account = state.accounts[accountID];
-    require(
-      account.id == accountID &&
-        account.multiSigThreshold == 1 &&
-        account.adminCount == 1 &&
-        account.subAccounts.length == 1,
-      "ex createAccWithSub"
-    );
+    if (
+      account.id != accountID ||
+      account.multiSigThreshold != 1 ||
+      account.adminCount != 1 ||
+      account.subAccounts.length != 1
+    ) {
+      revert AssertionCreateAccountWithSubMismatch();
+    }
 
     // Verify signer permissions
-    require(account.signers[accountID] == AccountPermAdmin, "ex signerNotAdmin");
+    if (account.signers[accountID] != AccountPermAdmin) {
+      revert AssertionSignerNotAdmin();
+    }
 
     // Verify subaccount creation
     SubAccount storage sub = state.subAccounts[subAccountID];
-    require(
-      sub.id == subAccountID &&
-        sub.accountID == accountID &&
-        sub.quoteCurrency == quoteCurrency &&
-        sub.marginType == marginType &&
-        sub.lastAppliedFundingTimestamp == lastAppliedFundingTimestamp,
-      "ex createSubAcc"
-    );
+    if (
+      sub.id != subAccountID ||
+      sub.accountID != accountID ||
+      sub.quoteCurrency != quoteCurrency ||
+      sub.marginType != marginType ||
+      sub.lastAppliedFundingTimestamp != lastAppliedFundingTimestamp
+    ) {
+      revert AssertionCreateSubAccountMismatch();
+    }
 
     // Verify subaccount is linked to account
-    require(account.subAccounts[0] == subAccountID, "ex subAccountNotLinked");
+    if (account.subAccounts[0] != subAccountID) {
+      revert AssertionSubAccountNotLinked();
+    }
   }
 
   function assertSetAccountMultiSigThreshold(address accountID, uint8 expectedThreshold) external view {
-    require(state.accounts[accountID].multiSigThreshold == expectedThreshold, "ex multiSigThreshold");
+    if (state.accounts[accountID].multiSigThreshold != expectedThreshold) {
+      revert AssertionMultiSigThresholdMismatch();
+    }
   }
 
   function assertAddAccountSigner(
     address accountID,
     address signer,
     uint64 expectedPermissions,
-    uint adminCount
+    uint256 adminCount
   ) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.signers[signer] == expectedPermissions, "ex signerPermissions");
-    require(acc.adminCount == adminCount, "ex adminCount");
+    if (acc.signers[signer] != expectedPermissions) {
+      revert AssertionSignerPermissionsMismatch();
+    }
+
+    if (acc.adminCount != adminCount) {
+      revert AssertionAdminCountMismatch();
+    }
   }
 
-  function assertRemoveAccountSigner(address accountID, address signer, uint adminCount) external view {
+  function assertRemoveAccountSigner(address accountID, address signer, uint256 adminCount) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.signers[signer] == 0, "ex signerNotRemoved");
-    require(acc.adminCount == adminCount, "ex adminCount");
+    if (acc.signers[signer] != 0) {
+      revert AssertionSignerNotRemoved();
+    }
+
+    if (acc.adminCount != adminCount) {
+      revert AssertionAdminCountMismatch();
+    }
   }
 
   function assertAddWithdrawalAddress(address accountID, address withdrawalAddress) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.onboardedWithdrawalAddresses[withdrawalAddress] == true, "ex withdrawalAddrNotAdded");
+    if (!acc.onboardedWithdrawalAddresses[withdrawalAddress]) {
+      revert AssertionWithdrawalAddressNotAdded();
+    }
   }
 
   function assertRemoveWithdrawalAddress(address accountID, address withdrawalAddress) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.onboardedWithdrawalAddresses[withdrawalAddress] == false, "ex withdrawalAddrNotRemoved");
+    if (acc.onboardedWithdrawalAddresses[withdrawalAddress]) {
+      revert AssertionWithdrawalAddressNotRemoved();
+    }
   }
 
   function assertAddTransferAccount(address accountID, address transferAccountID) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.onboardedTransferAccounts[transferAccountID] == true, "ex transferAccNotAdded");
+    if (!acc.onboardedTransferAccounts[transferAccountID]) {
+      revert AssertionTransferAccountNotAdded();
+    }
   }
 
   function assertRemoveTransferAccount(address accountID, address transferAccountID) external view {
     Account storage acc = state.accounts[accountID];
-    require(acc.onboardedTransferAccounts[transferAccountID] == false, "ex transferAccNotRemoved");
+    if (acc.onboardedTransferAccounts[transferAccountID]) {
+      revert AssertionTransferAccountNotRemoved();
+    }
   }
 
   // Assertions for SubAccount Contract
@@ -112,54 +144,76 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     int64 lastAppliedFundingTimestamp
   ) external view {
     SubAccount storage sub = state.subAccounts[subAccountID];
-    require(
-      sub.id == subAccountID &&
-        sub.accountID == accountID &&
-        sub.quoteCurrency == quoteCurrency &&
-        sub.marginType == marginType &&
-        sub.lastAppliedFundingTimestamp == lastAppliedFundingTimestamp,
-      "ex createSubAcc"
-    );
+    if (
+      sub.id != subAccountID ||
+      sub.accountID != accountID ||
+      sub.quoteCurrency != quoteCurrency ||
+      sub.marginType != marginType ||
+      sub.lastAppliedFundingTimestamp != lastAppliedFundingTimestamp
+    ) {
+      revert AssertionCreateSubAccountMismatch();
+    }
+
     // Check if the subAccountID appears in account.subAccounts
     Account storage acc = state.accounts[accountID];
     bool found = false;
-    uint subsLen = acc.subAccounts.length;
-    for (uint i; i < subsLen; ++i) {
+    uint256 subsLen = acc.subAccounts.length;
+    for (uint256 i; i < subsLen; ++i) {
       if (acc.subAccounts[i] == subAccountID) {
         found = true;
         break;
       }
     }
-    require(found, "ex subIDNotInAccount");
+    if (!found) {
+      revert AssertionSubIdNotInAccount();
+    }
   }
 
   function assertSetSubAccountMarginType(uint64 subAccountID, MarginType expectedMarginType) external view {
-    require(state.subAccounts[subAccountID].marginType == expectedMarginType, "ex marginType");
+    if (state.subAccounts[subAccountID].marginType != expectedMarginType) {
+      revert AssertionMarginTypeMismatch();
+    }
   }
 
   function assertAddSubAccountSigner(uint64 subAccountID, address signer, uint64 expectedPermissions) external view {
-    require(state.subAccounts[subAccountID].signers[signer] == expectedPermissions, "ex subAccSignerPerm");
+    if (state.subAccounts[subAccountID].signers[signer] != expectedPermissions) {
+      revert AssertionSubAccountSignerPermissionMismatch();
+    }
   }
 
   function assertRemoveSubAccountSigner(uint64 subAccountID, address signer) external view {
-    require(state.subAccounts[subAccountID].signers[signer] == 0, "ex subAccSignerNotRemoved");
+    if (state.subAccounts[subAccountID].signers[signer] != 0) {
+      revert AssertionSubAccountSignerNotRemoved();
+    }
   }
 
   function assertAddSessionKey(address sessionKey, address expectedSigner, int64 expectedExpiry) external view {
     Session storage session = state.sessions[sessionKey];
-    require(session.subAccountSigner == expectedSigner && session.expiry == expectedExpiry, "ex sessionKey");
+    if (session.subAccountSigner != expectedSigner || session.expiry != expectedExpiry) {
+      revert AssertionSessionKeyMismatch();
+    }
   }
 
   function assertRemoveSessionKey(address sessionKey) external view {
-    require(state.sessions[sessionKey].expiry == 0, "ex sessionKeyNotRemoved");
-    require(state.sessions[sessionKey].subAccountSigner == address(0), "ex subAccountSigner");
+    if (state.sessions[sessionKey].expiry != 0) {
+      revert AssertionSessionKeyNotRemoved();
+    }
+
+    if (state.sessions[sessionKey].subAccountSigner != address(0)) {
+      revert AssertionSubAccountSignerMismatch();
+    }
   }
 
   // Assertions for Oracle Contract
   function assertMarkPriceTick(bytes32[] calldata assetIDs, uint64[] calldata expectedPrices) external view {
-    require(assetIDs.length == expectedPrices.length, "ex arrayLengthMismatch");
-    for (uint i; i < assetIDs.length; ++i) {
-      require(state.prices.mark[assetIDs[i]] == expectedPrices[i], "ex markPriceMismatch");
+    if (assetIDs.length != expectedPrices.length) {
+      revert AssertionArrayLengthMismatch();
+    }
+
+    for (uint256 i; i < assetIDs.length; ++i) {
+      if (state.prices.mark[assetIDs[i]] != expectedPrices[i]) {
+        revert AssertionMarkPriceMismatch();
+      }
     }
   }
 
@@ -168,10 +222,18 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     int64[] calldata expectedFundingIndexes,
     int64 expectedFundingTime
   ) external view {
-    require(assetIDs.length == expectedFundingIndexes.length, "ex arrayLengthMismatch");
-    require(state.prices.fundingTime == expectedFundingTime, "ex fundingTimeMismatch");
-    for (uint i; i < assetIDs.length; ++i) {
-      require(state.prices.fundingIndex[assetIDs[i]] == expectedFundingIndexes[i], "ex fundingIndexMismatch");
+    if (assetIDs.length != expectedFundingIndexes.length) {
+      revert AssertionArrayLengthMismatch();
+    }
+
+    if (state.prices.fundingTime != expectedFundingTime) {
+      revert AssertionFundingTimeMismatch();
+    }
+
+    for (uint256 i; i < assetIDs.length; ++i) {
+      if (state.prices.fundingIndex[assetIDs[i]] != expectedFundingIndexes[i]) {
+        revert AssertionFundingIndexMismatch();
+      }
     }
   }
 
@@ -179,7 +241,9 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertScheduleConfig(ConfigID key, bytes32 subKey, int64 expectedLockEndTime) external view {
     ConfigSetting storage setting = state.configSettings[key];
     ConfigSchedule storage sched = setting.schedules[subKey];
-    require(sched.lockEndTime == expectedLockEndTime, "ex lockEndTime");
+    if (sched.lockEndTime != expectedLockEndTime) {
+      revert AssertionLockEndTimeMismatch();
+    }
   }
 
   function assertSetConfig(
@@ -196,7 +260,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     InitializeConfigItem[] calldata items,
     address[] calldata bridgingPartners
   ) external view {
-    for (uint i; i < items.length; ++i) {
+    for (uint256 i; i < items.length; ++i) {
       InitializeConfigItem calldata item = items[i];
       _assertSetConfig(item.key, item.subKey, item.value);
     }
@@ -205,12 +269,19 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
   function _assertSetConfig(ConfigID key, bytes32 subKey, bytes32 expectedValue) internal view {
     ConfigSetting storage setting = state.configSettings[key];
-    require(setting.schedules[subKey].lockEndTime == 0, "ex scheduleNotDeleted");
+    if (setting.schedules[subKey].lockEndTime != 0) {
+      revert AssertionScheduleNotDeleted();
+    }
 
     bool is2DConfig = uint256(setting.typ) % 2 == 0;
     ConfigValue storage config = is2DConfig ? state.config2DValues[key][subKey] : state.config1DValues[key];
-    require(config.isSet, "ex configNotSet");
-    require(config.val == expectedValue, "ex configValueMismatch");
+    if (!config.isSet) {
+      revert AssertionConfigNotSet();
+    }
+
+    if (config.val != expectedValue) {
+      revert AssertionConfigValueMismatch();
+    }
   }
 
   // Assertions for Transfer Contract
@@ -222,9 +293,17 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     int64 expectedTotalSpotBalance
   ) external view {
     Account storage account = state.accounts[accountID];
-    require(state.replay.executed[txHash], "ex depositExcuted");
-    require(account.spotBalances[currency] == expectedBalance, "ex depositBalance");
-    require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
+    if (!state.replay.executed[txHash]) {
+      revert AssertionDepositNotExecuted();
+    }
+
+    if (account.spotBalances[currency] != expectedBalance) {
+      revert AssertionDepositBalanceMismatch();
+    }
+
+    if (state.totalSpotBalances[currency] != expectedTotalSpotBalance) {
+      revert AssertionTotalSpotBalanceMismatch();
+    }
   }
 
   function assertWithdraw(
@@ -239,12 +318,23 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     SubAccountAssertion[] calldata subAccounts
   ) external view {
     Account storage account = state.accounts[fromAccID];
-    require(account.spotBalances[currency] == expectedBalance, "ex withdrawBalance");
+    if (account.spotBalances[currency] != expectedBalance) {
+      revert AssertionWithdrawBalanceMismatch();
+    }
+
     SubAccount storage feeSubAcc = state.subAccounts[feeSubAccId];
-    require(feeSubAcc.spotBalances[currency] == expectedFeeBalance, "ex feeBalance");
+    if (feeSubAcc.spotBalances[currency] != expectedFeeBalance) {
+      revert AssertionFeeBalanceMismatch();
+    }
+
     SubAccount storage insuranceFundSubAcc = state.subAccounts[insuranceFundSubAccId];
-    require(insuranceFundSubAcc.spotBalances[currency] == expectedInsuranceFundBalance, "ex insuranceFundBalance");
-    require(state.totalSpotBalances[currency] == expectedTotalSpotBalance, "ex totalSpotBalance");
+    if (insuranceFundSubAcc.spotBalances[currency] != expectedInsuranceFundBalance) {
+      revert AssertionInsuranceFundBalanceMismatch();
+    }
+
+    if (state.totalSpotBalances[currency] != expectedTotalSpotBalance) {
+      revert AssertionTotalSpotBalanceMismatch();
+    }
 
     _assertSubAccounts(subAccounts);
   }
@@ -261,18 +351,26 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   ) external view {
     if (fromSubID == 0) {
       Account storage fromAcc = state.accounts[fromAccID];
-      require(fromAcc.spotBalances[currency] == expectedFromBalance, "ex fromBalance");
+      if (fromAcc.spotBalances[currency] != expectedFromBalance) {
+        revert AssertionFromAccountBalanceMismatch();
+      }
     } else {
       SubAccount storage fromSub = state.subAccounts[fromSubID];
-      require(fromSub.spotBalances[currency] == expectedFromBalance, "ex fromSubBalance");
+      if (fromSub.spotBalances[currency] != expectedFromBalance) {
+        revert AssertionFromSubAccountBalanceMismatch();
+      }
     }
 
     if (toSubID == 0) {
       Account storage toAcc = state.accounts[toAccID];
-      require(toAcc.spotBalances[currency] == expectedToBalance, "ex toBalance");
+      if (toAcc.spotBalances[currency] != expectedToBalance) {
+        revert AssertionToAccountBalanceMismatch();
+      }
     } else {
       SubAccount storage toSub = state.subAccounts[toSubID];
-      require(toSub.spotBalances[currency] == expectedToBalance, "ex toSubBalance");
+      if (toSub.spotBalances[currency] != expectedToBalance) {
+        revert AssertionToSubAccountBalanceMismatch();
+      }
     }
 
     _assertSubAccounts(subAccounts);
@@ -284,7 +382,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   }
 
   function _assertSubAccounts(SubAccountAssertion[] calldata exSubs) internal view {
-    for (uint i; i < exSubs.length; ++i) {
+    for (uint256 i; i < exSubs.length; ++i) {
       _assertSubAccount(exSubs[i]);
     }
   }
@@ -292,29 +390,35 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function _assertSubAccount(SubAccountAssertion calldata exSub) internal view {
     SubAccount storage sub = state.subAccounts[exSub.subAccountID];
 
-    require(sub.lastAppliedFundingTimestamp == exSub.fundingTimestamp, "exSub - fundingTimeMismatch");
-    require(sub.lastDeriskTimestamp == exSub.lastDeriskTimestamp, "exSub - deriskTimeMismatch");
+    if (sub.lastAppliedFundingTimestamp != exSub.fundingTimestamp) {
+      revert AssertionSubFundingTimestampMismatch();
+    }
+
+    if (sub.lastDeriskTimestamp != exSub.lastDeriskTimestamp) {
+      revert AssertionSubDeriskTimestampMismatch();
+    }
 
     _assertSubAccountPositions(sub, exSub.positions);
     _assertSubAccountSpots(sub, exSub.spots);
   }
 
   function _assertSubAccountPositions(SubAccount storage sub, PositionAssertion[] calldata positions) internal view {
-    for (uint j; j < positions.length; ++j) {
+    for (uint256 j; j < positions.length; ++j) {
       PositionAssertion calldata exPos = positions[j];
       PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
       Position storage pos = posmap.values[exPos.assetID];
-      require(
-        pos.balance == exPos.balance && pos.lastAppliedFundingIndex == exPos.fundingIndex,
-        "exSub - positionMismatch"
-      );
+      if (pos.balance != exPos.balance || pos.lastAppliedFundingIndex != exPos.fundingIndex) {
+        revert AssertionSubPositionMismatch();
+      }
     }
   }
 
   function _assertSubAccountSpots(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
-    for (uint j; j < spots.length; ++j) {
+    for (uint256 j; j < spots.length; ++j) {
       SpotAssertion calldata exSpot = spots[j];
-      require(sub.spotBalances[exSpot.currency] == exSpot.balance, "exSub - spotMismatch");
+      if (sub.spotBalances[exSpot.currency] != exSpot.balance) {
+        revert AssertionSubSpotBalanceMismatch();
+      }
     }
   }
 
@@ -349,88 +453,113 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     Account storage acc = _requireAccount(accID);
 
     // Assert account signer changes
-    require(acc.signers[newSigner] == mainAccountPermission, "ex newSignerNotAdded");
-    require(acc.signers[oldSigner] == 0, "ex oldSignerNotRemoved");
+    if (acc.signers[newSigner] != mainAccountPermission) {
+      revert AssertionNewSignerNotAdded();
+    }
+
+    if (acc.signers[oldSigner] != 0) {
+      revert AssertionOldSignerNotRemoved();
+    }
 
     // Assert subAccount signer changes
-    require(subAccountIDs.length == acc.subAccounts.length, "ex subAccountIDs length");
-    require(subAccountIDs.length == subAccountPermissions.length, "ex subAccount permissions");
+    if (subAccountIDs.length != acc.subAccounts.length) {
+      revert AssertionSubAccountIdsLengthMismatch();
+    }
+
+    if (subAccountIDs.length != subAccountPermissions.length) {
+      revert AssertionSubAccountPermissionsLengthMismatch();
+    }
 
     uint256 numSubAccs = acc.subAccounts.length;
     for (uint256 i = 0; i < numSubAccs; i++) {
       SubAccount storage subAcc = _requireSubAccount(subAccountIDs[i]);
-      require(subAcc.signers[newSigner] == subAccountPermissions[i], "ex newSigner subPermAdded");
-      require(subAcc.signers[oldSigner] == 0, "ex oldSigner subPermRemoved");
+      if (subAcc.signers[newSigner] != subAccountPermissions[i]) {
+        revert AssertionNewSignerSubPermissionsMismatch();
+      }
+
+      if (subAcc.signers[oldSigner] != 0) {
+        revert AssertionOldSignerSubPermissionsMismatch();
+      }
     }
 
     _assertSameAddresses(acc.recoveryAddresses[newSigner], recoveryAddresses);
 
-    require(acc.recoveryAddresses[oldSigner].length == 0, "ex oldSigner recovery addresses not cleared");
-    require(!addressExists(acc.recoveryAddresses[newSigner], newSigner), "ex newSigner still in recovery addresses");
+    if (acc.recoveryAddresses[oldSigner].length != 0) {
+      revert AssertionOldSignerRecoveryAddressesNotCleared();
+    }
+
+    if (addressExists(acc.recoveryAddresses[newSigner], newSigner)) {
+      revert AssertionNewSignerStillInRecovery();
+    }
   }
 
   function _assertSameAddresses(address[] storage arr1, address[] calldata arr2) internal view {
-    require(arr1.length == arr2.length, "ex array length mismatch");
+    if (arr1.length != arr2.length) {
+      revert AssertionArrayLengthMismatchStrict();
+    }
+
     for (uint256 i = 0; i < arr1.length; i++) {
-      require(addressExists(arr2, arr1[i]), "ex address not found in array1");
+      if (!addressExists(arr2, arr1[i])) {
+        revert AssertionAddressMissingFromFirstArray();
+      }
     }
     for (uint256 i = 0; i < arr2.length; i++) {
-      require(addressExists(arr1, arr2[i]), "ex address not found in array2");
+      if (!addressExists(arr1, arr2[i])) {
+        revert AssertionAddressMissingFromSecondArray();
+      }
     }
   }
 
   // Assertions for MarginConfig Contract
   function assertSetSimpleCrossMMTiers(bytes32 kud, MarginTierAssertion[] calldata expectedTiers) external view {
     ListMarginTiersBIStorage storage tiersStorage = _getListMarginTiersBIStorageRef(kud);
-    require(tiersStorage.tiers.length == expectedTiers.length, "ex setSimpleCrossMMLenMismatch");
-    require(state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == 0, "ex setSimpleCrossMMNotScheduled");
+    if (tiersStorage.tiers.length != expectedTiers.length) {
+      revert AssertionSimpleCrossTierLengthMismatch();
+    }
 
-    for (uint i; i < tiersStorage.tiers.length; ++i) {
+    if (state.simpleCrossMaintenanceMarginTimelockEndTime[kud] != 0) {
+      revert AssertionSimpleCrossTierScheduleActive();
+    }
+
+    for (uint256 i; i < tiersStorage.tiers.length; ++i) {
       MarginTierAssertion calldata exTier = expectedTiers[i];
 
       // Compare bracketStart
-      uint qDec = _getBalanceDecimal(assetGetQuote(kud));
-      require(
-        tiersStorage.tiers[i].bracketStart.toUint64(qDec) == exTier.bracketStart,
-        "ex setSimpleCrossMMTierBracket"
-      );
+      uint256 qDec = _getBalanceDecimal(assetGetQuote(kud));
+      if (tiersStorage.tiers[i].bracketStart.toUint64(qDec) != exTier.bracketStart) {
+        revert AssertionSimpleCrossTierBracketMismatch();
+      }
 
       // Compare rate
-      require(
-        tiersStorage.tiers[i].rate.toUint64(CENTIBEEP_DECIMALS) == uint64(exTier.rate),
-        "ex setSimpleCrossMMTierRate"
-      );
+      if (tiersStorage.tiers[i].rate.toUint64(CENTIBEEP_DECIMALS) != uint64(exTier.rate)) {
+        revert AssertionSimpleCrossTierRateMismatch();
+      }
     }
   }
 
   function assertScheduleSimpleCrossMMTiers(bytes32 kud, int64 expectedLockEndTime) external view {
-    require(
-      state.simpleCrossMaintenanceMarginTimelockEndTime[kud] == expectedLockEndTime,
-      "ex schedSimpleCrossMMTiers"
-    );
+    if (state.simpleCrossMaintenanceMarginTimelockEndTime[kud] != expectedLockEndTime) {
+      revert AssertionSimpleCrossScheduleMismatch();
+    }
   }
 
   // Helper functions for vault assertions
-  function _assertVaultLp(
-    SubAccount storage vaultSub,
-    VaultLpAssertion calldata lpAssertion,
-    string memory errorPrefix
-  ) internal view {
+  function _assertVaultLp(SubAccount storage vaultSub, VaultLpAssertion calldata lpAssertion) internal view {
     // Check LP token info
     VaultLpInfo storage lpInfo = vaultSub.vaultInfo.lpInfos[lpAssertion.accountID];
-    require(
-      lpInfo.lpTokenBalance == lpAssertion.lpTokenBalance &&
-        lpInfo.usdNotionalInvested == lpAssertion.usdNotionalInvested,
-      string.concat(errorPrefix, " - lpInfo")
-    );
+    if (
+      lpInfo.lpTokenBalance != lpAssertion.lpTokenBalance ||
+      lpInfo.usdNotionalInvested != lpAssertion.usdNotionalInvested
+    ) {
+      revert AssertionVaultLpInfoMismatch();
+    }
 
     // Check spot balance
-    for (uint j; j < lpAssertion.spots.length; ++j) {
+    for (uint256 j; j < lpAssertion.spots.length; ++j) {
       SpotAssertion calldata exSpot = lpAssertion.spots[j];
-      require(
-        state.accounts[lpAssertion.accountID].spotBalances[exSpot.currency] == exSpot.balance,
-        string.concat(errorPrefix, " - spotMismatch")
-      );
+      if (state.accounts[lpAssertion.accountID].spotBalances[exSpot.currency] != exSpot.balance) {
+        revert AssertionVaultLpSpotMismatch();
+      }
     }
   }
 
@@ -451,67 +580,81 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
 
     // Check vault properties
-    require(
-      vaultSub.id == vaultID &&
-        vaultSub.accountID == managerAccountID &&
-        vaultSub.quoteCurrency == quoteCurrency &&
-        vaultSub.marginType == marginType &&
-        vaultSub.lastAppliedFundingTimestamp == lastAppliedFundingTimestamp &&
-        vaultSub.isVault == true,
-      "ex vaultCreate"
-    );
+    if (
+      vaultSub.id != vaultID ||
+      vaultSub.accountID != managerAccountID ||
+      vaultSub.quoteCurrency != quoteCurrency ||
+      vaultSub.marginType != marginType ||
+      vaultSub.lastAppliedFundingTimestamp != lastAppliedFundingTimestamp ||
+      !vaultSub.isVault
+    ) {
+      revert AssertionVaultCreateMismatch();
+    }
 
     // Check vault info properties
     {
       VaultInfo storage vaultInfo = vaultSub.vaultInfo;
-      require(
-        vaultInfo.status == VaultStatus.ACTIVE &&
-          vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
-          vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
-          vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps &&
-          vaultInfo.lastFeeSettlementTimestamp == lastFeeSettlementTimestamp &&
-          vaultInfo.totalLpTokenSupply == totalLpTokenSupply &&
-          vaultInfo.isCrossExchange == vaultParamsAssertion.isCrossExchange &&
-          vaultInfo.managerAttestedSharePrice == vaultParamsAssertion.managerAttestedSharePrice,
-        "ex vaultCreateInfo"
-      );
+      if (
+        vaultInfo.status != VaultStatus.ACTIVE ||
+        vaultInfo.managementFeeCentiBeeps != vaultParamsAssertion.managementFeeCentiBeeps ||
+        vaultInfo.performanceFeeCentiBeeps != vaultParamsAssertion.performanceFeeCentiBeeps ||
+        vaultInfo.marketingFeeCentiBeeps != vaultParamsAssertion.marketingFeeCentiBeeps ||
+        vaultInfo.lastFeeSettlementTimestamp != lastFeeSettlementTimestamp ||
+        vaultInfo.totalLpTokenSupply != totalLpTokenSupply ||
+        vaultInfo.isCrossExchange != vaultParamsAssertion.isCrossExchange ||
+        vaultInfo.managerAttestedSharePrice != vaultParamsAssertion.managerAttestedSharePrice
+      ) {
+        revert AssertionVaultInfoMismatch();
+      }
     }
 
     // Check vault spot balance
-    require(
-      vaultSub.spotBalances[initialInvestmentCurrency] == vaultInitialSpotBalance,
-      "ex vaultCreateVaultSpotBalance"
-    );
+    if (vaultSub.spotBalances[initialInvestmentCurrency] != vaultInitialSpotBalance) {
+      revert AssertionVaultCreateSpotBalanceMismatch();
+    }
 
     // Check manager's LP state
-    _assertVaultLp(vaultSub, managerAssertion, "ex vaultCreateManager");
+    _assertVaultLp(vaultSub, managerAssertion);
 
     _assertSubAccount(vaultSubAssertion);
   }
 
   function assertVaultUpdate(uint64 vaultID, VaultUpdateParamsAssertion calldata vaultParamsAssertion) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
 
     VaultInfo storage vaultInfo = vaultSub.vaultInfo;
-    require(
-      vaultInfo.managementFeeCentiBeeps == vaultParamsAssertion.managementFeeCentiBeeps &&
-        vaultInfo.performanceFeeCentiBeeps == vaultParamsAssertion.performanceFeeCentiBeeps &&
-        vaultInfo.marketingFeeCentiBeeps == vaultParamsAssertion.marketingFeeCentiBeeps,
-      "ex vaultUpdate"
-    );
+    if (
+      vaultInfo.managementFeeCentiBeeps != vaultParamsAssertion.managementFeeCentiBeeps ||
+      vaultInfo.performanceFeeCentiBeeps != vaultParamsAssertion.performanceFeeCentiBeeps ||
+      vaultInfo.marketingFeeCentiBeeps != vaultParamsAssertion.marketingFeeCentiBeeps
+    ) {
+      revert AssertionVaultUpdateMismatch();
+    }
   }
 
   function assertVaultDelist(uint64 vaultID) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
-    require(vaultSub.vaultInfo.status == VaultStatus.DELISTED, "ex vaultDelist");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
+
+    if (vaultSub.vaultInfo.status != VaultStatus.DELISTED) {
+      revert AssertionVaultDelistMismatch();
+    }
   }
 
   function assertVaultClose(uint64 vaultID) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
-    require(vaultSub.vaultInfo.status == VaultStatus.CLOSED, "ex vaultClose");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
+
+    if (vaultSub.vaultInfo.status != VaultStatus.CLOSED) {
+      revert AssertionVaultCloseMismatch();
+    }
   }
 
   function assertVaultInvest(
@@ -523,16 +666,22 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     SubAccountAssertion calldata vaultSubAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
 
     // Check total LP token supply
-    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultInvestTotalSupply");
+    if (vaultSub.vaultInfo.totalLpTokenSupply != expectedTotalLpTokenSupply) {
+      revert AssertionVaultInvestTotalSupplyMismatch();
+    }
 
     // Check vault spot balance
-    require(vaultSub.spotBalances[investmentCurrency] == expectedVaultSpotBalance, "ex vaultInvestSpotBalance");
+    if (vaultSub.spotBalances[investmentCurrency] != expectedVaultSpotBalance) {
+      revert AssertionVaultInvestSpotBalanceMismatch();
+    }
 
     // Check investor's LP state
-    _assertVaultLp(vaultSub, investorAssertion, "ex vaultInvestInvestor");
+    _assertVaultLp(vaultSub, investorAssertion);
 
     _assertSubAccount(vaultSubAssertion);
   }
@@ -543,13 +692,17 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     VaultLpAssertion calldata lpAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
 
     // Check total LP token supply
-    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultBurnTotalSupply");
+    if (vaultSub.vaultInfo.totalLpTokenSupply != expectedTotalLpTokenSupply) {
+      revert AssertionVaultBurnTotalSupplyMismatch();
+    }
 
     // Check LP state
-    _assertVaultLp(vaultSub, lpAssertion, "ex vaultBurn");
+    _assertVaultLp(vaultSub, lpAssertion);
   }
 
   function assertVaultRedeem(
@@ -562,20 +715,26 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     VaultLpAssertion calldata feeAccountAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
 
     // Check total LP token supply
-    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultRedeemTotalSupply");
+    if (vaultSub.vaultInfo.totalLpTokenSupply != expectedTotalLpTokenSupply) {
+      revert AssertionVaultRedeemTotalSupplyMismatch();
+    }
 
     // Check vault spot balance
-    require(vaultSub.spotBalances[currencyRedeemed] == expectedVaultSpotBalance, "ex vaultRedeemVaultSpotBalance");
+    if (vaultSub.spotBalances[currencyRedeemed] != expectedVaultSpotBalance) {
+      revert AssertionVaultRedeemSpotBalanceMismatch();
+    }
 
     // Check all LP states
-    _assertVaultLp(vaultSub, redeemingLpAssertion, "ex vaultRedeemRedeeming");
-    _assertVaultLp(vaultSub, managerAssertion, "ex vaultRedeemManager");
+    _assertVaultLp(vaultSub, redeemingLpAssertion);
+    _assertVaultLp(vaultSub, managerAssertion);
 
     if (feeAccountAssertion.accountID != address(0)) {
-      _assertVaultLp(vaultSub, feeAccountAssertion, "ex vaultRedeemFeeAccount");
+      _assertVaultLp(vaultSub, feeAccountAssertion);
     }
   }
 
@@ -587,19 +746,25 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     VaultLpAssertion calldata feeAccountAssertion
   ) external view {
     SubAccount storage vaultSub = state.subAccounts[vaultID];
-    require(vaultSub.isVault, "ex notVault");
+    if (!vaultSub.isVault) {
+      revert AssertionNotVault();
+    }
 
     // Check last fee settlement timestamp
-    require(vaultSub.vaultInfo.lastFeeSettlementTimestamp == expectedLastFeeSettlementTimestamp, "ex vaultFeeTick");
+    if (vaultSub.vaultInfo.lastFeeSettlementTimestamp != expectedLastFeeSettlementTimestamp) {
+      revert AssertionVaultFeeTickTimestampMismatch();
+    }
 
     // Check total LP token supply
-    require(vaultSub.vaultInfo.totalLpTokenSupply == expectedTotalLpTokenSupply, "ex vaultFeeTickTotalSupply");
+    if (vaultSub.vaultInfo.totalLpTokenSupply != expectedTotalLpTokenSupply) {
+      revert AssertionVaultFeeTickTotalSupplyMismatch();
+    }
 
     // Check LP states
-    _assertVaultLp(vaultSub, managerAssertion, "ex vaultFeeTickManager");
+    _assertVaultLp(vaultSub, managerAssertion);
 
     if (feeAccountAssertion.accountID != address(0)) {
-      _assertVaultLp(vaultSub, feeAccountAssertion, "ex vaultFeeTickFeeAccount");
+      _assertVaultLp(vaultSub, feeAccountAssertion);
     }
   }
 
@@ -607,21 +772,37 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint64 subAccountID,
     uint32 expectedDeriskToMaintenanceMarginRatio
   ) external view {
-    require(
-      state.subAccounts[subAccountID].deriskToMaintenanceMarginRatio == expectedDeriskToMaintenanceMarginRatio,
-      "ex setDeriskRatio"
-    );
+    if (state.subAccounts[subAccountID].deriskToMaintenanceMarginRatio != expectedDeriskToMaintenanceMarginRatio) {
+      revert AssertionDeriskRatioMismatch();
+    }
   }
 
   function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view {
     CurrencyConfig storage config = state.currencyConfigs[id];
-    require(config.id == id && config.balanceDecimals == balanceDecimals, "ex addCurrency");
+    if (config.id != id || config.balanceDecimals != balanceDecimals) {
+      revert AssertionCurrencyConfigMismatch();
+    }
   }
 
   function assertVaultCrossExchangeUpdate(uint64 vaultID, uint64 expectedManagerAttestedSharePrice) external view {
-    require(
-      state.subAccounts[vaultID].vaultInfo.managerAttestedSharePrice == expectedManagerAttestedSharePrice,
-      "ex vaultCrossExchangeUpdate"
-    );
+    if (state.subAccounts[vaultID].vaultInfo.managerAttestedSharePrice != expectedManagerAttestedSharePrice) {
+      revert AssertionVaultCrossExchangeUpdateMismatch();
+    }
+  }
+
+  function assertUpdateFundingInfo(AssetFundingInfo[] calldata expectedFundingInfos) external view {
+    mapping(bytes32 => FundingInfo) storage actualConfigs = state.fundingConfigs;
+    for (uint256 i; i < expectedFundingInfos.length; ++i) {
+      AssetFundingInfo calldata exp = expectedFundingInfos[i];
+      FundingInfo storage act = actualConfigs[exp.asset];
+      if (
+        act.updateTime != exp.updateTime ||
+        act.fundingRateHighCentiBeeps != exp.fundingRateHighCentiBeeps ||
+        act.fundingRateLowCentiBeeps != exp.fundingRateLowCentiBeeps ||
+        act.intervalHours != exp.intervalHours
+      ) {
+        revert AssertionFundingInfoMismatch();
+      }
+    }
   }
 }

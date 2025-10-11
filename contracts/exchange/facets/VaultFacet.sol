@@ -242,7 +242,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     SubAccount storage vaultSub,
     Currency currency,
     uint64 numTokens
-  ) internal returns (uint64, uint64) {
+  ) internal view returns (uint64, uint64) {
     BI memory numTokensBI = BIMath.fromUint64(numTokens, _getBalanceDecimal(currency));
 
     uint64 lpDec = _getLpTokenDecimal();
@@ -361,7 +361,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     _doTransferSubToMain(vaultSub, account, tokenCurrency, redeemedInQuoteAfterFee);
   }
 
-  function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal returns (uint64) {
+  function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal view returns (uint64) {
     BI memory vaultEquityInUsd = _getVaultTotalEquityInUsdBI(vaultSub);
 
     uint64 lpDec = _getLpTokenDecimal();
@@ -419,7 +419,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
   function _calculateCostOfLpTokenBurntInUsd(
     VaultLpInfo storage lpInfo,
     uint64 lpTokenToBurn
-  ) internal returns (uint64 costOfLpTokenBurntInUsd) {
+  ) internal view returns (uint64) {
     uint64 lpDec = _getLpTokenDecimal();
     uint64 usdDec = _getBalanceDecimal(Currency.USD);
     BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
@@ -596,7 +596,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       (newMarketingFeeCentiBeeps != vaultInfo.marketingFeeCentiBeeps);
   }
 
-  function _getLpTokenDecimal() internal view returns (uint64) {
+  function _getLpTokenDecimal() internal pure returns (uint64) {
     // lp token has the same decimal as USD
     return _getBalanceDecimal(Currency.USD);
   }

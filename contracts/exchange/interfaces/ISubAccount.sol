@@ -21,21 +21,6 @@ interface ISubAccount {
     Signature calldata sig
   ) external;
 
-  /// @notice Change the margin type of a subaccount
-  ///
-  /// @param timestamp The timestamp of the transaction
-  /// @param txID The transaction ID
-  /// @param subAccID The subaccount ID
-  /// @param marginType The new margin type
-  /// @param sig The signature of the acting user
-  function setSubAccountMarginType(
-    int64 timestamp,
-    uint64 txID,
-    uint64 subAccID,
-    MarginType marginType,
-    Signature calldata sig
-  ) external;
-
   /// @notice Add a signer to a subaccount. This signer will be able to
   /// perform actions like Deposit, Withdrawal, Transfer, Trade etc. on the account, depending on the permissions.
   ///

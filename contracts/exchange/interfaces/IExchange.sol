@@ -12,23 +12,25 @@ import "../interfaces/IWalletRecovery.sol";
 import "../interfaces/IAssertion.sol";
 import "../interfaces/IGetter.sol";
 import "../interfaces/ICurrency.sol";
+import "../interfaces/IFundingConfig.sol";
 
 import "../types/DataStructure.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 
 interface IGRVTExchange is
   IAccount,
-  ISubAccount,
+  IAssertion,
   IConfig,
+  ICurrency,
+  IFundingConfig,
+  IGetter,
   IMarginConfig,
   IOracle,
+  ISubAccount,
   ITrade,
   ITransfer,
   IVault,
-  IWalletRecovery,
-  IAssertion,
-  IGetter,
-  ICurrency
+  IWalletRecovery
 {
   function getLastTxID() external view returns (uint64);
 

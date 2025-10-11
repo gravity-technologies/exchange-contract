@@ -297,7 +297,7 @@ contract ConfigContract is IConfig, BaseContract {
     config.val = value;
   }
 
-  function _validateBridgingPartnerChange(address partnerAddress) internal {
+  function _validateBridgingPartnerChange(address partnerAddress) internal view {
     Account storage acc = state.accounts[partnerAddress];
     if (acc.id == address(0)) {
       // setting acc to a non-existent account is allowed because the account
@@ -309,7 +309,7 @@ contract ConfigContract is IConfig, BaseContract {
     require(partnerAccount.subAccounts.length == 0, "partner account has subaccounts");
   }
 
-  function _validateInternalSubAccountChange(uint64 newSubAccountId) internal {
+  function _validateInternalSubAccountChange(uint64 newSubAccountId) internal view {
     SubAccount storage newSubAcc = _requireSubAccount(newSubAccountId);
     if (_isInternalAccount(newSubAcc.accountID)) {
       // if the new subaccount is already under an internal account
@@ -497,7 +497,7 @@ contract ConfigContract is IConfig, BaseContract {
       return 0;
     }
     if (typ == ConfigType.ADDRESS2D) {
-      (address oldVal, bool isSet) = _getAddressConfig2D(key, subKey);
+      (, bool isSet) = _getAddressConfig2D(key, subKey);
       if (isSet) return rules[0].lockDuration;
       return 0;
     }
@@ -628,8 +628,6 @@ contract ConfigContract is IConfig, BaseContract {
     rule.lockDuration = int64(2 * ONE_WEEK_NANOS);
     rule.deltaPositive = 0;
     rule.deltaNegative = 0;
-
-    bytes32 addr;
 
     ///////////////////////////////////////////////////////////////////
     /// ADMIN addresses
