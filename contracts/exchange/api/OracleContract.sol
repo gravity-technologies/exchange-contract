@@ -17,8 +17,8 @@ contract OracleContract is IOracle, ConfigContract {
   /// @dev The maximum signature expiry time for price ticks. Any signature with a longer expiry time will be rejected
   int64 private constant MAX_PRICE_TICK_SIG_EXPIRY = ONE_MINUTE_NANOS;
   uint8 private constant DEFAULT_FUNDING_INTERVAL_HOURS = 8;
-  int32 private constant DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS = 3_00_00_00; // 3%
-  int32 private constant DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS = -3_00_00_00; // -3%
+  int32 private constant DEFAULT_FUNDING_RATE_HIGH_CENTIBEEPS = 3_00_00; // 3%
+  int32 private constant DEFAULT_FUNDING_RATE_LOW_CENTIBEEPS = -3_00_00; // -3%
 
   /// @dev set the system timestamp and last transactionID.
   /// Require timestamp and the transactionID to increase
