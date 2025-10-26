@@ -33,12 +33,9 @@ describe("API - TestEngine", () => {
 		await network.provider.send("evm_revert", [testSnapshotId]);
 	});
 
-	const testFileFilters = [
-		"TestFundingRateV2_BasicValidation.json",
-		"TestFundingRateV2_NoSpacingCheck.json",
-	];
+	const testFileFilters: string[] = [];
 	const testFiles = getTestFixtures(TEST_FIXTURES_DIR).filter((name) =>
-		testFileFilters.includes(name),
+		testFileFilters.length === 0 ? true : testFileFilters.includes(name),
 	);
 	const testNamesFilter: string[] = [];
 
