@@ -441,6 +441,10 @@ contract ConfigContract is IConfig, BaseContract {
     _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
   }
 
+  function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
+  }
+
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
   /// Expect the timelocks duration should be in increasing order of delta change and timelock duration
   function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) private view returns (int64) {

@@ -8,7 +8,8 @@ import "../types/DataStructure.sol";
 import "../interfaces/ISubAccount.sol";
 
 contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, FundingAndSettlement {
-  int64 private constant _MAX_SESSION_DURATION_NANO = 37 * 24 * 60 * 60 * 1e9; // 31 days
+  int64 private constant _DURATION_37_DAYS_NANO = 37 * 24 * 60 * 60 * 1e9; // 37 days
+  int64 private constant _DURATION_150_DAYS_NANO = 150 * 24 * 60 * 60 * 1e9; // 150 days
 
   // DeriskToMaintenanceMarginRatio constants
   uint32 private constant DERISK_MM_RATIO_MIN = 1_000_000; // 1x
@@ -175,7 +176,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
 
     require(keyExpiry > timestamp, "invalid expiry");
     // Cap the expiry to timestamp + maxSessionDurationInSec
-    int64 cappedExpiry = _min(keyExpiry, timestamp + _MAX_SESSION_DURATION_NANO);
+    int64 cappedExpiry = _min(keyExpiry, timestamp + _getMaxSessionDurationNano());
 
     // ---------- Signature Verification -----------
     _preventReplay(hashAddSessionKey(sessionKey, keyExpiry), sig);
@@ -184,6 +185,13 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     require(state.sessions[sessionKey].expiry == 0, "session key already exists");
 
     state.sessions[sessionKey] = Session(sig.signer, cappedExpiry);
+  }
+
+  function _getMaxSessionDurationNano() internal view returns (int64) {
+    if (_isFeatureFlagEnabled(FeatureFlagID.EXTEND_MAX_SESSION_DURATION_TO_150_DAYS)) {
+      return _DURATION_150_DAYS_NANO;
+    }
+    return _DURATION_37_DAYS_NANO;
   }
 
   /// @notice Removing signature verification only makes session keys safer.

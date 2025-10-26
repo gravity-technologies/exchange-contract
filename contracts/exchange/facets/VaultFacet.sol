@@ -643,7 +643,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
 
     BI memory vaultEquityUSDBI = _getVaultTotalEquityInUsdBI(vaultSub);
 
-    if (_getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(FeatureFlagID.VAULT_LP_SHARE_PRICE_9_DECIMALS))) {
+    if (_isFeatureFlagEnabled(FeatureFlagID.VAULT_LP_SHARE_PRICE_9_DECIMALS)) {
       vaultEquityUSDBI = vaultEquityUSDBI.scale(PRICE_DECIMALS);
     }
 
