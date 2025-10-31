@@ -356,7 +356,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     fromSub.spotBalances[currency] -= numTokens;
     toAcc.spotBalances[currency] += numTokens;
 
-    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
+    require(isSubAccountValueNonNegative(fromSub), "subaccount is below maintenance margin");
   }
 
   function _transferSubToSub(
@@ -385,7 +385,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    require(isAboveMaintenanceMargin(fromSub), "subaccount is below maintenance margin");
+    require(isSubAccountValueNonNegative(fromSub), "subaccount is below maintenance margin");
     toSub.spotBalances[currency] += numTokens;
   }
 }
