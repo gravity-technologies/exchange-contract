@@ -155,6 +155,10 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
   }
 
+  function isSubAccountValueNonNegative(SubAccount storage subAccount) internal view returns (bool) {
+    return !_getSubAccountValueInQuote(subAccount).isNegative();
+  }
+
   function _getMaintenanceMargin(SubAccount storage subAccount) internal view returns (uint64) {
     BI memory mmBI = _getSimpleCrossMMUsd(subAccount);
     BI memory settleIndexPrice = _getSpotPriceBI(subAccount.quoteCurrency);
