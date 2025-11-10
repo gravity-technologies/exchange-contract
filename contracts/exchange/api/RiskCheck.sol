@@ -132,7 +132,11 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
       int64 curSize = _getPositionCollection(sub, assetGetKind(leg.assetID)).values[leg.assetID].balance;
       int64 newSize = curSize + (leg.isBuyingAsset ? int64(matchedSizes[i]) : -int64(matchedSizes[i]));
 
-      if (curSize == 0 || (curSize > 0 ? (newSize < 0 || newSize >= curSize) : (newSize > 0 || newSize <= curSize))) {
+      // Compare absolute sizes only
+      int64 absCurSize = curSize < 0 ? -curSize : curSize;
+      int64 absNewSize = newSize < 0 ? -newSize : newSize;
+
+      if (absNewSize >= absCurSize) {
         return false;
       }
     }
