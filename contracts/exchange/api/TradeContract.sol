@@ -217,9 +217,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     _executeOrder(timestamp, sub, order, calcResult, totalFee);
 
-    // Post-trade Maintenance Margin check for non-liquidation orders.
+    // Post-trade non-negative value check for non-liquidation orders.
     if (!order.isLiquidation) {
-      require(isAboveMaintenanceMargin(sub), "sub below MM");
+      require(isSubAccountValueNonNegative(sub), "sub value is negative");
     }
   }
 
