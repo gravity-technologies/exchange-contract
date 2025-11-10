@@ -109,7 +109,9 @@ enum Currency {
   SPX, // 74
   LDO, // 75
   APT, // 76
-  MON // 77
+  MON, // 77
+  FIL, // 78
+  ICP // 79
 }
 
 function currencyStart() pure returns (Currency) {
