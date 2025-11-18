@@ -16,7 +16,6 @@ import {
   FacetCutAction,
 } from "./utils"
 
-
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import { Interface } from "ethers/lib/utils"
 
@@ -64,12 +63,14 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     const onChainFacetInfo = await getOnChainFacetInfo(hre, exchangeProxy, l2Provider)
     const localFacetInfo = await getLocalFacetInfo(hre)
 
-    const { add: addCommands, replace: replaceCommands, remove: removeCommands, facetsToDeploy } = generateDiamondCutDataFromDiff(onChainFacetInfo, localFacetInfo)
+    const {
+      add: addCommands,
+      replace: replaceCommands,
+      remove: removeCommands,
+      facetsToDeploy,
+    } = generateDiamondCutDataFromDiff(onChainFacetInfo, localFacetInfo)
 
-    const artifactsToDeploy = [
-      "GRVTExchange",
-      ...facetsToDeploy
-    ]
+    const artifactsToDeploy = ["GRVTExchange", ...facetsToDeploy]
 
     console.log("Diamond cut data:")
     console.log("Add:", addCommands)
@@ -77,7 +78,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     console.log("Remove:", removeCommands)
     console.log("Artifacts to deploy:", artifactsToDeploy)
 
-    const deployedContracts = new Map<string, string>();
+    const deployedContracts = new Map<string, string>()
 
     for (const artifactName of artifactsToDeploy) {
       const result = await deployFromL1NoFactoryDepsNoConstructor(
@@ -89,18 +90,18 @@ task("deploy-l2-new-target", "Deploy new target on L2")
         l2Deployer,
         artifactName,
         salt
-      );
+      )
 
-      deployedContracts.set(artifactName, result.address);
+      deployedContracts.set(artifactName, result.address)
     }
 
-    const diamondCut = [];
+    const diamondCut = []
     for (const facet of Object.keys(addCommands)) {
       const address = deployedContracts.get(facet)!
       diamondCut.push({
         facetAddress: address,
         action: FacetCutAction.Add,
-        functionSelectors: addCommands[facet]
+        functionSelectors: addCommands[facet],
       })
     }
 
@@ -109,7 +110,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
       diamondCut.push({
         facetAddress: address,
         action: FacetCutAction.Replace,
-        functionSelectors: replaceCommands[facet]
+        functionSelectors: replaceCommands[facet],
       })
     }
 
@@ -117,7 +118,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
       diamondCut.push({
         facetAddress: ethers.constants.AddressZero,
         action: FacetCutAction.Remove,
-        functionSelectors: removeCommands
+        functionSelectors: removeCommands,
       })
     }
 
@@ -165,11 +166,8 @@ task("deploy-l2-new-target", "Deploy new target on L2")
       salt: salt, // use the same salt for both create 2 and governance operation
     }
 
-    const { scheduleTxReceipt: proxyGovScheduleTxReceipt, executeTxReceipt: proxyGovExecuteTxReceipt } = await scheduleAndExecuteGovernanceOp(
-      proxyGovernance,
-      l1GovernanceAdmin,
-      proxyGovOperation
-    )
+    const { scheduleTxReceipt: proxyGovScheduleTxReceipt, executeTxReceipt: proxyGovExecuteTxReceipt } =
+      await scheduleAndExecuteGovernanceOp(proxyGovernance, l1GovernanceAdmin, proxyGovOperation)
 
     console.log("Proxy governance operation schedule txhash: ", proxyGovScheduleTxReceipt.transactionHash)
     console.log("Proxy governance operation schedule status: ", proxyGovScheduleTxReceipt.status)
@@ -195,7 +193,7 @@ task("deploy-l2-new-target", "Deploy new target on L2")
         exchangeContractAsDiamondCut.interface.encodeFunctionData("diamondCut", [
           diamondCut,
           ethers.constants.AddressZero,
-          "0x"
+          "0x",
         ]),
         ethers.constants.AddressZero,
         gasPrice.mul(10000), // use high gas price for L2 transaction to ensure the transaction is included
@@ -210,11 +208,8 @@ task("deploy-l2-new-target", "Deploy new target on L2")
       salt: salt, // use the same salt for both create 2 and governance operation
     }
 
-    const { scheduleTxReceipt: nonProxyGovScheduleTxReceipt, executeTxReceipt: nonProxyGovExecuteTxReceipt } = await scheduleAndExecuteGovernanceOp(
-      nonProxyGovernance,
-      l1NonProxyGovernanceAdmin,
-      nonProxyGovOperation
-    )
+    const { scheduleTxReceipt: nonProxyGovScheduleTxReceipt, executeTxReceipt: nonProxyGovExecuteTxReceipt } =
+      await scheduleAndExecuteGovernanceOp(nonProxyGovernance, l1NonProxyGovernanceAdmin, nonProxyGovOperation)
 
     console.log("Non-proxy governance operation schedule txhash: ", nonProxyGovScheduleTxReceipt.transactionHash)
     console.log("Non-proxy governance operation schedule status: ", nonProxyGovScheduleTxReceipt.status)
@@ -223,5 +218,4 @@ task("deploy-l2-new-target", "Deploy new target on L2")
     console.log("Non-proxy governance operation execution status: ", nonProxyGovExecuteTxReceipt.status)
 
     console.log("Non-proxy governance calldata: ", await getGovernanceCalldata(nonProxyGovOperation, l1Provider))
-
   })

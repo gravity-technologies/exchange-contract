@@ -48,7 +48,7 @@ export enum Currency {
   PENDLE,
   UXLINK,
   KAITO,
-  IP
+  IP,
 }
 
 export enum Instrument {

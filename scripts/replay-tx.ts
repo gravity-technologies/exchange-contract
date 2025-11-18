@@ -20,18 +20,18 @@ async function createOverrideJson(hre: HardhatRuntimeEnvironment, artifactName: 
   return {
     abi: artifact.abi,
     bytecode: {
-      object: artifact.bytecode.replace('0x', ''),
+      object: artifact.bytecode.replace("0x", ""),
     },
     methodIdentifiers: {},
     storageLayout: {
       storage: [],
-      types: {}
+      types: {},
     },
     userdoc: {},
     devdoc: {},
     hash: hashBytecode(artifact.bytecode),
     factoryDependencies: {},
-    id: 0
+    id: 0,
   }
 }
 
@@ -40,8 +40,7 @@ task("replay", "Replay a specific transaction locally")
   .addOptionalParam("exchangeAddr", "Address of the exchange contract (overrides config)")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
-    const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+    const exchangeAddr = taskArgs.exchangeAddr || (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
@@ -64,13 +63,13 @@ task("replay", "Replay a specific transaction locally")
     console.log(`Found ${onChainFacetInfo.length} on-chain facets and ${localFacetInfo.length} local facets`)
 
     // 3. Create temp directory and generate override JSONs for matching facets
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grvt-replay-'))
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "grvt-replay-"))
     console.log("Using temporary directory:", tempDir)
 
     // For each on-chain facet, find a local facet with exactly the same selectors
     let overrideCount = 0
     for (const onChainFacet of onChainFacetInfo) {
-      const matchingLocalFacet = localFacetInfo.find(localFacet => {
+      const matchingLocalFacet = localFacetInfo.find((localFacet) => {
         // Check if selectors match exactly
         if (onChainFacet.selectors.length !== localFacet.selectors.length) {
           return false
@@ -79,18 +78,17 @@ task("replay", "Replay a specific transaction locally")
         const onChainSelectorsSet = new Set(onChainFacet.selectors)
         const localSelectorsSet = new Set(localFacet.selectors)
 
-        return onChainFacet.selectors.every((selector: string) => localSelectorsSet.has(selector)) &&
+        return (
+          onChainFacet.selectors.every((selector: string) => localSelectorsSet.has(selector)) &&
           localFacet.selectors.every((selector: string) => onChainSelectorsSet.has(selector))
+        )
       })
 
       if (matchingLocalFacet) {
         console.log(`Creating override for facet ${matchingLocalFacet.facet} at address ${onChainFacet.address}`)
 
         const overrideJson = await createOverrideJson(hre, matchingLocalFacet.facet)
-        fs.writeFileSync(
-          path.join(tempDir, `${onChainFacet.address}.json`),
-          JSON.stringify(overrideJson, null, 2)
-        )
+        fs.writeFileSync(path.join(tempDir, `${onChainFacet.address}.json`), JSON.stringify(overrideJson, null, 2))
         overrideCount++
       } else {
         console.log(`No matching local facet found for on-chain facet at ${onChainFacet.address}`)
@@ -103,10 +101,7 @@ task("replay", "Replay a specific transaction locally")
 
     console.log("Implementation address:", implAddress)
     const mainOverrideJson = await createOverrideJson(hre, "GRVTExchange")
-    fs.writeFileSync(
-      path.join(tempDir, `${implAddress}.json`),
-      JSON.stringify(mainOverrideJson, null, 2)
-    )
+    fs.writeFileSync(path.join(tempDir, `${implAddress}.json`), JSON.stringify(mainOverrideJson, null, 2))
     overrideCount++
 
     console.log(`Created ${overrideCount} override JSON files`)
@@ -122,12 +117,12 @@ task("replay", "Replay a specific transaction locally")
       "replay_tx",
       "--fork-url",
       (hre.network.config as HttpNetworkConfig).url,
-      taskArgs.txHash
+      taskArgs.txHash,
     ]
 
     const anvilProcess = spawn("cargo", anvilArgs, {
       cwd: path.join(__dirname, "../lib/anvil-zksync"),
-      stdio: "inherit"
+      stdio: "inherit",
     })
 
     // 5. Clean up on process exit
@@ -137,13 +132,13 @@ task("replay", "Replay a specific transaction locally")
       }
     }
 
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       anvilProcess.kill()
       cleanup()
       process.exit()
     })
 
-    process.on('SIGTERM', () => {
+    process.on("SIGTERM", () => {
       anvilProcess.kill()
       cleanup()
       process.exit()
@@ -151,7 +146,7 @@ task("replay", "Replay a specific transaction locally")
 
     // Wait for anvil to exit
     await new Promise((resolve) => {
-      anvilProcess.on('close', () => {
+      anvilProcess.on("close", () => {
         cleanup()
         resolve(null)
       })

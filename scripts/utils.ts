@@ -108,7 +108,11 @@ export async function create2DeployFromL1NoFactoryDeps(
 ) {
   const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
 
-  const deployerSystemContracts = new Interface(hre.artifacts.readArtifactSync("lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer").abi)
+  const deployerSystemContracts = new Interface(
+    hre.artifacts.readArtifactSync(
+      "lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol:IContractDeployer"
+    ).abi
+  )
   const bytecodeHash = hashBytecode(bytecode)
   const calldata = deployerSystemContracts.encodeFunctionData("create2", [create2Salt, bytecodeHash, constructor])
   gasPrice ??= await bridgehub.provider.getGasPrice()
@@ -137,7 +141,7 @@ export async function approveL1SharedBridgeIfNeeded(
   chainId: ethers.BigNumberish,
   bridgehubAddress: string,
   l1SharedBridgeAddress: string,
-  wallet: ethers.Wallet,
+  wallet: ethers.Wallet
 ) {
   const bridgehub = IBridgehubFactory.connect(bridgehubAddress, wallet)
   const baseTokenAddress = await bridgehub.baseToken(chainId)
@@ -216,7 +220,11 @@ export async function encodeTransparentProxyUpgradeTo(hre: HardhatRuntimeEnviron
   return proxyInterface.encodeFunctionData("upgradeTo", [target])
 }
 
-export async function encodeTransparentProxyUpgradeToAndCall(hre: HardhatRuntimeEnvironment, target: string, calldata: string) {
+export async function encodeTransparentProxyUpgradeToAndCall(
+  hre: HardhatRuntimeEnvironment,
+  target: string,
+  calldata: string
+) {
   const proxyArtifact = await hre.artifacts.readArtifact("ITransparentUpgradeableProxy")
   const proxyInterface = new ethers.utils.Interface(proxyArtifact.abi)
 
@@ -316,7 +324,7 @@ export async function getGovernanceCalldata(
 export enum FacetCutAction {
   Add = 0,
   Replace = 1,
-  Remove = 2
+  Remove = 2,
 }
 
 /**
@@ -324,125 +332,133 @@ export enum FacetCutAction {
  * @param facetInfos Array of facet contract instances
  * @returns Diamond cut data for facet methods
  */
-export async function generateDiamondCutDataForNewFacets(facetInfos: Array<{ address: string, abi: any[] }>) {
+export async function generateDiamondCutDataForNewFacets(facetInfos: Array<{ address: string; abi: any[] }>) {
   // Create diamond cut data array
-  const diamondCut = [];
+  const diamondCut = []
 
   for (const { address, abi } of facetInfos) {
     // Create interface from ABI
-    const facetInterface = new ethers.utils.Interface(abi);
+    const facetInterface = new ethers.utils.Interface(abi)
 
     // Get all function selectors from the facet
-    const selectors = [];
+    const selectors = []
     for (const fn of Object.keys(facetInterface.functions)) {
-      selectors.push(facetInterface.getSighash(fn));
+      selectors.push(facetInterface.getSighash(fn))
     }
 
     diamondCut.push({
       facetAddress: address,
       action: FacetCutAction.Add,
-      functionSelectors: selectors
-    });
+      functionSelectors: selectors,
+    })
   }
 
-  return diamondCut;
+  return diamondCut
 }
 
-export async function validateHybridProxy(hre: HardhatRuntimeEnvironment, facets: {
-  facet: string,
-  selectors: string[],
-}[]) {
+export async function validateHybridProxy(
+  hre: HardhatRuntimeEnvironment,
+  facets: {
+    facet: string
+    selectors: string[]
+  }[]
+) {
   const mainContract = await hre.artifacts.readArtifact("GRVTExchange")
-  const mainAbiInterface = new ethers.utils.Interface(mainContract.abi);
-  const mainAbiSelectors = Object.keys(mainAbiInterface.functions).map(fn => mainAbiInterface.getSighash(fn));
+  const mainAbiInterface = new ethers.utils.Interface(mainContract.abi)
+  const mainAbiSelectors = Object.keys(mainAbiInterface.functions).map((fn) => mainAbiInterface.getSighash(fn))
 
   // Check for duplicate selectors in the diamond cut data
-  const allSelectors = [];
-  const selectorMap = new Map();
+  const allSelectors = []
+  const selectorMap = new Map()
 
   for (let i = 0; i < facets.length; i++) {
-    const facet = facets[i];
-    const facetSelectors = facet.selectors;
+    const facet = facets[i]
+    const facetSelectors = facet.selectors
 
     for (let j = 0; j < facetSelectors.length; j++) {
-      const selector = facetSelectors[j];
+      const selector = facetSelectors[j]
 
       if (selectorMap.has(selector)) {
-        console.error(`DUPLICATE SELECTOR: ${selector} found in both:`);
-        console.error(`1. ${selectorMap.get(selector)}`);
-        console.error(`2. ${facet.facet}`);
-        return false;
+        console.error(`DUPLICATE SELECTOR: ${selector} found in both:`)
+        console.error(`1. ${selectorMap.get(selector)}`)
+        console.error(`2. ${facet.facet}`)
+        return false
       }
 
-      selectorMap.set(selector, facet.facet);
-      allSelectors.push(selector);
+      selectorMap.set(selector, facet.facet)
+      allSelectors.push(selector)
     }
   }
 
   // Check if any selector in the ABI is also in the diamond cut data
   for (let i = 0; i < mainAbiSelectors.length; i++) {
-    const abiSelector = mainAbiSelectors[i];
+    const abiSelector = mainAbiSelectors[i]
 
     if (allSelectors.includes(abiSelector)) {
-      console.error(`CONFLICT: Selector ${abiSelector} from the ABI is also in the diamond cut data`);
-      console.error(`Found in facet: ${selectorMap.get(abiSelector)}`);
-      return false;
+      console.error(`CONFLICT: Selector ${abiSelector} from the ABI is also in the diamond cut data`)
+      console.error(`Found in facet: ${selectorMap.get(abiSelector)}`)
+      return false
     }
   }
 
-  return true;
+  return true
 }
 
 export function generateDiamondCutDataFromDiff(
-  onChainFacetInfo: { address: string, selectors: string[], bytecodeHash: string }[],
-  localFacetInfo: { facet: string, selectors: string[], bytecodeHash: string }[],
+  onChainFacetInfo: { address: string; selectors: string[]; bytecodeHash: string }[],
+  localFacetInfo: { facet: string; selectors: string[]; bytecodeHash: string }[]
 ) {
-  const matchingFacetBytecodeHashes = onChainFacetInfo.filter(onChainFacet => {
-    const localFacet = localFacetInfo.find(localFacet =>
-      localFacet.bytecodeHash === onChainFacet.bytecodeHash
-    )
+  const matchingFacetBytecodeHashes = onChainFacetInfo
+    .filter((onChainFacet) => {
+      const localFacet = localFacetInfo.find((localFacet) => localFacet.bytecodeHash === onChainFacet.bytecodeHash)
 
-    if (!localFacet) {
-      return false
-    }
+      if (!localFacet) {
+        return false
+      }
 
-    // Compare selectors arrays
-    if (onChainFacet.selectors.length !== localFacet.selectors.length) {
-      return false
-    }
+      // Compare selectors arrays
+      if (onChainFacet.selectors.length !== localFacet.selectors.length) {
+        return false
+      }
 
-    const onChainSelectorsSet = new Set(onChainFacet.selectors)
-    const localSelectorsSet = new Set(localFacet.selectors)
+      const onChainSelectorsSet = new Set(onChainFacet.selectors)
+      const localSelectorsSet = new Set(localFacet.selectors)
 
-    if (!onChainFacet.selectors.every((selector: string) => localSelectorsSet.has(selector)) ||
-      !localFacet.selectors.every((selector: string) => onChainSelectorsSet.has(selector))) {
-      return false
-    }
+      if (
+        !onChainFacet.selectors.every((selector: string) => localSelectorsSet.has(selector)) ||
+        !localFacet.selectors.every((selector: string) => onChainSelectorsSet.has(selector))
+      ) {
+        return false
+      }
 
-    return true
-  }).map(facet => facet.bytecodeHash)
+      return true
+    })
+    .map((facet) => facet.bytecodeHash)
 
+  const onChainFacetInfoWithDiff = onChainFacetInfo.filter(
+    (facet) => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash)
+  )
 
-  const onChainFacetInfoWithDiff = onChainFacetInfo.filter(facet => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash))
-
-  const localFacetInfoWithDiff = localFacetInfo.filter(facet => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash))
+  const localFacetInfoWithDiff = localFacetInfo.filter(
+    (facet) => !matchingFacetBytecodeHashes.includes(facet.bytecodeHash)
+  )
 
   const onChainSelectorsWithDiff = new Map()
-  onChainFacetInfoWithDiff.forEach(facet => {
+  onChainFacetInfoWithDiff.forEach((facet) => {
     facet.selectors.forEach((selector: string) => {
       onChainSelectorsWithDiff.set(selector, facet)
     })
   })
 
   const localSelectorsWithDiff = new Map()
-  localFacetInfoWithDiff.forEach(facet => {
+  localFacetInfoWithDiff.forEach((facet) => {
     facet.selectors.forEach((selector: string) => {
       localSelectorsWithDiff.set(selector, facet)
     })
   })
 
   // if a local facet is not already deployed, it needs to be deployed
-  const facetsToDeploy = localFacetInfoWithDiff.map(facet => facet.facet)
+  const facetsToDeploy = localFacetInfoWithDiff.map((facet) => facet.facet)
 
   // Map from facet address to array of selectors that need to be added
   const addActions = new Map<string, string[]>()
@@ -472,7 +488,7 @@ export function generateDiamondCutDataFromDiff(
     add: Object.fromEntries(addActions),
     replace: Object.fromEntries(replaceActions),
     remove: removeActions,
-    facetsToDeploy
+    facetsToDeploy,
   }
 }
 
@@ -488,86 +504,91 @@ export async function getOnChainFacetInfo(
   )
 
   const facets = await diamondLoupeFacet.facets()
-  const onChainFacetInfo = await Promise.all(facets.map(async (facet: { facetAddress: string; functionSelectors: string[] }) => {
-    const facetCode = await l2Provider.getCode(facet.facetAddress)
-    return {
-      address: facet.facetAddress,
-      selectors: facet.functionSelectors.slice().sort(),
-      bytecodeHash: ethers.utils.hexlify(hashBytecode(facetCode))
-    }
-  }))
+  const onChainFacetInfo = await Promise.all(
+    facets.map(async (facet: { facetAddress: string; functionSelectors: string[] }) => {
+      const facetCode = await l2Provider.getCode(facet.facetAddress)
+      return {
+        address: facet.facetAddress,
+        selectors: facet.functionSelectors.slice().sort(),
+        bytecodeHash: ethers.utils.hexlify(hashBytecode(facetCode)),
+      }
+    })
+  )
 
   return onChainFacetInfo
 }
 
-export async function getLocalFacetInfo(
-  hre: HardhatRuntimeEnvironment,
-) {
+export async function getLocalFacetInfo(hre: HardhatRuntimeEnvironment) {
   const allLocalFacets = [
     // diamond cut is initialized at diamond migration
     // so not part of the exchange facet info
     {
       facet: "DiamondCutFacet",
-      interface: "IDiamondCut"
+      interface: "IDiamondCut",
     },
-    ...ExchangeFacetInfos
+    ...ExchangeFacetInfos,
   ]
 
-  const localFacetInfo = await Promise.all(allLocalFacets.map(async (facetInfo) => {
-    const facetArtifact = await hre.artifacts.readArtifact(facetInfo.facet)
-    const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
-    const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
-    return {
-      facet: facetInfo.facet,
-      selectors: Object.keys(facetInterface.functions).map((fn) => facetInterface.getSighash(fn)).slice().sort(),
-      bytecodeHash: ethers.utils.hexlify(hashBytecode(facetArtifact.bytecode))
-    }
-  }))
+  const localFacetInfo = await Promise.all(
+    allLocalFacets.map(async (facetInfo) => {
+      const facetArtifact = await hre.artifacts.readArtifact(facetInfo.facet)
+      const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
+      const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
+      return {
+        facet: facetInfo.facet,
+        selectors: Object.keys(facetInterface.functions)
+          .map((fn) => facetInterface.getSighash(fn))
+          .slice()
+          .sort(),
+        bytecodeHash: ethers.utils.hexlify(hashBytecode(facetArtifact.bytecode)),
+      }
+    })
+  )
 
   return localFacetInfo
 }
 
-export async function getLocalFacetSigHashToSigMapping(
-  hre: HardhatRuntimeEnvironment,
-) {
+export async function getLocalFacetSigHashToSigMapping(hre: HardhatRuntimeEnvironment) {
   const allLocalFacets = [
     // diamond cut is initialized at diamond migration
     // so not part of the exchange facet info
     {
       facet: "DiamondCutFacet",
-      interface: "IDiamondCut"
+      interface: "IDiamondCut",
     },
-    ...ExchangeFacetInfos
+    ...ExchangeFacetInfos,
   ]
 
   const sigHashToSigMapping: { [key: string]: string } = {}
 
-  await Promise.all(allLocalFacets.map(async (facetInfo) => {
-    const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
-    const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
+  await Promise.all(
+    allLocalFacets.map(async (facetInfo) => {
+      const facetInterfaceArtifact = await hre.artifacts.readArtifact(facetInfo.interface)
+      const facetInterface = new ethers.utils.Interface(facetInterfaceArtifact.abi)
 
-    Object.keys(facetInterface.functions).forEach((fn) => {
-      const sigHash = facetInterface.getSighash(fn)
-      sigHashToSigMapping[sigHash] = fn
+      Object.keys(facetInterface.functions).forEach((fn) => {
+        const sigHash = facetInterface.getSighash(fn)
+        sigHashToSigMapping[sigHash] = fn
+      })
     })
-  }))
+  )
 
   return sigHashToSigMapping
 }
 
 export async function validateFacetStorage(hre: HardhatRuntimeEnvironment) {
-  const contractStorage = await getAbstractStorage(hre, "contracts/exchange/GRVTExchange.sol", "GRVTExchange");
+  const contractStorage = await getAbstractStorage(hre, "contracts/exchange/GRVTExchange.sol", "GRVTExchange")
   for (const facet of ExchangeFacetInfos) {
-    const facetStorage = await getAbstractStorage(hre, facet.file, facet.facet);
+    const facetStorage = await getAbstractStorage(hre, facet.file, facet.facet)
     if (!(facetStorage.length === 0 || JSON.stringify(facetStorage) === JSON.stringify(contractStorage))) {
-      throw new Error(`Inconsistent storage layout for facet ${facet.facet} in ${facet.file}`);
+      throw new Error(`Inconsistent storage layout for facet ${facet.facet} in ${facet.file}`)
     }
   }
 }
 
 async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, contractName: string) {
-  const buildInfo = await hre.artifacts.getBuildInfo(file + ":" + contractName);
-  const storageWithContract = buildInfo?.output.contracts[file][contractName].storageLayout.storage;
+  const buildInfo = await hre.artifacts.getBuildInfo(file + ":" + contractName)
+  const storageWithContract = buildInfo?.output.contracts[file][contractName].storageLayout.storage
 
   const storage = storageWithContract.map((item: any) => {
     return {
@@ -577,14 +598,14 @@ async function getAbstractStorage(hre: HardhatRuntimeEnvironment, file: string, 
     }
   })
 
-  return storage;
+  return storage
 }
 
 export async function enrichDiamondCutActionsWithSignatures(
   diamondCutData: {
-    add: { [facet: string]: string[] },
-    replace: { [facet: string]: string[] },
-    remove: string[],
+    add: { [facet: string]: string[] }
+    replace: { [facet: string]: string[] }
+    remove: string[]
     facetsToDeploy: string[]
   },
   sigHashToSigMapping: { [key: string]: string }
@@ -593,10 +614,7 @@ export async function enrichDiamondCutActionsWithSignatures(
     const enriched: { [facet: string]: Array<[string, string]> } = {}
 
     for (const [facet, selectors] of Object.entries(actions)) {
-      enriched[facet] = selectors.map(selector => [
-        selector,
-        sigHashToSigMapping[selector] || 'unknown'
-      ])
+      enriched[facet] = selectors.map((selector) => [selector, sigHashToSigMapping[selector] || "unknown"])
     }
 
     return enriched
@@ -606,6 +624,6 @@ export async function enrichDiamondCutActionsWithSignatures(
     add: enrichActions(diamondCutData.add),
     replace: enrichActions(diamondCutData.replace),
     remove: diamondCutData.remove,
-    facetsToDeploy: diamondCutData.facetsToDeploy
+    facetsToDeploy: diamondCutData.facetsToDeploy,
   }
 }
