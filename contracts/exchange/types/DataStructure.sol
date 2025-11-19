@@ -111,7 +111,10 @@ enum Currency {
   APT, // 76
   MON, // 77
   FIL, // 78
-  ICP // 79
+  ICP, // 79
+  GIGGLE, // 80
+  RESOLV, // 81
+  ZEN // 82
 }
 
 function currencyStart() pure returns (Currency) {
