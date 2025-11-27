@@ -20,6 +20,7 @@
     "prettier:check": "prettier --check --plugin=prettier-plugin-solidity contracts/**/*.sol",
     "prettier:sol": "prettier --write --plugin=prettier-plugin-solidity contracts/**/*.sol",
     "prettier": "prettier --write ./**/*.ts",
+    "compile-abi": "node scripts/compile-abi.js contracts/exchange/interfaces/*.sol",
     "sizer": "forge build --sizes",
     "deploy": "hardhat deploy-zksync --script deploy.ts",
     "deploy:upgradable": "hardhat deploy-zksync --script deployupgradable.ts",

@@ -42868,7 +42868,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -42893,7 +42896,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -44597,7 +44603,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -44622,7 +44631,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -46108,7 +46120,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -46133,7 +46148,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -47593,7 +47611,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -47618,7 +47639,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49296,7 +49320,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49321,7 +49348,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49540,7 +49570,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49565,7 +49598,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49784,7 +49820,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -49809,7 +49848,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -50028,7 +50070,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -50053,7 +50098,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -50272,7 +50320,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -50297,7 +50348,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -51975,7 +52029,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52000,7 +52057,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52219,7 +52279,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52244,7 +52307,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52463,7 +52529,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52488,7 +52557,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52707,7 +52779,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52732,7 +52807,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52951,7 +53029,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -52976,7 +53057,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -74693,7 +74777,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
@@ -74718,7 +74805,10 @@
                         "cumulative_realized_pn_l": "0",
                         "cumulative_fee": "0",
                         "cumulative_realized_funding_payment": "0",
-                        "with_cumulative_data": false
+                        "with_cumulative_data": false,
+                        "margin_type": "UNSPECIFIED",
+                        "leverage": 0,
+                        "position_balance": "0"
                      }
                   },
                   "name": "ExSubAccountPosition"
