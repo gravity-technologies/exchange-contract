@@ -114,7 +114,9 @@ enum Currency {
   ICP, // 79
   GIGGLE, // 80
   RESOLV, // 81
-  ZEN // 82
+  ZEN, // 82
+  PAXG, // 83
+  TAO // 84
 }
 
 function currencyStart() pure returns (Currency) {

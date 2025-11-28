@@ -333,7 +333,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.LTC ||
       currency == Currency.BCH ||
       currency == Currency.ZEC ||
-      currency == Currency.GIGGLE
+      currency == Currency.GIGGLE ||
+      currency == Currency.PAXG ||
+      currency == Currency.TAO
     ) {
       decimals = 9;
     } else if (
