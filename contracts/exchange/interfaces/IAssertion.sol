@@ -252,4 +252,6 @@ interface IAssertion {
   function assertAddCurrency(uint16 id, uint16 balanceDecimals) external view;
 
   function assertUpdateFundingInfo(AssetFundingInfo[] calldata expectedFundingInfos) external view;
+
+  function assertSetSubAccountPositionMarginConfig(uint64 subID, bytes32 asset, PositionMarginType marginType, int32 leverage) external view;
 }

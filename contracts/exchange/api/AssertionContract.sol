@@ -805,4 +805,16 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       }
     }
   }
+
+  function assertSetSubAccountPositionMarginConfig(
+    uint64 subID,
+    bytes32 asset,
+    PositionMarginType marginType,
+    int32 leverage
+  ) external view {
+    MarginConfig storage cfg = state.subAccounts[subID].positionMarginConfigs[asset];
+    if (cfg.marginType != marginType || cfg.leverage != leverage) {
+      revert SubAccountPositionMarginConfigMismatch();
+    }
+  }
 }

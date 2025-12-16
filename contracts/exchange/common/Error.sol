@@ -36,3 +36,6 @@ error MarginBracketNotIncreasing();
 error MarginRateNotIncreasing();
 error NotConfigAddress();
 error MarginLockActive();
+error SubAccountPositionMarginConfigMismatch();
+error ErrSetPositionMarginConfigInvalidMarginType();
+error ErrSetPostionMarginConfigPositionNotEmpty();

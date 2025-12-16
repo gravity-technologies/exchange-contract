@@ -11,6 +11,12 @@ enum MarginType {
   PORTFOLIO_CROSS_MARGIN
 }
 
+enum PositionMarginType {
+  UNSPECIFIED,
+  ISOLATED,
+  SIMPLE_CROSS_MARGIN
+}
+
 enum TimeInForce {
   UNSPECIFIED,
   GOOD_TILL_TIME,
@@ -298,7 +304,15 @@ struct SubAccount {
   int64 lastDeriskTimestamp;
   bool isVault;
   VaultInfo vaultInfo;
-  uint256[49] __gap;
+  // Store the position specific margin config
+  mapping(bytes32 => MarginConfig) positionMarginConfigs;
+  uint256[48] __gap;
+}
+
+struct MarginConfig {
+  PositionMarginType marginType;
+  int32 leverage;
+  uint256[50] __gap;
 }
 
 struct VaultInfo {

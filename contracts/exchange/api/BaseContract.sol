@@ -12,7 +12,11 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
-import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {
+  L2ContractHelper,
+  DEPLOYER_SYSTEM_CONTRACT,
+  IContractDeployer
+} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -546,6 +550,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     if (kind == Kind.FUTURES) return sub.futures;
     if (kind == Kind.CALL || kind == Kind.PUT) return sub.options;
     revert("invalid asset kind");
+  }
+
+  function _hasPosition(SubAccount storage sub, bytes32 assetID) internal view returns (bool) {
+    PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
+    Position storage pos = posmap.values[assetID];
+    return pos.id != 0x0 && pos.balance != 0;
   }
 
   function _getOrCreatePosition(SubAccount storage sub, bytes32 assetID) internal returns (Position storage) {

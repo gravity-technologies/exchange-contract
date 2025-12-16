@@ -261,4 +261,49 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
 
     sub.deriskToMaintenanceMarginRatio = deriskToMaintenanceMarginRatio;
   }
+
+  /// @notice Set margin configuration for a specific asset on a sub account.
+  /// @dev Requires a trade permission signature, only allows isolated or simple cross margin, and
+  /// rejects vaults or sub accounts with existing positions.
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The id of the transaction
+  /// @param subAccID Target sub account id
+  /// @param assetID Asset identifier whose margin config is updated
+  /// @param marginType Desired margin type (isolated or simple cross)
+  /// @param leverage Desired leverage for the asset on the sub account
+  /// @param sig Permissioned signature authorizing the change
+  function setSubAccountPositionMarginConfig(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    bytes32 assetID,
+    PositionMarginType marginType,
+    int32 leverage,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    if (marginType != PositionMarginType.ISOLATED && marginType != PositionMarginType.SIMPLE_CROSS_MARGIN) {
+      revert ErrSetPositionMarginConfigInvalidMarginType();
+    }
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
+
+    // In Risk, we also have a check for vault that relies on cluster config, which is not replicated on chain. Omit here
+
+    if (_hasPosition(sub, assetID)) {
+      revert ErrSetPostionMarginConfigPositionNotEmpty();
+    }
+
+    // ---------- Signature Verification -----------
+    _preventReplay(
+      hashSetSubAccountPositionMarginConfig(subAccID, assetID, marginType, leverage, sig.nonce, sig.expiration),
+      sig
+    );
+    // ------- End of Signature Verification -------
+
+    MarginConfig storage conf = sub.positionMarginConfigs[assetID];
+    conf.marginType = marginType;
+    conf.leverage = leverage;
+  }
 }

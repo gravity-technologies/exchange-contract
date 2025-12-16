@@ -84,4 +84,22 @@ interface ISubAccount {
   /// @param txID The transaction ID of the transaction
   /// @param signer The address of the signer
   function removeSessionKey(int64 timestamp, uint64 txID, address signer) external;
+
+  /// @notice Set the margin configuration for a specific asset on a sub account.
+  /// @param timestamp Sequencing timestamp for the transaction
+  /// @param txID Sequencing transaction id
+  /// @param subAccID Target sub account id
+  /// @param asset Asset identifier whose margin config is updated
+  /// @param marginType Desired margin type (isolated or simple cross)
+  /// @param leverage Desired leverage for the asset on the sub account
+  /// @param sig Permissioned signature authorizing the change
+  function setSubAccountPositionMarginConfig(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    bytes32 asset,
+    PositionMarginType marginType,
+    int32 leverage,
+    Signature calldata sig
+  ) external;
 }
