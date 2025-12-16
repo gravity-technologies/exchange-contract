@@ -80,3 +80,4 @@ error AssertionWithdrawalAddressNotAdded();
 error AssertionWithdrawalAddressNotRemoved();
 error AssertionWithdrawBalanceMismatch();
 error AssertionPositionMarginMismatch();
+error AssertionBuilderFeeConfigMismatch();

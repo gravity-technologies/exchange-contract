@@ -3903,7 +3903,9 @@
                {
                   "expect": {
                      "sub_account_id": "1",
-                     "signers": {}
+                     "signers": {
+                        
+                     }
                   },
                   "name": "ExSubAccountSigners"
                }
@@ -5635,7 +5637,9 @@
                {
                   "expect": {
                      "sub_account_id": "1",
-                     "signers": {}
+                     "signers": {
+                        
+                     }
                   },
                   "name": "ExSubAccountSigners"
                }
@@ -11934,12 +11938,10 @@
                         "underlying": 5,
                         "quote": 3
                      },
-                     "margin_config": {
-                        "MarginType": "CROSS",
-                        "Leverage": 10000000
-                     }
+                     "margin_type": "CROSS",
+                     "leverage": 10000000
                   },
-                  "name": "ExSubAccountMarginConfig"
+                  "name": "ExSubAccountPositionMarginConfig"
                }
             ],
             "assertion_data": "0xff614ff00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000989680"
@@ -13289,12 +13291,10 @@
                         "underlying": 5,
                         "quote": 3
                      },
-                     "margin_config": {
-                        "MarginType": "ISOLATED",
-                        "Leverage": 10000000
-                     }
+                     "margin_type": "ISOLATED",
+                     "leverage": 10000000
                   },
-                  "name": "ExSubAccountMarginConfig"
+                  "name": "ExSubAccountPositionMarginConfig"
                }
             ],
             "assertion_data": "0xff614ff00000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000003050100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000989680"

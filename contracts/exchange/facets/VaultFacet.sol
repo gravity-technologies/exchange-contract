@@ -378,7 +378,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     address accountID,
     uint64 redeemedInUsd,
     uint64 costOfLpTokenBurntInUsd
-  ) internal returns (uint64, uint64) {
+  ) internal view returns (uint64, uint64) {
     uint64 lpDec = _getLpTokenDecimal();
     if (vaultSub.accountID == accountID || costOfLpTokenBurntInUsd >= redeemedInUsd) {
       return (0, 0);

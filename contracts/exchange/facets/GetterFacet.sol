@@ -276,4 +276,21 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     require(sub.isVault, "Not a vault");
     return sub.vaultInfo.managerAttestedSharePrice;
   }
+
+  function getAuthorizedBuilderConfig(
+    address mainAccountID,
+    address builderAccountID
+  ) external view returns (uint64, uint64) {
+    Account storage mainAccount = state.accounts[mainAccountID];
+    BuilderFeeConfig storage cfg = mainAccount.builders[builderAccountID];
+    return (cfg.maxFutureFeeRate, cfg.maxSpotFeeRate);
+  }
+
+  function getSubAccountPositionMarginConfig(
+    uint64 subAccountID,
+    bytes32 assetID
+  ) external view returns (PositionMarginType, int32) {
+    PositionMarginConfig storage cfg = _requireSubAccount(subAccountID).positionMarginConfigs[assetID];
+    return (cfg.marginType, cfg.leverage);
+  }
 }

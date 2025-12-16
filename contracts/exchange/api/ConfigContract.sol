@@ -496,7 +496,7 @@ contract ConfigContract is IConfig, BaseContract {
     // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
     if (typ == ConfigType.ADDRESS) {
-      (address oldVal, bool isSet) = _getAddressConfig(key);
+      (, bool isSet) = _getAddressConfig(key);
       if (isSet) return rules[0].lockDuration;
       return 0;
     }

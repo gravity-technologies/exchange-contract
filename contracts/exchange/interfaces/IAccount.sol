@@ -155,4 +155,14 @@ interface IAccount {
     Currency quoteCurrency,
     Signature calldata sig
   ) external;
+
+  function authorizeBuilder(
+    int64 timestamp,
+    uint64 txID,
+    address mainAccountID,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    Signature calldata sig
+  ) external;
 }

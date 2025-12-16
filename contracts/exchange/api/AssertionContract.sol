@@ -812,9 +812,9 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     PositionMarginType marginType,
     int32 leverage
   ) external view {
-    MarginConfig storage cfg = state.subAccounts[subID].positionMarginConfigs[asset];
+    PositionMarginConfig storage cfg = state.subAccounts[subID].positionMarginConfigs[asset];
     if (cfg.marginType != marginType || cfg.leverage != leverage) {
-      revert SubAccountPositionMarginConfigMismatch();
+      revert SubAccountPositionMarginMismatch();
     }
   }
 
@@ -831,6 +831,19 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     Position storage pos = _getPosition(sub, assetID);
     if (pos.marginBalance != positionMargin) {
       revert AssertionPositionMarginMismatch();
+    }
+  }
+
+  function assertAuthorizeBuilder(
+    address mainAccountID,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate
+  ) external view {
+    Account storage mainAccount = _requireAccount(mainAccountID);
+    BuilderFeeConfig storage builderFee = mainAccount.builders[builderAccountID];
+    if (builderFee.maxFutureFeeRate != maxFutureFeeRate || builderFee.maxSpotFeeRate != maxSpotFeeRate) {
+      revert AssertionBuilderFeeConfigMismatch();
     }
   }
 }

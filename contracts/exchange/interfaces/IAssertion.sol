@@ -266,4 +266,11 @@ interface IAssertion {
     int64 marginBalance,
     int64 subAccountSpotBalance
   ) external view;
+
+  function assertAuthorizeBuilder(
+    address mainAccountID,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate
+  ) external view;
 }

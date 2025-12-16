@@ -50,8 +50,10 @@ import {
   ExVaultLastUpdateTimestampIncreased,
   ExVaultIsCrossExchange,
   ExVaultManagerAttestedSharePrice,
+  ExAuthorizeBuilder,
+  ExSubAccountPositionMarginConfig,
 } from "./types"
-import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, VaultStatusToEnum } from "./enums"
+import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, PositionMarginTypeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
 
 // These expectations are only in risk
@@ -176,6 +178,10 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectVaultAllTimePnl(contract, expectation.expect as ExVaultAllTimePnl)
     case "ExIfAccountHasVaultPosition":
       return expectIfAccountHasVaultPosition(contract, expectation.expect as ExIfAccountHasVaultPosition)
+    case "ExAuthorizeBuilder":
+      return expectAuthorizeBuilder(contract, expectation.expect as ExAuthorizeBuilder)
+    case "ExSubAccountPositionMarginConfig":
+      return expectSubAccountPositionMarginConfig(contract, expectation.expect as ExSubAccountPositionMarginConfig)
     default:
       console.log(`🚨 Unknown expectation - add the expectation in your test: ${expectation.name} 🚨 `)
   }
@@ -675,6 +681,23 @@ async function expectVaultAllTimePnl(contract: Contract, expectations: ExVaultAl
 
 async function expectIfAccountHasVaultPosition(contract: Contract, expectations: ExIfAccountHasVaultPosition) {
   // This is only implemented in risk, and not in contract (intentional)
+}
+
+async function expectAuthorizeBuilder(contract: Contract, expectations: ExAuthorizeBuilder) {
+  const [actualFutureFeeRate, actualSpotFeeRate] = await contract.getAuthorizedBuilderConfig(
+    expectations.main_account_id,
+    expectations.builder_account_id,
+  )
+  expect(big(actualFutureFeeRate)).to.equal(big(expectations.max_future_fee_rate))
+  expect(big(actualSpotFeeRate)).to.equal(big(expectations.max_spot_fee_rate))
+}
+
+async function expectSubAccountPositionMarginConfig(contract: Contract, expectations: ExSubAccountPositionMarginConfig) {
+  let assetID = big(toAssetID(expectations.asset))
+  let assetIDHex = ethers.utils.hexZeroPad(assetID.toHexString(), 32)
+  const [marginType, leverage] = await contract.getSubAccountPositionMarginConfig(expectations.sub_account_id, assetIDHex)
+  expect(marginType).to.equal(PositionMarginTypeToEnum[expectations.margin_type])
+  expect(big(leverage)).to.equal(big(expectations.leverage))
 }
 
 function big(s: any): BigNumber {

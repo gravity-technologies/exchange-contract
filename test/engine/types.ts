@@ -347,6 +347,19 @@ export interface ExIfAccountHasVaultPosition {
   has_position: boolean
 }
 
+export interface ExAuthorizeBuilder {
+  main_account_id: string
+  builder_account_id: string
+  max_future_fee_rate: string
+  max_spot_fee_rate: string
+}
+
+export interface ExSubAccountPositionMarginConfig {
+  sub_account_id: string
+  asset: Asset
+  margin_type: string
+  leverage: string
+}
 
 export interface Expectation {
   name: string
@@ -396,4 +409,5 @@ export interface Expectation {
   | ExVaultLastUpdateTimestampIncreased
   | ExVaultAllTimePnl
   | ExIfAccountHasVaultPosition
+  | ExAuthorizeBuilder
 }

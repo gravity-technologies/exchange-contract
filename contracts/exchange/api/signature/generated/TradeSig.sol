@@ -6,18 +6,40 @@ import "../../../types/DataStructure.sol";
 bytes32 constant _ORDER_H = keccak256(
   "Order(uint64 subAccountID,bool isMarket,uint8 timeInForce,bool postOnly,bool reduceOnly,OrderLeg[] legs,uint32 nonce,int64 expiration)OrderLeg(uint256 assetID,uint64 contractSize,uint64 limitPrice,bool isBuyingContract)"
 );
+bytes32 constant _ORDER_WITH_BUILDER_FEE_H = keccak256(
+  "OrderWithBuilderFee(uint64 subAccountID,bool isMarket,uint8 timeInForce,bool postOnly,bool reduceOnly,OrderLeg[] legs,address builder,uint32 builderFee,uint32 nonce,int64 expiration)OrderLeg(uint256 assetID,uint64 contractSize,uint64 limitPrice,bool isBuyingContract)"
+);
 
 function hashOrder(Order calldata o) pure returns (bytes32) {
+  if (o.builder == address(0) && o.builderFee == 0) {
+    return
+      keccak256(
+        abi.encode(
+          _ORDER_H,
+          o.subAccountID,
+          o.isMarket,
+          o.timeInForce,
+          o.postOnly,
+          o.reduceOnly,
+          hashOrderLegs(o.legs),
+          o.signature.nonce,
+          o.signature.expiration
+        )
+      );
+  }
+
   return
     keccak256(
       abi.encode(
-        _ORDER_H,
+        _ORDER_WITH_BUILDER_FEE_H,
         o.subAccountID,
         o.isMarket,
         o.timeInForce,
         o.postOnly,
         o.reduceOnly,
         hashOrderLegs(o.legs),
+        o.builder,
+        o.builderFee,
         o.signature.nonce,
         o.signature.expiration
       )

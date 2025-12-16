@@ -152,6 +152,15 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
+  // builders this account has explicitly allowed to receive kickback from its trades
+  mapping(address => BuilderFeeConfig) builders;
+  uint256[48] __gap;
+}
+
+struct BuilderFeeConfig {
+  uint32 maxFutureFeeRate;
+  uint32 maxSpotFeeRate;
+  uint256[50] __gap;
 }
 
 struct SubAccount {
@@ -184,11 +193,11 @@ struct SubAccount {
   bool isVault;
   VaultInfo vaultInfo;
   // Store the position specific margin config
-  mapping(bytes32 => MarginConfig) positionMarginConfigs;
+  mapping(bytes32 => PositionMarginConfig) positionMarginConfigs;
   uint256[48] __gap;
 }
 
-struct MarginConfig {
+struct PositionMarginConfig {
   PositionMarginType marginType;
   int32 leverage;
   uint256[50] __gap;
@@ -383,6 +392,7 @@ struct Trade {
   Order takerOrder;
   MakerTradeMatch[] makerOrders;
   int64[] feeCharged;
+  int64[] builderFees;
 }
 
 struct Order {
@@ -420,6 +430,8 @@ struct Order {
   bool isLiquidation;
   // If the order is a derisk order (to reduce subaccount's leverage and risk of liquidation)
   bool isDerisk;
+  address builder;
+  uint32 builderFee;
 }
 
 struct OrderLeg {
@@ -438,6 +450,7 @@ struct MakerTradeMatch {
   Order makerOrder;
   uint64[] matchedSize;
   int64[] feeCharged;
+  int64[] builderFees;
 }
 
 struct PriceEntry {

@@ -44,7 +44,15 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     SubAccount storage takerSub = _requireSubAccount(trade.takerOrder.subAccountID);
     OrderCalculationResult memory takerCalcResult = _verifyAndExecuteMakerOrders(timestamp, trade, takerSub);
 
-    _verifyAndExecuteOrder(timestamp, trade.takerOrder, takerCalcResult, false, trade.feeCharged, takerSub);
+    _verifyAndExecuteOrder(
+      timestamp,
+      trade.takerOrder,
+      takerCalcResult,
+      false,
+      trade.feeCharged,
+      trade.builderFees,
+      takerSub
+    );
   }
 
   function _verifyAndExecuteMakerOrders(
@@ -61,7 +69,15 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     for (uint i; i < matchesLen; ++i) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
       OrderCalculationResult memory makerCalcResult = _calculateMakerOrder(trade, makerMatch, takerCalcResult);
-      _verifyAndExecuteOrder(timestamp, makerMatch.makerOrder, makerCalcResult, true, makerMatch.feeCharged, takerSub);
+      _verifyAndExecuteOrder(
+        timestamp,
+        makerMatch.makerOrder,
+        makerCalcResult,
+        true,
+        makerMatch.feeCharged,
+        makerMatch.builderFees,
+        takerSub
+      );
     }
 
     return takerCalcResult;
@@ -166,11 +182,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     OrderCalculationResult memory calcResult,
     bool isMakerOrder,
     int64[] memory feePerLegs,
+    int64[] memory builderFeePerLegs,
     SubAccount storage takerSub
   ) private {
     // 1. Resolve active sub-account and calculate total fee
     SubAccount storage sub = isMakerOrder ? _requireSubAccount(order.subAccountID) : takerSub;
     int64 totalFee = _getTotalFee(feePerLegs);
+    int64 totalBuilderFee = _getTotalFee(builderFeePerLegs);
 
     // 2. Order validation
     _verifyOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, totalFee);
@@ -182,7 +200,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // A reduce-only order must actually reduce the position size.
     bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
     require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
-    _checkVaultOrder(sub, order, isReducingOrder);
+    _checkVaultOrder(sub, isReducingOrder);
 
     // ---------- Early Exits for Special Order Types ----------
 
@@ -190,7 +208,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     (uint64 insuranceFundSubID, bool isInsuranceFundSet) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
     bool isInsuranceFund = isInsuranceFundSet && sub.id == insuranceFundSubID;
     if (isInsuranceFund) {
-      _executeOrder(timestamp, sub, order, calcResult, totalFee);
+      _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
       return;
     }
 
@@ -198,14 +216,14 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // These are generally preferred and can bypass some stricter checks.
     bool isPlainOrder = !order.isLiquidation && !order.isDerisk;
     if (isPlainOrder && isReducingOrder) {
-      _executeOrder(timestamp, sub, order, calcResult, totalFee);
+      _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
       return;
     }
 
     // ---------- Derisk Flow ----------
     if (order.isDerisk) {
       require(_isDeriskable(timestamp, sub), "not deriskable");
-      _executeOrder(timestamp, sub, order, calcResult, totalFee);
+      _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
       return;
     }
 
@@ -215,7 +233,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       require(!isAboveMaintenanceMargin(sub), "liquidated sub above MM");
     }
 
-    _executeOrder(timestamp, sub, order, calcResult, totalFee);
+    _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
 
     // Post-trade non-negative value check for non-liquidation orders.
     if (!order.isLiquidation) {
@@ -223,7 +241,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function _checkVaultOrder(SubAccount storage sub, Order calldata order, bool isReducingOrder) private view {
+  function _checkVaultOrder(SubAccount storage sub, bool isReducingOrder) private view {
     if (!sub.isVault) {
       return;
     }
@@ -261,6 +279,17 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
+    bool shouldValidateBuilderFee = order.builder != address(0) && order.builderFee > 0;
+    uint32 builderMaxFutureFeeRate;
+    uint32 builderMaxSpotFeeRate;
+
+    if (shouldValidateBuilderFee) {
+      Account storage acc = _requireAccount(sub.accountID);
+      BuilderFeeConfig storage builderConfig = acc.builders[order.builder];
+      builderMaxFutureFeeRate = builderConfig.maxFutureFeeRate;
+      builderMaxSpotFeeRate = builderConfig.maxSpotFeeRate;
+    }
+
     for (uint i; i < legsLen; ++i) {
       OrderLeg calldata leg = legs[i];
       Currency assetQuote = assetGetQuote(leg.assetID);
@@ -270,6 +299,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
       require(currencyCanHoldSpotBalance(assetQuote), ERR_NOT_SUPPORTED);
       require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
+      if (shouldValidateBuilderFee) {
+        _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, builderMaxFutureFeeRate);
+      }
     }
 
     // Check the order signature
@@ -344,6 +376,24 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     require(totalFee <= totalFeeCap, ERR_FEE_CAP_EXCEEDED);
   }
 
+  function _validateBuilderFee(
+    uint32 orderBuilderFeeRate,
+    Kind kind,
+    uint32 maxSpotFeeRate,
+    uint32 maxFutureFeeRate
+  ) private pure {
+    if (kind == Kind.SPOT) {
+      if (orderBuilderFeeRate > maxSpotFeeRate) revert ErrBuilderFeeExceedMax();
+      return;
+    }
+
+    if (kind == Kind.PERPS || kind == Kind.FUTURES) {
+      if (orderBuilderFeeRate > maxFutureFeeRate) {
+        revert ErrBuilderFeeExceedMax();
+      }
+    }
+  }
+
   function _calculateBaseFee(BI memory notional, BI memory fee, uint qDec) private pure returns (int64) {
     if (notional.val == 0) return 0;
     return notional.mul(fee).toInt64(qDec);
@@ -354,7 +404,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     SubAccount storage sub,
     Order calldata order,
     OrderCalculationResult memory calcResult,
-    int64 fee
+    int64 fee,
+    int64 builderFee
   ) private {
     Currency subQuote = sub.quoteCurrency;
     uint qDec = _getBalanceDecimal(subQuote);
@@ -392,6 +443,12 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       sub.spotBalances[subQuote] += spotDelta - fee;
     } else {
       sub.spotBalances[subQuote] += spotDelta;
+    }
+
+    // Step 5: Credit builder free if order.builder is present and builderFee > 0
+    if (order.builder != address(0x0) && builderFee > 0) {
+      sub.spotBalances[Currency.USDT] -= builderFee; // FIXME: once there's spot trading, need to fix this
+      _requireAccount(order.builder).spotBalances[Currency.USDT] += builderFee; // FIXME: once there's spot trading, need to fix this
     }
 
     // Update account derisk window. We must already have passed derisk validation before this update

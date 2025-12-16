@@ -63,6 +63,12 @@ export const KindToEnum: { [kind: string]: number } = {
   RATE: 7,
 }
 
+export const PositionMarginTypeToEnum: { [type: string]: number } = {
+  UNSPECIFIED: 0,
+  ISOLATED: 1,
+  CROSS: 2,
+}
+
 export const ConfigIDToEnum: { [config: string]: number } = {
   UNSPECIFIED: 0,
   DEPRECATED_1: 1,

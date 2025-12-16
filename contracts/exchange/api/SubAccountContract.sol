@@ -283,7 +283,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
   ) external {
     _setSequence(timestamp, txID);
 
-    if (marginType != PositionMarginType.ISOLATED && marginType != PositionMarginType.SIMPLE_CROSS_MARGIN) {
+    if (marginType != PositionMarginType.ISOLATED && marginType != PositionMarginType.CROSS) {
       revert ErrSetPositionMarginConfigInvalidMarginType();
     }
     SubAccount storage sub = _requireSubAccount(subAccID);
@@ -302,7 +302,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     );
     // ------- End of Signature Verification -------
 
-    MarginConfig storage conf = sub.positionMarginConfigs[assetID];
+    PositionMarginConfig storage conf = sub.positionMarginConfigs[assetID];
     conf.marginType = marginType;
     conf.leverage = leverage;
   }

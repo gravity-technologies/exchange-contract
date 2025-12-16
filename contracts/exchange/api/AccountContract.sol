@@ -7,6 +7,11 @@ import "../types/DataStructure.sol";
 import "../interfaces/IAccount.sol";
 
 contract AccountContract is IAccount, ConfigContract {
+  uint32 constant _MAX_FUTURE_BUILDER_FEE_RATE_LOW = 10; // 0.001%
+  uint32 constant _MAX_FUTURE_BUILDER_FEE_RATE_HIGH = 10_00; // 0.1%
+  uint32 constant _MAX_SPOT_BUILDER_FEE_RATE_LOW = 1_00; // 0.01%
+  uint32 constant _MAX_SPOT_BUILDER_FEE_RATE_HIGH = 1_00_00; // 1%
+
   /// @notice Create a new account
   ///
   /// @param timestamp The timestamp of the transaction
@@ -331,5 +336,49 @@ contract AccountContract is IAccount, ConfigContract {
     // All account admins are presumably authorizedSigners
 
     acc.subAccounts.push(subAccountID);
+  }
+
+  function authorizeBuilder(
+    int64 timestamp,
+    uint64 txID,
+    address mainAccountID,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    if (builderAccountID == mainAccountID) {
+      revert InvalidBuilderAccountID();
+    }
+
+    if (
+      maxFutureFeeRate < _MAX_FUTURE_BUILDER_FEE_RATE_LOW ||
+      maxFutureFeeRate > _MAX_FUTURE_BUILDER_FEE_RATE_HIGH ||
+      maxSpotFeeRate < _MAX_SPOT_BUILDER_FEE_RATE_LOW ||
+      maxSpotFeeRate > _MAX_SPOT_BUILDER_FEE_RATE_HIGH
+    ) {
+      revert InvalidBuilderFeeRate();
+    }
+
+    Account storage mainAccount = _requireAccount(mainAccountID);
+    _requireAccount(builderAccountID);
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashAuthorizeBuilder(
+      mainAccountID,
+      builderAccountID,
+      maxFutureFeeRate,
+      maxSpotFeeRate,
+      sig.nonce,
+      sig.expiration
+    );
+    _preventReplay(hash, sig);
+    // ------- End of Signature Verification -------
+
+    BuilderFeeConfig storage builderConfig = mainAccount.builders[builderAccountID];
+    builderConfig.maxFutureFeeRate = maxFutureFeeRate;
+    builderConfig.maxSpotFeeRate = maxSpotFeeRate;
   }
 }

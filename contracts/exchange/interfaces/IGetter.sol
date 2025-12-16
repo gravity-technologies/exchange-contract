@@ -8,13 +8,13 @@ interface IGetter {
     uint64 multiSigThreshold;
     uint64 adminCount;
     uint64[] subAccounts;
-    // Not returned fields since mapping is not supported in return type include:
-    // 1. spotBalances
-    // 2. recoveryAddresses
-    // 3. onboardedWithdrawalAddresses
-    // 4. onboardedTransferAccounts
-    // 5. signers
   }
+  // Not returned fields since mapping is not supported in return type include:
+  // 1. spotBalances
+  // 2. recoveryAddresses
+  // 3. onboardedWithdrawalAddresses
+  // 4. onboardedTransferAccounts
+  // 5. signers
 
   struct SubAccountResult {
     uint64 id;
@@ -24,14 +24,14 @@ interface IGetter {
     MarginType marginType;
     Currency quoteCurrency;
     int64 lastAppliedFundingTimestamp;
-    // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
-    // 1. spotBalances
-    // 2. PositionsMap options;
-    // 3. PositionsMap futures;
-    // 4. PositionsMap perps;
-    // 5. mapping(bytes => uint256) positionIndex;
-    // 6. signers;
   }
+  // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
+  // 1. spotBalances
+  // 2. PositionsMap options;
+  // 3. PositionsMap futures;
+  // 4. PositionsMap perps;
+  // 5. mapping(bytes => uint256) positionIndex;
+  // 6. signers;
 
   function getAccountResult(address accID) external view returns (AccountResult memory);
 
@@ -126,4 +126,14 @@ interface IGetter {
   function vaultIsCrossExchange(uint64 vaultID) external view returns (bool);
 
   function getVaultManagerAttestedSharePrice(uint64 vaultID) external view returns (uint64);
+
+  function getAuthorizedBuilderConfig(
+    address mainAccountID,
+    address builderAccountID
+  ) external view returns (uint64, uint64);
+
+  function getSubAccountPositionMarginConfig(
+    uint64 subAccountID,
+    bytes32 assetID
+  ) external view returns (PositionMarginType, int32);
 }

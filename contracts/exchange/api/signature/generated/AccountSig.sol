@@ -93,3 +93,29 @@ function hashRemoveTransferAccount(
 ) pure returns (bytes32) {
   return keccak256(abi.encode(_DEL_TRANSFER_ACC_H, accID, transferAccountID, nonce, expiration));
 }
+
+bytes32 constant _AUTHORIZE_BUILDER_H = keccak256(
+  "AuthorizeBuilder(address mainAccountID,address builderAccountID,uint32 maxFutureFeeRate,uint32 maxSpotFeeRate,uint32 nonce,int64 expiration)"
+);
+
+function hashAuthorizeBuilder(
+  address mainAccountID,
+  address builderAccountID,
+  uint32 maxFutureFeeRate,
+  uint32 maxSpotFeeRate,
+  uint64 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(
+        _AUTHORIZE_BUILDER_H,
+        mainAccountID,
+        builderAccountID,
+        maxFutureFeeRate,
+        maxSpotFeeRate,
+        nonce,
+        expiration
+      )
+    );
+}

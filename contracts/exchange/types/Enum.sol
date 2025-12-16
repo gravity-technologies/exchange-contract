@@ -9,8 +9,8 @@ enum MarginType {
 
 enum PositionMarginType {
   UNSPECIFIED,
-  ISOLATED,
-  SIMPLE_CROSS_MARGIN
+  ISOLATED, // Isolated Margin Mode: each position is allocated a fixed amount of collateral
+  CROSS // Cross Margin Mode: uses all available funds in your account as collateral across all cross margin positions
 }
 
 enum TimeInForce {
