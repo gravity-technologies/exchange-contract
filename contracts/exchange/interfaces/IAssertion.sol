@@ -253,5 +253,17 @@ interface IAssertion {
 
   function assertUpdateFundingInfo(AssetFundingInfo[] calldata expectedFundingInfos) external view;
 
-  function assertSetSubAccountPositionMarginConfig(uint64 subID, bytes32 asset, PositionMarginType marginType, int32 leverage) external view;
+  function assertSetSubAccountPositionMarginConfig(
+    uint64 subID,
+    bytes32 asset,
+    PositionMarginType marginType,
+    int32 leverage
+  ) external view;
+
+  function assertAddIsolatedPositionMargin(
+    uint64 subAccountID,
+    bytes32 assetID,
+    int64 marginBalance,
+    int64 subAccountSpotBalance
+  ) external view;
 }

@@ -79,3 +79,4 @@ error AssertionVaultUpdateMismatch();
 error AssertionWithdrawalAddressNotAdded();
 error AssertionWithdrawalAddressNotRemoved();
 error AssertionWithdrawBalanceMismatch();
+error AssertionPositionMarginMismatch();

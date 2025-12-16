@@ -40,3 +40,17 @@ function hashOrderLegs(OrderLeg[] calldata legs) pure returns (bytes32) {
   }
   return keccak256(abi.encodePacked(hashedLegs));
 }
+
+bytes32 constant _HASH_ADD_ISOLATED_POSITION_MARGIN_H = keccak256(
+  "AddIsolatedPositionMargin(uint64 subAccountID,uint256 asset,int64 amount,uint32 nonce,int64 expiration)"
+);
+
+function hashAddIsolatedPositionMargin(
+  uint64 subAccountID,
+  bytes32 assetID,
+  int64 amount,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return keccak256(abi.encode(_HASH_ADD_ISOLATED_POSITION_MARGIN_H, subAccountID, assetID, amount, nonce, expiration));
+}

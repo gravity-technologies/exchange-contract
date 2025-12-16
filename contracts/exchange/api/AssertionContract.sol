@@ -817,4 +817,20 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert SubAccountPositionMarginConfigMismatch();
     }
   }
+
+  function assertAddIsolatedPositionMargin(
+    uint64 subAccountID,
+    bytes32 assetID,
+    int64 positionMargin,
+    int64 subAccountSpotBalance
+  ) external view {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    if (sub.spotBalances[sub.quoteCurrency] != subAccountSpotBalance) {
+      revert AssertionSubSpotBalanceMismatch();
+    }
+    Position storage pos = _getPosition(sub, assetID);
+    if (pos.marginBalance != positionMargin) {
+      revert AssertionPositionMarginMismatch();
+    }
+  }
 }

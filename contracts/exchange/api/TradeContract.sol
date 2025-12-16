@@ -435,4 +435,37 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
     return BI(bps, 6);
   }
+
+  function addIsolatedPositionMargin(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccountID,
+    bytes32 assetID,
+    int64 amount,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
+
+    PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
+    Position storage pos = posmap.values[assetID];
+    if (pos.id == 0 || pos.marginType != PositionMarginType.ISOLATED) {
+      revert ErrAddMarginToNonIsolatedPosition();
+    }
+
+    // TODO: pending margin check logic from quants
+    //  https://github.com/gravity-technologies/platform/blob/f6ee441a21ecf58bfc67cb4952d8978cef46d4ec/backend/lib/statemachine/pkg/state/subaccount_position_margin_api.go#L9-L57
+
+    // ---------- Signature Verification -----------
+    bytes32 hash = hashAddIsolatedPositionMargin(subAccountID, assetID, amount, sig.nonce, sig.expiration);
+    _preventReplay(hash, sig);
+    // ------- End of Signature Verification -------
+
+    // amount > 0: add margin to the position
+    // amount < 0: remove margin from the position
+    pos.marginBalance += amount;
+    sub.spotBalances[assetGetQuote(assetID)] -= amount;
+  }
 }

@@ -552,9 +552,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     revert("invalid asset kind");
   }
 
-  function _hasPosition(SubAccount storage sub, bytes32 assetID) internal view returns (bool) {
+  function _getPosition(SubAccount storage sub, bytes32 assetID) internal view returns (Position storage) {
     PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
-    Position storage pos = posmap.values[assetID];
+    return posmap.values[assetID];
+  }
+
+  function _hasPosition(SubAccount storage sub, bytes32 assetID) internal view returns (bool) {
+    Position storage pos = _getPosition(sub, assetID);
     return pos.id != 0x0 && pos.balance != 0;
   }
 

@@ -39,3 +39,4 @@ error MarginLockActive();
 error SubAccountPositionMarginConfigMismatch();
 error ErrSetPositionMarginConfigInvalidMarginType();
 error ErrSetPostionMarginConfigPositionNotEmpty();
+error ErrAddMarginToNonIsolatedPosition();
