@@ -16,6 +16,10 @@ export async function runTestCase(
   w1: Wallet,
   l2SharedBridgeAsL1Bridge: L2SharedBridge
 ) {
+  if (DEBUG) {
+    console.log("🟢 Test case", test.name)
+  }
+
   for (const step of test.steps ?? []) {
     if (DEBUG) {
       console.log(`Executing step ${step.tx_id} of ${step.tx?.type}`)
@@ -63,7 +67,7 @@ async function executeTestStep(
       await validateExpectations(exchangeContract, step.expectations)
     }
   } catch (e) {
-    console.error("Error sending transaction. Check the input payload:", e)
+    console.log("🔴 Failed step", step.tx_id, step.tx?.type)
     throw e
   }
 

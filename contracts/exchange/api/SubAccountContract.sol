@@ -15,6 +15,9 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
   uint32 private constant DERISK_MM_RATIO_MIN = 1_000_000; // 1x
   uint32 private constant DERISK_MM_RATIO_MAX = 2_000_000; // 2x
 
+  int32 private constant _MIN_ISOLATED_POSITION_LEVERAGE = 1_000_000; // 1x
+  int32 private constant _MAX_ISOLATED_POSITION_LEVERAGE = 50_000_000; // 50x
+
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
   /// @param txID The transaction ID
@@ -285,6 +288,9 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
 
     if (marginType != PositionMarginType.ISOLATED && marginType != PositionMarginType.CROSS) {
       revert ErrSetPositionMarginConfigInvalidMarginType();
+    }
+    if (leverage < _MIN_ISOLATED_POSITION_LEVERAGE || leverage > _MAX_ISOLATED_POSITION_LEVERAGE) {
+      revert ErrSetPositionMarginConfigInvalidLeverage();
     }
     SubAccount storage sub = _requireSubAccount(subAccID);
     _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);

@@ -231,7 +231,8 @@ export interface ExNumSubAccountPositions {
 export interface ExSubAccountSpotReal {
   sub_account_id: string
   currency: string
-  balance: string
+  balance: string // not usable by contract since this is a derived value
+  raw_balance: string // use this to compare with sub.spotBalances[currency]
 }
 
 export interface ExSubAccountPositionOptional {
@@ -250,6 +251,7 @@ export interface ExSubAccountPositionOptional {
     roi: number
     quote_index_price: string
   }
+  raw_position_balance: string
 }
 
 export interface ExInsuranceFundLoss {

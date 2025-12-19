@@ -88,7 +88,8 @@ const config: HardhatUserConfig = {
     },
   },
   mocha: {
-    timeout: 100000000
+    timeout: 100000000,
+    bail: true
   },
   contractAddresses: {
     grvtMainnet: {

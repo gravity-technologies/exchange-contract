@@ -38,6 +38,7 @@ error NotConfigAddress();
 error MarginLockActive();
 error SubAccountPositionMarginMismatch();
 error ErrSetPositionMarginConfigInvalidMarginType();
+error ErrSetPositionMarginConfigInvalidLeverage();
 error ErrSetPostionMarginConfigPositionNotEmpty();
 error ErrAddMarginToNonIsolatedPosition();
 error InvalidBuilderFeeRate();

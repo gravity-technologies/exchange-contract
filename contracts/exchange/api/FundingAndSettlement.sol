@@ -25,7 +25,7 @@ contract FundingAndSettlement is BaseContract {
     Currency quoteCurrency = sub.quoteCurrency;
     uint64 qdec = _getBalanceDecimal(quoteCurrency);
     PositionsMap storage perps = sub.perps;
-    BI memory fundingPayment;
+    mapping(bytes32 => PositionMarginConfig) storage posConfigs = sub.positionMarginConfigs;
 
     bytes32[] storage keys = perps.keys;
     uint len = keys.length;
@@ -38,10 +38,16 @@ contract FundingAndSettlement is BaseContract {
         continue;
       }
       // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
-      fundingPayment = fundingPayment.add(_getPerpFundingPayment(assetID, perp, fundingIndexChange));
+      int64 fundingPayment = _getPerpFundingPayment(assetID, perp, fundingIndexChange).toInt64(qdec);
+      if (posConfigs[assetID].marginType == PositionMarginType.ISOLATED) {
+        // Isolated margin: funding affects the isolated position balance.
+        perp.marginBalance -= fundingPayment;
+      } else {
+        // Cross margin (incl. UNSPECIFIED): funding affects cross spot balance.
+        sub.spotBalances[quoteCurrency] -= fundingPayment;
+      }
       perp.lastAppliedFundingIndex = latestFundingIndex;
     }
-    sub.spotBalances[quoteCurrency] -= fundingPayment.toInt64(qdec);
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
 

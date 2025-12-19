@@ -80,7 +80,7 @@ interface IGetter {
   function getSubAccountPosition(
     uint64 subAccountID,
     bytes32 assetID
-  ) external view returns (bool found, int64 balance, int64 lastAppliedFundingIndex);
+  ) external view returns (bool found, int64 balance, int64 lastAppliedFundingIndex, int64 marginBalance);
 
   function getSubAccountPositionCount(uint64 subAccountID) external view returns (uint);
 

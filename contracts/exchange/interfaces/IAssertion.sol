@@ -114,6 +114,7 @@ interface IAssertion {
     bytes32 assetID;
     int64 balance;
     int64 fundingIndex;
+    int64 marginBalance;
   }
   struct SpotAssertion {
     Currency currency;
@@ -126,8 +127,15 @@ interface IAssertion {
     SpotAssertion[] spots;
     int64 lastDeriskTimestamp;
   }
+
+  struct AccountAssertion {
+    address accountID;
+    SpotAssertion[] spots;
+  }
+
   struct TradeAssertion {
     SubAccountAssertion[] subAccounts;
+    AccountAssertion[] accounts;
   }
 
   // Assertion for Trade Contract
