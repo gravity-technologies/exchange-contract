@@ -6,7 +6,7 @@ import "./signature/generated/ConfigSig.sol";
 import {ConfigID, FeatureFlagID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
 import {L2ContractHelper} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
-import "../interfaces/IConfig.sol";
+// IConfig implemented in ConfigFacet to avoid exposing config selectors from the base
 
 struct ConfigProofMessage {
   uint256 blockTimestamp;
@@ -56,7 +56,7 @@ struct ConfigProofMessage {
 ///    the new value by calling `setConfig`
 ///
 ///////////////////////////////////////////////////////////////////
-contract ConfigContract is IConfig, BaseContract {
+abstract contract ConfigContract is BaseContract {
   using BIMath for BI;
 
   // --------------- Constants ---------------
@@ -236,49 +236,6 @@ contract ConfigContract is IConfig, BaseContract {
     return false;
   }
 
-  ///////////////////////////////////////////////////////////////////
-  /// Config APIs
-  ///////////////////////////////////////////////////////////////////
-
-  /**
-   * @dev Sends a message to L1 containing the latest config version.
-   * This function is used to prove that no config updates have occurred
-   * since the config operation with the version sent to L1.
-   * Note that the timestamp used is the block timestamp at the time of the call
-   * as opposed to cluster timestamp in other config update operations.
-   * This is sufficient to prove that no config updates have occurred before a certain
-   * L2 block timestamp.
-   */
-  function proveConfig() external {
-    _sendConfigProofMessageToL1("");
-  }
-
-  function initializeConfig(
-    int64 timestamp,
-    uint64 txID,
-    InitializeConfigItem[] calldata items,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequenceInitializeConfig(timestamp, txID);
-
-    // ---------- Signature Verification -----------
-    require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
-    _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    for (uint256 i = 0; i < items.length; i++) {
-      ConfigID key = items[i].key;
-      bytes32 subKey = items[i].subKey;
-      bytes32 value = items[i].value;
-
-      ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-      _setConfigValue(key, subKey, value, setting);
-    }
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, items));
-  }
-
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       address partnerAddress = _configToAddress(subKey);
@@ -364,90 +321,13 @@ contract ConfigContract is IConfig, BaseContract {
     return uint256(settings.typ) % 2 == 0;
   }
 
-  /// @notice Schedule a config update. Afterwards, the timestamp at
-  /// which the config is enforce is updated. This must be followed by a call
-  /// to `setConfig` at some point in the future to actually make the config changes.
-  ///
-  /// @param timestamp the new system timestamp
-  /// @param txID the new system txID
-  /// @param key the config key
-  /// @param subKey the config subKey, 0x0 for 1D config
-  /// @param value the config value in bytes32
-  /// @param sig the signature of the transaction
-  function scheduleConfig(
-    int64 timestamp,
-    uint64 txID,
-    ConfigID key,
-    bytes32 subKey,
-    bytes32 value,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequence(timestamp, txID);
-
-    // ---------- Signature Verification -----------
-    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
-
-    _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-    ConfigSchedule storage sched = setting.schedules[subKey];
-    sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
-  }
-
-  /// @notice Update a specific config. Performs check to ensure that the value
-  /// is within the permissible range.
-  ///
-  /// @param timestamp the new system timestamp
-  /// @param txID the new system txID
-  /// @param key the config key
-  /// @param subKey the config sub key, for 1D config it must be 0
-  /// @param value the config value in bytes32
-  /// @param sig the signature of the transaction
-  function setConfig(
-    int64 timestamp,
-    uint64 txID,
-    ConfigID key,
-    bytes32 subKey,
-    bytes32 value,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequence(timestamp, txID);
-
-    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
-
-    // ---------- Signature Verification -----------
-    _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    _initializeNewConfigSettingIfNeeded();
-    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-
-    int64 lockDuration = _getLockDuration(key, subKey, value);
-    if (lockDuration > 0) {
-      int64 lockEndTime = setting.schedules[subKey].lockEndTime;
-      require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
-    }
-
-    _setConfigValue(key, subKey, value, setting);
-
-    // Must delete the schedule after the config is set (to prevent replays)
-    delete setting.schedules[subKey];
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
-  }
-
   function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
     return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
   }
 
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
   /// Expect the timelocks duration should be in increasing order of delta change and timelock duration
-  function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) private view returns (int64) {
+  function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) internal view returns (int64) {
     ConfigType typ = state.configSettings[key].typ;
     require(typ != ConfigType.UNSPECIFIED, "404");
 

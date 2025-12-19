@@ -12,6 +12,10 @@ contract AddressTest is Test {
   mapping(address => uint64) accountSigners;
   mapping(address => uint64) subAccountSigners;
 
+  function removeAddressExternal(address addr, bool preventRemovingLastElement) external {
+    removeAddress(removeAddressesFix, addr, preventRemovingLastElement);
+  }
+
   function testAddressExists() public pure {
     address[] memory arr = new address[](3);
     arr[0] = address(0x123);
@@ -74,10 +78,10 @@ contract AddressTest is Test {
     assert(removeAddressesFix.length == 0);
     addAddress(removeAddressesFix, address(0x123));
     vm.expectRevert("cannot remove last @");
-    removeAddress(removeAddressesFix, address(0x123), true);
+    this.removeAddressExternal(address(0x123), true);
     assert(removeAddressesFix.length == 1);
     vm.expectRevert("not found");
-    removeAddress(removeAddressesFix, address(0x999), false);
+    this.removeAddressExternal(address(0x999), false);
     assert(removeAddressesFix.length == 1);
   }
 }

@@ -10,6 +10,10 @@ import "../../../contracts/exchange/util/BIMath.sol";
 contract BIMathTest is Test {
   using BIMath for BI;
 
+  function divExternal(BI memory a, BI memory b) external pure returns (BI memory) {
+    return a.div(b);
+  }
+
   function testAdd() public {
     // Test Case 1: 1+2, same decimals
     BI memory a = BI(1_000_000_000, 9);
@@ -175,7 +179,7 @@ contract BIMathTest is Test {
     a = BIMath.one();
     b = BIMath.zero();
     vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
-    a.div(b);
+    this.divExternal(a, b);
   }
 
   function testScale() public {

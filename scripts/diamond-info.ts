@@ -34,4 +34,24 @@ export const ExchangeFacetInfos = [
     facet: "WalletRecoveryFacet",
     interface: "IWalletRecovery",
   },
+  {
+    file: "contracts/exchange/facets/AccountFacet.sol",
+    facet: "AccountFacet",
+    interface: "IAccount",
+  },
+  {
+    file: "contracts/exchange/facets/SubAccountFacet.sol",
+    facet: "SubAccountFacet",
+    interface: "ISubAccount",
+  },
+  {
+    file: "contracts/exchange/facets/TransferFacet.sol",
+    facet: "TransferFacet",
+    interface: "ITransferAndTrade",
+  },
+  {
+    file: "contracts/exchange/facets/ConfigFacet.sol",
+    facet: "ConfigFacet",
+    interface: "IConfig",
+  },
 ]

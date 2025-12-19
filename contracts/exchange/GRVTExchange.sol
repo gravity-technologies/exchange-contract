@@ -1,9 +1,6 @@
 pragma solidity ^0.8.20;
 
-import "./api/AccountContract.sol";
-import "./api/SubAccountContract.sol";
 import "./api/OracleContract.sol";
-import "./api/TransferContract.sol";
 import "./api/AssertionContract.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {DepositProxy} from "../DepositProxy.sol";
@@ -12,14 +9,7 @@ import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/Upgradeabl
 import {LibDiamond} from "./libraries/LibDiamond.sol";
 import {IDiamondCut} from "./interfaces/IDiamondCut.sol";
 
-contract GRVTExchange is
-  Initializable,
-  AccountContract,
-  SubAccountContract,
-  OracleContract,
-  TransferContract,
-  AssertionContract
-{
+contract GRVTExchange is Initializable, OracleContract, AssertionContract {
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
