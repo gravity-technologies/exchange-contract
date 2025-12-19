@@ -515,6 +515,10 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+    // Fast path: same currency
+    if (from == to) {
+      return amount;
+    }
     return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
   }
 
@@ -675,41 +679,129 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return total;
   }
 
+  /// @dev Get the total value of a sub account in USD (including both cross/isolated positions values + cash balance)
+  ///
+  /// TODO: update once Risk migrated all call sites away from deprecatedGetTotalQuityInUSD
+  /// https://github.com/gravity-technologies/platform/blob/f4bd7c084cd6d2415247be2dc620923b2c65c8e3/backend/lib/statemachine/pkg/state/vault_api_deprecated.go#L20
   function _getTotalEquityInUSD(SubAccount storage sub) internal view returns (BI memory) {
     BI memory totalValue = _getTotalEquityInQuote(sub);
     return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
   }
 
-  /// @dev Get the total value of a sub account in quote currency
-  // TODO: https://github.com/gravity-technologies/platform/blob/2cb733bb1a82876caad59adbbc89785a6330a2be/backend/lib/statemachine/pkg/state/margin_equity.go#L45
-  // totalValue = sum(sub.SpotBalances, sub.IsolatedPosition.Balances, positionValues)
+  /// @dev Get the total value of a sub account in quote currency (including both cross/isolated positions values + cash balance)
+  ///
+  /// TODO: update once Risk migrated all call sites away from deprecatedGetTotalQuityInUSD
   function _getTotalEquityInQuote(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
-      _getPositionsValueInQuote(sub.options)
+    // We have to follow the addition order of statemachine
+    // TE = positionVal + spotBalances + positionBalances
+    // See https://github.com/gravity-technologies/platform/blob/f4bd7c084cd6d2415247be2dc620923b2c65c8e3/backend/lib/statemachine/pkg/state/subaccount_accessor.go#L146-L182
+    (BI memory positionExposureValue, BI memory marginBalanceValue) = _getPositionsValueInQuote(
+      sub.perps,
+      sub.quoteCurrency
     );
 
-    totalValue = totalValue.add(_getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency));
+    BI memory cashValueInQuote = _getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency).add(
+      marginBalanceValue
+    );
 
-    return totalValue;
+    return positionExposureValue.add(cashValueInQuote);
   }
 
-  /// @dev Get the total value of a position collections in quote currency
-  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
-    BI memory total;
-    bytes32[] storage keys = positions.keys;
-    mapping(bytes32 => Position) storage values = positions.values;
-
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
-      Position storage pos = values[keys[i]];
-      bytes32 assetID = pos.id;
-      Currency underlying = assetGetUnderlying(assetID);
-      uint64 uDec = _getBalanceDecimal(underlying);
-      BI memory balance = BI(pos.balance, uDec);
-      BI memory assetPrice = _requireAssetPriceInQuoteBI(assetID);
-      total = total.add(balance.mul(assetPrice));
+  /// @dev Get the total value of a positions collection and their margin balance (ie cash) in quote currency
+  function _getPositionsValueInQuote(
+    PositionsMap storage positions,
+    Currency subAccountQuote
+  ) internal view returns (BI memory, BI memory) {
+    BI memory totalPositionValue;
+    BI memory totalMarginBalanceValue;
+    bytes32[] storage positionKeys = positions.keys;
+    uint positionsCount = positionKeys.length;
+    if (positionsCount == 0) {
+      return (totalPositionValue, totalMarginBalanceValue);
     }
-    return total;
+
+    mapping(bytes32 => Position) storage values = positions.values;
+    uint64 quoteDecimals = _getBalanceDecimal(subAccountQuote);
+
+    for (uint i; i < positionsCount; ++i) {
+      Position storage pos = values[positionKeys[i]];
+      bytes32 assetID = pos.id;
+      Currency posQuote = assetGetQuote(assetID);
+      if (posQuote != subAccountQuote) {
+        revert ErrInvalidQuote();
+      }
+
+      Currency underlying = assetGetUnderlying(assetID);
+      BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+      BI memory assetPrice = _requireAssetPriceInQuoteBI(assetID);
+      totalPositionValue = totalPositionValue.add(balance.mul(assetPrice));
+
+      // Assumption, position is always properly zeroed out when removed (see PositionMap.sol)
+      // For non isolated position, marginBalance is always 0
+      // We can't change the marginType if the position is still open, see SubAccount.sol#setSubAccountPositionMarginConfig
+      int64 marginBalance = pos.marginBalance;
+      if (marginBalance != 0) {
+        // We don't need to this value using convertCurrency like in StateMachine since it's already in subAccountQuote (see the validation above)
+        totalMarginBalanceValue = totalMarginBalanceValue.add(BI(marginBalance, quoteDecimals));
+      }
+    }
+    return (totalPositionValue, totalMarginBalanceValue);
+  }
+
+  /// @dev Returns the cross total equity for a sub account in quote currency
+  ///      This is the sum of sub.SpotBalances value and cross position values
+  ///
+  /// @notice This function only supports perpetuals for now
+  function _getTotalEquityCrossInQuote(SubAccount storage sub) internal view returns (BI memory) {
+    // Get spot values
+    BI memory te = _getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency);
+
+    // Get cross positions values
+    PositionsMap storage perps = sub.perps;
+    mapping(bytes32 => PositionMarginConfig) storage posConfigs = sub.positionMarginConfigs;
+    bytes32[] storage perpKeys = perps.keys;
+    uint count = perpKeys.length;
+
+    // Fast path
+    if (count == 0) {
+      return te;
+    }
+
+    mapping(bytes32 => Position) storage perpValues = sub.perps.values;
+    for (uint i; i < count; ++i) {
+      Position storage pos = perpValues[perpKeys[i]];
+      bytes32 assetID = pos.id;
+      PositionMarginType marginType = posConfigs[assetID].marginType;
+
+      // Assumption: if the position margin type == UNSPECIFIED (ie missing value), it is a cross position.
+      // This is because this positionMarginConfigs mappings was introduced during isolated margin feature.
+      if (marginType == PositionMarginType.UNSPECIFIED || marginType == PositionMarginType.CROSS) {
+        Currency underlying = assetGetUnderlying(assetID);
+        BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+        BI memory price = _requireAssetPriceInQuoteBI(assetID);
+        te = te.add(balance.mul(price));
+      }
+    }
+
+    return te;
+  }
+
+  /// @dev Returns the total equity for an isolated margin position in a subaccount
+  ///      Isolated Position Equity = Position Balance + Position Size * Mark Price
+  ///      Risk's definition:https://github.com/gravity-technologies/platform/blob/04be067a577cb288169d5781e4228f10bfc1ae83/backend/lib/statemachine/pkg/state/margin_equity_isolated.go#L9-L44
+  ///
+  /// @notice This function only supports perpetuals for now
+  function _getTotalEquityIsolatedInQuote(SubAccount storage sub, bytes32 assetID) internal view returns (BI memory) {
+    Position storage pos = _getPosition(sub, assetID);
+    if (sub.positionMarginConfigs[assetID].marginType != PositionMarginType.ISOLATED) {
+      revert ErrNotIsolatedMarginPosition();
+    }
+    Currency underlying = assetGetUnderlying(assetID);
+    Currency quote = assetGetQuote(assetID);
+    BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+    BI memory price = _requireAssetPriceInQuoteBI(assetID);
+    BI memory te = BI(pos.marginBalance, _getBalanceDecimal(quote));
+    return te.add(balance.mul(price));
   }
 
   function _uintToConfig(uint256 v) internal pure returns (bytes32) {

@@ -14,22 +14,6 @@ int64 constant DERISK_WINDOW_NANOS = 60 * 1_000_000_000; // 1 minute
 contract RiskCheck is BaseContract, MarginConfigContractGetter {
   using BIMath for BI;
 
-  function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) internal view returns (uint64) {
-    int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
-    if (insuranceFundLossAmountUSDT == 0) {
-      return 0;
-    }
-
-    // non-user accounts are not subject to socialized loss
-    if (!_isUserAccount(fromAccID)) {
-      return 0;
-    }
-
-    int64 totalClientValueUSDT = _getTotalClientValueUSDT();
-    int haircutAmount = (int(withdrawAmount) * int(insuranceFundLossAmountUSDT)) / int(totalClientValueUSDT);
-    return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
-  }
-
   function _getTotalClientValueUSDT() internal view returns (int64) {
     BI memory totalSpotBalancesUSDTValueBI = _getSpotBalanceValueInCurrencyBI(state.totalSpotBalances, Currency.USDT);
     int64 totalSpotBalancesUSDTValue = totalSpotBalancesUSDTValueBI.toInt64(_getBalanceDecimal(Currency.USDT));
@@ -68,7 +52,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     return totalValueBI.toInt64(dec);
   }
 
-  function _getAllInternalFundingAccounts() internal view returns (address[] memory) {
+  function _getAllInternalFundingAccounts() private view returns (address[] memory) {
     address[] memory accounts = new address[](2);
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
@@ -143,47 +127,68 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     return true;
   }
 
-  /**
-   * @dev Check the current subaccount margin level. If the subaccount is below the maintenance margin,
-   * it is liquidatable.
-   * @param subAccount The subaccount to check.
-   * @return True if the subaccount is below the maintenance margin, false otherwise.
-   */
-  function isAboveMaintenanceMargin(SubAccount storage subAccount) internal view returns (bool) {
-    require(subAccount.marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
-    uint usdDecimals = _getBalanceDecimal(Currency.USD);
-
-    int64 subAccountValue = _getTotalEquityInQuote(subAccount).toInt64(usdDecimals);
-    uint64 maintenanceMargin = _getMaintenanceMarginInQuote(subAccount);
-
-    return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
+  /// @dev if isolatedAssetID != 0x0, this means we are checking MM for an isolated position
+  function isBelowMaintenanceMargin(
+    SubAccount storage subAccount,
+    bytes32 isolatedAssetID
+  ) internal view returns (bool) {
+    if (subAccount.marginType != MarginType.SIMPLE_CROSS_MARGIN) {
+      revert ErrInvalidSubAccountMarginType();
+    }
+    if (isolatedAssetID == bytes32(0)) {
+      return _isBelowMaintenanceMarginCross(subAccount);
+    }
+    return _isBelowMaintenanceMarginIsolated(subAccount, isolatedAssetID);
   }
 
-  function isSubAccountEquityNonNegative(SubAccount storage subAccount) internal view returns (bool) {
-    return !_getTotalEquityInQuote(subAccount).isNegative();
+  function _isBelowMaintenanceMarginCross(SubAccount storage subAccount) private view returns (bool) {
+    BI memory te = _getTotalEquityCrossInQuote(subAccount);
+    if (te.val < 0) return true;
+    return te.cmp(_getMaintenanceMarginCrossInQuote(subAccount)) < 0;
   }
 
-  function _getMaintenanceMarginInQuote(SubAccount storage subAccount) internal view returns (uint64) {
-    BI memory mmBI = _getCrossMaintenanceMarginUsd(subAccount);
-    BI memory settleIndexPrice = _getSpotPriceUsdBI(subAccount.quoteCurrency);
+  function _isBelowMaintenanceMarginIsolated(
+    SubAccount storage subAccount,
+    bytes32 assetID
+  ) private view returns (bool) {
+    BI memory te = _getTotalEquityIsolatedInQuote(subAccount, assetID);
+    if (te.val < 0) return true;
+    return te.cmp(_getMaintenanceMarginIsolatedInQuote(subAccount, assetID)) < 0;
+  }
 
+  function isTotalEquityCrossPositive(SubAccount storage subAccount) internal view returns (bool) {
+    return _getTotalEquityCrossInQuote(subAccount).val > 0;
+  }
+
+  function _getMaintenanceMarginCrossInQuote(SubAccount storage subAccount) internal view returns (BI memory) {
+    BI memory mmUSD = _getMaintenanceMarginCrossInUsd(subAccount);
+    BI memory quotePriceUSD = _getSpotPriceUsdBI(subAccount.quoteCurrency);
     uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
-    return mmBI.div(settleIndexPrice).toUint64(qDec);
+    return mmUSD.div(quotePriceUSD).scale(qDec);
   }
 
   /**
    * @dev Returns the maintenance margin for a subaccount. Only support perpetual at the moment
    * @param subAccount The subaccount to check.
-   * @return The maintenance margin.
+   * @return The maintenance margin in USD
    */
-  function _getCrossMaintenanceMarginUsd(SubAccount storage subAccount) internal view returns (BI memory) {
+  function _getMaintenanceMarginCrossInUsd(SubAccount storage subAccount) internal view returns (BI memory) {
     BI memory totalCharge = BIMath.zero();
 
     bytes32[] storage keys = subAccount.perps.keys;
     mapping(bytes32 => Position) storage values = subAccount.perps.values;
     uint numPerps = keys.length;
+    if (numPerps == 0) {
+      return totalCharge;
+    }
+    mapping(bytes32 => PositionMarginConfig) storage posConfigs = subAccount.positionMarginConfigs;
     for (uint i = 0; i < numPerps; i++) {
       bytes32 asset = keys[i];
+      // Assumption: if there's no config for a position in this mapping, this means it is CROSS
+      // This is to maintain backward compatibility since ISOLATED margin was added after CROSS
+      if (posConfigs[asset].marginType == PositionMarginType.ISOLATED) {
+        continue;
+      }
       totalCharge = totalCharge.add(_getPerpMaintenanceMarginUSD(asset, values[asset]));
     }
 
@@ -208,8 +213,12 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     return mm.mul(qPrice);
   }
 
-  /// @dev compute the derisk margin in settle currency (and settle decimals), and return true if the subaccount is deriskable
-  function _isDeriskable(int64 timestamp, SubAccount storage subAccount) internal view returns (bool) {
+  /// if isolatedAssetID != 0x0, this means we are checking if an isolated position is deriskable
+  function isDeriskable(
+    int64 timestamp,
+    SubAccount storage subAccount,
+    bytes32 isolatedAssetID
+  ) internal view returns (bool) {
     if (subAccount.isVault && subAccount.vaultInfo.status == VaultStatus.DELISTED) {
       return true;
     }
@@ -217,31 +226,68 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     if (subAccount.lastDeriskTimestamp + DERISK_WINDOW_NANOS > timestamp) {
       return true;
     }
+    if (isolatedAssetID == 0x0) {
+      return
+        isTotalEquityBelowDeriskMargin(
+          subAccount,
+          _getMaintenanceMarginCrossInQuote(subAccount),
+          _getTotalEquityCrossInQuote(subAccount)
+        );
+    }
+    return
+      isTotalEquityBelowDeriskMargin(
+        subAccount,
+        _getMaintenanceMarginIsolatedInQuote(subAccount, isolatedAssetID),
+        _getTotalEquityIsolatedInQuote(subAccount, isolatedAssetID)
+      );
+  }
 
-    // Compute the maintenance margin
-    uint64 mm = _getMaintenanceMarginInQuote(subAccount);
-    uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
-    BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
+  // TODO: implement, only support perpetual at the moment
+  function _getMaintenanceMarginIsolatedInQuote(
+    SubAccount storage subAccount,
+    bytes32 assetID
+  ) internal view returns (BI memory) {
+    Position storage pos = subAccount.perps.values[assetID];
+    if (pos.id == 0x0) {
+      revert ErrPositionNotFound();
+    }
+    BI memory mmUSD = _getPerpMaintenanceMarginUSD(assetID, pos);
+    return _convertCurrency(mmUSD, Currency.USD, subAccount.quoteCurrency);
+  }
 
-    // Compute the derisk margin
-    uint64 ratio = DERISK_MM_RATIO_DEFAULT;
-    if (subAccount.isVault) {
-      ratio = DERISK_MM_RATIO_VAULT;
-    } else if (subAccount.deriskToMaintenanceMarginRatio != 0) {
-      ratio = subAccount.deriskToMaintenanceMarginRatio;
+  /// @dev Returns true if the sub account's total equity is below derisk margin
+  ///      Fast-paths:
+  ///      - If `subAccountTotalEquity` is negative, it is deriskable without computing the derisk margin.
+  ///      Otherwise, checks `TE < DRM` where:
+  ///      - `TE` is `subAccountTotalEquity` in quote decimals (negative TE is always deriskable).
+  ///      - `DRM = maintenanceMargin * ratio`, with `ratio` chosen as:
+  ///        vault: `DERISK_MM_RATIO_VAULT`, non-vault: `subAccount.deriskToMaintenanceMarginRatio` or default.
+  function isTotalEquityBelowDeriskMargin(
+    SubAccount storage subAccount,
+    BI memory maintenanceMarginInQuote,
+    BI memory totalEquityInQuote
+  ) internal view returns (bool) {
+    // Fast path: negative total equity is always deriskable (and avoids computing derisk margin).
+    if (totalEquityInQuote.val < 0) {
+      return true;
     }
 
-    BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
-    uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
+    // Compute the derisk margin
+    uint64 ratio;
+    if (subAccount.isVault) {
+      ratio = DERISK_MM_RATIO_VAULT;
+    } else {
+      ratio = subAccount.deriskToMaintenanceMarginRatio;
+      if (ratio == 0) ratio = DERISK_MM_RATIO_DEFAULT;
+    }
 
-    BI memory totalEquityBI = _getTotalEquityInQuote(subAccount);
-    int64 totalEquity = totalEquityBI.toInt64(qDec);
+    BI memory deriskMarginInQuote = maintenanceMarginInQuote.mul(BI(int64(ratio), DERISK_RATIO_DECIMALS));
 
     // In contract, we omit the TE < MM check to allow derisk orders to proceed even when total equity
     // is below maintenance margin. This is intentional as it reduces risk for our insurance fund by
     // allowing accounts to reduce their positions even when they're in a risky state.
     // This differs from the liquidator's scan which uses MM <= TE < DRM condition to avoid interference
     // with liquidation process. For accounts outside derisking window, we only check TE < DRM.
-    return totalEquity < 0 || uint64(totalEquity) < deriskMargin;
+    return totalEquityInQuote.cmp(deriskMarginInQuote) < 0;
   }
 }

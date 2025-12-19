@@ -170,7 +170,8 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return _getMaintenanceMarginInQuote(sub);
+    uint qDec = _getBalanceDecimal(sub.quoteCurrency);
+    return _getMaintenanceMarginCrossInQuote(sub).toUint64(qDec);
   }
 
   function getTimestamp() public view returns (int64) {
@@ -235,30 +236,16 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return (lpInfo.lpTokenBalance, lpInfo.usdNotionalInvested);
   }
 
-  function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) public view returns (bool) {
-    SubAccount storage sub = _requireSubAccount(subAccountID);
-
-    // Compute the maintenance margin
-    uint64 mm = _getMaintenanceMarginInQuote(sub);
-    uint64 qDec = _getBalanceDecimal(sub.quoteCurrency);
-    BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
-
-    // Compute the derisk margin
-    // TODO: if subAccount is vault, ratio = DERISK_MM_RATIO_VAULT
-    uint64 ratio = sub.deriskToMaintenanceMarginRatio == 0
-      ? DERISK_MM_RATIO_DEFAULT
-      : sub.deriskToMaintenanceMarginRatio;
-    BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
-    uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
-
-    BI memory totalEquityBI = _getTotalEquityInQuote(sub);
-    int64 totalEquity = totalEquityBI.toInt64(qDec);
-
-    if (underDeriskMargin) {
-      return totalEquity < int64(deriskMargin);
-    } else {
-      return totalEquity >= int64(deriskMargin);
-    }
+  /// This function is more correctly named as isUnderDeriskMarginCross
+  function isUnderDeriskMargin(uint64 subAccountID, bool expectedUnderDeriskMargin) public view returns (bool) {
+    SubAccount storage subAccount = _requireSubAccount(subAccountID);
+    return
+      expectedUnderDeriskMargin ==
+      isTotalEquityBelowDeriskMargin(
+        subAccount,
+        _getMaintenanceMarginCrossInQuote(subAccount),
+        _getTotalEquityCrossInQuote(subAccount)
+      );
   }
 
   function getCurrencyDecimals(uint16 id) public view returns (uint16) {

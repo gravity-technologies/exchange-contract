@@ -11,6 +11,8 @@ struct Position {
   int64 balance;
   // (expressed in USD with 10 decimal points)
   int64 lastAppliedFundingIndex;
+  // The isolated margin balance of the isolated margin position. 0 for cross margin
+  // The margin type  for the position is stored at subAccount.positionMarginConfigs[assetID].marginType
   int64 marginBalance;
 }
 

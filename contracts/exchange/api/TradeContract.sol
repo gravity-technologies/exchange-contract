@@ -220,24 +220,52 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       return;
     }
 
+    bytes32 isolatedAssetID = _getOrderIsolatedLegAssetID(order, sub);
+
     // ---------- Derisk Flow ----------
     if (order.isDerisk) {
-      require(_isDeriskable(timestamp, sub), "not deriskable");
+      if (!isDeriskable(timestamp, sub, isolatedAssetID)) {
+        revert ErrNotDeriskable();
+      }
       _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
       return;
     }
 
     // ---------- Liquidation / Standard Execution Fallback ----------
+    bool isIsolated = isolatedAssetID != bytes32(0);
     if (order.isLiquidation) {
-      // Liquidation orders require the subaccount to not be above maintenance margin beforehand.
-      require(!isAboveMaintenanceMargin(sub), "liquidated sub above MM");
+      // Pre-trade: Liquidation orders require the subaccount equity to be below maintennce margin beforehand.
+      if (!isBelowMaintenanceMargin(sub, isolatedAssetID)) {
+        revert ErrNotLiquidatable();
+      }
+    }
+
+    BI memory crossTEBefore;
+    if (order.isLiquidation && isIsolated) {
+      crossTEBefore = _getTotalEquityCrossInQuote(sub);
     }
 
     _executeOrder(timestamp, sub, order, calcResult, totalFee, totalBuilderFee);
 
-    // Post-trade non-negative value check for non-liquidation orders.
-    if (!order.isLiquidation) {
-      require(isSubAccountEquityNonNegative(sub), "sub value is negative");
+    if (order.isLiquidation) {
+      BI memory crossTEAfter = _getTotalEquityCrossInQuote(sub);
+      // Post-trade check
+      if (isIsolated) {
+        // if ISOLATED: requires crossTE_After >= crossTE_Before
+        if (crossTEAfter.cmp(crossTEBefore) < 0) {
+          revert ErrFailedMarginCheck();
+        }
+      } else {
+        // if CROSS order: requires TE >= 0
+        if (crossTEAfter.val < 0) {
+          revert ErrFailedMarginCheck();
+        }
+      }
+    } else {
+      // Post-trade: regular (non-liquidation) orders require positive cross total equity.
+      if (_getTotalEquityCrossInQuote(sub).val <= 0) {
+        revert ErrNonPositiveCrossTotalEquity();
+      }
     }
   }
 
@@ -485,10 +513,6 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     return kind == Kind.CALL || kind == Kind.PUT;
   }
 
-  function _isOption(bytes32 assetID) private pure returns (bool) {
-    return _isOption(assetGetKind(assetID));
-  }
-
   function _bpsToDecimal(int32 bps) private pure returns (BI memory) {
     return BI(bps, 6);
   }
@@ -526,5 +550,37 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // amount < 0: remove margin from the position
     pos.marginBalance += amount;
     sub.spotBalances[assetGetQuote(assetID)] -= amount;
+  }
+
+  /// @dev Determines whether `order` is an isolated-margin order for `sub`.
+  ///      - An order is considered isolated iff it has exactly 1 leg and that leg's `PositionMarginConfig.marginType`
+  ///        is `PositionMarginType.ISOLATED`.
+  ///      - Multi-leg orders are not allowed to include any isolated-margin legs; if they do, this reverts.
+  /// @param order The order to classify.
+  /// @param sub The sub-account whose position margin configs are used to classify the order's legs.
+  /// @return isolatedAssetID If the order is isolated, returns the single leg's `assetID`; otherwise returns `0x0`.
+  function _getOrderIsolatedLegAssetID(Order calldata order, SubAccount storage sub) private view returns (bytes32) {
+    mapping(bytes32 => PositionMarginConfig) storage posConfigs = sub.positionMarginConfigs;
+    uint256 len = order.legs.length;
+    if (len == 0) revert ErrInvalidOrder();
+
+    if (len == 1) {
+      bytes32 assetID = order.legs[0].assetID;
+      if (posConfigs[assetID].marginType == PositionMarginType.ISOLATED) {
+        return assetID;
+      }
+      return bytes32(0);
+    }
+
+    for (uint256 i; i < len; ) {
+      if (posConfigs[order.legs[i].assetID].marginType == PositionMarginType.ISOLATED) {
+        revert ErrInvalidOrder();
+      }
+      unchecked {
+        ++i;
+      }
+    }
+
+    return bytes32(0);
   }
 }

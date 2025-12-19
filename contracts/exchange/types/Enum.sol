@@ -8,7 +8,7 @@ enum MarginType {
 }
 
 enum PositionMarginType {
-  UNSPECIFIED,
+  UNSPECIFIED, // For UNSPECIFIED value, consider it the same as CROSS for backward compatibility (this enum is introduced after isolated margin)
   ISOLATED, // Isolated Margin Mode: each position is allocated a fixed amount of collateral
   CROSS // Cross Margin Mode: uses all available funds in your account as collateral across all cross margin positions
 }

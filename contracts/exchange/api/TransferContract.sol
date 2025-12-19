@@ -358,7 +358,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     fromSub.spotBalances[currency] -= numTokens;
     toAcc.spotBalances[currency] += numTokens;
 
-    require(isSubAccountEquityNonNegative(fromSub), "subaccount value is negative");
+    require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
   }
 
   function _transferSubToSub(
@@ -387,7 +387,23 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     fromSub.spotBalances[currency] -= numTokens;
 
-    require(isSubAccountEquityNonNegative(fromSub), "subaccount value is negative");
+    require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
     toSub.spotBalances[currency] += numTokens;
+  }
+
+  function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) private view returns (uint64) {
+    int64 insuranceFundLossAmountUSDT = _getInsuranceFundLossAmountUSDT();
+    if (insuranceFundLossAmountUSDT == 0) {
+      return 0;
+    }
+
+    // non-user accounts are not subject to socialized loss
+    if (!_isUserAccount(fromAccID)) {
+      return 0;
+    }
+
+    int64 totalClientValueUSDT = _getTotalClientValueUSDT();
+    int haircutAmount = (int(withdrawAmount) * int(insuranceFundLossAmountUSDT)) / int(totalClientValueUSDT);
+    return SafeCast.toUint64(SafeCast.toUint256(haircutAmount));
   }
 }
