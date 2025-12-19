@@ -430,19 +430,19 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 
-  function _requireAssetPriceBI(bytes32 assetID) internal view returns (BI memory) {
-    (uint64 markPrice, bool found) = _getAssetPrice9Dec(assetID);
+  function _requireAssetPriceInQuoteBI(bytes32 assetID) internal view returns (BI memory) {
+    (uint64 markPrice, bool found) = _getAssetPriceInQuote9Dec(assetID);
     require(found, "mark price not found");
     return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
   }
 
   // Price utils
-  function _getAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getAssetPriceInQuote9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getSpotPrice9Dec(assetGetUnderlying(assetID));
+      return _getSpotPriceUsd9Dec(assetGetUnderlying(assetID));
     }
 
     Currency quote = assetGetQuote(assetID);
@@ -458,7 +458,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     // Otherwise, we have to convert to USDT/USDC price
-    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPriceUsd9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
@@ -466,7 +466,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return (SafeCast.toUint64((uint(underlyingPrice) * (PRICE_MULTIPLIER)) / uint(quotePrice)), true);
   }
 
-  function _getIndexPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getIndexPriceInQuote9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
     Currency underlying = assetGetUnderlying(assetID);
@@ -474,15 +474,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getSpotPrice9Dec(underlying);
+      return _getSpotPriceUsd9Dec(underlying);
     }
 
-    (uint64 underlyingPrice, bool found) = _getSpotPrice9Dec(underlying);
+    (uint64 underlyingPrice, bool found) = _getSpotPriceUsd9Dec(underlying);
     if (!found) {
       return (0, false);
     }
 
-    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPriceUsd9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
@@ -504,13 +504,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
 
-    BI memory spotPriceInUsd = _getSpotPriceBI(spot);
+    BI memory spotPriceInUsd = _getSpotPriceUsdBI(spot);
 
     if (quote == Currency.USD) {
       return spotPriceInUsd;
     }
 
-    BI memory quotePriceInUsd = _getSpotPriceBI(quote);
+    BI memory quotePriceInUsd = _getSpotPriceUsdBI(quote);
     return spotPriceInUsd.div(quotePriceInUsd);
   }
 
@@ -521,11 +521,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev Get the spot price of a currency in terms of USD
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
-  function _getSpotPriceBI(Currency spot) internal view returns (BI memory) {
+  function _getSpotPriceUsdBI(Currency spot) internal view returns (BI memory) {
     if (spot == Currency.USD) {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
-    (uint64 price, bool ok) = _getSpotPrice9Dec(spot);
+    (uint64 price, bool ok) = _getSpotPriceUsd9Dec(spot);
     require(ok, "mark price not found");
     return BI(int256(uint(price)), PRICE_DECIMALS);
   }
@@ -533,7 +533,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev Get the spot price of a currency with 9 decimal places
   /// @param currency The currency to get the price for
   /// @return price The price of the currency, ok Whether the price was found
-  function _getSpotPrice9Dec(Currency currency) internal view returns (uint64, bool) {
+  function _getSpotPriceUsd9Dec(Currency currency) internal view returns (uint64, bool) {
     uint64 price = state.prices.mark[_getSpotAssetID(currency)];
     return (price, price != 0);
   }
@@ -640,12 +640,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       );
   }
 
-  function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
-    BI memory totalValue = _getBalanceValueInQuoteCurrencyBI(account.spotBalances, Currency.USDT);
+  function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
+    BI memory totalValue = _getSpotBalanceValueInCurrencyBI(account.spotBalances, Currency.USDT);
 
     for (uint256 i; i < account.subAccounts.length; ++i) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
-      BI memory subValueInQuote = _getSubAccountValueInQuote(subAcc);
+      BI memory subValueInQuote = _getTotalEquityInQuote(subAcc);
       BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
 
       totalValue = totalValue.add(subValueInUSDT);
@@ -654,7 +654,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return totalValue;
   }
 
-  function _getBalanceValueInQuoteCurrencyBI(
+  function _getSpotBalanceValueInCurrencyBI(
     mapping(Currency => int64) storage balances,
     Currency quoteCurrency
   ) internal view returns (BI memory) {
@@ -675,18 +675,20 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return total;
   }
 
-  function _getSubAccountValueInUSD(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getSubAccountValueInQuote(sub);
+  function _getTotalEquityInUSD(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getTotalEquityInQuote(sub);
     return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
   }
 
   /// @dev Get the total value of a sub account in quote currency
-  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
+  // TODO: https://github.com/gravity-technologies/platform/blob/2cb733bb1a82876caad59adbbc89785a6330a2be/backend/lib/statemachine/pkg/state/margin_equity.go#L45
+  // totalValue = sum(sub.SpotBalances, sub.IsolatedPosition.Balances, positionValues)
+  function _getTotalEquityInQuote(SubAccount storage sub) internal view returns (BI memory) {
     BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
       _getPositionsValueInQuote(sub.options)
     );
 
-    totalValue = totalValue.add(_getBalanceValueInQuoteCurrencyBI(sub.spotBalances, sub.quoteCurrency));
+    totalValue = totalValue.add(_getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency));
 
     return totalValue;
   }
@@ -704,7 +706,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       Currency underlying = assetGetUnderlying(assetID);
       uint64 uDec = _getBalanceDecimal(underlying);
       BI memory balance = BI(pos.balance, uDec);
-      BI memory assetPrice = _requireAssetPriceBI(assetID);
+      BI memory assetPrice = _requireAssetPriceInQuoteBI(assetID);
       total = total.add(balance.mul(assetPrice));
     }
     return total;

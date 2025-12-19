@@ -11,8 +11,6 @@ struct Position {
   int64 balance;
   // (expressed in USD with 10 decimal points)
   int64 lastAppliedFundingIndex;
-  // Either isolated or simple cross margin
-  PositionMarginType marginType;
   int64 marginBalance;
 }
 

@@ -31,7 +31,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
   }
 
   function _getTotalClientValueUSDT() internal view returns (int64) {
-    BI memory totalSpotBalancesUSDTValueBI = _getBalanceValueInQuoteCurrencyBI(state.totalSpotBalances, Currency.USDT);
+    BI memory totalSpotBalancesUSDTValueBI = _getSpotBalanceValueInCurrencyBI(state.totalSpotBalances, Currency.USDT);
     int64 totalSpotBalancesUSDTValue = totalSpotBalancesUSDTValueBI.toInt64(_getBalanceDecimal(Currency.USDT));
     return totalSpotBalancesUSDTValue - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
   }
@@ -47,7 +47,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
         continue;
       }
 
-      totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
+      totalValueBI = totalValueBI.add(_getFundingAccountEquityInUSDT(account));
     }
     return totalValueBI.toInt64(dec);
   }
@@ -62,7 +62,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
         break;
       }
       Account storage account = _requireAccount(internalAccountAddresses[i]);
-      totalValueBI = totalValueBI.add(_getTotalAccountValueUSDT(account));
+      totalValueBI = totalValueBI.add(_getFundingAccountEquityInUSDT(account));
     }
 
     return totalValueBI.toInt64(dec);
@@ -103,7 +103,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
-      BI memory insuranceFundValueInQuoteBI = _getSubAccountValueInQuote(insuranceFund);
+      BI memory insuranceFundValueInQuoteBI = _getTotalEquityInQuote(insuranceFund);
       if (insuranceFundValueInQuoteBI.isNegative()) {
         BI memory insuranceFundValueInUSDT = _convertCurrency(
           insuranceFundValueInQuoteBI,
@@ -153,30 +153,30 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     require(subAccount.marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     uint usdDecimals = _getBalanceDecimal(Currency.USD);
 
-    int64 subAccountValue = _getSubAccountValueInQuote(subAccount).toInt64(usdDecimals);
-    uint64 maintenanceMargin = _getMaintenanceMargin(subAccount);
+    int64 subAccountValue = _getTotalEquityInQuote(subAccount).toInt64(usdDecimals);
+    uint64 maintenanceMargin = _getMaintenanceMarginInQuote(subAccount);
 
     return subAccountValue >= 0 && uint64(subAccountValue) >= maintenanceMargin;
   }
 
-  function isSubAccountValueNonNegative(SubAccount storage subAccount) internal view returns (bool) {
-    return !_getSubAccountValueInQuote(subAccount).isNegative();
+  function isSubAccountEquityNonNegative(SubAccount storage subAccount) internal view returns (bool) {
+    return !_getTotalEquityInQuote(subAccount).isNegative();
   }
 
-  function _getMaintenanceMargin(SubAccount storage subAccount) internal view returns (uint64) {
-    BI memory mmBI = _getSimpleCrossMMUsd(subAccount);
-    BI memory settleIndexPrice = _getSpotPriceBI(subAccount.quoteCurrency);
+  function _getMaintenanceMarginInQuote(SubAccount storage subAccount) internal view returns (uint64) {
+    BI memory mmBI = _getCrossMaintenanceMarginUsd(subAccount);
+    BI memory settleIndexPrice = _getSpotPriceUsdBI(subAccount.quoteCurrency);
 
     uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
     return mmBI.div(settleIndexPrice).toUint64(qDec);
   }
 
   /**
-   * @dev Returns the maintenance margin for a subaccount.
+   * @dev Returns the maintenance margin for a subaccount. Only support perpetual at the moment
    * @param subAccount The subaccount to check.
    * @return The maintenance margin.
    */
-  function _getSimpleCrossMMUsd(SubAccount storage subAccount) internal view returns (BI memory) {
+  function _getCrossMaintenanceMarginUsd(SubAccount storage subAccount) internal view returns (BI memory) {
     BI memory totalCharge = BIMath.zero();
 
     bytes32[] storage keys = subAccount.perps.keys;
@@ -184,14 +184,14 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     uint numPerps = keys.length;
     for (uint i = 0; i < numPerps; i++) {
       bytes32 asset = keys[i];
-      totalCharge = totalCharge.add(_getPositionSimpleCrossMMUsd(asset, values[asset]));
+      totalCharge = totalCharge.add(_getPerpMaintenanceMarginUSD(asset, values[asset]));
     }
 
     return totalCharge;
   }
 
-  function _getPositionSimpleCrossMMUsd(bytes32 asset, Position storage position) internal view returns (BI memory) {
-    BI memory markPrice = _requireAssetPriceBI(asset);
+  function _getPerpMaintenanceMarginUSD(bytes32 asset, Position storage position) internal view returns (BI memory) {
+    BI memory markPrice = _requireAssetPriceInQuoteBI(asset);
 
     int64 size = position.balance;
     if (size < 0) {
@@ -203,7 +203,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     ListMarginTiersBIStorage storage mtStorage = _getListMarginTiersBIStorageRef(kuq);
 
     BI memory mm = _getPositionMMFromStorage(mtStorage, sizeBI, markPrice);
-    BI memory qPrice = _getSpotPriceBI(assetGetQuote(asset));
+    BI memory qPrice = _getSpotPriceUsdBI(assetGetQuote(asset));
 
     return mm.mul(qPrice);
   }
@@ -219,7 +219,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     }
 
     // Compute the maintenance margin
-    uint64 mm = _getMaintenanceMargin(subAccount);
+    uint64 mm = _getMaintenanceMarginInQuote(subAccount);
     uint64 qDec = _getBalanceDecimal(subAccount.quoteCurrency);
     BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
 
@@ -234,7 +234,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
     uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
 
-    BI memory totalEquityBI = _getSubAccountValueInQuote(subAccount);
+    BI memory totalEquityBI = _getTotalEquityInQuote(subAccount);
     int64 totalEquity = totalEquityBI.toInt64(qDec);
 
     // In contract, we omit the TE < MM check to allow derisk orders to proceed even when total equity

@@ -615,7 +615,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       return equity;
     }
 
-    BI memory vaultEquityUSDBI = _getSubAccountValueInUSD(vaultSub);
+    BI memory vaultEquityUSDBI = _getTotalEquityInUSD(vaultSub);
     require(vaultEquityUSDBI.isPositive(), "vault equity is not positive");
 
     return vaultEquityUSDBI;

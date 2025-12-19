@@ -133,7 +133,7 @@ contract OracleContract is IOracle, ConfigContract {
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
-      BI memory markPrice = _requireAssetPriceBI(entry.assetID);
+      BI memory markPrice = _requireAssetPriceInQuoteBI(entry.assetID);
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
       int64 delta = markPrice.mul(BI(entry.value, CENTIBEEP_DECIMALS)).div(BI(TIME_FACTOR, 0)).toInt64(PRICE_DECIMALS);
       fundings[entry.assetID] += delta;
@@ -197,7 +197,7 @@ contract OracleContract is IOracle, ConfigContract {
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
-      BI memory markPrice = _requireAssetPriceBI(assetID);
+      BI memory markPrice = _requireAssetPriceInQuoteBI(assetID);
 
       // V2: Apply funding rate directly without 480 divisor
       // Rate already represents the full interval amount (1h/2h/4h/8h)

@@ -113,7 +113,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
   }
 
   function getMarkPrice(bytes32 assetID) public view returns (uint64, bool) {
-    return _getAssetPrice9Dec(assetID);
+    return _getAssetPriceInQuote9Dec(assetID);
   }
 
   function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
@@ -128,7 +128,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
   function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     uint64 quoteDecimals = _getBalanceDecimal(sub.quoteCurrency);
-    return _getSubAccountValueInQuote(sub).toInt64(quoteDecimals);
+    return _getTotalEquityInQuote(sub).toInt64(quoteDecimals);
   }
 
   function getSubAccountPosition(
@@ -170,7 +170,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return _getMaintenanceMargin(sub);
+    return _getMaintenanceMarginInQuote(sub);
   }
 
   function getTimestamp() public view returns (int64) {
@@ -239,7 +239,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     SubAccount storage sub = _requireSubAccount(subAccountID);
 
     // Compute the maintenance margin
-    uint64 mm = _getMaintenanceMargin(sub);
+    uint64 mm = _getMaintenanceMarginInQuote(sub);
     uint64 qDec = _getBalanceDecimal(sub.quoteCurrency);
     BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
 
@@ -251,7 +251,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
     uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
 
-    BI memory totalEquityBI = _getSubAccountValueInQuote(sub);
+    BI memory totalEquityBI = _getTotalEquityInQuote(sub);
     int64 totalEquity = totalEquityBI.toInt64(qDec);
 
     if (underDeriskMargin) {

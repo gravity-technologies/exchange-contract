@@ -237,7 +237,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     // Post-trade non-negative value check for non-liquidation orders.
     if (!order.isLiquidation) {
-      require(isSubAccountValueNonNegative(sub), "sub value is negative");
+      require(isSubAccountEquityNonNegative(sub), "sub value is negative");
     }
   }
 
@@ -508,7 +508,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
     Position storage pos = posmap.values[assetID];
-    if (pos.id == 0 || pos.marginType != PositionMarginType.ISOLATED) {
+
+    PositionMarginConfig storage posConfig = sub.positionMarginConfigs[assetID];
+    if (pos.id == 0 || posConfig.marginType != PositionMarginType.ISOLATED) {
       revert ErrAddMarginToNonIsolatedPosition();
     }
 

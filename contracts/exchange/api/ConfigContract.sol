@@ -276,7 +276,7 @@ abstract contract ConfigContract is BaseContract {
 
     Account storage account = _requireAccount(newSubAcc.accountID);
     require(
-      _getTotalAccountValueUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      _getFundingAccountEquityInUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
       "new internal acc must have 0 value"
     );
   }
