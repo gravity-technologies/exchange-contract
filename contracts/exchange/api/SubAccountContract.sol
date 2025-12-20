@@ -293,7 +293,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
       revert ErrSetPositionMarginConfigInvalidLeverage();
     }
     SubAccount storage sub = _requireSubAccount(subAccID);
-    _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
+    _requireSignerOrSessionKeySubAccountPerm(sub, sig.signer, SubAccountPermTrade, timestamp);
 
     // In Risk, we also have a check for vault that relies on cluster config, which is not replicated on chain. Omit here
 

@@ -920,7 +920,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     _setSequence(timestamp, txID);
 
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    _requireSubAccountPermission(sub, sig.signer, SubAccountPermTrade);
+    _requireSignerOrSessionKeySubAccountPerm(sub, sig.signer, SubAccountPermTrade, timestamp);
 
     PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
     Position storage pos = posmap.values[assetID];
