@@ -81,3 +81,4 @@ error AssertionWithdrawalAddressNotRemoved();
 error AssertionWithdrawBalanceMismatch();
 error AssertionPositionMarginMismatch();
 error AssertionBuilderFeeConfigMismatch();
+error AssertAccountSpotBalanceMismatch();

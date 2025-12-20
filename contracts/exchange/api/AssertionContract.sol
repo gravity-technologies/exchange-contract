@@ -206,13 +206,19 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
   // Assertions for Oracle Contract
   function assertMarkPriceTick(bytes32[] calldata assetIDs, uint64[] calldata expectedPrices) external view {
-    if (assetIDs.length != expectedPrices.length) {
+    uint256 len = assetIDs.length;
+    if (len != expectedPrices.length) {
       revert AssertionArrayLengthMismatch();
     }
 
-    for (uint256 i; i < assetIDs.length; ++i) {
-      if (state.prices.mark[assetIDs[i]] != expectedPrices[i]) {
+    mapping(bytes32 => uint64) storage mark = state.prices.mark;
+    for (uint256 i; i < len; ) {
+      if (mark[assetIDs[i]] != expectedPrices[i]) {
         revert AssertionMarkPriceMismatch();
+      }
+
+      unchecked {
+        ++i;
       }
     }
   }
@@ -230,8 +236,9 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionFundingTimeMismatch();
     }
 
+    mapping(bytes32 => int64) storage fundingIndex = state.prices.fundingIndex;
     for (uint256 i; i < assetIDs.length; ++i) {
-      if (state.prices.fundingIndex[assetIDs[i]] != expectedFundingIndexes[i]) {
+      if (fundingIndex[assetIDs[i]] != expectedFundingIndexes[i]) {
         revert AssertionFundingIndexMismatch();
       }
     }
@@ -379,11 +386,26 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   // Assertion for Trade Contract
   function assertTradeDeriv(TradeAssertion calldata tradeAssertion) external view {
     _assertSubAccounts(tradeAssertion.subAccounts);
+
+    AccountAssertion[] calldata accounts = tradeAssertion.accounts;
+    uint256 accountsLen = accounts.length;
+    for (uint256 i; i < accountsLen; ) {
+      _assertAccount(accounts[i]);
+
+      unchecked {
+        ++i;
+      }
+    }
   }
 
   function _assertSubAccounts(SubAccountAssertion[] calldata exSubs) internal view {
-    for (uint256 i; i < exSubs.length; ++i) {
+    uint256 len = exSubs.length;
+    for (uint256 i; i < len; ) {
       _assertSubAccount(exSubs[i]);
+
+      unchecked {
+        ++i;
+      }
     }
   }
 
@@ -402,8 +424,25 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     _assertSubAccountSpots(sub, exSub.spots);
   }
 
+  function _assertAccount(AccountAssertion calldata exAcc) internal view {
+    mapping(Currency => int64) storage spots = state.accounts[exAcc.accountID].spotBalances;
+    SpotAssertion[] calldata exSpots = exAcc.spots;
+    uint256 length = exSpots.length;
+    for (uint256 i; i < length; ) {
+      SpotAssertion calldata exSpot = exSpots[i];
+      if (spots[exSpot.currency] != exSpot.balance) {
+        revert AssertAccountSpotBalanceMismatch();
+      }
+
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
   function _assertSubAccountPositions(SubAccount storage sub, PositionAssertion[] calldata positions) internal view {
-    for (uint256 j; j < positions.length; ++j) {
+    uint256 posLen = positions.length;
+    for (uint256 j; j < posLen; ) {
       PositionAssertion calldata exPos = positions[j];
       PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
       Position storage pos = posmap.values[exPos.assetID];
@@ -414,14 +453,23 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       ) {
         revert AssertionSubPositionMismatch();
       }
+
+      unchecked {
+        ++j;
+      }
     }
   }
 
   function _assertSubAccountSpots(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
-    for (uint256 j; j < spots.length; ++j) {
+    uint256 spotsLen = spots.length;
+    for (uint256 j; j < spotsLen; ) {
       SpotAssertion calldata exSpot = spots[j];
       if (sub.spotBalances[exSpot.currency] != exSpot.balance) {
         revert AssertionSubSpotBalanceMismatch();
+      }
+
+      unchecked {
+        ++j;
       }
     }
   }
@@ -525,17 +573,18 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionSimpleCrossTierScheduleActive();
     }
 
+    uint256 qDec = _getBalanceDecimal(assetGetQuote(kud));
     for (uint256 i; i < tiersStorage.tiers.length; ++i) {
       MarginTierAssertion calldata exTier = expectedTiers[i];
+      MarginTierBIStorage storage tier = tiersStorage.tiers[i];
 
       // Compare bracketStart
-      uint256 qDec = _getBalanceDecimal(assetGetQuote(kud));
-      if (tiersStorage.tiers[i].bracketStart.toUint64(qDec) != exTier.bracketStart) {
+      if (tier.bracketStart.toUint64(qDec) != exTier.bracketStart) {
         revert AssertionSimpleCrossTierBracketMismatch();
       }
 
       // Compare rate
-      if (tiersStorage.tiers[i].rate.toUint64(CENTIBEEP_DECIMALS) != uint64(exTier.rate)) {
+      if (tier.rate.toUint64(CENTIBEEP_DECIMALS) != uint64(exTier.rate)) {
         revert AssertionSimpleCrossTierRateMismatch();
       }
     }
