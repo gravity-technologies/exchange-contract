@@ -41,6 +41,7 @@ error ErrSetPositionMarginConfigInvalidMarginType();
 error ErrSetPositionMarginConfigInvalidLeverage();
 error ErrSetPostionMarginConfigPositionNotEmpty();
 error ErrAddMarginToNonIsolatedPosition();
+error ErrAddIsolatedMarginTENegative();
 error InvalidBuilderFeeRate();
 error InvalidBuilderAccountID();
 error ErrBuilderFeeExceedMax();

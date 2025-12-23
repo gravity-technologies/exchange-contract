@@ -930,9 +930,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       revert ErrAddMarginToNonIsolatedPosition();
     }
 
-    // Current risk check is not replicated here since it depends on Initial Margin
-    // FIXME @thangnguyen-19 @Aaronong is there an alterantive based on MM instead?
-    //  https://github.com/gravity-technologies/platform/blob/f6ee441a21ecf58bfc67cb4952d8978cef46d4ec/backend/lib/statemachine/pkg/state/subaccount_position_margin_api.go#L9-L57
+    if (_getTotalEquityCrossInQuote(sub).val < 0) {
+      revert ErrAddIsolatedMarginTENegative();
+    }
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAddIsolatedPositionMargin(subAccountID, assetID, amount, sig.nonce, sig.expiration);

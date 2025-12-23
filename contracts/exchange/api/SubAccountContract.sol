@@ -297,7 +297,12 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
 
     // In Risk, we also have a check for vault that relies on cluster config, which is not replicated on chain. Omit here
 
-    if (_hasPosition(sub, assetID)) {
+    PositionMarginConfig storage currentCfg = sub.positionMarginConfigs[assetID];
+    PositionMarginType currentMarginType = currentCfg.marginType;
+    currentMarginType = currentMarginType == PositionMarginType.UNSPECIFIED
+      ? PositionMarginType.CROSS
+      : currentMarginType;
+    if (currentMarginType != marginType && _hasPosition(sub, assetID)) {
       revert ErrSetPostionMarginConfigPositionNotEmpty();
     }
 
