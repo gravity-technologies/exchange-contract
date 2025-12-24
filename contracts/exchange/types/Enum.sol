@@ -118,5 +118,6 @@ enum Currency {
   RESOLV, //81
   ZEN, // 82
   PAXG, // 83
-  TAO // 84
+  TAO, // 84
+  LIT // 85
 }
