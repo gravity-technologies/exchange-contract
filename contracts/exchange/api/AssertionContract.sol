@@ -446,12 +446,19 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       PositionAssertion calldata exPos = positions[j];
       PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(exPos.assetID));
       Position storage pos = posmap.values[exPos.assetID];
-      if (
-        pos.balance != exPos.balance ||
-        pos.lastAppliedFundingIndex != exPos.fundingIndex ||
-        pos.marginBalance != exPos.marginBalance
-      ) {
-        revert AssertionSubPositionMismatch();
+      if (pos.balance != exPos.balance) {
+        revert AssertionSubPositionBalanceMismatch(sub.id, exPos.assetID, exPos.balance, pos.balance);
+      }
+      if (pos.lastAppliedFundingIndex != exPos.fundingIndex) {
+        revert AssertionSubPositionFundingIndexMismatch(
+          sub.id,
+          exPos.assetID,
+          exPos.fundingIndex,
+          pos.lastAppliedFundingIndex
+        );
+      }
+      if (pos.marginBalance != exPos.marginBalance) {
+        revert AssertionSubPositionMarginBalanceMismatch(sub.id, exPos.assetID, exPos.marginBalance, pos.marginBalance);
       }
 
       unchecked {

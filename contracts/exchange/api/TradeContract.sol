@@ -784,9 +784,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // In risk, entry price is reset to trade price at this point, so:
     // isolatedBalanceNow = positionBalance + positionSize * tradePrice
     BI memory positionSize = BI(positionSizeEnd, uDec);
-    BI memory isolatedBalanceNow = BI(positionBalanceNow, 6).add(positionSize.mul(tradePrice).scale(6));
+    BI memory positionSizeTimesTradePrice = positionSize.mul(tradePrice);
+    BI memory positionBalanceBI = BI(positionBalanceNow, 6);
+    // Add with full precision - the add function will handle decimal alignment
+    BI memory isolatedBalanceNow = positionBalanceBI.add(positionSizeTimesTradePrice);
 
     BI memory amountToAddToPosition = isolatedBalanceEnd.sub(isolatedBalanceNow);
+    // Convert to int64 with truncation, matching statemachine's ToInt(assetQDec).Int64()
     int64 amountToAddToPositionInt64 = amountToAddToPosition.toInt64(6);
 
     return positionBalanceNow + _transferFromSpotToPosition(sub, assetGetQuote(assetID), amountToAddToPositionInt64);
