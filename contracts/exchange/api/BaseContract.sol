@@ -12,11 +12,7 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
-import {
-  L2ContractHelper,
-  DEPLOYER_SYSTEM_CONTRACT,
-  IContractDeployer
-} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -415,7 +411,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.ICP ||
       currency == Currency.RESOLV ||
       currency == Currency.ZEN ||
-      currency == Currency.LIT
+      currency == Currency.LIT ||
+      currency == Currency.XAG
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
