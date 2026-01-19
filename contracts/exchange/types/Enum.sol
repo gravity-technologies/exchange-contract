@@ -120,5 +120,7 @@ enum Currency {
   PAXG, // 83
   TAO, // 84
   LIT, // 85
-  XAG // 86
+  XAG, // 86
+  TRX, // 87
+  XMR // 88
 }

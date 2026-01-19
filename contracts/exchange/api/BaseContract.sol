@@ -335,7 +335,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.ZEC ||
       currency == Currency.GIGGLE ||
       currency == Currency.PAXG ||
-      currency == Currency.TAO
+      currency == Currency.TAO ||
+      currency == Currency.XMR
     ) {
       decimals = 9;
     } else if (
@@ -412,7 +413,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.RESOLV ||
       currency == Currency.ZEN ||
       currency == Currency.LIT ||
-      currency == Currency.XAG
+      currency == Currency.XAG ||
+      currency == Currency.TRX
     ) {
       decimals = 6;
     } else if (currency == Currency.KPEPE) {
