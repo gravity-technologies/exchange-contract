@@ -122,5 +122,6 @@ enum Currency {
   LIT, // 85
   XAG, // 86
   TRX, // 87
-  XMR // 88
+  XMR, // 88
+  AXS // 89
 }
