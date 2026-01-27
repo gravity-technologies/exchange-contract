@@ -281,4 +281,14 @@ interface IAssertion {
     uint32 maxFutureFeeRate,
     uint32 maxSpotFeeRate
   ) external view;
+
+  function assertAddAccountSignerWithBuilder(
+    address accountID,
+    address signer,
+    uint64 expectedPermissions,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    uint256 adminCount
+  ) external view;
 }

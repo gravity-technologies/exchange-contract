@@ -906,4 +906,31 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionBuilderFeeConfigMismatch();
     }
   }
+
+  function assertAddAccountSignerWithBuilder(
+    address accountID,
+    address signer,
+    uint64 expectedPermissions,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    uint256 adminCount
+  ) external view {
+    Account storage acc = state.accounts[accountID];
+
+    // Assert signer permissions (from assertAddAccountSigner)
+    if (acc.signers[signer] != expectedPermissions) {
+      revert AssertionSignerPermissionsMismatch();
+    }
+
+    if (acc.adminCount != adminCount) {
+      revert AssertionAdminCountMismatch();
+    }
+
+    // Assert builder fee config (from assertAuthorizeBuilder)
+    BuilderFeeConfig storage builderFee = acc.builders[builderAccountID];
+    if (builderFee.maxFutureFeeRate != maxFutureFeeRate || builderFee.maxSpotFeeRate != maxSpotFeeRate) {
+      revert AssertionBuilderFeeConfigMismatch();
+    }
+  }
 }

@@ -37,6 +37,7 @@ uint64 constant AccountPermInternalTransfer = 1 << 2;
 uint64 constant AccountPermExternalTransfer = 1 << 3;
 uint64 constant AccountPermWithdraw = 1 << 4;
 uint64 constant AccountPermVaultInvestor = 1 << 5;
+uint64 constant AccountPermTrade = 1 << 6;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
@@ -358,7 +359,8 @@ struct ConfigSetting {
 enum FeatureFlagID {
   UNSPECIFIED,
   VAULT_LP_SHARE_PRICE_9_DECIMALS,
-  EXTEND_MAX_SESSION_DURATION_TO_150_DAYS
+  EXTEND_MAX_SESSION_DURATION_TO_150_DAYS,
+  MAIN_ACCOUNT_TRADE_PERMISSION
 }
 
 struct MarginTier {

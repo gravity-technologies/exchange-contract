@@ -165,4 +165,30 @@ interface IAccount {
     uint32 maxSpotFeeRate,
     Signature calldata sig
   ) external;
+
+  /// @notice Add a signer to an account and authorize them as a builder in a single transaction
+  /// This requires the multisig threshold to be met
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accountID The account ID
+  /// @param signer The new signer to add
+  /// @param permissions The permissions of the new signer (can be Trade/Admin/any permissions)
+  /// @param builderAccountID The builder account ID (should be the same as signer)
+  /// @param maxFutureFeeRate The maximum future builder fee rate
+  /// @param maxSpotFeeRate The maximum spot builder fee rate
+  /// @param nonce The nonce of the transaction
+  /// @param sigs The signatures of the account signers with admin permissions
+  function addAccountSignerWithBuilder(
+    int64 timestamp,
+    uint64 txID,
+    address accountID,
+    address signer,
+    uint64 permissions,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    uint32 nonce,
+    Signature[] calldata sigs
+  ) external;
 }

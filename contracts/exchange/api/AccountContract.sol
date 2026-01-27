@@ -5,11 +5,10 @@ import "./signature/generated/AccountSig.sol";
 import "./signature/generated/CombinedAccountSig.sol";
 import "../types/DataStructure.sol";
 import "../interfaces/IAccount.sol";
+import "../util/Address.sol";
 
 contract AccountContract is IAccount, ConfigContract {
-  uint32 constant _MAX_FUTURE_BUILDER_FEE_RATE_LOW = 10; // 0.001%
   uint32 constant _MAX_FUTURE_BUILDER_FEE_RATE_HIGH = 10_00; // 0.1%
-  uint32 constant _MAX_SPOT_BUILDER_FEE_RATE_LOW = 1_00; // 0.01%
   uint32 constant _MAX_SPOT_BUILDER_FEE_RATE_HIGH = 1_00_00; // 1%
 
   /// @notice Create a new account
@@ -106,6 +105,11 @@ contract AccountContract is IAccount, ConfigContract {
     _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
     // ------- End of Signature Verification -------
 
+    _addAccountSigner(acc, signer, permissions);
+  }
+
+  /// @dev Adds or updates a signer with the given permissions, handling admin count updates
+  function _addAccountSigner(Account storage acc, address signer, uint64 permissions) internal {
     uint64 curPerm = acc.signers[signer];
     if (curPerm & AccountPermAdmin == 0 && permissions & AccountPermAdmin != 0) {
       acc.adminCount++;
@@ -349,21 +353,10 @@ contract AccountContract is IAccount, ConfigContract {
   ) external {
     _setSequence(timestamp, txID);
 
-    if (builderAccountID == mainAccountID) {
-      revert InvalidBuilderAccountID();
-    }
-
-    if (
-      maxFutureFeeRate < _MAX_FUTURE_BUILDER_FEE_RATE_LOW ||
-      maxFutureFeeRate > _MAX_FUTURE_BUILDER_FEE_RATE_HIGH ||
-      maxSpotFeeRate < _MAX_SPOT_BUILDER_FEE_RATE_LOW ||
-      maxSpotFeeRate > _MAX_SPOT_BUILDER_FEE_RATE_HIGH
-    ) {
-      revert InvalidBuilderFeeRate();
-    }
-
     Account storage mainAccount = _requireAccount(mainAccountID);
-    _requireAccount(builderAccountID);
+    address[] memory signers = new address[](1);
+    signers[0] = sig.signer;
+    _validateAuthorizeBuilder(mainAccount, mainAccountID, builderAccountID, maxFutureFeeRate, maxSpotFeeRate, signers);
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashAuthorizeBuilder(
@@ -377,8 +370,134 @@ contract AccountContract is IAccount, ConfigContract {
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
+    _setBuilderFeeConfig(mainAccount, builderAccountID, maxFutureFeeRate, maxSpotFeeRate);
+  }
+
+  /// @dev Validates builder account ID, fee rates, ensures builder account exists, and verifies at least one signer has admin permission
+  function _validateAuthorizeBuilder(
+    Account storage mainAccount,
+    address mainAccountID,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    address[] memory signers
+  ) internal view {
+    if (builderAccountID == mainAccountID) {
+      revert InvalidBuilderAccountID();
+    }
+
+    if (
+      maxFutureFeeRate < 0 ||
+      maxFutureFeeRate > _MAX_FUTURE_BUILDER_FEE_RATE_HIGH ||
+      maxSpotFeeRate < 0 ||
+      maxSpotFeeRate > _MAX_SPOT_BUILDER_FEE_RATE_HIGH
+    ) {
+      revert InvalidBuilderFeeRate();
+    }
+
+    _requireAccount(builderAccountID);
+
+    // Verify that at least one signer has AccountPermAdmin permission
+    _requireAtLeastOneSignerHasPermission(mainAccount, signers, AccountPermAdmin);
+  }
+
+  /// @dev Sets the builder fee configuration for a builder account
+  function _setBuilderFeeConfig(
+    Account storage mainAccount,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate
+  ) internal {
     BuilderFeeConfig storage builderConfig = mainAccount.builders[builderAccountID];
     builderConfig.maxFutureFeeRate = maxFutureFeeRate;
     builderConfig.maxSpotFeeRate = maxSpotFeeRate;
+  }
+
+  /// @notice Add a signer to an account and authorize them as a builder in a single transaction
+  /// This requires the multisig threshold to be met
+  ///
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param accountID The account ID
+  /// @param signer The new signer to add
+  /// @param permissions The permissions of the new signer (can be Trade/Admin/any permissions)
+  /// @param builderAccountID The builder account ID (should be the same as signer)
+  /// @param maxFutureFeeRate The maximum future builder fee rate
+  /// @param maxSpotFeeRate The maximum spot builder fee rate
+  /// @param nonce The nonce of the transaction
+  /// @param sigs The signatures of the account signers with admin permissions
+  function addAccountSignerWithBuilder(
+    int64 timestamp,
+    uint64 txID,
+    address accountID,
+    address signer,
+    uint64 permissions,
+    address builderAccountID,
+    uint32 maxFutureFeeRate,
+    uint32 maxSpotFeeRate,
+    uint32 nonce,
+    Signature[] calldata sigs
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+    Account storage acc = _requireAccount(accountID);
+
+    // Extract signers from signatures
+    address[] memory signers = new address[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      signers[i] = sigs[i].signer;
+    }
+    _validateAuthorizeBuilder(acc, accountID, builderAccountID, maxFutureFeeRate, maxSpotFeeRate, signers);
+
+    // ---------- Signature Verification -----------
+    string memory permissionString = _getAccountPermissionsString(permissions);
+    bytes32[] memory hashes = new bytes32[](sigs.length);
+    for (uint256 i = 0; i < sigs.length; i++) {
+      hashes[i] = hashAddAccountSignerWithBuilder(
+        accountID,
+        signer,
+        permissionString,
+        builderAccountID,
+        maxFutureFeeRate,
+        maxSpotFeeRate,
+        nonce,
+        sigs[i].expiration
+      );
+    }
+    _requireSignatureQuorum(acc.signers, acc.multiSigThreshold, hashes, sigs);
+    // ------- End of Signature Verification -------
+
+    // Add signer logic (from addAccountSigner)
+    _addAccountSigner(acc, signer, permissions);
+
+    // Authorize builder logic (from authorizeBuilder)
+    _setBuilderFeeConfig(acc, builderAccountID, maxFutureFeeRate, maxSpotFeeRate);
+  }
+
+  function _getAccountPermissionsString(uint64 permissions) internal pure returns (string memory) {
+    bytes memory res = "";
+    if (permissions & AccountPermAdmin != 0) {
+      res = "Admin";
+    }
+    if (permissions & AccountPermInternalTransfer != 0) {
+      if (bytes(res).length > 0) res = abi.encodePacked(res, "&");
+      res = abi.encodePacked(res, "InternalTransfer");
+    }
+    if (permissions & AccountPermExternalTransfer != 0) {
+      if (bytes(res).length > 0) res = abi.encodePacked(res, "&");
+      res = abi.encodePacked(res, "ExternalTransfer");
+    }
+    if (permissions & AccountPermWithdraw != 0) {
+      if (bytes(res).length > 0) res = abi.encodePacked(res, "&");
+      res = abi.encodePacked(res, "Withdraw");
+    }
+    if (permissions & AccountPermVaultInvestor != 0) {
+      if (bytes(res).length > 0) res = abi.encodePacked(res, "&");
+      res = abi.encodePacked(res, "VaultInvestor");
+    }
+    if (permissions & AccountPermTrade != 0) {
+      if (bytes(res).length > 0) res = abi.encodePacked(res, "&");
+      res = abi.encodePacked(res, "Trade");
+    }
+    return string(res);
   }
 }

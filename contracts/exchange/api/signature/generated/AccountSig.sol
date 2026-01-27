@@ -119,3 +119,33 @@ function hashAuthorizeBuilder(
       )
     );
 }
+
+bytes32 constant _ADD_ACCOUNT_SIGNER_WITH_BUILDER_H = keccak256(
+  "AddAccountSignerWithBuilder(address accountID,address signer,string permissions,address builderAccountID,uint32 maxFutureFeeRate,uint32 maxSpotFeeRate,uint32 nonce,int64 expiration)"
+);
+
+function hashAddAccountSignerWithBuilder(
+  address accountID,
+  address signer,
+  string memory permissions,
+  address builderAccountID,
+  uint32 maxFutureFeeRate,
+  uint32 maxSpotFeeRate,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(
+        _ADD_ACCOUNT_SIGNER_WITH_BUILDER_H,
+        accountID,
+        signer,
+        keccak256(bytes(permissions)),
+        builderAccountID,
+        maxFutureFeeRate,
+        maxSpotFeeRate,
+        nonce,
+        expiration
+      )
+    );
+}

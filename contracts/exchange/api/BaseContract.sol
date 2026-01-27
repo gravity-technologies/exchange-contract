@@ -13,6 +13,7 @@ import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
 import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {FeatureFlagID} from "../types/DataStructure.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -223,6 +224,14 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     Account storage acc = _requireAccount(sub.accountID);
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return true;
     uint64 signerAuthz = sub.signers[signer];
+    if (
+      (requiredPerm & SubAccountPermTrade > 0) && // trade permission is required
+      (signerAuthz & SubAccountPermTrade == 0) && // signer doesn't have trade permission
+      _isFeatureFlagEnabled(FeatureFlagID.MAIN_ACCOUNT_TRADE_PERMISSION) && // main account trade permission is enabled
+      signerHasPerm(acc.signers, signer, AccountPermTrade) // signer has trade permission in account
+    ) {
+      signerAuthz |= SubAccountPermTrade;
+    }
     return signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0;
   }
 
@@ -238,6 +247,23 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   // Check if the signer has certain permissions on an account
   function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
     require(hasAccountPermission(account, signer, requiredPerm), "no permission");
+  }
+
+  /// @notice Verify that at least one signer has the required permission
+  /// @param account The account to check permissions for
+  /// @param signers Array of signer addresses to check
+  /// @param requiredPerm The required permission bitmask
+  function _requireAtLeastOneSignerHasPermission(
+    Account storage account,
+    address[] memory signers,
+    uint64 requiredPerm
+  ) internal view {
+    for (uint256 i = 0; i < signers.length; i++) {
+      if (hasAccountPermission(account, signers[i], requiredPerm)) {
+        return;
+      }
+    }
+    revert("no permission");
   }
 
   /// @notice Helper function to resolve effective signer from session key or direct signer
@@ -803,6 +829,14 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     BI memory price = _requireAssetPriceInQuoteBI(assetID);
     BI memory te = BI(pos.marginBalance, _getBalanceDecimal(quote));
     return te.add(balance.mul(price));
+  }
+
+  function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
+  }
+
+  function _featureFlagToConfig(FeatureFlagID v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
   }
 
   function _uintToConfig(uint256 v) internal pure returns (bytes32) {

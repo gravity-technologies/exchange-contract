@@ -120,7 +120,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
       int64 absCurSize = curSize < 0 ? -curSize : curSize;
       int64 absNewSize = newSize < 0 ? -newSize : newSize;
 
-      if (absNewSize >= absCurSize) {
+      if (absNewSize > absCurSize) {
         return false;
       }
     }

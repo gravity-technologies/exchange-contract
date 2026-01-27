@@ -174,10 +174,6 @@ abstract contract ConfigContract is BaseContract {
     return bytes32(uint256(v));
   }
 
-  function _featureFlagToConfig(FeatureFlagID v) internal pure returns (bytes32) {
-    return bytes32(uint256(v));
-  }
-
   function _addressToConfig(address v) internal pure returns (bytes32) {
     return bytes32(uint(uint160(v)));
   }
@@ -319,10 +315,6 @@ abstract contract ConfigContract is BaseContract {
 
   function _is2DConfig(ConfigSetting storage settings) internal view returns (bool) {
     return uint256(settings.typ) % 2 == 0;
-  }
-
-  function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
-    return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
   }
 
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value

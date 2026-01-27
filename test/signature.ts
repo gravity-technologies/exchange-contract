@@ -53,6 +53,30 @@ export function genAddAccountAdminSig(
   })
 }
 
+export function genAddAccountSignerWithBuilderSig(
+  wallet: Wallet,
+  accountID: string,
+  signer: string,
+  permissions: string,
+  builderAccountID: string,
+  maxFutureFeeRate: number,
+  maxSpotFeeRate: number,
+  nonce: number = randomInt(22021991)
+): Signature {
+  return sign(wallet, {
+    ...Types.AddAccountSignerWithBuilder,
+    message: {
+      accountID,
+      signer,
+      permissions,
+      builderAccountID,
+      maxFutureFeeRate,
+      maxSpotFeeRate,
+      nonce,
+    },
+  })
+}
+
 export function genSetAccountMultiSigThresholdSig(
   wallet: Wallet,
   accountID: string,
