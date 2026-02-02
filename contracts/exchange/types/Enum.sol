@@ -125,5 +125,7 @@ enum Currency {
   XMR, // 88
   AXS, // 89
   KAIA, // 90
-  RIVER // 91
+  RIVER, // 91
+  MEGA, // 92
+  CC // 93
 }
