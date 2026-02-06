@@ -127,5 +127,11 @@ enum Currency {
   KAIA, // 90
   RIVER, // 91
   MEGA, // 92
-  CC // 93
+  CC, // 93
+  XAU, // 94
+  XPT, // 95
+  XPD, // 96
+  TSLA, // 97
+  INTC, // 98
+  HOOD // 99
 }
