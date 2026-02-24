@@ -307,7 +307,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     }
 
     // ---------- Signature Verification -----------
-    _preventReplay(
+    _preventReplayNoDupCheck(
       hashSetSubAccountPositionMarginConfig(subAccID, assetID, marginType, leverage, sig.nonce, sig.expiration),
       sig
     );

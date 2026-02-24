@@ -12,11 +12,7 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
-import {
-  L2ContractHelper,
-  DEPLOYER_SYSTEM_CONTRACT,
-  IContractDeployer
-} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 import {FeatureFlagID} from "../types/DataStructure.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
@@ -178,6 +174,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
   function _preventReplay(bytes32 hash, Signature calldata sig) internal {
     require(!state.replay.executed[hash], "replayed payload");
+    _requireValidSig30DaysExpiry(state.timestamp, hash, sig);
+    state.replay.executed[hash] = true;
+  }
+
+  /// @dev Verify that a signature is valid with replay attack prevention without replay check
+  function _preventReplayNoDupCheck(bytes32 hash, Signature calldata sig) internal {
     _requireValidSig30DaysExpiry(state.timestamp, hash, sig);
     state.replay.executed[hash] = true;
   }
