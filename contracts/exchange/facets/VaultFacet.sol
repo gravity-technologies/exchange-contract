@@ -214,7 +214,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashVaultInvest(vaultID, accountID, tokenCurrency, numTokens, sig.nonce, sig.expiration);
-    _preventReplay(hash, sig);
+    _preventReplayNoDupCheck(hash, sig);
     // ------- End of Signature Verification -------
 
     _investAndMintLpToken(vaultSub, account, tokenCurrency, numTokens);
