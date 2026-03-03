@@ -133,5 +133,10 @@ enum Currency {
   XPD, // 96
   TSLA, // 97
   INTC, // 98
-  HOOD // 99
+  HOOD, // 99
+  AMZN, // 100
+  COIN, // 101
+  CRCL, // 102
+  MSTR, // 103
+  PLTR // 104
 }

@@ -12,7 +12,11 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
-import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {
+  L2ContractHelper,
+  DEPLOYER_SYSTEM_CONTRACT,
+  IContractDeployer
+} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
 import {FeatureFlagID} from "../types/DataStructure.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
@@ -375,7 +379,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       currency == Currency.XPD ||
       currency == Currency.TSLA ||
       currency == Currency.INTC ||
-      currency == Currency.HOOD
+      currency == Currency.HOOD ||
+      currency == Currency.AMZN ||
+      currency == Currency.COIN ||
+      currency == Currency.CRCL ||
+      currency == Currency.MSTR ||
+      currency == Currency.PLTR
     ) {
       decimals = 9;
     } else if (
