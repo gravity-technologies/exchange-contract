@@ -138,5 +138,6 @@ enum Currency {
   COIN, // 101
   CRCL, // 102
   MSTR, // 103
-  PLTR // 104
+  PLTR, // 104
+  COPPER // 105
 }
