@@ -25,6 +25,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   State internal state;
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
+  bytes32 public constant LIQUIDITY_ORCHESTRATOR_ROLE = keccak256("LIQUIDITY_ORCHESTRATOR_ROLE");
 
   /// @dev Check if the tx.origin has a specific role.
   /// This is applied to all exchange transaction functions.
@@ -60,6 +61,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
   int64 internal constant ONE_DAY_NANOS = 24 * 60 * 60 * 1e9;
+  // Hard deadline for queued withdrawals. If queue head exceeds this window, sequenced tx processing halts.
+  int64 internal constant WITHDRAWAL_QUEUE_DEADLINE_NANOS = 2 * ONE_HOUR_NANOS;
 
   /// @dev The maximum signature expiry time for all signatures except TPSL orders
   int64 private constant THIRTY_DAY_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
@@ -70,6 +73,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
+    _requireNoOverdueWithdrawalRequest(timestamp);
     require(timestamp >= state.timestamp, "invalid timestamp");
     require(state.lastTxID != 0, "tx before initializeConfig");
     require(txID == state.lastTxID + 1, "invalid txID");
@@ -177,6 +181,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   function _max(int64 a, int64 b) internal pure returns (int64) {
     return a >= b ? a : b;
+  }
+
+  /// @dev True when the queue head exists and its derived deadline is strictly earlier than `timestampNs`.
+  function _hasOverdueWithdrawalRequestAt(int64 timestampNs) internal view returns (bool) {
+    if (_isPendingWithdrawalQueueEmpty()) {
+      return false;
+    }
+
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    PendingWithdrawalRequest storage req = queue.requests[queue.head];
+    return (int256(timestampNs) - int256(req.enqueuedTimestampNs)) > int256(WITHDRAWAL_QUEUE_DEADLINE_NANOS);
+  }
+
+  /// @dev Queue invariant: valid items exist only in index interval [head, tail).
+  function _isPendingWithdrawalQueueEmpty() internal view returns (bool) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    return queue.head >= queue.tail;
+  }
+
+  /// @dev Global forward-progress guard: sequenced txs revert while the queue head is overdue.
+  function _requireNoOverdueWithdrawalRequest(int64 timestampNs) internal view {
+    if (_hasOverdueWithdrawalRequestAt(timestampNs)) {
+      revert("overdue withdrawal request");
+    }
   }
 
   /// @dev Verify that a signature is valid with replay attack prevention

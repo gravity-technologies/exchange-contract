@@ -174,6 +174,43 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return _getMaintenanceMarginCrossInQuote(sub).toUint64(qDec);
   }
 
+  function hasOverdueWithdrawalRequest() public view returns (bool) {
+    return _hasOverdueWithdrawalRequestAt(state.timestamp);
+  }
+
+  function hasOverdueWithdrawalRequestAt(int64 timestampNs) public view returns (bool) {
+    return _hasOverdueWithdrawalRequestAt(timestampNs);
+  }
+
+  function getPendingWithdrawalQueueBounds() public view returns (uint64 head, uint64 tail) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    return (queue.head, queue.tail);
+  }
+
+  function getPendingWithdrawalRequests(
+    uint64 start,
+    uint64 limit
+  ) public view returns (PendingWithdrawalRequest[] memory requests) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    uint64 head = queue.head;
+    uint64 tail = queue.tail;
+
+    if (start < head) {
+      start = head;
+    }
+    if (start >= tail || limit == 0) {
+      return new PendingWithdrawalRequest[](0);
+    }
+
+    uint64 available = tail - start;
+    uint64 count = limit < available ? limit : available;
+
+    requests = new PendingWithdrawalRequest[](count);
+    for (uint256 i; i < uint256(count); ++i) {
+      requests[i] = queue.requests[start + uint64(i)];
+    }
+  }
+
   function getTimestamp() public view returns (int64) {
     return state.timestamp;
   }

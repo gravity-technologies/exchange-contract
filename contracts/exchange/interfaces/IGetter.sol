@@ -92,6 +92,29 @@ interface IGetter {
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) external view returns (uint64);
 
+  /// @notice Returns true when the oldest queued withdrawal has missed its deadline at current state timestamp.
+  function hasOverdueWithdrawalRequest() external view returns (bool);
+
+  /// @notice Returns true when the oldest queued withdrawal has missed its deadline at `timestampNs`.
+  /// @dev `timestampNs` is expected to follow exchange sequencing timestamp units (nanoseconds).
+  function hasOverdueWithdrawalRequestAt(int64 timestampNs) external view returns (bool);
+
+  /// @notice Returns queue index bounds where valid entries exist in [head, tail).
+  /// @dev `head == tail` means the pending-withdrawal queue is empty.
+  /// @return head Queue head index (inclusive).
+  /// @return tail Queue tail index (exclusive).
+  function getPendingWithdrawalQueueBounds() external view returns (uint64 head, uint64 tail);
+
+  /// @notice Returns up to `limit` queued withdrawal requests starting at `start`.
+  /// @dev Reads are clipped to current [head, tail) bounds. If `start` is before `head`, it is treated as `head`.
+  /// @param start Requested first queue index.
+  /// @param limit Maximum number of requests to return.
+  /// @return requests Contiguous queue entries in [start, min(start + limit, tail)).
+  function getPendingWithdrawalRequests(
+    uint64 start,
+    uint64 limit
+  ) external view returns (PendingWithdrawalRequest[] memory requests);
+
   function getTimestamp() external view returns (int64);
 
   function getExchangeCurrencyBalance(Currency currency) external view returns (int64);

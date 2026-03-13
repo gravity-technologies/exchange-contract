@@ -5,9 +5,7 @@ import "./signature/generated/TransferSig.sol";
 import "../util/BIMath.sol";
 
 import {IL2SharedBridge} from "../../../lib/era-contracts/l2-contracts/contracts/bridge/interfaces/IL2SharedBridge.sol";
-import {
-  IERC20MetadataUpgradeable
-} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
+import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import "../interfaces/ITransfer.sol";
 
@@ -57,8 +55,11 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   /**
-   * @notice Withdraw collateral from a sub account. This will call external contract.
-   * This follows the Checks-Effects-Interactions pattern to mitigate reentrancy attack.
+   * @notice Withdraw collateral from a sub account.
+   * @dev Keeps the same accounting path as synchronous withdrawals, then routes execution:
+   *  - immediate L2 -> L1 bridge when queue is empty and L2 liquidity is sufficient
+   *  - enqueue for later processing otherwise (including when queue is already non-empty to preserve FIFO)
+   * Emits the same `Withdrawal` event in both sync and async routes.
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
@@ -97,16 +98,88 @@ abstract contract TransferContract is ITransfer, TradeContract {
     require(amount > 0, "invalid withdrawal amount");
     require(amount <= acc.spotBalances[currency], "insufficient balance");
 
-    WithdrawalInfo memory info = _doWithdrawal(acc, amount, currency, recipient);
+    // Keep behavior backward compatible: missing L2 shared bridge config still reverts withdrawals.
+    _requireL2SharedBridgeAddress();
+
+    WithdrawalInfo memory info = _prepareWithdrawalInfo(acc, amount, currency);
+
+    // Strict FIFO: once queue is non-empty, all new withdrawals are queued behind the existing head.
+    if (_hasPendingWithdrawalRequest()) {
+      _enqueuePendingWithdrawal(recipient, info.currency, info.amountToSend);
+    } else if (_hasSufficientL2Balance(info.erc20Address, info.erc20AmountToSend)) {
+      // Sufficient immediate L2 liquidity -> preserve existing synchronous bridge behavior.
+      _withdrawToL1Raw(recipient, info.erc20Address, info.erc20AmountToSend);
+    } else {
+      // Insufficient immediate L2 liquidity -> accept request and process asynchronously.
+      _enqueuePendingWithdrawal(recipient, info.currency, info.amountToSend);
+    }
 
     emit Withdrawal(fromAccID, recipient, txID, info);
   }
 
-  function _doWithdrawal(
+  /// @dev Drains queue head-first while each head item can be bridged with current L2 balance.
+  function processWithdrawalQueue() external nonReentrant onlyTxOriginRole(LIQUIDITY_ORCHESTRATOR_ROLE) {
+    while (!_isPendingWithdrawalQueueEmpty()) {
+      WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+      uint64 head = queue.head;
+      PendingWithdrawalRequest storage req = queue.requests[head];
+      uint256 erc20AmountToSend = scaleToERC20Amount(req.currency, req.amountToSend);
+      address erc20Address = getCurrencyERC20Address(req.currency);
+      // Stop at first unserviceable head to preserve strict FIFO ordering.
+      if (!_hasSufficientL2Balance(erc20Address, erc20AmountToSend)) {
+        break;
+      }
+
+      // Accounting was already applied at request time; queue drain only executes deferred bridge transfer.
+      _withdrawToL1Raw(req.recipient, erc20Address, erc20AmountToSend);
+      delete queue.requests[head];
+      queue.head = head + 1;
+    }
+  }
+
+  function setL1DefiVaultAddress(address recipient) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(recipient != address(0), "invalid recipient");
+    require(state.l1DefiVaultAddress == address(0), "L1 DeFi vault address already set");
+
+    state.l1DefiVaultAddress = recipient;
+    emit L1DefiVaultAddressSet(recipient);
+  }
+
+  function getL1DefiVaultAddress() external view returns (address) {
+    return state.l1DefiVaultAddress;
+  }
+
+  function setNativeVaultGatewayAddress(address recipient) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(recipient != address(0), "invalid recipient");
+    require(state.nativeVaultGatewayAddress == address(0), "native vault gateway address already set");
+
+    state.nativeVaultGatewayAddress = recipient;
+    emit NativeVaultGatewayAddressSet(recipient);
+  }
+
+  function getNativeVaultGatewayAddress() external view returns (address) {
+    return state.nativeVaultGatewayAddress;
+  }
+
+  /// @notice Bridges exchange-held vault assets to the appropriate L1 destination.
+  /// @dev ERC20 assets go directly to the configured L1 DeFi vault. ETH uses the shared bridge
+  ///      withdrawal flow and routes to the configured native vault gateway.
+  function bridgeToL1DefiVault(
+    address l2Token,
+    uint256 amount
+  ) external nonReentrant onlyTxOriginRole(LIQUIDITY_ORCHESTRATOR_ROLE) {
+    require(l2Token != address(0), "invalid token");
+    require(amount > 0, "invalid amount");
+
+    address recipient = _bridgeToL1DefiVaultRaw(l2Token, amount);
+    emit L1DefiVaultBridge(l2Token, amount, recipient);
+  }
+
+  /// @dev Applies withdrawal accounting immediately; this function does not perform bridge side effects.
+  function _prepareWithdrawalInfo(
     Account storage acc,
     int64 amount,
-    Currency currency,
-    address recipient
+    Currency currency
   ) private returns (WithdrawalInfo memory) {
     acc.spotBalances[currency] -= amount;
 
@@ -119,7 +192,8 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     state.totalSpotBalances[currency] -= amountToSend;
 
-    (address erc20Address, uint256 erc20AmountToSend) = _withdrawToL1(currency, amountToSend, recipient);
+    address erc20Address = getCurrencyERC20Address(currency);
+    uint256 erc20AmountToSend = scaleToERC20Amount(currency, amountToSend);
 
     return
       WithdrawalInfo({
@@ -134,16 +208,58 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
-    (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
-    require(ok, "missing L2 shared bridge address");
-    IL2SharedBridge l2SharedBridge = IL2SharedBridge(l2SharedBridgeAddress);
-
     uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
-
     address erc20Address = getCurrencyERC20Address(currency);
-    l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
+    _withdrawToL1Raw(recipient, erc20Address, erc20AmountToSend);
 
     return (erc20Address, erc20AmountToSend);
+  }
+
+  function _withdrawToL1Raw(address recipient, address erc20Address, uint256 erc20AmountToSend) private {
+    IL2SharedBridge l2SharedBridge = IL2SharedBridge(_requireL2SharedBridgeAddress());
+    l2SharedBridge.withdraw(recipient, erc20Address, erc20AmountToSend);
+  }
+
+  function _bridgeToL1DefiVaultRaw(address l2Token, uint256 amount) private returns (address) {
+    address ethL2Token = getCurrencyERC20Address(Currency.ETH);
+    address recipient;
+    if (l2Token == ethL2Token) {
+      recipient = state.nativeVaultGatewayAddress;
+    } else {
+      recipient = state.l1DefiVaultAddress;
+    }
+    require(recipient != address(0), "no recipient");
+    _withdrawToL1Raw(recipient, l2Token, amount);
+    return recipient;
+  }
+
+  function _requireL2SharedBridgeAddress() private view returns (address) {
+    (address l2SharedBridgeAddress, bool ok) = _getAddressConfig(ConfigID.L2_SHARED_BRIDGE_ADDRESS);
+    require(ok, "missing L2 shared bridge address");
+    return l2SharedBridgeAddress;
+  }
+
+  function _hasPendingWithdrawalRequest() private view returns (bool) {
+    return !_isPendingWithdrawalQueueEmpty();
+  }
+
+  /// @dev Enqueues a new pending withdrawal using current sequencer timestamp.
+  function _enqueuePendingWithdrawal(address recipient, Currency currency, int64 amountToSend) private {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    uint64 tail = queue.tail;
+    require(tail < type(uint64).max, "withdrawal queue overflow");
+
+    queue.requests[tail] = PendingWithdrawalRequest({
+      recipient: recipient,
+      currency: currency,
+      amountToSend: amountToSend,
+      enqueuedTimestampNs: state.timestamp
+    });
+    queue.tail = tail + 1;
+  }
+
+  function _hasSufficientL2Balance(address erc20Address, uint256 erc20AmountToSend) private view returns (bool) {
+    return IERC20MetadataUpgradeable(erc20Address).balanceOf(address(this)) >= erc20AmountToSend;
   }
 
   function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64, int64) {

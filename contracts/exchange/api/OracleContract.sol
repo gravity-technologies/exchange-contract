@@ -24,7 +24,9 @@ contract OracleContract is IOracle, ConfigContract {
   /// Require timestamp and the transactionID to increase
   /// This is in contrast to _setSequence in BaseContract, where the transactionID to be in sequence without any gap
   /// This is because a mark price tick can be skipped if superceded before being used.
+  /// Also enforces queue overdue halt so mark price updates cannot bypass global progress guard.
   function _setSequenceMarkPriceTick(int64 timestamp, uint64 txID) private {
+    _requireNoOverdueWithdrawalRequest(timestamp);
     if (timestamp < state.timestamp) {
       revert InvalidTimestamp();
     }

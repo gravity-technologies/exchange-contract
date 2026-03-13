@@ -1,5 +1,7 @@
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/access/IAccessControl.sol";
+
 import "../interfaces/IAccount.sol";
 import "../interfaces/ISubAccount.sol";
 import "../interfaces/IConfig.sol";
@@ -18,6 +20,7 @@ import "../types/DataStructure.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 
 interface IGRVTExchange is
+  IAccessControl,
   IAccount,
   IAssertion,
   IConfig,

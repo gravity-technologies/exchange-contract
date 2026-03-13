@@ -28,6 +28,12 @@ interface ITransfer {
     uint64 txID
   );
 
+  event L1DefiVaultAddressSet(address indexed recipient);
+
+  event NativeVaultGatewayAddressSet(address indexed recipient);
+
+  event L1DefiVaultBridge(address indexed l2Token, uint256 amount, address indexed recipient);
+
   /**
    * @notice Deposit collateral into a sub account
    *
@@ -67,6 +73,28 @@ interface ITransfer {
     uint64 numTokens,
     Signature calldata sig
   ) external;
+
+  /// @notice Drains queued withdrawals in FIFO order while L2 liquidity is sufficient for the queue head.
+  /// @dev Callable only by the liquidity orchestrator to resume progress after L2 top-up.
+  function processWithdrawalQueue() external;
+
+  /// @notice Sets the L1 DeFi vault address for direct bridge operations. Can only be called once.
+  function setL1DefiVaultAddress(address recipient) external;
+
+  /// @notice Returns the L1 DeFi vault address used by direct bridge operations.
+  function getL1DefiVaultAddress() external view returns (address);
+
+  /// @notice Sets the L1 native vault gateway address for ETH bridge operations. Can only be called once.
+  function setNativeVaultGatewayAddress(address recipient) external;
+
+  /// @notice Returns the L1 native vault gateway address used by ETH bridge operations.
+  function getNativeVaultGatewayAddress() external view returns (address);
+
+  /// @notice Bridges L2 vault assets held by the exchange to L1.
+  /// @dev ERC20 assets go directly to the configured L1 DeFi vault. ETH uses the shared bridge
+  ///      withdrawal flow and routes to the native vault gateway.
+  /// @dev Callable only by the liquidity orchestrator.
+  function bridgeToL1DefiVault(address l2Token, uint256 amount) external;
 
   /**
    * @notice Transfer tokens from one sub account to another sub account

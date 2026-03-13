@@ -125,10 +125,42 @@ struct State {
   mapping(uint16 => CurrencyConfig) currencyConfigs;
   // Per instrument funding configs (funding V2)
   mapping(bytes32 => FundingInfo) fundingConfigs;
+  /**
+   * @notice FIFO queue for withdrawals that were accepted on L2 but not yet bridged to L1.
+   *
+   * @dev New withdrawal flow:
+   * - Sync path (unchanged behavior): if queue is empty and current L2 token balance is sufficient,
+   *   withdrawal is bridged to L1 immediately in the same transaction.
+   * - Async path (new behavior): if queue is non-empty OR current L2 token balance is insufficient,
+   *   withdrawal is enqueued for later processing by `processWithdrawalQueue()`.
+   *
+   * Why this exists:
+   * - L2 may intentionally hold only operational liquidity while a large part of exchange TVL
+   *   is moved to an Ethereum L1 DeFi vault contract to generate yield.
+   * - Without queueing, insufficient L2 liquidity would make withdrawals revert and block chain progress.
+   *
+   * Nuances:
+   * - Accounting (user balance debit, socialized loss, fee, and `totalSpotBalances` update) happens at
+   *   withdrawal request time, not at queue-drain time.
+   * - `Withdrawal` event is emitted for both sync and async paths to preserve existing history ingestion.
+   * - Queue processing is strict FIFO: only the head item can be processed next; no reordering/bypass.
+   * - Each queued request stores its enqueue timestamp from sequencer time (`state.timestamp`, nanoseconds),
+   *   not `block.timestamp`.
+   * - The effective deadline is computed dynamically as `enqueuedTimestampNs + WITHDRAWAL_QUEUE_DEADLINE_NANOS`.
+   * - If the head request becomes overdue, sequenced tx processing is halted until liquidity is restored and
+   *   the queue is drained enough to clear overdue state.
+  */
+  WithdrawalQueue pendingWithdrawalQueue;
+  // L1 DeFi vault address for direct bridge operations.
+  // Set once through a dedicated admin method and immutable thereafter.
+  address l1DefiVaultAddress;
+  // L1 native vault gateway address for ETH bridge operations.
+  // Set once through a dedicated admin method and immutable thereafter.
+  address nativeVaultGatewayAddress;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-  uint256[47] __gap;
+  uint256[44] __gap;
 }
 
 struct CurrencyConfig {
@@ -141,6 +173,28 @@ struct TmpLegData {
   bool isBuyingAsset;
   bool isSet;
   uint64 limitPrice;
+}
+
+struct PendingWithdrawalRequest {
+  // L1 withdrawal recipient for the queued request.
+  address recipient;
+  // Spot currency to bridge out when processed.
+  Currency currency;
+  // Net exchange amount to bridge after socialized loss and withdrawal fee.
+  int64 amountToSend;
+  // Enqueue timestamp in nanoseconds using exchange sequencer time (`state.timestamp`).
+  int64 enqueuedTimestampNs;
+}
+
+// Storage-optimized FIFO queue with monotonic indices.
+// items at [head, tail) are valid; head == tail means queue is empty.
+struct WithdrawalQueue {
+  // Queue storage for pending withdrawals
+  mapping(uint64 => PendingWithdrawalRequest) requests;
+  // Queue head index (inclusive)
+  uint64 head;
+  // Queue tail index (exclusive)
+  uint64 tail;
 }
 
 struct Account {
