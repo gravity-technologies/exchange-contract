@@ -197,7 +197,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal view {
     _requireSupportedEIP712ChainID(sig.chainId);
     bytes32 digest = keccak256(
-      abi.encodePacked(abi.encodePacked("\x19\x01", _getDomainSeparatorHash(sig.chainId)), hash)
+      abi.encodePacked("\x19\x01", _getDomainSeparatorHash(sig.chainId), hash)
     );
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
