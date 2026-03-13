@@ -20,9 +20,21 @@ function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
-// only USDT spot balances is supported
+// Currencies that can hold spot balances
+// When adding a new spot-balance currency, add it here
+function spotBalanceCurrencies() pure returns (Currency[] memory) {
+  Currency[] memory cs = new Currency[](1);
+  cs[0] = Currency.USDT;
+  return cs;
+}
+
+// Returns true if the currency can hold spot balances
 function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
-  return currency == Currency.USDT;
+  Currency[] memory cs = spotBalanceCurrencies();
+  for (uint i; i < cs.length; ++i) {
+    if (cs[i] == currency) return true;
+  }
+  return false;
 }
 
 uint constant PRICE_DECIMALS = 9;

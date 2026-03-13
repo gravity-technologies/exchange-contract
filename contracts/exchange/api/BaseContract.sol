@@ -92,8 +92,9 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _requireAccountNoBalance(Account storage acc) internal view {
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      require(!currencyCanHoldSpotBalance(i) || acc.spotBalances[i] == 0, "account has balance");
+    Currency[] memory cs = spotBalanceCurrencies();
+    for (uint i; i < cs.length; ++i) {
+      require(acc.spotBalances[cs[i]] == 0, "account has balance");
     }
   }
 
@@ -717,17 +718,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     Currency quoteCurrency
   ) internal view returns (BI memory) {
     BI memory total = BIMath.zero();
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      if (!currencyCanHoldSpotBalance(i)) {
-        continue;
-      }
-
-      int64 balance = balances[i];
-      if (balance == 0) {
-        continue;
-      }
+    Currency[] memory cs = spotBalanceCurrencies();
+    for (uint i; i < cs.length; ++i) {
+      int64 balance = balances[cs[i]];
+      if (balance == 0) continue;
       BI memory balanceBI = BI(balance, _getBalanceDecimal(quoteCurrency));
-      BI memory balanceValueInQuote = _convertCurrency(balanceBI, i, quoteCurrency);
+      BI memory balanceValueInQuote = _convertCurrency(balanceBI, cs[i], quoteCurrency);
       total = total.add(balanceValueInQuote);
     }
     return total;
