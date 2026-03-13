@@ -624,12 +624,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     PositionsMap storage posmap = _getPositionCollection(sub, kind);
 
     // If the position already exists, return it
-    if (posmap.values[assetID].id != 0x0) {
-      return posmap.values[assetID];
+    Position storage pos = posmap.values[assetID];
+    if (pos.id != 0x0) {
+      return pos;
     }
 
     // Otherwise, create a new position
-    Position storage pos = getOrNew(posmap, assetID);
+    pos = getOrNew(posmap, assetID);
 
     if (kind == Kind.PERPS) {
       // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
