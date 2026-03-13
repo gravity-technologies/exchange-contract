@@ -68,7 +68,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
     uint matchesLen = makerMatches.length;
 
-    for (uint i; i < matchesLen; ++i) {
+    for (uint i; i < matchesLen; ) {
       MakerTradeMatch calldata makerMatch = makerMatches[i];
       OrderCalculationResult memory makerCalcResult = _calculateMakerOrder(
         trade,
@@ -85,6 +85,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
         makerMatch.builderFees,
         takerSub
       );
+      unchecked { ++i; }
     }
 
     return takerCalcResult;
@@ -99,9 +100,10 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     makerCalcResult.matchedSizes = makerMatch.matchedSize;
     makerCalcResult.legSpotDelta = new BI[](makerMatch.makerOrder.legs.length);
 
-    for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ++legIdx) {
+    for (uint legIdx; legIdx < makerMatch.makerOrder.legs.length; ) {
       uint64 size = makerCalcResult.matchedSizes[legIdx];
       if (size == 0) {
+        unchecked { ++legIdx; }
         continue;
       }
 
@@ -123,6 +125,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       makerCalcResult.tradeNotional = makerCalcResult.tradeNotional.add(notional);
 
       takerCalcResult.matchedSizes[takerLegIdx] += size;
+      unchecked { ++legIdx; }
     }
 
     // Aggregate taker notional accross all makers
@@ -140,18 +143,19 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     OrderLeg[] calldata takerLegs = takerOrder.legs;
     uint takerLegsLen = takerLegs.length;
 
-    for (uint i = 0; i < trade.makerOrders.length; ++i) {
+    for (uint i = 0; i < trade.makerOrders.length; ) {
       MakerTradeMatch calldata tradeMatch = trade.makerOrders[i];
       Order calldata makerOrder = tradeMatch.makerOrder;
       uint numLegs = makerOrder.legs.length;
       uint64[] calldata matchedSizes = tradeMatch.matchedSize;
       require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
-      for (uint j = 0; j < numLegs; ++j) {
+      for (uint j = 0; j < numLegs; ) {
         OrderLeg calldata makerLeg = makerOrder.legs[j];
         (bool found, uint64 takerLimitPrice, bool takerIsBuying) = _findTakerLeg(takerLegs, takerLegsLen, makerLeg.assetID);
 
         if (!found) {
           require(matchedSizes[j] == 0, "matched against non-existent taker leg");
+          unchecked { ++j; }
           continue;
         }
         require(takerIsBuying != makerLeg.isBuyingAsset, "matched same side");
@@ -163,15 +167,18 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
             "taker matched with bad price"
           );
         }
+        unchecked { ++j; }
       }
+      unchecked { ++i; }
     }
   }
 
   function _findTakerLeg(OrderLeg[] calldata legs, uint len, bytes32 assetID) private pure returns (bool, uint64, bool) {
-    for (uint i; i < len; ++i) {
+    for (uint i; i < len; ) {
       if (legs[i].assetID == assetID) {
         return (true, legs[i].limitPrice, legs[i].isBuyingAsset);
       }
+      unchecked { ++i; }
     }
     return (false, 0, false);
   }
@@ -319,7 +326,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       builderMaxSpotFeeRate = builderConfig.maxSpotFeeRate;
     }
 
-    for (uint i; i < legsLen; ++i) {
+    for (uint i; i < legsLen; ) {
       OrderLeg calldata leg = legs[i];
       Currency assetQuote = assetGetQuote(leg.assetID);
       Currency underlying = assetGetUnderlying(leg.assetID);
@@ -331,6 +338,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       if (shouldValidateBuilderFee) {
         _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, builderMaxFutureFeeRate);
       }
+      unchecked { ++i; }
     }
 
     // Check the order signature
@@ -372,18 +380,20 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       bytes32[] memory seenAssetIDs = new bytes32[](legsLen);
       uint seenCount = 0;
 
-      for (uint i; i < legsLen; ++i) {
+      for (uint i; i < legsLen; ) {
         OrderLeg calldata leg = legs[i];
 
-        for (uint j = 0; j < seenCount; ++j) {
+        for (uint j = 0; j < seenCount; ) {
           require(seenAssetIDs[j] != leg.assetID, "Duplicate assetID in legs");
+          unchecked { ++j; }
         }
         seenAssetIDs[seenCount] = leg.assetID;
         seenCount++;
+        unchecked { ++i; }
       }
     }
 
-    for (uint i; i < legsLen; ++i) {
+    for (uint i; i < legsLen; ) {
       OrderLeg calldata leg = legs[i];
       uint64 legExecutedSize = executedSize[leg.assetID];
       if (order.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL) {
@@ -392,6 +402,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       uint64 total = legExecutedSize + calcResult.matchedSizes[i];
       require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
       executedSize[leg.assetID] = total;
+      unchecked { ++i; }
     }
 
     // Check that the fee paid is within the cap of 20 bps
@@ -523,9 +534,12 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     Currency subQuote
   ) private returns (int64 spotDelta) {
     uint legsLen = order.legs.length;
-    for (uint i; i < legsLen; ++i) {
+    for (uint i; i < legsLen; ) {
       uint64 matchedSize = calcResult.matchedSizes[i];
-      if (matchedSize == 0) continue;
+      if (matchedSize == 0) {
+        unchecked { ++i; }
+        continue;
+      }
       OrderLeg calldata leg = order.legs[i];
 
       // Step 1: Retrieve position
@@ -543,11 +557,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       if (pos.balance == 0) {
         removePos(sub, leg.assetID);
       }
+      unchecked { ++i; }
     }
 
     uint subQDec = _getBalanceDecimal(subQuote);
-    for (uint j; j < legsLen; ++j) {
+    for (uint j; j < legsLen; ) {
       spotDelta += calcResult.legSpotDelta[j].toInt64(subQDec);
+      unchecked { ++j; }
     }
   }
 
@@ -879,22 +895,29 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   function _getTotalFee(int64[] memory feePerLegs) private pure returns (int64) {
     int64 totalFee;
     uint len = feePerLegs.length;
-    for (uint i; i < len; ++i) totalFee += feePerLegs[i];
+    for (uint i; i < len; ) {
+      totalFee += feePerLegs[i];
+      unchecked { ++i; }
+    }
     return totalFee;
   }
 
   function _getLegUnderlyingDecimals(OrderLeg[] calldata legs) private pure returns (uint64[] memory) {
     uint len = legs.length;
     uint64[] memory decimals = new uint64[](len);
-    for (uint i; i < len; ++i) {
+    for (uint i; i < len; ) {
       decimals[i] = _getBalanceDecimal(assetGetUnderlying(legs[i].assetID));
+      unchecked { ++i; }
     }
     return decimals;
   }
 
   function _findLegIndex(OrderLeg[] calldata legs, bytes32 assetID) private pure returns (uint) {
     uint len = legs.length;
-    for (uint i; i < len; ++i) if (legs[i].assetID == assetID) return i;
+    for (uint i; i < len; ) {
+      if (legs[i].assetID == assetID) return i;
+      unchecked { ++i; }
+    }
     revert(ERR_NOT_FOUND);
   }
 
@@ -966,9 +989,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       if (posConfigs[order.legs[i].assetID].marginType == PositionMarginType.ISOLATED) {
         revert ErrInvalidOrder();
       }
-      unchecked {
-        ++i;
-      }
+      unchecked { ++i; }
     }
 
     return bytes32(0);

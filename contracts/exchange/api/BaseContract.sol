@@ -123,12 +123,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
     bool isSubAccSigner = false;
     uint256 numSubAccs = acc.subAccounts.length;
-    for (uint256 i; i < numSubAccs; ++i) {
+    for (uint256 i; i < numSubAccs; ) {
       SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
       if (subAcc.signers[signer] != 0) {
         isSubAccSigner = true;
         break;
       }
+      unchecked { ++i; }
     }
     require(isSubAccSigner, "signer not tagged to account");
   }
@@ -143,26 +144,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     uint numSigs = sigs.length;
     require(numSigs == hashes.length, "invalid number of hashes");
     // 1. Check that there are no duplicate signing key in the signatures
-    for (uint i; i < numSigs; ++i) {
-      for (uint j = i + 1; j < numSigs; ++j) {
+    for (uint i; i < numSigs; ) {
+      for (uint j = i + 1; j < numSigs; ) {
         require(sigs[i].signer != sigs[j].signer, "duplicate signing key");
+        unchecked { ++j; }
       }
+      unchecked { ++i; }
     }
 
     // 2. Check that the signatures form a quorum
     require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
-    for (uint i; i < numSigs; ++i) {
+    for (uint i; i < numSigs; ) {
       require(!state.replay.executed[hashes[i]], "invalid transaction");
+      unchecked { ++i; }
     }
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
-    for (uint i; i < numSigs; ++i) {
+    for (uint i; i < numSigs; ) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
       _requireValidSig30DaysExpiry(timestamp, hashes[i], sigs[i]);
       state.replay.executed[hashes[i]] = true;
+      unchecked { ++i; }
     }
   }
 
@@ -269,10 +274,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     address[] memory signers,
     uint64 requiredPerm
   ) internal view {
-    for (uint256 i = 0; i < signers.length; i++) {
+    for (uint256 i = 0; i < signers.length; ) {
       if (hasAccountPermission(account, signers[i], requiredPerm)) {
         return;
       }
+      unchecked { ++i; }
     }
     revert("no permission");
   }
@@ -636,12 +642,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
     BI memory totalValue = _getSpotBalanceValueInCurrencyBI(account.spotBalances, Currency.USDT);
 
-    for (uint256 i; i < account.subAccounts.length; ++i) {
+    for (uint256 i; i < account.subAccounts.length; ) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
       BI memory subValueInQuote = _getTotalEquityInQuote(subAcc);
       BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
 
       totalValue = totalValue.add(subValueInUSDT);
+      unchecked { ++i; }
     }
 
     return totalValue;
@@ -707,7 +714,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     mapping(bytes32 => Position) storage values = positions.values;
     uint64 quoteDecimals = _getBalanceDecimal(subAccountQuote);
 
-    for (uint i; i < positionsCount; ++i) {
+    for (uint i; i < positionsCount; ) {
       Position storage pos = values[positionKeys[i]];
       bytes32 assetID = pos.id;
       Currency posQuote = assetGetQuote(assetID);
@@ -728,6 +735,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
         // We don't need to this value using convertCurrency like in StateMachine since it's already in subAccountQuote (see the validation above)
         totalMarginBalanceValue = totalMarginBalanceValue.add(BI(marginBalance, quoteDecimals));
       }
+      unchecked { ++i; }
     }
     return (totalPositionValue, totalMarginBalanceValue);
   }
@@ -752,7 +760,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     mapping(bytes32 => Position) storage perpValues = sub.perps.values;
-    for (uint i; i < count; ++i) {
+    for (uint i; i < count; ) {
       Position storage pos = perpValues[perpKeys[i]];
       bytes32 assetID = pos.id;
       PositionMarginType marginType = posConfigs[assetID].marginType;
@@ -765,6 +773,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
         BI memory price = _requireAssetPriceInQuoteBI(assetID);
         te = te.add(balance.mul(price));
       }
+      unchecked { ++i; }
     }
 
     return te;

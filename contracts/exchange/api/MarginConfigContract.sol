@@ -39,7 +39,7 @@ contract MarginConfigContractGetter is ConfigContract {
     BI memory prevRate = mt.tiers[0].rate;
     BI memory bracketSize;
 
-    for (uint i = 0; i < mt.tiers.length; i++) {
+    for (uint i = 0; i < mt.tiers.length; ) {
       MarginTierBI memory tier = mt.tiers[i];
       if (BIMath.cmp(notional, tier.bracketStart) <= 0) {
         bracketSize = BIMath.sub(notional, prevStart);
@@ -52,6 +52,7 @@ contract MarginConfigContractGetter is ConfigContract {
 
       prevStart = tier.bracketStart;
       prevRate = tier.rate;
+      unchecked { ++i; }
     }
 
     BI memory lastBracketSize = BIMath.sub(notional, prevStart);
@@ -73,7 +74,7 @@ contract MarginConfigContractGetter is ConfigContract {
     BI memory prevRate = mt.tiers[0].rate;
     BI memory bracketSize;
 
-    for (uint i = 0; i < mt.tiers.length; i++) {
+    for (uint i = 0; i < mt.tiers.length; ) {
       MarginTierBIStorage storage tier = mt.tiers[i];
       if (BIMath.cmp(notional, tier.bracketStart) <= 0) {
         bracketSize = BIMath.sub(notional, prevStart);
@@ -86,6 +87,7 @@ contract MarginConfigContractGetter is ConfigContract {
 
       prevStart = tier.bracketStart;
       prevRate = tier.rate;
+      unchecked { ++i; }
     }
 
     BI memory lastBracketSize = BIMath.sub(notional, prevStart);

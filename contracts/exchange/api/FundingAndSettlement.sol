@@ -29,12 +29,13 @@ contract FundingAndSettlement is BaseContract {
 
     bytes32[] storage keys = perps.keys;
     uint len = keys.length;
-    for (uint i; i < len; ++i) {
+    for (uint i; i < len; ) {
       bytes32 assetID = keys[i];
       int64 latestFundingIndex = state.prices.fundingIndex[assetID];
       Position storage perp = perps.values[assetID];
       int256 fundingIndexChange = latestFundingIndex - perp.lastAppliedFundingIndex;
       if (fundingIndexChange == 0) {
+        unchecked { ++i; }
         continue;
       }
       // Funding (11.2): fundingPayment = fundingIndexChange * positionSize
@@ -47,6 +48,7 @@ contract FundingAndSettlement is BaseContract {
         sub.spotBalances[quoteCurrency] -= fundingPayment;
       }
       perp.lastAppliedFundingIndex = latestFundingIndex;
+      unchecked { ++i; }
     }
     sub.lastAppliedFundingTimestamp = fundingTime;
   }
@@ -86,26 +88,30 @@ contract FundingAndSettlement is BaseContract {
 
     SettlementEntry[] memory settlements = new SettlementEntry[](posLen);
     uint settlementCount = 0;
-    for (uint i; i < posLen; ++i) {
+    for (uint i; i < posLen; ) {
       bytes32 assetID = posKeys[i];
       (uint64 settlePrice, bool found) = _getAssetSettlementPrice(assetID);
       if (!found) {
+        unchecked { ++i; }
         continue;
       }
       settlements[settlementCount] = SettlementEntry(assetID, settlePrice);
       settlementCount++;
+      unchecked { ++i; }
     }
 
-    for (uint i = 0; i < settlementCount; i++) {
+    for (uint i = 0; i < settlementCount; ) {
       SettlementEntry memory entry = settlements[i];
       int64 positionBalance = posValues[entry.assetID].balance;
       remove(positions, entry.assetID);
       if (entry.settlePrice == 0) {
+        unchecked { ++i; }
         continue;
       }
 
       BI memory posBalance = BI(positionBalance, _getBalanceDecimal(assetGetUnderlying(entry.assetID)));
       newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(entry.settlePrice)), PRICE_DECIMALS)));
+      unchecked { ++i; }
     }
     sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }

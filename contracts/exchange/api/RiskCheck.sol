@@ -24,14 +24,16 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     uint dec = _getBalanceDecimal(Currency.USDT);
     BI memory totalValueBI = BI(0, dec);
 
-    for (uint i = 0; i < state.bridgingPartners.length; i++) {
+    for (uint i = 0; i < state.bridgingPartners.length; ) {
       Account storage account = state.accounts[state.bridgingPartners[i]];
       if (account.id == address(0)) {
         // allow non-exist bridging partners, consider them to have 0 value
+        unchecked { ++i; }
         continue;
       }
 
       totalValueBI = totalValueBI.add(_getFundingAccountEquityInUSDT(account));
+      unchecked { ++i; }
     }
     return totalValueBI.toInt64(dec);
   }
@@ -41,12 +43,13 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     BI memory totalValueBI = BI(0, dec);
 
     address[] memory internalAccountAddresses = _getAllInternalFundingAccounts();
-    for (uint i = 0; i < internalAccountAddresses.length; i++) {
+    for (uint i = 0; i < internalAccountAddresses.length; ) {
       if (internalAccountAddresses[i] == address(0)) {
         break;
       }
       Account storage account = _requireAccount(internalAccountAddresses[i]);
       totalValueBI = totalValueBI.add(_getFundingAccountEquityInUSDT(account));
+      unchecked { ++i; }
     }
 
     return totalValueBI.toInt64(dec);
@@ -71,12 +74,13 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
   function _addUniqueAddress(address[] memory addresses, address newAddress) private pure {
     if (newAddress == address(0)) revert("Invalid address");
 
-    for (uint256 i = 0; i < addresses.length; i++) {
+    for (uint256 i = 0; i < addresses.length; ) {
       if (addresses[i] == address(0)) {
         addresses[i] = newAddress;
         return;
       }
       if (addresses[i] == newAddress) return;
+      unchecked { ++i; }
     }
 
     revert("mem array is full");
@@ -111,7 +115,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
     Order calldata order,
     uint64[] memory matchedSizes
   ) internal view returns (bool) {
-    for (uint256 i = 0; i < order.legs.length; i++) {
+    for (uint256 i = 0; i < order.legs.length; ) {
       OrderLeg calldata leg = order.legs[i];
       int64 curSize = _getPositionCollection(sub, assetGetKind(leg.assetID)).values[leg.assetID].balance;
       int64 newSize = curSize + (leg.isBuyingAsset ? int64(matchedSizes[i]) : -int64(matchedSizes[i]));
@@ -123,6 +127,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
       if (absNewSize > absCurSize) {
         return false;
       }
+      unchecked { ++i; }
     }
     return true;
   }
@@ -182,14 +187,16 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
       return totalCharge;
     }
     mapping(bytes32 => PositionMarginConfig) storage posConfigs = subAccount.positionMarginConfigs;
-    for (uint i = 0; i < numPerps; i++) {
+    for (uint i = 0; i < numPerps; ) {
       bytes32 asset = keys[i];
       // Assumption: if there's no config for a position in this mapping, this means it is CROSS
       // This is to maintain backward compatibility since ISOLATED margin was added after CROSS
       if (posConfigs[asset].marginType == PositionMarginType.ISOLATED) {
+        unchecked { ++i; }
         continue;
       }
       totalCharge = totalCharge.add(_getPerpMaintenanceMarginUSD(asset, values[asset]));
+      unchecked { ++i; }
     }
 
     return totalCharge;
