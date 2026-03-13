@@ -137,20 +137,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   /// @param trade The trade details to be verified.
   function _verifyMatch(Trade calldata trade) private {
     Order calldata takerOrder = trade.takerOrder;
-
-    // Store the temporary storage for trade validation. This should always be cleared after each trade
-    uint takerLegsLen = takerOrder.legs.length;
     OrderLeg[] calldata takerLegs = takerOrder.legs;
-    for (uint i = 0; i < takerLegsLen; ++i) {
-      OrderLeg calldata leg = takerLegs[i];
-      state._tmpTakerLegs[leg.assetID] = TmpLegData({
-        limitPrice: leg.limitPrice,
-        isBuyingAsset: leg.isBuyingAsset,
-        isSet: true
-      });
-    }
+    uint takerLegsLen = takerLegs.length;
 
-    // Verify that the taker order legs are not matched to a worse price than the limit price
     for (uint i = 0; i < trade.makerOrders.length; ++i) {
       MakerTradeMatch calldata tradeMatch = trade.makerOrders[i];
       Order calldata makerOrder = tradeMatch.makerOrder;
@@ -159,28 +148,32 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       require(matchedSizes.length == numLegs, ERR_INVALID_MATCHED_SIZE);
       for (uint j = 0; j < numLegs; ++j) {
         OrderLeg calldata makerLeg = makerOrder.legs[j];
-        TmpLegData storage takerLeg = state._tmpTakerLegs[makerLeg.assetID];
+        (bool found, uint64 takerLimitPrice, bool takerIsBuying) = _findTakerLeg(takerLegs, takerLegsLen, makerLeg.assetID);
 
-        if (!takerLeg.isSet) {
+        if (!found) {
           require(matchedSizes[j] == 0, "matched against non-existent taker leg");
           continue;
         }
-        require(takerLeg.isBuyingAsset != makerLeg.isBuyingAsset, "matched same side");
+        require(takerIsBuying != makerLeg.isBuyingAsset, "matched same side");
 
         if (!takerOrder.isMarket) {
           require(
-            (takerLeg.isBuyingAsset && takerLeg.limitPrice >= makerLeg.limitPrice) ||
-              (!takerLeg.isBuyingAsset && takerLeg.limitPrice <= makerLeg.limitPrice),
+            (takerIsBuying && takerLimitPrice >= makerLeg.limitPrice) ||
+              (!takerIsBuying && takerLimitPrice <= makerLeg.limitPrice),
             "taker matched with bad price"
           );
         }
       }
     }
+  }
 
-    // Clear the temporary storage
-    for (uint i = 0; i < takerLegsLen; ++i) {
-      delete (state._tmpTakerLegs[takerLegs[i].assetID]);
+  function _findTakerLeg(OrderLeg[] calldata legs, uint len, bytes32 assetID) private pure returns (bool, uint64, bool) {
+    for (uint i; i < len; ++i) {
+      if (legs[i].assetID == assetID) {
+        return (true, legs[i].limitPrice, legs[i].isBuyingAsset);
+      }
     }
+    return (false, 0, false);
   }
 
   /// @dev Verifies and executes an order, applying checks based on order type and account status.
