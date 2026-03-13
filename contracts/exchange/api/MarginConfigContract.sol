@@ -40,17 +40,18 @@ contract MarginConfigContractGetter is ConfigContract {
     BI memory bracketSize;
 
     for (uint i = 0; i < mt.tiers.length; i++) {
-      if (BIMath.cmp(notional, mt.tiers[i].bracketStart) <= 0) {
+      MarginTierBI memory tier = mt.tiers[i];
+      if (BIMath.cmp(notional, tier.bracketStart) <= 0) {
         bracketSize = BIMath.sub(notional, prevStart);
         margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
         return margin;
       }
 
-      bracketSize = BIMath.sub(mt.tiers[i].bracketStart, prevStart);
+      bracketSize = BIMath.sub(tier.bracketStart, prevStart);
       margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
 
-      prevStart = mt.tiers[i].bracketStart;
-      prevRate = mt.tiers[i].rate;
+      prevStart = tier.bracketStart;
+      prevRate = tier.rate;
     }
 
     BI memory lastBracketSize = BIMath.sub(notional, prevStart);
@@ -73,17 +74,18 @@ contract MarginConfigContractGetter is ConfigContract {
     BI memory bracketSize;
 
     for (uint i = 0; i < mt.tiers.length; i++) {
-      if (BIMath.cmp(notional, mt.tiers[i].bracketStart) <= 0) {
+      MarginTierBIStorage storage tier = mt.tiers[i];
+      if (BIMath.cmp(notional, tier.bracketStart) <= 0) {
         bracketSize = BIMath.sub(notional, prevStart);
         margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
         return margin;
       }
 
-      bracketSize = BIMath.sub(mt.tiers[i].bracketStart, prevStart);
+      bracketSize = BIMath.sub(tier.bracketStart, prevStart);
       margin = BIMath.add(margin, BIMath.mul(bracketSize, prevRate));
 
-      prevStart = mt.tiers[i].bracketStart;
-      prevRate = mt.tiers[i].rate;
+      prevStart = tier.bracketStart;
+      prevRate = tier.rate;
     }
 
     BI memory lastBracketSize = BIMath.sub(notional, prevStart);
