@@ -221,16 +221,23 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   function _bridgeToL1DefiVaultRaw(address l2Token, uint256 amount) private returns (address) {
-    address ethL2Token = getCurrencyERC20Address(Currency.ETH);
-    address recipient;
-    if (l2Token == ethL2Token) {
-      recipient = state.nativeVaultGatewayAddress;
-    } else {
-      recipient = state.l1DefiVaultAddress;
-    }
+    address recipient = _getL1BridgeRecipient(l2Token);
     require(recipient != address(0), "no recipient");
     _withdrawToL1Raw(recipient, l2Token, amount);
     return recipient;
+  }
+
+  /// @dev ETH bridging is optional until its ERC20 config is set. Before then, all bridgeable tokens route to the
+  ///      L1 DeFi vault.
+  function _getL1BridgeRecipient(address l2Token) internal view returns (address) {
+    (address ethL2Token, bool isEthConfigured) = _getAddressConfig2D(
+      ConfigID.ERC20_ADDRESSES,
+      _currencyToConfig(Currency.ETH)
+    );
+    if (isEthConfigured && l2Token == ethL2Token) {
+      return state.nativeVaultGatewayAddress;
+    }
+    return state.l1DefiVaultAddress;
   }
 
   function _requireL2SharedBridgeAddress() private view returns (address) {
