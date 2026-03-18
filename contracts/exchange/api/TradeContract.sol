@@ -315,6 +315,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     OrderLeg[] calldata legs = order.legs;
     uint legsLen = legs.length;
+    require(legsLen > 0, "order must have at least 1 leg");
     bool shouldValidateBuilderFee = order.builder != address(0) && order.builderFee > 0;
     uint32 builderMaxFutureFeeRate;
     uint32 builderMaxSpotFeeRate;
