@@ -365,7 +365,7 @@ async function expectSubAccountPosition(contract: Contract, expectations: ExSubA
 }
 
 async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccountSpot) {
-  const balance = await contract.getSubAccountSpotBalance(BigInt(expectations.sub_account_id), expectations.currency)
+  const balance = await contract.getSubAccountFuturesWalletBalance(BigInt(expectations.sub_account_id), expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
   // console.log("ExSpot: OK", bn(balance).toNumber(), expectations.balance)
 }
@@ -403,7 +403,7 @@ async function expectNotAccountRecoveryAddresses(contract: Contract, expectation
 }
 
 async function expectAccountSpot(contract: Contract, expectations: ExAccountSpot) {
-  const balance = await contract.getAccountSpotBalance(expectations.account_id, expectations.currency)
+  const balance = await contract.getAccountFundingWalletBalance(expectations.account_id, expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
 }
 
@@ -469,7 +469,7 @@ async function expectExchangeCurrencyBalance(contract: Contract, expectations: E
 async function expectSubAccountSpotReal(contract: Contract, expectations: ExSubAccountSpotReal) {
   const rawBalanceStr = (expectations.raw_balance ?? "").trim()
   if (rawBalanceStr) {
-    const value = await contract.getSubAccountSpotBalance(BigInt(expectations.sub_account_id), BigInt(expectations.currency))
+    const value = await contract.getSubAccountFuturesWalletBalance(BigInt(expectations.sub_account_id), BigInt(expectations.currency))
     expect(big(expectations.balance)).to.equal(big(rawBalanceStr))
   }
 }

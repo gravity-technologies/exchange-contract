@@ -45,7 +45,7 @@ contract FundingAndSettlement is BaseContract {
         perp.marginBalance -= fundingPayment;
       } else {
         // Cross margin (incl. UNSPECIFIED): funding affects cross spot balance.
-        sub.spotBalances[quoteCurrency] -= fundingPayment;
+        sub.futuresWalletBalances[quoteCurrency] -= fundingPayment;
       }
       perp.lastAppliedFundingIndex = latestFundingIndex;
       unchecked { ++i; }
@@ -81,7 +81,7 @@ contract FundingAndSettlement is BaseContract {
 
   function _settleOptionsOrFutures(SubAccount storage sub, PositionsMap storage positions) internal {
     uint64 qdec = _getBalanceDecimal(sub.quoteCurrency);
-    BI memory newSubBalance = BI(sub.spotBalances[sub.quoteCurrency], qdec);
+    BI memory newSubBalance = BI(sub.futuresWalletBalances[sub.quoteCurrency], qdec);
     bytes32[] storage posKeys = positions.keys;
     mapping(bytes32 => Position) storage posValues = positions.values;
     uint posLen = posKeys.length;
@@ -113,7 +113,7 @@ contract FundingAndSettlement is BaseContract {
       newSubBalance = newSubBalance.add(posBalance.mul(BI(int256(uint256(entry.settlePrice)), PRICE_DECIMALS)));
       unchecked { ++i; }
     }
-    sub.spotBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
+    sub.futuresWalletBalances[sub.quoteCurrency] = newSubBalance.toInt64(qdec);
   }
 
   function _getAssetSettlementPrice(bytes32 assetID) private returns (uint64, bool) {

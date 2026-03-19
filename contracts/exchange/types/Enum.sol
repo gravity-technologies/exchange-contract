@@ -13,6 +13,13 @@ enum PositionMarginType {
   CROSS // Cross Margin Mode: uses all available funds in your account as collateral across all cross margin positions
 }
 
+enum SubAccountMode {
+  UNSPECIFIED,
+  SINGLE_ASSET_MODE,
+  MULTI_ASSET_MODE,
+  UNIFIED_MODE
+}
+
 enum TimeInForce {
   UNSPECIFIED,
   GOOD_TILL_TIME,

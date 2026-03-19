@@ -207,7 +207,7 @@ struct Account {
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint64 multiSigThreshold;
   uint64 adminCount;
-  mapping(Currency => int64) spotBalances;
+  mapping(Currency => int64) fundingWalletBalances;
   // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
   mapping(address => address[]) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
@@ -247,8 +247,8 @@ struct SubAccount {
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
-  // The total amount of base currency that the sub account possesses
-  mapping(Currency => int64) spotBalances;
+  // The total amount of currency that the sub account possesses in the futures wallet
+  mapping(Currency => int64) futuresWalletBalances;
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
@@ -261,7 +261,10 @@ struct SubAccount {
   VaultInfo vaultInfo;
   // Store the position specific margin config
   mapping(bytes32 => PositionMarginConfig) positionMarginConfigs;
-  uint256[48] __gap;
+  // The total amount of currency that the sub account possesses in the spot wallet
+  mapping(Currency => int64) spotWalletBalances;
+  SubAccountMode subAccountMode;
+  uint256[46] __gap;
 }
 
 struct PositionMarginConfig {

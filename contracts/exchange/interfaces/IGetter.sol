@@ -37,7 +37,7 @@ interface IGetter {
 
   function isAllAccountExists(address[] calldata accountIDs) external view returns (bool);
 
-  function getAccountSpotBalance(address accID, Currency currency) external view returns (int64);
+  function getAccountFundingWalletBalance(address accID, Currency currency) external view returns (int64);
 
   function isRecoveryAddress(address id, address signer, address recoveryAddress) external view returns (bool);
 
@@ -84,7 +84,11 @@ interface IGetter {
 
   function getSubAccountPositionCount(uint64 subAccountID) external view returns (uint);
 
-  function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+
+  function getSubAccountMode(uint64 subAccountID) external view returns (SubAccountMode);
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) external view returns (MarginTier[] memory);
 

@@ -304,7 +304,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionDepositNotExecuted();
     }
 
-    if (account.spotBalances[currency] != expectedBalance) {
+    if (account.fundingWalletBalances[currency] != expectedBalance) {
       revert AssertionDepositBalanceMismatch();
     }
 
@@ -325,17 +325,17 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     SubAccountAssertion[] calldata subAccounts
   ) external view {
     Account storage account = state.accounts[fromAccID];
-    if (account.spotBalances[currency] != expectedBalance) {
+    if (account.fundingWalletBalances[currency] != expectedBalance) {
       revert AssertionWithdrawBalanceMismatch();
     }
 
     SubAccount storage feeSubAcc = state.subAccounts[feeSubAccId];
-    if (feeSubAcc.spotBalances[currency] != expectedFeeBalance) {
+    if (feeSubAcc.futuresWalletBalances[currency] != expectedFeeBalance) {
       revert AssertionFeeBalanceMismatch();
     }
 
     SubAccount storage insuranceFundSubAcc = state.subAccounts[insuranceFundSubAccId];
-    if (insuranceFundSubAcc.spotBalances[currency] != expectedInsuranceFundBalance) {
+    if (insuranceFundSubAcc.futuresWalletBalances[currency] != expectedInsuranceFundBalance) {
       revert AssertionInsuranceFundBalanceMismatch();
     }
 
@@ -358,24 +358,24 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   ) external view {
     if (fromSubID == 0) {
       Account storage fromAcc = state.accounts[fromAccID];
-      if (fromAcc.spotBalances[currency] != expectedFromBalance) {
+      if (fromAcc.fundingWalletBalances[currency] != expectedFromBalance) {
         revert AssertionFromAccountBalanceMismatch();
       }
     } else {
       SubAccount storage fromSub = state.subAccounts[fromSubID];
-      if (fromSub.spotBalances[currency] != expectedFromBalance) {
+      if (fromSub.futuresWalletBalances[currency] != expectedFromBalance) {
         revert AssertionFromSubAccountBalanceMismatch();
       }
     }
 
     if (toSubID == 0) {
       Account storage toAcc = state.accounts[toAccID];
-      if (toAcc.spotBalances[currency] != expectedToBalance) {
+      if (toAcc.fundingWalletBalances[currency] != expectedToBalance) {
         revert AssertionToAccountBalanceMismatch();
       }
     } else {
       SubAccount storage toSub = state.subAccounts[toSubID];
-      if (toSub.spotBalances[currency] != expectedToBalance) {
+      if (toSub.futuresWalletBalances[currency] != expectedToBalance) {
         revert AssertionToSubAccountBalanceMismatch();
       }
     }
@@ -425,7 +425,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   }
 
   function _assertAccount(AccountAssertion calldata exAcc) internal view {
-    mapping(Currency => int64) storage spots = state.accounts[exAcc.accountID].spotBalances;
+    mapping(Currency => int64) storage spots = state.accounts[exAcc.accountID].fundingWalletBalances;
     SpotAssertion[] calldata exSpots = exAcc.spots;
     uint256 length = exSpots.length;
     for (uint256 i; i < length; ) {
@@ -471,7 +471,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint256 spotsLen = spots.length;
     for (uint256 j; j < spotsLen; ) {
       SpotAssertion calldata exSpot = spots[j];
-      if (sub.spotBalances[exSpot.currency] != exSpot.balance) {
+      if (sub.futuresWalletBalances[exSpot.currency] != exSpot.balance) {
         revert AssertionSubSpotBalanceMismatch();
       }
 
@@ -617,7 +617,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     // Check spot balance
     for (uint256 j; j < lpAssertion.spots.length; ++j) {
       SpotAssertion calldata exSpot = lpAssertion.spots[j];
-      if (state.accounts[lpAssertion.accountID].spotBalances[exSpot.currency] != exSpot.balance) {
+      if (state.accounts[lpAssertion.accountID].fundingWalletBalances[exSpot.currency] != exSpot.balance) {
         revert AssertionVaultLpSpotMismatch();
       }
     }
@@ -669,7 +669,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
 
     // Check vault spot balance
-    if (vaultSub.spotBalances[initialInvestmentCurrency] != vaultInitialSpotBalance) {
+    if (vaultSub.futuresWalletBalances[initialInvestmentCurrency] != vaultInitialSpotBalance) {
       revert AssertionVaultCreateSpotBalanceMismatch();
     }
 
@@ -736,7 +736,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
 
     // Check vault spot balance
-    if (vaultSub.spotBalances[investmentCurrency] != expectedVaultSpotBalance) {
+    if (vaultSub.futuresWalletBalances[investmentCurrency] != expectedVaultSpotBalance) {
       revert AssertionVaultInvestSpotBalanceMismatch();
     }
 
@@ -785,7 +785,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
 
     // Check vault spot balance
-    if (vaultSub.spotBalances[currencyRedeemed] != expectedVaultSpotBalance) {
+    if (vaultSub.futuresWalletBalances[currencyRedeemed] != expectedVaultSpotBalance) {
       revert AssertionVaultRedeemSpotBalanceMismatch();
     }
 
@@ -885,7 +885,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     int64 subAccountSpotBalance
   ) external view {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    if (sub.spotBalances[sub.quoteCurrency] != subAccountSpotBalance) {
+    if (sub.futuresWalletBalances[sub.quoteCurrency] != subAccountSpotBalance) {
       revert AssertionSubSpotBalanceMismatch();
     }
     Position storage pos = _getPosition(sub, assetID);

@@ -28,9 +28,9 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return true;
   }
 
-  function getAccountSpotBalance(address accID, Currency currency) public view returns (int64) {
+  function getAccountFundingWalletBalance(address accID, Currency currency) public view returns (int64) {
     Account storage account = state.accounts[accID];
-    return account.spotBalances[currency];
+    return account.fundingWalletBalances[currency];
   }
 
   function isRecoveryAddress(address id, address signer, address recoveryAddress) public view returns (bool) {
@@ -146,9 +146,19 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return sub.perps.keys.length + sub.futures.keys.length + sub.options.keys.length;
   }
 
-  function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return sub.spotBalances[currency];
+    return sub.futuresWalletBalances[currency];
+  }
+
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.spotWalletBalances[currency];
+  }
+
+  function getSubAccountMode(uint64 subAccountID) public view returns (SubAccountMode) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.subAccountMode;
   }
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {

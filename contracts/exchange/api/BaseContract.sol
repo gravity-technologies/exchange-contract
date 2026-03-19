@@ -98,7 +98,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _requireAccountNoBalance(Account storage acc) internal view {
     Currency[] memory cs = spotBalanceCurrencies();
     for (uint i; i < cs.length; ++i) {
-      require(acc.spotBalances[cs[i]] == 0, "account has balance");
+      require(acc.fundingWalletBalances[cs[i]] == 0, "account has balance");
     }
   }
 
@@ -668,7 +668,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
-    BI memory totalValue = _getSpotBalanceValueInCurrencyBI(account.spotBalances, Currency.USDT);
+    BI memory totalValue = _getSpotBalanceValueInCurrencyBI(account.fundingWalletBalances, Currency.USDT);
 
     for (uint256 i; i < account.subAccounts.length; ) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
@@ -719,7 +719,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       sub.quoteCurrency
     );
 
-    BI memory cashValueInQuote = _getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency).add(
+    BI memory cashValueInQuote = _getSpotBalanceValueInCurrencyBI(sub.futuresWalletBalances, sub.quoteCurrency).add(
       marginBalanceValue
     );
 
@@ -774,7 +774,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @notice This function only supports perpetuals for now
   function _getTotalEquityCrossInQuote(SubAccount storage sub) internal view returns (BI memory) {
     // Get spot values
-    BI memory te = _getSpotBalanceValueInCurrencyBI(sub.spotBalances, sub.quoteCurrency);
+    BI memory te = _getSpotBalanceValueInCurrencyBI(sub.futuresWalletBalances, sub.quoteCurrency);
 
     // Get cross positions values
     PositionsMap storage perps = sub.perps;

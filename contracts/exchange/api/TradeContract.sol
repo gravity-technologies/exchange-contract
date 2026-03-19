@@ -577,13 +577,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     bool isFeeCharged
   ) private {
     if (isFeeCharged) {
-      feeSub.spotBalances[quote] += fee;
-      sub.spotBalances[quote] += spotDelta - fee;
+      feeSub.futuresWalletBalances[quote] += fee;
+      sub.futuresWalletBalances[quote] += spotDelta - fee;
       return;
     }
 
     if (spotDelta != 0) {
-      sub.spotBalances[quote] += spotDelta;
+      sub.futuresWalletBalances[quote] += spotDelta;
     }
   }
 
@@ -592,8 +592,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       return;
     }
 
-    sub.spotBalances[Currency.USDT] -= builderFee; // FIXME: once there's spot trading, need to fix this
-    _requireAccount(builder).spotBalances[Currency.USDT] += builderFee; // FIXME: once there's spot trading, need to fix this
+    sub.futuresWalletBalances[Currency.USDT] -= builderFee; // FIXME: once there's spot trading, need to fix this
+    _requireAccount(builder).fundingWalletBalances[Currency.USDT] += builderFee; // FIXME: once there's spot trading, need to fix this
   }
 
   function _maybeUpdateDeriskTimestamp(SubAccount storage sub, bool isDerisk, int64 timestamp) private {
@@ -815,7 +815,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   function _transferFromSpotToPosition(SubAccount storage sub, Currency quote, int64 amount) private returns (int64) {
     // amount > 0: remove from spot and add to position
     // amount < 0: remove from position and add to spot
-    sub.spotBalances[quote] -= amount;
+    sub.futuresWalletBalances[quote] -= amount;
     return amount;
   }
 
@@ -828,7 +828,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   function _transferFromIsolatedToSpot(SubAccount storage sub, Currency quote, int64 amount) private returns (int64) {
     // amount > 0: remove from position and add to spot
     // amount < 0: remove from spot and add to position
-    sub.spotBalances[quote] += amount;
+    sub.futuresWalletBalances[quote] += amount;
     return -amount;
   }
 
@@ -882,7 +882,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       if (sub.positionMarginConfigs[assetID].marginType == PositionMarginType.ISOLATED) {
         Position storage pos = sub.perps.values[assetID];
         Currency quote = assetGetQuote(assetID);
-        sub.spotBalances[quote] += pos.marginBalance;
+        sub.futuresWalletBalances[quote] += pos.marginBalance;
         pos.marginBalance = 0;
       }
       remove(sub.perps, assetID);
@@ -963,7 +963,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // amount > 0: add margin to the position
     // amount < 0: remove margin from the position
     pos.marginBalance += amount;
-    sub.spotBalances[assetGetQuote(assetID)] -= amount;
+    sub.futuresWalletBalances[assetGetQuote(assetID)] -= amount;
   }
 
   /// @dev Determines whether `order` is an isolated-margin order for `sub`.

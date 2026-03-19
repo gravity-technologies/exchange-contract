@@ -232,7 +232,7 @@ export interface ExSubAccountSpotReal {
   sub_account_id: string
   currency: string
   balance: string // not usable by contract since this is a derived value
-  raw_balance: string // use this to compare with sub.spotBalances[currency]
+  raw_balance: string // use this to compare with sub.futuresWalletBalances[currency]
 }
 
 export interface ExSubAccountPositionOptional {

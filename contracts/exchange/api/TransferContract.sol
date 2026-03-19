@@ -48,7 +48,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     getDepositProxy(accountID).fundExchange(getCurrencyERC20Address(currency), fundExchangeAmount);
 
     Account storage account = _requireAccount(accountID);
-    account.spotBalances[currency] += numTokensSigned;
+    account.fundingWalletBalances[currency] += numTokensSigned;
     state.totalSpotBalances[currency] += numTokensSigned;
 
     emit Deposit(accountID, txHash, currency, numTokens, txID);
@@ -96,7 +96,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     int64 amount = SafeCast.toInt64(int(uint(numTokens)));
     require(amount > 0, "invalid withdrawal amount");
-    require(amount <= acc.spotBalances[currency], "insufficient balance");
+    require(amount <= acc.fundingWalletBalances[currency], "insufficient balance");
 
     // Keep behavior backward compatible: missing L2 shared bridge config still reverts withdrawals.
     _requireL2SharedBridgeAddress();
@@ -181,7 +181,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     int64 amount,
     Currency currency
   ) private returns (WithdrawalInfo memory) {
-    acc.spotBalances[currency] -= amount;
+    acc.fundingWalletBalances[currency] -= amount;
 
     (int64 amountAfterSocializedLoss, int64 socializedLossHaircutAmount) = _applySocializedLoss(
       acc.id,
@@ -278,7 +278,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     _fundAndSettle(insuranceFund);
     int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
     if (socializedLossHaircutAmount > 0) {
-      insuranceFund.spotBalances[currency] += socializedLossHaircutAmount;
+      insuranceFund.futuresWalletBalances[currency] += socializedLossHaircutAmount;
     }
 
     return (amount - socializedLossHaircutAmount, socializedLossHaircutAmount);
@@ -295,7 +295,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     );
 
     int64 amountAfterFee = amount - withdrawalFeeCharged;
-    feeSubAcc.spotBalances[currency] += withdrawalFeeCharged;
+    feeSubAcc.futuresWalletBalances[currency] += withdrawalFeeCharged;
 
     require(amountAfterFee > 0, "withdrawal amount too small");
 
@@ -406,9 +406,9 @@ abstract contract TransferContract is ITransfer, TradeContract {
       }
     }
     require(numTokens >= 0, "invalid transfer amount");
-    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
-    fromAcc.spotBalances[currency] -= numTokens;
-    _requireAccount(toAccID).spotBalances[currency] += numTokens;
+    require(numTokens <= fromAcc.fundingWalletBalances[currency], "insufficient balance");
+    fromAcc.fundingWalletBalances[currency] -= numTokens;
+    _requireAccount(toAccID).fundingWalletBalances[currency] += numTokens;
   }
 
   function _isSocializedLossActive() private view returns (bool) {
@@ -441,12 +441,12 @@ abstract contract TransferContract is ITransfer, TradeContract {
     int64 numTokens
   ) internal {
     require(numTokens >= 0, "invalid transfer amount");
-    require(numTokens <= fromAcc.spotBalances[currency], "insufficient balance");
+    require(numTokens <= fromAcc.fundingWalletBalances[currency], "insufficient balance");
 
     _fundAndSettle(toSubAcc);
 
-    fromAcc.spotBalances[currency] -= numTokens;
-    toSubAcc.spotBalances[currency] += numTokens;
+    fromAcc.fundingWalletBalances[currency] -= numTokens;
+    toSubAcc.futuresWalletBalances[currency] += numTokens;
   }
 
   function _transferSubToMain(
@@ -478,8 +478,8 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     _fundAndSettle(fromSub);
 
-    fromSub.spotBalances[currency] -= numTokens;
-    toAcc.spotBalances[currency] += numTokens;
+    fromSub.futuresWalletBalances[currency] -= numTokens;
+    toAcc.fundingWalletBalances[currency] += numTokens;
 
     require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
   }
@@ -508,10 +508,10 @@ abstract contract TransferContract is ITransfer, TradeContract {
     _fundAndSettle(fromSub);
     _fundAndSettle(toSub);
 
-    fromSub.spotBalances[currency] -= numTokens;
+    fromSub.futuresWalletBalances[currency] -= numTokens;
 
     require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
-    toSub.spotBalances[currency] += numTokens;
+    toSub.futuresWalletBalances[currency] += numTokens;
   }
 
   function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) private view returns (uint64) {
