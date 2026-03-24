@@ -402,7 +402,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     (1 << uint(Currency.RIVER))  | (1 << uint(Currency.XAU))    | (1 << uint(Currency.XPT))    |
     (1 << uint(Currency.XPD))    | (1 << uint(Currency.TSLA))   | (1 << uint(Currency.INTC))   |
     (1 << uint(Currency.HOOD))   | (1 << uint(Currency.AMZN))   | (1 << uint(Currency.COIN))   |
-    (1 << uint(Currency.CRCL))   | (1 << uint(Currency.MSTR))   | (1 << uint(Currency.PLTR));
+    (1 << uint(Currency.CRCL))   | (1 << uint(Currency.MSTR))   | (1 << uint(Currency.PLTR))  |
+    (1 << uint(Currency.EWJ))    | (1 << uint(Currency.EWY));
 
   // Bit N set means Currency(N) has 6 decimals
   uint256 private constant SIX_DEC_MASK =

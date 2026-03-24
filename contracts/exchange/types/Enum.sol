@@ -146,5 +146,7 @@ enum Currency {
   CRCL, // 102
   MSTR, // 103
   PLTR, // 104
-  COPPER // 105
+  COPPER, // 105
+  EWJ, // 106
+  EWY // 107
 }
