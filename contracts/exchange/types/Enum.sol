@@ -148,5 +148,6 @@ enum Currency {
   PLTR, // 104
   COPPER, // 105
   EWJ, // 106
-  EWY // 107
+  EWY, // 107
+  PAYP // 108
 }
