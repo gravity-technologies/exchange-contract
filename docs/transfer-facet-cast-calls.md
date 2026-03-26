@@ -132,7 +132,7 @@ cast send "$EXCHANGE_ADDRESS" \
   "processWithdrawalQueue(uint256)" \
   100 \
   --rpc-url "$RPC_URL" \
-  --private-key "$EXCHANGE_ADMIN_PRIVATE_KEY"
+  --private-key "$LIQUIDITY_ORCHESTRATOR_PRIVATE_KEY"
 ```
 
 Verify:
