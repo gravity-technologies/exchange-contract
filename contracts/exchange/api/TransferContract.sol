@@ -230,10 +230,9 @@ abstract contract TransferContract is ITransfer, TradeContract {
   /// @dev ETH bridging is optional until its ERC20 config is set. Before then, all bridgeable tokens route to the
   ///      L1 DeFi vault.
   function _getL1BridgeRecipient(address l2Token) internal view returns (address) {
-    (address ethL2Token, bool isEthConfigured) = _getAddressConfig2D(
-      ConfigID.ERC20_ADDRESSES,
-      _currencyToConfig(Currency.ETH)
-    );
+    ConfigValue storage ethConfig = state.config2DValues[ConfigID.ERC20_ADDRESSES][_currencyToConfig(Currency.ETH)];
+    address ethL2Token = _configToAddress(ethConfig.val);
+    bool isEthConfigured = ethConfig.isSet;
     if (isEthConfigured && l2Token == ethL2Token) {
       return state.nativeVaultGatewayAddress;
     }

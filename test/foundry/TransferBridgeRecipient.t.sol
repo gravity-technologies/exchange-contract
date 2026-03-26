@@ -19,6 +19,13 @@ contract TransferContractHarness is TransferContract {
         });
     }
 
+    function setDefaultCurrencyERC20Address(address token) external {
+        state.config2DValues[ConfigID.ERC20_ADDRESSES][bytes32(uint256(0))] = ConfigValue({
+            val: _addressToConfig(token),
+            isSet: true
+        });
+    }
+
     function getL1BridgeRecipient(address l2Token) external view returns (address) {
         return _getL1BridgeRecipient(l2Token);
     }
@@ -49,6 +56,12 @@ contract TransferBridgeRecipientTest is Test {
 
     function testGetL1BridgeRecipientKeepsNonEthTokensOnL1VaultWhenEthConfigExists() public {
         transferContract.setCurrencyERC20Address(Currency.ETH, ETH_L2);
+
+        assertEq(transferContract.getL1BridgeRecipient(USDT_L2), L1_DEFI_VAULT);
+    }
+
+    function testGetL1BridgeRecipientIgnoresDefaultEntryWhenEthConfigMissing() public {
+        transferContract.setDefaultCurrencyERC20Address(USDT_L2);
 
         assertEq(transferContract.getL1BridgeRecipient(USDT_L2), L1_DEFI_VAULT);
     }
