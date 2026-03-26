@@ -149,5 +149,8 @@ enum Currency {
   COPPER, // 105
   EWJ, // 106
   EWY, // 107
-  PAYP // 108
+  PAYP, // 108
+  GOOGL, // 109
+  NVDA, // 110
+  META // 111
 }
