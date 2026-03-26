@@ -118,8 +118,10 @@ abstract contract TransferContract is ITransfer, TradeContract {
   }
 
   /// @dev Drains queue head-first while each head item can be bridged with current L2 balance.
-  function processWithdrawalQueue() external nonReentrant onlyTxOriginRole(LIQUIDITY_ORCHESTRATOR_ROLE) {
-    while (!_isPendingWithdrawalQueueEmpty()) {
+  /// @param maxCount Maximum items to process (0 = unlimited, for backward compatibility).
+  function processWithdrawalQueue(uint256 maxCount) external nonReentrant onlyTxOriginRole(LIQUIDITY_ORCHESTRATOR_ROLE) {
+    uint256 processed;
+    while (!_isPendingWithdrawalQueueEmpty() && (maxCount == 0 || processed < maxCount)) {
       WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
       uint64 head = queue.head;
       PendingWithdrawalRequest storage req = queue.requests[head];
@@ -134,6 +136,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
       _withdrawToL1Raw(req.recipient, erc20Address, erc20AmountToSend);
       delete queue.requests[head];
       queue.head = head + 1;
+      processed++;
     }
   }
 

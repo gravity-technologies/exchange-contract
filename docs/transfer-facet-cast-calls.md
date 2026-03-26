@@ -129,7 +129,8 @@ Liquidity orchestrator only.
 
 ```bash
 cast send "$EXCHANGE_ADDRESS" \
-  "processWithdrawalQueue()" \
+  "processWithdrawalQueue(uint256)" \
+  100 \
   --rpc-url "$RPC_URL" \
   --private-key "$EXCHANGE_ADMIN_PRIVATE_KEY"
 ```

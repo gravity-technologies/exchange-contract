@@ -76,7 +76,8 @@ interface ITransfer {
 
   /// @notice Drains queued withdrawals in FIFO order while L2 liquidity is sufficient for the queue head.
   /// @dev Callable only by the liquidity orchestrator to resume progress after L2 top-up.
-  function processWithdrawalQueue() external;
+  /// @param maxCount Maximum number of queued withdrawals to process in this call (0 = unlimited).
+  function processWithdrawalQueue(uint256 maxCount) external;
 
   /// @notice Sets the L1 DeFi vault address for direct bridge operations. Can only be called once.
   function setL1DefiVaultAddress(address recipient) external;
