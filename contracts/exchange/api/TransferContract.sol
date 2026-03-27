@@ -173,6 +173,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
   ) external nonReentrant onlyTxOriginRole(LIQUIDITY_ORCHESTRATOR_ROLE) {
     require(l2Token != address(0), "invalid token");
     require(amount > 0, "invalid amount");
+    require(_isPendingWithdrawalQueueEmpty(), "pending withdrawal queue must be empty");
 
     address recipient = _bridgeToL1DefiVaultRaw(l2Token, amount);
     emit L1DefiVaultBridge(l2Token, amount, recipient);
