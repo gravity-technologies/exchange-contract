@@ -8,6 +8,8 @@ import "../interfaces/IGetter.sol";
 contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, RiskCheck {
   using BIMath for BI;
 
+  uint64 internal constant MAX_PENDING_WITHDRAWAL_PAGE_SIZE = 100;
+
   function getAccountResult(address accID) public view returns (AccountResult memory) {
     Account storage account = state.accounts[accID];
     return
@@ -211,6 +213,8 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     if (start >= tail || limit == 0) {
       return new PendingWithdrawalRequest[](0);
     }
+
+    require(limit <= MAX_PENDING_WITHDRAWAL_PAGE_SIZE, "limit too large");
 
     uint64 available = tail - start;
     uint64 count = limit < available ? limit : available;
