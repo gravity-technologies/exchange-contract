@@ -747,7 +747,14 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     uint64 uDec = _getBalanceDecimal(assetGetUnderlying(assetID));
     BI memory absPositionSizeStart = _absInt64ToBI(positionSizeBegin, uDec);
     BI memory absPositionSizeEnd = _absInt64ToBI(positionSizeEnd, uDec);
-    BI memory reductionRatio = absPositionSizeEnd.div(absPositionSizeStart);
+    // When feature flag is enabled, use divToScale with 12 decimals (2x quote decimals) to provide
+    // enough precision for ratios like 1/75001 that would round to 0 with low-decimal assets (e.g. KPEPE).
+    BI memory reductionRatio;
+    if (_isFeatureFlagEnabled(FeatureFlagID.FIX_ISOLATED_REDUCTION_RATE_SCALE)) {
+      reductionRatio = absPositionSizeEnd.divToScale(absPositionSizeStart, 12);
+    } else {
+      reductionRatio = absPositionSizeEnd.div(absPositionSizeStart);
+    }
 
     BI memory positionBalanceEnd = BI(positionBalanceBegin, 6).mul(reductionRatio);
     BI memory positionBalanceCurrent = BI(positionBalanceNow, 6);
