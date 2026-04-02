@@ -152,5 +152,10 @@ enum Currency {
   PAYP, // 108
   GOOGL, // 109
   NVDA, // 110
-  META // 111
+  META, // 111
+  BASED, // 112
+  EDGE, // 113
+  BZ, // 114
+  CL, // 115
+  NATGAS // 116
 }

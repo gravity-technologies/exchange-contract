@@ -405,7 +405,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     (1 << uint(Currency.CRCL))   | (1 << uint(Currency.MSTR))   | (1 << uint(Currency.PLTR))  |
     (1 << uint(Currency.EWJ))    | (1 << uint(Currency.EWY))   |
     (1 << uint(Currency.PAYP))   | (1 << uint(Currency.GOOGL))  | (1 << uint(Currency.NVDA))   |
-    (1 << uint(Currency.META));
+    (1 << uint(Currency.META))   | (1 << uint(Currency.BZ))     | (1 << uint(Currency.CL));
 
   // Bit N set means Currency(N) has 6 decimals
   uint256 private constant SIX_DEC_MASK =
@@ -435,7 +435,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     (1 << uint(Currency.ICP))       | (1 << uint(Currency.RESOLV))    | (1 << uint(Currency.ZEN))       |
     (1 << uint(Currency.LIT))       | (1 << uint(Currency.XAG))       | (1 << uint(Currency.TRX))       |
     (1 << uint(Currency.AXS))       | (1 << uint(Currency.KAIA))      | (1 << uint(Currency.MEGA))      |
-    (1 << uint(Currency.CC))        | (1 << uint(Currency.COPPER));
+    (1 << uint(Currency.CC))        | (1 << uint(Currency.COPPER))    |
+    (1 << uint(Currency.BASED))     | (1 << uint(Currency.EDGE))     | (1 << uint(Currency.NATGAS));
 
   // Bit N set means Currency(N) has 3 decimals
   uint256 private constant THREE_DEC_MASK =
