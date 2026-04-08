@@ -157,5 +157,11 @@ enum Currency {
   EDGE, // 113
   BZ, // 114
   CL, // 115
-  NATGAS // 116
+  NATGAS, // 116
+  QQQ, // 117
+  SPY, // 118
+  AAPL, // 119
+  TSM, // 120
+  MU, // 121
+  SNDK // 122
 }
