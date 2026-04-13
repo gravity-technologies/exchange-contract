@@ -20,6 +20,13 @@ enum SubAccountMode {
   UNIFIED_MODE
 }
 
+enum WalletType {
+  UNSPECIFIED, // 0 - resolve to default based on subID
+  FUNDING, // 1 - main account only (subID == 0)
+  SPOT, // 2 - sub-account only (subID > 0)
+  FUTURES // 3 - sub-account only (subID > 0)
+}
+
 enum TimeInForce {
   UNSPECIFIED,
   GOOD_TILL_TIME,
@@ -37,7 +44,8 @@ enum Kind {
   PUT, // 4
   SPOT, // 5
   SETTLEMENT, // 6
-  RATE // 7
+  RATE, // 7
+  SPOT_SWAP // 8
 }
 
 enum Currency {

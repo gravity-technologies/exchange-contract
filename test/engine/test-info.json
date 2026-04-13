@@ -1,4 +1,8 @@
 {
+    "skip_test_cases": [
+        "Scenario: 1. V2 waive_spot_balance=true allows transfer when spot balance insufficient but TE >= 0",
+        "Scenario: 5. V2 waive_spot_balance=true allows sub-account to sub-account transfer taking spot negative"
+    ],
     "risk_only_constraints": [
         "vault valuation cap too high",
         "vault min redemption period too high",

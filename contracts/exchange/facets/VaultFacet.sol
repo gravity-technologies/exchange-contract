@@ -234,7 +234,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     (uint64 lpTokensToMint, uint64 amountInUsd) = _calculateLpTokensToMintOnInvest(vaultSub, currency, numTokens);
     require(lpTokensToMint > 0, "no LP tokens minted");
 
-    _doTransferMainToSub(account, vaultSub, currency, numTokensSigned);
+    _doTransferMainToSub(account, vaultSub, WalletType.FUTURES, currency, numTokensSigned);
     _mintLpTokens(vaultSub, account.id, lpTokensToMint, amountInUsd);
   }
 
@@ -358,7 +358,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
 
     _burnLpTokens(vaultSub, accountID, numLpTokens, costOfLpTokenBurntInUsd);
-    _doTransferSubToMain(vaultSub, account, tokenCurrency, redeemedInQuoteAfterFee);
+    _doTransferSubToMain(vaultSub, account, WalletType.FUTURES, tokenCurrency, redeemedInQuoteAfterFee);
   }
 
   function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal view returns (uint64) {

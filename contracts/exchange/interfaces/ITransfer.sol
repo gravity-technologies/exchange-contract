@@ -121,4 +121,33 @@ interface ITransfer {
     uint64 numTokens,
     Signature calldata sig
   ) external;
+
+  /**
+   * @notice Transfer tokens from one sub account to another sub account with explicit wallet type routing
+   *
+   * @param timestamp Timestamp of the transaction
+   * @param txID Transaction ID
+   * @param fromAccID Sub account to transfer from
+   * @param fromSubID Sub account to transfer from
+   * @param toAccID Sub account to transfer to
+   * @param toSubID Sub account to transfer to
+   * @param currency Currency to transfer
+   * @param numTokens Number of tokens to transfer
+   * @param fromWalletType Source wallet type (UNSPECIFIED resolves to default)
+   * @param toWalletType Destination wallet type (UNSPECIFIED resolves to default)
+   * @param sig Signature of the transaction
+   */
+  function transferV2(
+    int64 timestamp,
+    uint64 txID,
+    address fromAccID,
+    uint64 fromSubID,
+    address toAccID,
+    uint64 toSubID,
+    Currency currency,
+    uint64 numTokens,
+    WalletType fromWalletType,
+    WalletType toWalletType,
+    Signature calldata sig
+  ) external;
 }

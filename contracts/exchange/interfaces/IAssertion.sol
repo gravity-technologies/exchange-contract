@@ -16,6 +16,15 @@ interface IAssertion {
     int64 lastAppliedFundingTimestamp
   ) external view;
 
+  function assertCreateAccountWithSubAccountV2(
+    address accountID,
+    uint64 subAccountID,
+    MarginType marginType,
+    Currency quoteCurrency,
+    int64 lastAppliedFundingTimestamp,
+    SubAccountMode subAccountMode
+  ) external view;
+
   function assertSetAccountMultiSigThreshold(address accountID, uint8 expectedThreshold) external view;
 
   function assertAddAccountSigner(
@@ -42,6 +51,15 @@ interface IAssertion {
     Currency quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp
+  ) external view;
+
+  function assertCreateSubAccountV2(
+    uint64 subAccountID,
+    address accountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    int64 lastAppliedFundingTimestamp,
+    SubAccountMode subAccountMode
   ) external view;
 
   function assertSetSubAccountMarginType(uint64 subAccountID, MarginType expectedMarginType) external view;
@@ -110,6 +128,19 @@ interface IAssertion {
     SubAccountAssertion[] calldata subAccounts
   ) external view;
 
+  function assertTransferV2(
+    address fromAccID,
+    address toAccID,
+    uint64 fromSubID,
+    uint64 toSubID,
+    int64 expectedFromBalance,
+    int64 expectedToBalance,
+    Currency currency,
+    WalletType fromWalletType,
+    WalletType toWalletType,
+    SubAccountAssertionV2[] calldata subAccounts
+  ) external view;
+
   struct PositionAssertion {
     bytes32 assetID;
     int64 balance;
@@ -128,6 +159,15 @@ interface IAssertion {
     int64 lastDeriskTimestamp;
   }
 
+  struct SubAccountAssertionV2 {
+    uint64 subAccountID;
+    int64 fundingTimestamp;
+    PositionAssertion[] positions;
+    SpotAssertion[] futuresWalletSpots;
+    SpotAssertion[] spotWalletSpots;
+    int64 lastDeriskTimestamp;
+  }
+
   struct AccountAssertion {
     address accountID;
     SpotAssertion[] spots;
@@ -138,8 +178,15 @@ interface IAssertion {
     AccountAssertion[] accounts;
   }
 
+  struct TradeAssertionV2 {
+    SubAccountAssertionV2[] subAccounts;
+    AccountAssertion[] accounts;
+  }
+
   // Assertion for Trade Contract
   function assertTradeDeriv(TradeAssertion calldata tradeAssertion) external view;
+
+  function assertTradeV2(TradeAssertionV2 calldata tradeAssertion) external view;
 
   // Assertions for WalletRecovery Contract
   function assertAddRecoveryAddress(

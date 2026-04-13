@@ -243,11 +243,24 @@ abstract contract ConfigContract is BaseContract {
       }
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
       _validateInternalSubAccountChange(_configToUint(value));
+    } else if (key == ConfigID.ERC20_ADDRESSES) {
+      _addErc20Currency(Currency(uint(subKey)));
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
+  }
+
+  function _addErc20Currency(Currency currency) internal {
+    // Base spot currencies are always included; don't store them
+    if (currency == Currency.USDT || currency == Currency.USDC || currency == Currency.ETH) return;
+    // Skip if already tracked (e.g. re-setting the same ERC20 address)
+    Currency[] storage stored = state.erc20Currencies;
+    for (uint i; i < stored.length; ++i) {
+      if (stored[i] == currency) return;
+    }
+    stored.push(currency);
   }
 
   function _validateBridgingPartnerChange(address partnerAddress) internal view {
@@ -373,8 +386,12 @@ abstract contract ConfigContract is BaseContract {
       return 0;
     }
     if (typ == ConfigType.ADDRESS2D) {
-      (, bool isSet) = _getAddressConfig2D(key, subKey);
-      if (isSet) return rules[0].lockDuration;
+      (address currentAddr, bool isSet) = _getAddressConfig2D(key, subKey);
+      if (isSet) {
+        // Allow setConfig calls that don't change the value
+        if (_configToAddress(newVal) == currentAddr) return 0;
+        return rules[0].lockDuration;
+      }
       return 0;
     }
     if (typ == ConfigType.BOOL) {

@@ -52,6 +52,7 @@ import {
   ExVaultManagerAttestedSharePrice,
   ExAuthorizeBuilder,
   ExSubAccountPositionMarginConfig,
+  ExSubAccountSpotWalletBalance,
 } from "./types"
 import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, PositionMarginTypeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
@@ -182,6 +183,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectAuthorizeBuilder(contract, expectation.expect as ExAuthorizeBuilder)
     case "ExSubAccountPositionMarginConfig":
       return expectSubAccountPositionMarginConfig(contract, expectation.expect as ExSubAccountPositionMarginConfig)
+    case "ExSubAccountSpotWalletBalance":
+      return expectSubAccountSpotWallet(contract, expectation.expect as ExSubAccountSpotWalletBalance)
     case "GetPositionValue":
     case "GetCrossPositionsValue":
       // not handled
@@ -368,6 +371,13 @@ async function expectSubAccountSpot(contract: Contract, expectations: ExSubAccou
   const balance = await contract.getSubAccountFuturesWalletBalance(BigInt(expectations.sub_account_id), expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
   // console.log("ExSpot: OK", bn(balance).toNumber(), expectations.balance)
+}
+
+async function expectSubAccountSpotWallet(contract: Contract, expectations: ExSubAccountSpotWalletBalance) {
+  for (const spot of expectations.spot_balances) {
+    const balance = await contract.getSubAccountSpotWalletBalance(BigInt(expectations.sub_account_id), spot.currency)
+    expect(big(balance)).to.equal(big(spot.balance))
+  }
 }
 
 async function expectSettlementPrice(contract: Contract, expectations: ExSettlementPrice) {

@@ -304,7 +304,7 @@ contract AccountContract is IAccount, ConfigContract {
     require(accountID == sig.signer, "accountID must be signer");
 
     // Subaccount creation verification
-    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
+    require(quoteCurrency == Currency.USDT, "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
@@ -336,6 +336,7 @@ contract AccountContract is IAccount, ConfigContract {
     sub.marginType = marginType;
     sub.quoteCurrency = quoteCurrency;
     sub.lastAppliedFundingTimestamp = timestamp;
+    sub.subAccountMode = SubAccountMode.SINGLE_ASSET_MODE;
     // We will not create any authorizedSigners in subAccount upon creation.
     // All account admins are presumably authorizedSigners
 

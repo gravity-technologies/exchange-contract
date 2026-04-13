@@ -54,7 +54,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     address signer
   ) internal returns (SubAccount storage sub) {
     Account storage acc = state.accounts[accountID];
-    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
+    require(quoteCurrency == Currency.USDT, "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(acc.id != address(0), "account does not exist");
     require(subAccountID != 0, "invalid subaccount id");
@@ -71,6 +71,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     sub.marginType = marginType;
     sub.quoteCurrency = quoteCurrency;
     sub.lastAppliedFundingTimestamp = timestamp;
+    sub.subAccountMode = SubAccountMode.SINGLE_ASSET_MODE;
 
     // We will not create any authorizedSigners in subAccount upon creation.
     // All account admins are presumably authorizedSigners

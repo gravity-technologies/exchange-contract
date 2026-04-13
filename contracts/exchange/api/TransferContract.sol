@@ -1,6 +1,8 @@
 pragma solidity ^0.8.20;
 
-import "./TradeContract.sol";
+import "./ConfigContract.sol";
+import "./FundingAndSettlement.sol";
+import "./RiskCheck.sol";
 import "./signature/generated/TransferSig.sol";
 import "../util/BIMath.sol";
 
@@ -9,7 +11,7 @@ import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/tok
 import {DepositProxy} from "../../DepositProxy.sol";
 import "../interfaces/ITransfer.sol";
 
-abstract contract TransferContract is ITransfer, TradeContract {
+abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettlement, RiskCheck {
   using BIMath for BI;
 
   /**
@@ -30,7 +32,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     Currency currency,
     uint64 numTokens
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    require(currencyCanHoldSpotBalance(currency), "invalid currency");
+    require(_currencyCanHoldSpotBalance(currency), "invalid currency");
     _setSequence(timestamp, txID);
 
     require(!state.replay.executed[txHash], "replayed payload");
@@ -78,7 +80,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     uint64 numTokens,
     Signature calldata sig
   ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    require(currencyCanHoldSpotBalance(currency), "invalid currency");
+    require(_currencyCanHoldSpotBalance(currency), "invalid currency");
     _setSequence(timestamp, txID);
     Account storage acc = _requireAccount(fromAccID);
 
@@ -279,12 +281,19 @@ abstract contract TransferContract is ITransfer, TradeContract {
     }
 
     _fundAndSettle(insuranceFund);
-    int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
-    if (socializedLossHaircutAmount > 0) {
-      insuranceFund.futuresWalletBalances[currency] += socializedLossHaircutAmount;
+
+    // Socialized loss haircut only applies to USDT withdrawals.
+    // Non-USDT withdrawals are not subject to socialized loss because the haircut
+    // and total client equity calculations operate entirely in USDT terms.
+    if (currency == Currency.USDT) {
+      int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
+      if (socializedLossHaircutAmount > 0) {
+        insuranceFund.futuresWalletBalances[currency] += socializedLossHaircutAmount;
+      }
+      return (amount - socializedLossHaircutAmount, socializedLossHaircutAmount);
     }
 
-    return (amount - socializedLossHaircutAmount, socializedLossHaircutAmount);
+    return (amount, 0);
   }
 
   function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64, int64) {
@@ -298,7 +307,13 @@ abstract contract TransferContract is ITransfer, TradeContract {
     );
 
     int64 amountAfterFee = amount - withdrawalFeeCharged;
-    feeSubAcc.futuresWalletBalances[currency] += withdrawalFeeCharged;
+    // Route fees by currency: USDT fees go to futures wallet (perps collateral),
+    // non-USDT fees go to spot wallet to keep perps wallets USDT-only.
+    if (currency == Currency.USDT) {
+      feeSubAcc.futuresWalletBalances[currency] += withdrawalFeeCharged;
+    } else {
+      feeSubAcc.spotWalletBalances[currency] += withdrawalFeeCharged;
+    }
 
     require(amountAfterFee > 0, "withdrawal amount too small");
 
@@ -334,7 +349,9 @@ abstract contract TransferContract is ITransfer, TradeContract {
    *
    * @param timestamp Timestamp of the transaction
    * @param txID Transaction ID
+   * @param fromAccID Sub account to transfer from
    * @param fromSubID Sub account to transfer from
+   * @param toAccID Sub account to transfer to
    * @param toSubID Sub account to transfer to
    * @param currency Currency to transfer
    * @param numTokens Number of tokens to transfer
@@ -351,14 +368,83 @@ abstract contract TransferContract is ITransfer, TradeContract {
     uint64 numTokens,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    require(currencyCanHoldSpotBalance(currency), "invalid currency");
+    _doTransfer(timestamp, txID, fromAccID, fromSubID, toAccID, toSubID, currency, numTokens,
+      WalletType.UNSPECIFIED, WalletType.UNSPECIFIED, false, sig);
+  }
+
+  /**
+   * @notice Transfer tokens from one sub account to another sub account with explicit wallet type routing
+   *
+   * @param timestamp Timestamp of the transaction
+   * @param txID Transaction ID
+   * @param fromAccID Sub account to transfer from
+   * @param fromSubID Sub account to transfer from
+   * @param toAccID Sub account to transfer to
+   * @param toSubID Sub account to transfer to
+   * @param currency Currency to transfer
+   * @param numTokens Number of tokens to transfer
+   * @param fromWalletType Source wallet type (UNSPECIFIED resolves to default)
+   * @param toWalletType Destination wallet type (UNSPECIFIED resolves to default)
+   * @param sig Signature of the transaction
+   */
+  function transferV2(
+    int64 timestamp,
+    uint64 txID,
+    address fromAccID,
+    uint64 fromSubID,
+    address toAccID,
+    uint64 toSubID,
+    Currency currency,
+    uint64 numTokens,
+    WalletType fromWalletType,
+    WalletType toWalletType,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    require(fromWalletType != WalletType.UNSPECIFIED, "fromWalletType must be specified");
+    require(toWalletType != WalletType.UNSPECIFIED, "toWalletType must be specified");
+    _doTransfer(timestamp, txID, fromAccID, fromSubID, toAccID, toSubID, currency, numTokens,
+      fromWalletType, toWalletType, true, sig);
+  }
+
+  function _doTransfer(
+    int64 timestamp,
+    uint64 txID,
+    address fromAccID,
+    uint64 fromSubID,
+    address toAccID,
+    uint64 toSubID,
+    Currency currency,
+    uint64 numTokens,
+    WalletType fromWalletType,
+    WalletType toWalletType,
+    bool useV2Signature,
+    Signature calldata sig
+  ) private {
+    require(_currencyCanHoldSpotBalance(currency), "invalid currency");
     _setSequence(timestamp, txID);
 
+    // Resolve wallet types to defaults
+    WalletType resolvedFrom = _resolveWalletType(fromSubID, fromWalletType);
+    WalletType resolvedTo = _resolveWalletType(toSubID, toWalletType);
+
+    // Validate destination wallet currency restrictions
+    _validateCurrencyForDestWallet(toSubID, resolvedTo, currency);
+
     // ---------- Signature Verification -----------
-    _preventReplay(
-      hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce, sig.expiration),
-      sig
-    );
+    if (useV2Signature) {
+      _preventReplay(
+        hashTransferV2(
+          fromAccID, fromSubID, toAccID, toSubID, currency, numTokens,
+          fromWalletType, toWalletType, sig.nonce, sig.expiration
+        ),
+        sig
+      );
+    } else {
+      _preventReplay(
+        hashTransfer(fromAccID, fromSubID, toAccID, toSubID, currency, numTokens, sig.nonce, sig.expiration),
+        sig
+      );
+    }
     // ------- End of Signature Verification -------
 
     int64 numTokensSigned = SafeCast.toInt64(int(uint(numTokens)));
@@ -366,16 +452,21 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     // 1. Same account
     if (fromAccID == toAccID) {
-      require(fromSubID != toSubID, "self transfer");
+      require(
+        fromSubID != toSubID || resolvedFrom != resolvedTo,
+        "self transfer"
+      );
       if (fromSubID == 0) {
         // 1.1 Main -> Sub
-        _transferMainToSub(timestamp, fromAccID, toAccID, toSubID, currency, numTokensSigned, sig);
+        _transferMainToSub(timestamp, fromAccID, toAccID, toSubID, resolvedTo, currency, numTokensSigned, sig);
       } else if (toSubID == 0) {
         // 1.2 Sub -> Main
-        _transferSubToMain(timestamp, fromSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToMain(timestamp, fromSubID, fromAccID, toAccID, resolvedFrom, currency, numTokensSigned, sig);
       } else {
         // 1.3 Sub -> Sub
-        _transferSubToSub(timestamp, fromSubID, toSubID, fromAccID, toAccID, currency, numTokensSigned, sig);
+        _transferSubToSub(
+          timestamp, fromSubID, toSubID, fromAccID, toAccID, resolvedFrom, resolvedTo, currency, numTokensSigned, sig
+        );
       }
     } else {
       // 2. Different accounts
@@ -423,6 +514,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     address fromAccID,
     address toAccID,
     uint64 toSubID,
+    WalletType toWalletType,
     Currency currency,
     int64 numTokens,
     Signature calldata sig
@@ -432,14 +524,16 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     SubAccount storage toSubAcc = _requireSubAccount(toSubID);
     require(!toSubAcc.isVault || toSubAcc.vaultInfo.isCrossExchange, "no transfer to on-exchange vault subaccount");
+    require(!toSubAcc.isVault || toWalletType != WalletType.SPOT, "transfer to vault spot wallet");
 
     _requireSubAccountUnderAccount(toSubAcc, toAccID);
-    _doTransferMainToSub(fromAcc, toSubAcc, currency, numTokens);
+    _doTransferMainToSub(fromAcc, toSubAcc, toWalletType, currency, numTokens);
   }
 
   function _doTransferMainToSub(
     Account storage fromAcc,
     SubAccount storage toSubAcc,
+    WalletType toWalletType,
     Currency currency,
     int64 numTokens
   ) internal {
@@ -449,7 +543,7 @@ abstract contract TransferContract is ITransfer, TradeContract {
     _fundAndSettle(toSubAcc);
 
     fromAcc.fundingWalletBalances[currency] -= numTokens;
-    toSubAcc.futuresWalletBalances[currency] += numTokens;
+    _creditSubAccountWallet(toSubAcc, toWalletType, currency, numTokens);
   }
 
   function _transferSubToMain(
@@ -457,23 +551,26 @@ abstract contract TransferContract is ITransfer, TradeContract {
     uint64 fromSubID,
     address fromAccID,
     address toAccID,
+    WalletType fromWalletType,
     Currency currency,
     int64 numTokens,
     Signature calldata sig
   ) private {
     SubAccount storage fromSub = _requireSubAccount(fromSubID);
     require(!fromSub.isVault || fromSub.vaultInfo.isCrossExchange, "transfer from on-exchange vault subaccount");
+    require(!fromSub.isVault || fromWalletType != WalletType.SPOT, "transfer from vault spot wallet");
     _requireSignerOrSessionKeySubAccountPerm(fromSub, sig.signer, SubAccountPermTransfer, timestamp);
     _requireSubAccountUnderAccount(fromSub, fromAccID);
 
     Account storage toAcc = _requireAccount(toAccID);
 
-    _doTransferSubToMain(fromSub, toAcc, currency, numTokens);
+    _doTransferSubToMain(fromSub, toAcc, fromWalletType, currency, numTokens);
   }
 
   function _doTransferSubToMain(
     SubAccount storage fromSub,
     Account storage toAcc,
+    WalletType fromWalletType,
     Currency currency,
     int64 numTokens
   ) internal {
@@ -481,10 +578,12 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     _fundAndSettle(fromSub);
 
-    fromSub.futuresWalletBalances[currency] -= numTokens;
+    _debitSubAccountWallet(fromSub, fromWalletType, currency, numTokens);
     toAcc.fundingWalletBalances[currency] += numTokens;
 
-    require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
+    if (fromWalletType == WalletType.FUTURES) {
+      require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
+    }
   }
 
   function _transferSubToSub(
@@ -493,6 +592,8 @@ abstract contract TransferContract is ITransfer, TradeContract {
     uint64 toSubID,
     address fromAccID,
     address toAccID,
+    WalletType fromWalletType,
+    WalletType toWalletType,
     Currency currency,
     int64 numTokens,
     Signature calldata sig
@@ -506,15 +607,78 @@ abstract contract TransferContract is ITransfer, TradeContract {
 
     require(numTokens >= 0, "invalid transfer amount");
     require(!fromSub.isVault || fromSub.vaultInfo.isCrossExchange, "transfer from on-exchange vault subaccount");
+    require(!fromSub.isVault || fromWalletType != WalletType.SPOT, "transfer from vault spot wallet");
     require(!toSub.isVault || toSub.vaultInfo.isCrossExchange, "transfer to on-exchange vault subaccount");
+    require(!toSub.isVault || toWalletType != WalletType.SPOT, "transfer to vault spot wallet");
 
     _fundAndSettle(fromSub);
     _fundAndSettle(toSub);
 
-    fromSub.futuresWalletBalances[currency] -= numTokens;
+    _debitSubAccountWallet(fromSub, fromWalletType, currency, numTokens);
+    if (fromWalletType == WalletType.FUTURES) {
+      require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
+    }
+    _creditSubAccountWallet(toSub, toWalletType, currency, numTokens);
+  }
 
-    require(_getTotalEquityCrossInQuote(fromSub).val >= 0, "subaccount value is negative");
-    toSub.futuresWalletBalances[currency] += numTokens;
+  function _resolveWalletType(uint64 subID, WalletType wt) private pure returns (WalletType) {
+    if (wt != WalletType.UNSPECIFIED) {
+      if (subID == 0) {
+        require(wt == WalletType.FUNDING, "subID 0 must use FUNDING wallet");
+      } else {
+        require(wt == WalletType.SPOT || wt == WalletType.FUTURES, "subID > 0 must use SPOT or FUTURES wallet");
+      }
+      return wt;
+    }
+    // UNSPECIFIED: default based on subID
+    return subID == 0 ? WalletType.FUNDING : WalletType.FUTURES;
+  }
+
+  /// @dev Validates that the given currency is allowed in the destination wallet.
+  /// Spot and funding wallets allow all currencies. Futures wallets are restricted based on SubAccountMode.
+  function _validateCurrencyForDestWallet(uint64 toSubID, WalletType toWalletType, Currency currency) private view {
+    if (toWalletType == WalletType.SPOT || toWalletType == WalletType.FUNDING) {
+      // Spot and funding wallets allow all spot assets
+      return;
+    }
+    if (toWalletType == WalletType.FUTURES) {
+      SubAccount storage sub = _requireSubAccount(toSubID);
+      SubAccountMode mode = sub.subAccountMode;
+      // UNSPECIFIED is treated as SINGLE_ASSET_MODE for backward compatibility (existing sub-accounts have UNSPECIFIED in storage)
+      if (mode == SubAccountMode.SINGLE_ASSET_MODE || mode == SubAccountMode.UNSPECIFIED) {
+        require(currency == Currency.USDT, "SINGLE_ASSET_MODE only allows USDT");
+        return;
+      }
+      revert("unsupported sub account mode");
+    }
+    revert("unsupported wallet type");
+  }
+
+  function _debitSubAccountWallet(
+    SubAccount storage sub,
+    WalletType wt,
+    Currency currency,
+    int64 amount
+  ) private {
+    if (wt == WalletType.FUTURES) {
+      sub.futuresWalletBalances[currency] -= amount;
+    } else {
+      require(amount <= sub.spotWalletBalances[currency], "insufficient balance");
+      sub.spotWalletBalances[currency] -= amount;
+    }
+  }
+
+  function _creditSubAccountWallet(
+    SubAccount storage sub,
+    WalletType wt,
+    Currency currency,
+    int64 amount
+  ) private {
+    if (wt == WalletType.FUTURES) {
+      sub.futuresWalletBalances[currency] += amount;
+    } else {
+      sub.spotWalletBalances[currency] += amount;
+    }
   }
 
   function _getSocializedLossHaircutAmount(address fromAccID, int64 withdrawAmount) private view returns (uint64) {

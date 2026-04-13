@@ -20,6 +20,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OPTION = 2500;
   int32 internal constant LIQUIDATION_FEE_CAP_RATE_BPS_OTHER = 7000;
   int32 internal constant PREMIUM_CAP_RATE_BPS = 125000; // 12.5% premium cap
+  int32 internal constant SPOT_TRADE_FEE_CAP_RATE_BPS = 10000; // 100 bps = 1%
 
   /// @dev The maximum signature expiry time for orders. This is deliberately laxer than the expiry for order in risk
   /// In risk normal orders have a 30 day expiry, and TPSL orders have a 180 day expiry.
@@ -42,9 +43,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     _verifyMatch(trade);
 
     SubAccount storage takerSub = _requireSubAccount(trade.takerOrder.subAccountID);
-    OrderCalculationResult memory takerCalcResult = _verifyAndExecuteMakerOrders(timestamp, trade, takerSub);
+    OrderCalculationResult memory takerCalcResult = _verifyAndExecuteDerivMakerOrders(timestamp, trade, takerSub);
 
-    _verifyAndExecuteOrder(
+    _verifyAndExecuteDerivOrder(
       timestamp,
       trade.takerOrder,
       takerCalcResult,
@@ -55,7 +56,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     );
   }
 
-  function _verifyAndExecuteMakerOrders(
+  function _verifyAndExecuteDerivMakerOrders(
     int64 timestamp,
     Trade calldata trade,
     SubAccount storage takerSub
@@ -76,7 +77,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
         takerCalcResult,
         takerLegDecimals
       );
-      _verifyAndExecuteOrder(
+      _verifyAndExecuteDerivOrder(
         timestamp,
         makerMatch.makerOrder,
         makerCalcResult,
@@ -135,7 +136,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   }
 
   /// @notice Verifies the match between 1 taker and multiple maker orders.
-  /// @dev For individual order validation, see _verifyOrderFull.
+  /// @dev For individual order validation, see _verifyDerivOrderFull.
   ///      This function only verifies the invariant of the trade.
   /// @param trade The trade details to be verified.
   function _verifyMatch(Trade calldata trade) private {
@@ -185,7 +186,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
   /// @dev Verifies and executes an order, applying checks based on order type and account status.
   /// Validation spec: https://grvt.atlassian.net/wiki/spaces/TRADE/pages/142803008/De-risking+tech+design
-  function _verifyAndExecuteOrder(
+  function _verifyAndExecuteDerivOrder(
     int64 timestamp,
     Order calldata order,
     OrderCalculationResult memory calcResult,
@@ -200,7 +201,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     int64 totalBuilderFee = _getTotalFee(builderFeePerLegs);
 
     // 2. Order validation
-    _verifyOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, totalFee);
+    _verifyDerivOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, totalFee);
 
     // 3. Apply funding and settlement before margin checks
     _fundAndSettle(sub);
@@ -209,7 +210,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // A reduce-only order must actually reduce the position size.
     bool isReducingOrder = _isReducingOrder(sub, order, calcResult.matchedSizes);
     require(!order.reduceOnly || isReducingOrder, "invalid reduce order");
-    _checkVaultOrder(sub, isReducingOrder);
+    _checkVaultDerivOrder(sub, isReducingOrder);
     bytes32 isolatedAssetID = _getOrderIsolatedLegAssetID(order, sub);
 
     // ---------- Early Exits for Special Order Types ----------
@@ -218,7 +219,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     (uint64 insuranceFundSubID, bool isInsuranceFundSet) = _getUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
     bool isInsuranceFund = isInsuranceFundSet && sub.id == insuranceFundSubID;
     if (isInsuranceFund) {
-      _executeOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
+      _executeDerivOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
       return;
     }
 
@@ -226,7 +227,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // These are generally preferred and can bypass some stricter checks.
     bool isPlainOrder = !order.isLiquidation && !order.isDerisk;
     if (isPlainOrder && isReducingOrder) {
-      _executeOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
+      _executeDerivOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
       return;
     }
 
@@ -235,7 +236,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       if (!isDeriskable(timestamp, sub, isolatedAssetID)) {
         revert ErrNotDeriskable();
       }
-      _executeOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
+      _executeDerivOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
       return;
     }
 
@@ -253,7 +254,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       crossTEBefore = _getTotalEquityCrossInQuote(sub);
     }
 
-    _executeOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
+    _executeDerivOrder(timestamp, sub, order, calcResult, isolatedAssetID, totalFee, totalBuilderFee);
 
     if (order.isLiquidation) {
       BI memory crossTEAfter = _getTotalEquityCrossInQuote(sub);
@@ -277,7 +278,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function _checkVaultOrder(SubAccount storage sub, bool isReducingOrder) private view {
+  function _checkVaultDerivOrder(SubAccount storage sub, bool isReducingOrder) private view {
     if (!sub.isVault) {
       return;
     }
@@ -286,7 +287,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     require(sub.vaultInfo.status != VaultStatus.CLOSED, "closed vault cannot trade");
   }
 
-  function _verifyOrderFull(
+  function _verifyDerivOrderFull(
     int64 timestamp,
     SubAccount storage sub, // the sub account that created the order
     SubAccount storage takerSub,
@@ -334,7 +335,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       Kind kind = assetGetKind(leg.assetID);
       require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
-      require(currencyCanHoldSpotBalance(assetQuote), ERR_NOT_SUPPORTED);
+      require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
       require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
       if (shouldValidateBuilderFee) {
         _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, builderMaxFutureFeeRate);
@@ -342,69 +343,9 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       unchecked { ++i; }
     }
 
-    // Check the order signature
     bytes32 orderHash = hashOrder(order);
-    Signature calldata sig = order.signature;
-    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + ONE_HUNDRED_EIGHTY_DAY_EXPIRY), "expired");
-    _requireValidNoExipry(orderHash, sig);
-
-    // Check that the signer has trade permission
-    Session storage session = state.sessions[sig.signer];
-
-    // The signer is considered to have trade permission if any of the following is true:
-    // - order's signer is in the session key map, and session hasn't expired, and the sessionKey's signer has trade permission
-    // - order's signer has trade permission
-    SubAccount storage permSub = sub;
-    if (order.isLiquidation || order.isDerisk) {
-      (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
-    } else if (sub.isVault && sub.vaultInfo.status == VaultStatus.DELISTED) {
-      (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
-        ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID
-      );
-      if (ifSubFound && hasSubAccountPermission(ifSub, sig.signer, SubAccountPermTrade)) {
-        permSub = ifSub;
-      }
-    }
-
-    require(
-      (hasSubAccountPermission(permSub, session.subAccountSigner, SubAccountPermTrade)) ||
-        hasSubAccountPermission(permSub, sig.signer, SubAccountPermTrade),
-      ERR_NO_TRADE_PERMISSION
-    );
-
-    // Check that the order's total matched size after this trade does not exceed the order size
-    mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
-
-    bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
-
-    if (legsLen > 1) {
-      bytes32[] memory seenAssetIDs = new bytes32[](legsLen);
-      uint seenCount = 0;
-
-      for (uint i; i < legsLen; ) {
-        OrderLeg calldata leg = legs[i];
-
-        for (uint j = 0; j < seenCount; ) {
-          require(seenAssetIDs[j] != leg.assetID, "Duplicate assetID in legs");
-          unchecked { ++j; }
-        }
-        seenAssetIDs[seenCount] = leg.assetID;
-        seenCount++;
-        unchecked { ++i; }
-      }
-    }
-
-    for (uint i; i < legsLen; ) {
-      OrderLeg calldata leg = legs[i];
-      uint64 legExecutedSize = executedSize[leg.assetID];
-      if (order.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL) {
-        require(legExecutedSize == 0, "prior match for IOC order");
-      }
-      uint64 total = legExecutedSize + calcResult.matchedSizes[i];
-      require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
-      executedSize[leg.assetID] = total;
-      unchecked { ++i; }
-    }
+    _validateSignatureAndPermission(timestamp, sub, order, orderHash);
+    _validateSizeMatching(order, calcResult, orderHash);
 
     // Check that the fee paid is within the cap of 20 bps
     int32 feeCapRate = TRADE_FEE_CAP_RATE_BPS;
@@ -423,7 +364,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     uint32 maxSpotFeeRate,
     uint32 maxFutureFeeRate
   ) private pure {
-    if (kind == Kind.SPOT) {
+    if (kind == Kind.SPOT_SWAP) {
       if (orderBuilderFeeRate > maxSpotFeeRate) revert ErrBuilderFeeExceedMax();
       return;
     }
@@ -449,7 +390,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   /// @param isolatedAssetID Non-zero if the order is isolated; zero for cross-margin orders.
   /// @param fee Total trading fee in quote units (1e6 scaling).
   /// @param builderFee Builder fee in USDT units (1e6 scaling) if applicable.
-  function _executeOrder(
+  function _executeDerivOrder(
     int64 timestamp,
     SubAccount storage sub,
     Order calldata order,
@@ -469,8 +410,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       spotDelta = _executeCrossOrder(sub, order, calcResult, subQuote);
     }
 
-    _applyFees(sub, feeSub, subQuote, fee, spotDelta, isFeeCharged);
-    _applyBuilderFee(sub, order.builder, builderFee);
+    _applyDerivFees(sub, feeSub, subQuote, fee, spotDelta, isFeeCharged);
+    _applyDerivBuilderFee(sub, order.builder, builderFee);
     _maybeUpdateDeriskTimestamp(sub, order.isDerisk, timestamp);
   }
 
@@ -568,7 +509,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function _applyFees(
+  function _applyDerivFees(
     SubAccount storage sub,
     SubAccount storage feeSub,
     Currency quote,
@@ -587,14 +528,327 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     }
   }
 
-  function _applyBuilderFee(SubAccount storage sub, address builder, int64 builderFee) private {
+  function _applyDerivBuilderFee(SubAccount storage sub, address builder, int64 builderFee) private {
     if (builder == address(0x0) || builderFee <= 0) {
       return;
     }
 
-    sub.futuresWalletBalances[Currency.USDT] -= builderFee; // FIXME: once there's spot trading, need to fix this
-    _requireAccount(builder).fundingWalletBalances[Currency.USDT] += builderFee; // FIXME: once there's spot trading, need to fix this
+    sub.futuresWalletBalances[Currency.USDT] -= builderFee;
+    _requireAccount(builder).fundingWalletBalances[Currency.USDT] += builderFee;
   }
+
+  // ======================== Shared Validation ========================
+
+  function _validateSignatureAndPermission(
+    int64 timestamp,
+    SubAccount storage sub,
+    Order calldata order,
+    bytes32 orderHash
+  ) private {
+    Signature calldata sig = order.signature;
+    require(sig.expiration >= timestamp && sig.expiration <= (timestamp + ONE_HUNDRED_EIGHTY_DAY_EXPIRY), "expired");
+    _requireValidNoExipry(orderHash, sig);
+
+    Session storage session = state.sessions[sig.signer];
+
+    // Resolve permission sub-account (liquidation/derisk route to insurance fund)
+    SubAccount storage permSub = sub;
+    if (order.isLiquidation || order.isDerisk) {
+      (permSub, ) = _getSubAccountFromUintConfig(ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID);
+    } else if (sub.isVault && sub.vaultInfo.status == VaultStatus.DELISTED) {
+      (SubAccount storage ifSub, bool ifSubFound) = _getSubAccountFromUintConfig(
+        ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID
+      );
+      if (ifSubFound && hasSubAccountPermission(ifSub, sig.signer, SubAccountPermTrade)) {
+        permSub = ifSub;
+      }
+    }
+
+    require(
+      (hasSubAccountPermission(permSub, session.subAccountSigner, SubAccountPermTrade)) ||
+        hasSubAccountPermission(permSub, sig.signer, SubAccountPermTrade),
+      ERR_NO_TRADE_PERMISSION
+    );
+  }
+
+  function _validateSizeMatching(
+    Order calldata order,
+    OrderCalculationResult memory calcResult,
+    bytes32 orderHash
+  ) private {
+    mapping(bytes32 => uint64) storage executedSize = state.replay.sizeMatched[orderHash];
+    OrderLeg[] calldata legs = order.legs;
+    uint legsLen = legs.length;
+
+    bool isWholeOrder = order.timeInForce == TimeInForce.ALL_OR_NONE || order.timeInForce == TimeInForce.FILL_OR_KILL;
+
+    if (legsLen > 1) {
+      bytes32[] memory seenAssetIDs = new bytes32[](legsLen);
+      uint seenCount = 0;
+
+      for (uint i; i < legsLen; ) {
+        OrderLeg calldata leg = legs[i];
+
+        for (uint j = 0; j < seenCount; ) {
+          require(seenAssetIDs[j] != leg.assetID, "Duplicate assetID in legs");
+          unchecked { ++j; }
+        }
+        seenAssetIDs[seenCount] = leg.assetID;
+        seenCount++;
+        unchecked { ++i; }
+      }
+    }
+
+    for (uint i; i < legsLen; ) {
+      OrderLeg calldata leg = legs[i];
+      uint64 legExecutedSize = executedSize[leg.assetID];
+      if (order.timeInForce == TimeInForce.IMMEDIATE_OR_CANCEL) {
+        require(legExecutedSize == 0, "prior match for IOC order");
+      }
+      uint64 total = legExecutedSize + calcResult.matchedSizes[i];
+      require(isWholeOrder ? total == leg.size : total <= leg.size, ERR_INVALID_MATCHED_SIZE);
+      executedSize[leg.assetID] = total;
+      unchecked { ++i; }
+    }
+  }
+
+  // ======================== Spot Trading ========================
+
+  function tradeSpot(
+    int64 timestamp,
+    uint64 txID,
+    Trade calldata trade
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+
+    // Spot trading is blocked during socialized loss
+    require(_getInsuranceFundLossAmountUSDT() <= 0, "spot trading blocked during socialized loss");
+
+    _verifyMatch(trade);
+
+    SubAccount storage takerSub = _requireSubAccount(trade.takerOrder.subAccountID);
+    OrderCalculationResult memory takerCalcResult = _verifyAndExecuteSpotMakerOrders(timestamp, trade, takerSub);
+
+    _verifyAndExecuteSpotOrder(
+      timestamp,
+      trade.takerOrder,
+      takerCalcResult,
+      false,
+      trade.feeCharged,
+      trade.builderFees,
+      takerSub
+    );
+  }
+
+  function _verifyAndExecuteSpotMakerOrders(
+    int64 timestamp,
+    Trade calldata trade,
+    SubAccount storage takerSub
+  ) private returns (OrderCalculationResult memory) {
+    OrderCalculationResult memory takerCalcResult;
+    uint takerLegsLen = trade.takerOrder.legs.length;
+    takerCalcResult.matchedSizes = new uint64[](takerLegsLen);
+    takerCalcResult.legSpotDelta = new BI[](takerLegsLen);
+    uint64[] memory takerLegDecimals = _getLegUnderlyingDecimals(trade.takerOrder.legs);
+    MakerTradeMatch[] calldata makerMatches = trade.makerOrders;
+    uint matchesLen = makerMatches.length;
+
+    for (uint i; i < matchesLen; ) {
+      MakerTradeMatch calldata makerMatch = makerMatches[i];
+      OrderCalculationResult memory makerCalcResult = _calculateMakerOrder(
+        trade,
+        makerMatch,
+        takerCalcResult,
+        takerLegDecimals
+      );
+      _verifyAndExecuteSpotOrder(
+        timestamp,
+        makerMatch.makerOrder,
+        makerCalcResult,
+        true,
+        makerMatch.feeCharged,
+        makerMatch.builderFees,
+        takerSub
+      );
+      unchecked { ++i; }
+    }
+
+    return takerCalcResult;
+  }
+
+  function _verifyAndExecuteSpotOrder(
+    int64 timestamp,
+    Order calldata order,
+    OrderCalculationResult memory calcResult,
+    bool isMakerOrder,
+    int64[] memory feePerLegs,
+    int64[] memory builderFeePerLegs,
+    SubAccount storage takerSub
+  ) private {
+    SubAccount storage sub = isMakerOrder ? _requireSubAccount(order.subAccountID) : takerSub;
+
+    // 1. Vault check: vault sub-accounts cannot trade spot
+    _checkVaultSpotOrder(sub);
+
+    // 2. Verify
+    _verifySpotOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, feePerLegs);
+
+    // 3. Execute
+    _executeSpotOrder(sub, order, calcResult, feePerLegs, builderFeePerLegs);
+
+    // 4. Post-trade: verify all affected spot wallet balances >= 0
+    _requireSpotBalancesNonNegative(sub, order);
+  }
+
+  function _verifySpotOrderFull(
+    int64 timestamp,
+    SubAccount storage sub,
+    SubAccount storage takerSub,
+    Order calldata order,
+    OrderCalculationResult memory calcResult,
+    bool isMakerOrder,
+    int64[] memory feePerLegs
+  ) private {
+    if (isMakerOrder) {
+      require(sub.id != takerSub.id, "self trade");
+      require(
+        order.timeInForce != TimeInForce.IMMEDIATE_OR_CANCEL && order.timeInForce != TimeInForce.FILL_OR_KILL,
+        "maker cannot be IOC/FOK"
+      );
+      require(!order.isMarket, "maker cannot be market order");
+    } else {
+      require(!order.postOnly, "taker cannot be post only");
+    }
+
+    // Spot-specific restrictions
+    require(!order.reduceOnly, "spot: no reduce only");
+    require(!order.isLiquidation, "spot: no liquidation");
+    require(!order.isDerisk, "spot: no derisk");
+
+    OrderLeg[] calldata legs = order.legs;
+    uint legsLen = legs.length;
+    require(legsLen > 0, "order must have at least 1 leg");
+    bool shouldValidateBuilderFee = order.builder != address(0) && order.builderFee > 0;
+    uint32 builderMaxSpotFeeRate;
+
+    if (shouldValidateBuilderFee) {
+      Account storage acc = _requireAccount(sub.accountID);
+      BuilderFeeConfig storage builderConfig = acc.builders[order.builder];
+      builderMaxSpotFeeRate = builderConfig.maxSpotFeeRate;
+    }
+
+    BI memory feeCapRateBI = _bpsToDecimal(SPOT_TRADE_FEE_CAP_RATE_BPS);
+
+    for (uint i; i < legsLen; ) {
+      OrderLeg calldata leg = legs[i];
+      Currency assetQuote = assetGetQuote(leg.assetID);
+      Currency underlying = assetGetUnderlying(leg.assetID);
+      Kind kind = assetGetKind(leg.assetID);
+      require(kind == Kind.SPOT_SWAP, ERR_NOT_SUPPORTED);
+      require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
+      if (shouldValidateBuilderFee) {
+        _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, 0);
+      }
+
+      // Fee cap per leg (spot fees are in different currencies per side)
+      if (calcResult.matchedSizes[i] > 0 && feePerLegs.length > i) {
+        if (leg.isBuyingAsset) {
+          // BUY: fee is in underlying, cap = tradeSize * feeCapRate
+          uint uDec = _getBalanceDecimal(underlying);
+          int64 feeCap = BI(int256(uint256(calcResult.matchedSizes[i])), uint64(uDec)).mul(feeCapRateBI).toInt64(uDec);
+          require(feePerLegs[i] <= feeCap, ERR_FEE_CAP_EXCEEDED);
+        } else {
+          // SELL: fee is in quote, cap = legNotional * feeCapRate
+          // legSpotDelta[i] is positive for seller (= notional received)
+          uint qDec = _getBalanceDecimal(assetQuote);
+          int64 feeCap = calcResult.legSpotDelta[i].mul(feeCapRateBI).toInt64(qDec);
+          require(feePerLegs[i] <= feeCap, ERR_FEE_CAP_EXCEEDED);
+        }
+      }
+
+      unchecked { ++i; }
+    }
+
+    bytes32 orderHash = hashOrder(order);
+    _validateSignatureAndPermission(timestamp, sub, order, orderHash);
+    _validateSizeMatching(order, calcResult, orderHash);
+  }
+
+  function _checkVaultSpotOrder(SubAccount storage sub) private view {
+    if (!sub.isVault) {
+      return;
+    }
+    revert("spot order not supported for vault");
+  }
+
+  function _executeSpotOrder(
+    SubAccount storage sub,
+    Order calldata order,
+    OrderCalculationResult memory calcResult,
+    int64[] memory fees,
+    int64[] memory builderFees
+  ) private {
+    (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(false);
+
+    uint legsLen = order.legs.length;
+    for (uint i; i < legsLen; ) {
+      uint64 matchedSize = calcResult.matchedSizes[i];
+      if (matchedSize == 0) {
+        unchecked { ++i; }
+        continue;
+      }
+      OrderLeg calldata leg = order.legs[i];
+      Currency underlying = assetGetUnderlying(leg.assetID);
+      Currency quote = assetGetQuote(leg.assetID);
+      uint qDec = _getBalanceDecimal(quote);
+      int64 quoteAmount = calcResult.legSpotDelta[i].toInt64(qDec);
+
+      int64 fee = fees.length > i ? fees[i] : int64(0);
+      int64 builderFee = builderFees.length > i ? builderFees[i] : int64(0);
+      int64 size = SafeCast.toInt64(int(uint(matchedSize)));
+
+      if (leg.isBuyingAsset) {
+        // BUY: spend quote, gain (size - fee) underlying
+        // fee is in underlying, builder fee NOT applied for buy
+        sub.spotWalletBalances[quote] += quoteAmount;
+        sub.spotWalletBalances[underlying] += (size - fee);
+
+        if (isFeeCharged && fee > 0) {
+          feeSub.spotWalletBalances[underlying] += fee;
+        }
+      } else {
+        // SELL: spend underlying, gain (quoteAmount - fee - builderFee) quote
+        // fee and builderFee are in quote
+        int64 totalFee = fee + builderFee;
+        sub.spotWalletBalances[underlying] -= size;
+        sub.spotWalletBalances[quote] += (quoteAmount - totalFee);
+
+        if (isFeeCharged && fee > 0) {
+          feeSub.spotWalletBalances[quote] += fee;
+        }
+
+        // Builder fee: from sub's spotWallet to builder's fundingWallet (in quote)
+        if (order.builder != address(0) && builderFee > 0) {
+          _requireAccount(order.builder).fundingWalletBalances[quote] += builderFee;
+        }
+      }
+      unchecked { ++i; }
+    }
+  }
+
+  function _requireSpotBalancesNonNegative(SubAccount storage sub, Order calldata order) private view {
+    uint legsLen = order.legs.length;
+    for (uint i; i < legsLen; ) {
+      OrderLeg calldata leg = order.legs[i];
+      Currency underlying = assetGetUnderlying(leg.assetID);
+      Currency quote = assetGetQuote(leg.assetID);
+      require(sub.spotWalletBalances[underlying] >= 0, "negative underlying balance");
+      require(sub.spotWalletBalances[quote] >= 0, "negative quote balance");
+      unchecked { ++i; }
+    }
+  }
+
+  // ======================== End Spot Trading ========================
 
   function _maybeUpdateDeriskTimestamp(SubAccount storage sub, bool isDerisk, int64 timestamp) private {
     if (isDerisk) {

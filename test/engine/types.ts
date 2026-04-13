@@ -363,6 +363,14 @@ export interface ExSubAccountPositionMarginConfig {
   leverage: string
 }
 
+export interface ExSubAccountSpotWalletBalance {
+  sub_account_id: string
+  spot_balances: {
+    currency: number
+    balance: string
+  }[]
+}
+
 export interface Expectation {
   name: string
   expect:
@@ -412,4 +420,5 @@ export interface Expectation {
   | ExVaultAllTimePnl
   | ExIfAccountHasVaultPosition
   | ExAuthorizeBuilder
+  | ExSubAccountSpotWalletBalance
 }

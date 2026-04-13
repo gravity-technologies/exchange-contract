@@ -95,8 +95,36 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return acc;
   }
 
+  function _isBaseSpotCurrency(Currency c) internal pure returns (bool) {
+    return c == Currency.USDT || c == Currency.USDC || c == Currency.ETH;
+  }
+
+  // Returns currencies that can hold spot balances: USDT, USDC, ETH + any extra ERC20-configured currencies.
+  function _spotBalanceCurrencies() internal view returns (Currency[] memory) {
+    Currency[] storage stored = state.erc20Currencies;
+    uint len = stored.length;
+    Currency[] memory cs = new Currency[](3 + len);
+    cs[0] = Currency.USDT;
+    cs[1] = Currency.USDC;
+    cs[2] = Currency.ETH;
+    for (uint i; i < len; ++i) {
+      cs[3 + i] = stored[i];
+    }
+    return cs;
+  }
+
+  // Returns true if the currency can hold spot balances
+  function _currencyCanHoldSpotBalance(Currency currency) internal view returns (bool) {
+    if (_isBaseSpotCurrency(currency)) return true;
+    Currency[] storage stored = state.erc20Currencies;
+    for (uint i; i < stored.length; ++i) {
+      if (stored[i] == currency) return true;
+    }
+    return false;
+  }
+
   function _requireAccountNoBalance(Account storage acc) internal view {
-    Currency[] memory cs = spotBalanceCurrencies();
+    Currency[] memory cs = _spotBalanceCurrencies();
     for (uint i; i < cs.length; ++i) {
       require(acc.fundingWalletBalances[cs[i]] == 0, "account has balance");
     }
@@ -673,15 +701,27 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       );
   }
 
+  /// @dev Computes account equity considering only USDT balances in all wallets.
+  /// Non-USDT balances are excluded because socialized loss operates entirely in USDT terms.
+  /// When only USDT is deposited, this produces bit-for-bit identical results to the old code
+  /// that included all currencies, because the USDT-only wallet views go through the same
+  /// arithmetic paths (USDT → QuoteCurrency → USDT round-trip via mark prices).
   function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
-    BI memory totalValue = _getSpotBalanceValueInCurrencyBI(account.fundingWalletBalances, Currency.USDT);
+    uint dec = _getBalanceDecimal(Currency.USDT);
+    // Only USDT from funding wallet (USDT→USDT conversion is identity)
+    BI memory totalValue = BI(account.fundingWalletBalances[Currency.USDT], dec);
 
     for (uint256 i; i < account.subAccounts.length; ) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
-      BI memory subValueInQuote = _getTotalEquityInQuote(subAcc);
+
+      // Futures wallet: USDT only + perps positions (preserves USDT→QuoteCurrency→USDT round-trip)
+      BI memory subValueInQuote = _getTotalEquityInQuoteUSDTOnly(subAcc);
       BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
 
-      totalValue = totalValue.add(subValueInUSDT);
+      // Spot wallet: USDT only (must be included to prevent evasion via futures→spot transfers)
+      BI memory spotUSDTValue = BI(subAcc.spotWalletBalances[Currency.USDT], dec);
+
+      totalValue = totalValue.add(subValueInUSDT).add(spotUSDTValue);
       unchecked { ++i; }
     }
 
@@ -693,7 +733,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     Currency quoteCurrency
   ) internal view returns (BI memory) {
     BI memory total = BIMath.zero();
-    Currency[] memory cs = spotBalanceCurrencies();
+    Currency[] memory cs = _spotBalanceCurrencies();
     for (uint i; i < cs.length; ++i) {
       int64 balance = balances[cs[i]];
       if (balance == 0) continue;
@@ -730,6 +770,29 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     );
 
     return positionExposureValue.add(cashValueInQuote);
+  }
+
+  /// @dev Same as _getTotalEquityInQuote but only considers USDT balance in the futures wallet.
+  /// Uses the same BI construction and _convertCurrency path as _getSpotBalanceValueInCurrencyBI
+  /// to preserve the exact arithmetic for the USDT entry.
+  function _getTotalEquityInQuoteUSDTOnly(SubAccount storage sub) internal view returns (BI memory) {
+    (BI memory positionExposureValue, BI memory marginBalanceValue) = _getPositionsValueInQuote(
+      sub.perps,
+      sub.quoteCurrency
+    );
+
+    // Only USDT from futures wallet, converted to quote currency.
+    // Matches _getSpotBalanceValueInCurrencyBI's BI construction: BI(balance, quoteCurrencyDecimals).
+    return positionExposureValue.add(
+      _usdtBalanceInQuote(sub.futuresWalletBalances[Currency.USDT], sub.quoteCurrency).add(marginBalanceValue)
+    );
+  }
+
+  /// @dev Convert a raw USDT int64 balance to a BI denominated in quoteCurrency.
+  /// Extracted to a separate function to reduce stack depth in callers.
+  function _usdtBalanceInQuote(int64 usdtBalance, Currency quoteCurrency) internal view returns (BI memory) {
+    if (usdtBalance == 0) return BIMath.zero();
+    return _convertCurrency(BI(usdtBalance, _getBalanceDecimal(quoteCurrency)), Currency.USDT, quoteCurrency);
   }
 
   /// @dev Get the total value of a positions collection and their margin balance (ie cash) in quote currency

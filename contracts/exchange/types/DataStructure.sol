@@ -20,22 +20,8 @@ function currencyIsValid(Currency iter) pure returns (bool) {
   return iter > type(Currency).min && iter <= type(Currency).max;
 }
 
-// Currencies that can hold spot balances
-// When adding a new spot-balance currency, add it here
-function spotBalanceCurrencies() pure returns (Currency[] memory) {
-  Currency[] memory cs = new Currency[](1);
-  cs[0] = Currency.USDT;
-  return cs;
-}
-
-// Returns true if the currency can hold spot balances
-function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
-  Currency[] memory cs = spotBalanceCurrencies();
-  for (uint i; i < cs.length; ++i) {
-    if (cs[i] == currency) return true;
-  }
-  return false;
-}
+// spotBalanceCurrencies and currencyCanHoldSpotBalance are now defined in BaseContract
+// as internal view functions that read from state.erc20Currencies.
 
 uint constant PRICE_DECIMALS = 9;
 uint constant RATE_DECIMALS = 18;
@@ -157,6 +143,8 @@ struct State {
   // L1 native vault gateway address for ETH bridge operations.
   // Set once through a dedicated admin method and immutable thereafter.
   address nativeVaultGatewayAddress;
+  // Currencies that have an ERC20 address configured (append-only)
+  Currency[] erc20Currencies;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps

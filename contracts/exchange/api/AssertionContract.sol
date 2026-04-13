@@ -40,6 +40,32 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     Currency quoteCurrency,
     int64 lastAppliedFundingTimestamp
   ) external view {
+    _assertCreateAccountWithSubAccountBase(accountID, subAccountID, marginType, quoteCurrency, lastAppliedFundingTimestamp);
+  }
+
+  function assertCreateAccountWithSubAccountV2(
+    address accountID,
+    uint64 subAccountID,
+    MarginType marginType,
+    Currency quoteCurrency,
+    int64 lastAppliedFundingTimestamp,
+    SubAccountMode subAccountMode
+  ) external view {
+    _assertCreateAccountWithSubAccountBase(accountID, subAccountID, marginType, quoteCurrency, lastAppliedFundingTimestamp);
+
+    SubAccount storage sub = state.subAccounts[subAccountID];
+    if (sub.subAccountMode != subAccountMode) {
+      revert AssertionCreateSubAccountMismatch();
+    }
+  }
+
+  function _assertCreateAccountWithSubAccountBase(
+    address accountID,
+    uint64 subAccountID,
+    MarginType marginType,
+    Currency quoteCurrency,
+    int64 lastAppliedFundingTimestamp
+  ) private view {
     // Verify account creation
     Account storage account = state.accounts[accountID];
     if (
@@ -143,6 +169,32 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     MarginType marginType,
     int64 lastAppliedFundingTimestamp
   ) external view {
+    _assertCreateSubAccountBase(subAccountID, accountID, quoteCurrency, marginType, lastAppliedFundingTimestamp);
+  }
+
+  function assertCreateSubAccountV2(
+    uint64 subAccountID,
+    address accountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    int64 lastAppliedFundingTimestamp,
+    SubAccountMode subAccountMode
+  ) external view {
+    _assertCreateSubAccountBase(subAccountID, accountID, quoteCurrency, marginType, lastAppliedFundingTimestamp);
+
+    SubAccount storage sub = state.subAccounts[subAccountID];
+    if (sub.subAccountMode != subAccountMode) {
+      revert AssertionCreateSubAccountMismatch();
+    }
+  }
+
+  function _assertCreateSubAccountBase(
+    uint64 subAccountID,
+    address accountID,
+    Currency quoteCurrency,
+    MarginType marginType,
+    int64 lastAppliedFundingTimestamp
+  ) private view {
     SubAccount storage sub = state.subAccounts[subAccountID];
     if (
       sub.id != subAccountID ||
@@ -329,8 +381,12 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionWithdrawBalanceMismatch();
     }
 
+    // USDT fees go to futures wallet, non-USDT fees go to spot wallet
     SubAccount storage feeSubAcc = state.subAccounts[feeSubAccId];
-    if (feeSubAcc.futuresWalletBalances[currency] != expectedFeeBalance) {
+    int64 actualFeeBalance = currency == Currency.USDT
+      ? feeSubAcc.futuresWalletBalances[currency]
+      : feeSubAcc.spotWalletBalances[currency];
+    if (actualFeeBalance != expectedFeeBalance) {
       revert AssertionFeeBalanceMismatch();
     }
 
@@ -383,9 +439,57 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     _assertSubAccounts(subAccounts);
   }
 
+  function assertTransferV2(
+    address fromAccID,
+    address toAccID,
+    uint64 fromSubID,
+    uint64 toSubID,
+    int64 expectedFromBalance,
+    int64 expectedToBalance,
+    Currency currency,
+    WalletType fromWalletType,
+    WalletType toWalletType,
+    SubAccountAssertionV2[] calldata subAccounts
+  ) external view {
+    if (_getWalletBalance(fromAccID, fromSubID, fromWalletType, currency) != expectedFromBalance) {
+      revert AssertionFromAccountBalanceMismatch();
+    }
+    if (_getWalletBalance(toAccID, toSubID, toWalletType, currency) != expectedToBalance) {
+      revert AssertionToAccountBalanceMismatch();
+    }
+
+    _assertSubAccountsV2(subAccounts);
+  }
+
+  function _getWalletBalance(
+    address accID,
+    uint64 subID,
+    WalletType wt,
+    Currency currency
+  ) private view returns (int64) {
+    if (wt == WalletType.FUNDING) return state.accounts[accID].fundingWalletBalances[currency];
+    if (wt == WalletType.FUTURES) return state.subAccounts[subID].futuresWalletBalances[currency];
+    if (wt == WalletType.SPOT) return state.subAccounts[subID].spotWalletBalances[currency];
+    revert("unsupported wallet type");
+  }
+
   // Assertion for Trade Contract
   function assertTradeDeriv(TradeAssertion calldata tradeAssertion) external view {
     _assertSubAccounts(tradeAssertion.subAccounts);
+
+    AccountAssertion[] calldata accounts = tradeAssertion.accounts;
+    uint256 accountsLen = accounts.length;
+    for (uint256 i; i < accountsLen; ) {
+      _assertAccount(accounts[i]);
+
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  function assertTradeV2(TradeAssertionV2 calldata tradeAssertion) external view {
+    _assertSubAccountsV2(tradeAssertion.subAccounts);
 
     AccountAssertion[] calldata accounts = tradeAssertion.accounts;
     uint256 accountsLen = accounts.length;
@@ -421,7 +525,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
 
     _assertSubAccountPositions(sub, exSub.positions);
-    _assertSubAccountSpots(sub, exSub.spots);
+    _assertSubAccountFuturesWalletBalances(sub, exSub.spots);
   }
 
   function _assertAccount(AccountAssertion calldata exAcc) internal view {
@@ -467,11 +571,52 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
   }
 
-  function _assertSubAccountSpots(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
+  function _assertSubAccountFuturesWalletBalances(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
     uint256 spotsLen = spots.length;
     for (uint256 j; j < spotsLen; ) {
       SpotAssertion calldata exSpot = spots[j];
       if (sub.futuresWalletBalances[exSpot.currency] != exSpot.balance) {
+        revert AssertionSubSpotBalanceMismatch();
+      }
+
+      unchecked {
+        ++j;
+      }
+    }
+  }
+
+  function _assertSubAccountsV2(SubAccountAssertionV2[] calldata exSubs) internal view {
+    uint256 len = exSubs.length;
+    for (uint256 i; i < len; ) {
+      _assertSubAccountV2(exSubs[i]);
+
+      unchecked {
+        ++i;
+      }
+    }
+  }
+
+  function _assertSubAccountV2(SubAccountAssertionV2 calldata exSub) internal view {
+    SubAccount storage sub = state.subAccounts[exSub.subAccountID];
+
+    if (sub.lastAppliedFundingTimestamp != exSub.fundingTimestamp) {
+      revert AssertionSubFundingTimestampMismatch();
+    }
+
+    if (sub.lastDeriskTimestamp != exSub.lastDeriskTimestamp) {
+      revert AssertionSubDeriskTimestampMismatch();
+    }
+
+    _assertSubAccountPositions(sub, exSub.positions);
+    _assertSubAccountFuturesWalletBalances(sub, exSub.futuresWalletSpots);
+    _assertSubAccountSpotWalletBalances(sub, exSub.spotWalletSpots);
+  }
+
+  function _assertSubAccountSpotWalletBalances(SubAccount storage sub, SpotAssertion[] calldata spots) internal view {
+    uint256 spotsLen = spots.length;
+    for (uint256 j; j < spotsLen; ) {
+      SpotAssertion calldata exSpot = spots[j];
+      if (sub.spotWalletBalances[exSpot.currency] != exSpot.balance) {
         revert AssertionSubSpotBalanceMismatch();
       }
 

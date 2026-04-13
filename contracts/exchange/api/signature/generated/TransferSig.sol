@@ -38,3 +38,29 @@ function hashTransfer(
       abi.encode(_TRANSFER_H, fromAccount, fromSubID, toAccount, toSubID, uint8(currency), numTokens, nonce, expiration)
     );
 }
+
+bytes32 constant _TRANSFER_V2_H = keccak256(
+  "TransferV2(address fromAccount,uint64 fromSubAccount,address toAccount,uint64 toSubAccount,uint8 tokenCurrency,uint64 numTokens,uint32 nonce,int64 expiration,uint8 fromWalletType,uint8 toWalletType)"
+);
+
+function hashTransferV2(
+  address fromAccount,
+  uint64 fromSubID,
+  address toAccount,
+  uint64 toSubID,
+  Currency currency,
+  uint64 numTokens,
+  WalletType fromWalletType,
+  WalletType toWalletType,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(
+        _TRANSFER_V2_H, fromAccount, fromSubID, toAccount, toSubID,
+        uint8(currency), numTokens, nonce, expiration,
+        uint8(fromWalletType), uint8(toWalletType)
+      )
+    );
+}

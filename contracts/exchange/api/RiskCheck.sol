@@ -14,9 +14,13 @@ int64 constant DERISK_WINDOW_NANOS = 60 * 1_000_000_000; // 1 minute
 contract RiskCheck is BaseContract, MarginConfigContractGetter {
   using BIMath for BI;
 
+  /// @dev Only considers USDT spot balance for socialized loss calculation.
+  /// Non-USDT currencies are excluded because socialized loss operates entirely in USDT terms.
+  /// When only USDT is deposited, this produces bit-for-bit identical results to the old code
+  /// because USDT→USDT conversion is the identity.
   function _getTotalClientValueUSDT() internal view returns (int64) {
-    BI memory totalSpotBalancesUSDTValueBI = _getSpotBalanceValueInCurrencyBI(state.totalSpotBalances, Currency.USDT);
-    int64 totalSpotBalancesUSDTValue = totalSpotBalancesUSDTValueBI.toInt64(_getBalanceDecimal(Currency.USDT));
+    uint dec = _getBalanceDecimal(Currency.USDT);
+    int64 totalSpotBalancesUSDTValue = BI(state.totalSpotBalances[Currency.USDT], dec).toInt64(dec);
     return totalSpotBalancesUSDTValue - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
   }
 
