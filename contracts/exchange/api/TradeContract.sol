@@ -690,13 +690,16 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     // 1. Vault check: vault sub-accounts cannot trade spot
     _checkVaultSpotOrder(sub);
 
-    // 2. Verify
+    // 2. Apply funding and settlement to keep lastAppliedFundingTimestamp in sync with backend
+    _fundAndSettle(sub);
+
+    // 3. Verify
     _verifySpotOrderFull(timestamp, sub, takerSub, order, calcResult, isMakerOrder, feePerLegs);
 
-    // 3. Execute
+    // 4. Execute
     _executeSpotOrder(sub, order, calcResult, feePerLegs, builderFeePerLegs);
 
-    // 4. Post-trade: verify all affected spot wallet balances >= 0
+    // 5. Post-trade: verify all affected spot wallet balances >= 0
     _requireSpotBalancesNonNegative(sub, order);
   }
 
