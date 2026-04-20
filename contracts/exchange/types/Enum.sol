@@ -171,5 +171,8 @@ enum Currency {
   AAPL, // 119
   TSM, // 120
   MU, // 121
-  SNDK // 122
+  SNDK, // 122
+  MSFT, // 123
+  AVGO, // 124
+  BABA // 125
 }
