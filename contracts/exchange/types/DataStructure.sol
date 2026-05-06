@@ -135,7 +135,7 @@ struct State {
    * - The effective deadline is computed dynamically as `enqueuedTimestampNs + WITHDRAWAL_QUEUE_DEADLINE_NANOS`.
    * - If the head request becomes overdue, sequenced tx processing is halted until liquidity is restored and
    *   the queue is drained enough to clear overdue state.
-  */
+   */
   WithdrawalQueue pendingWithdrawalQueue;
   // L1 DeFi vault address for direct bridge operations.
   // Set once through a dedicated admin method and immutable thereafter.
@@ -418,7 +418,8 @@ enum FeatureFlagID {
   VAULT_LP_SHARE_PRICE_9_DECIMALS,
   EXTEND_MAX_SESSION_DURATION_TO_150_DAYS,
   MAIN_ACCOUNT_TRADE_PERMISSION,
-  FIX_ISOLATED_REDUCTION_RATE_SCALE
+  FIX_ISOLATED_REDUCTION_RATE_SCALE,
+  SKIP_POST_TRADE_MARGIN_CHECK
 }
 
 struct MarginTier {

@@ -271,9 +271,11 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
         }
       }
     } else {
-      // Post-trade: regular (non-liquidation) orders require positive cross total equity.
-      if (_getTotalEquityCrossInQuote(sub).val < 0) {
-        revert ErrNonPositiveCrossTotalEquity();
+      if (!_isFeatureFlagEnabled(FeatureFlagID.SKIP_POST_TRADE_MARGIN_CHECK)) {
+        // Post-trade: regular (non-liquidation) orders require positive cross total equity.
+        if (_getTotalEquityCrossInQuote(sub).val < 0) {
+          revert ErrNonPositiveCrossTotalEquity();
+        }
       }
     }
   }
