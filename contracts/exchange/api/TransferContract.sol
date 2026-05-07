@@ -181,6 +181,86 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     emit L1DefiVaultBridge(l2Token, amount, recipient);
   }
 
+  function setOverCollateralizedFundDestination(address destination) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(destination != address(0), "invalid destination");
+    state.overCollateralizedFundDestination = destination;
+    emit OverCollateralizedFundDestinationSet(destination);
+  }
+
+  function getOverCollateralizedFundDestination() external view returns (address) {
+    return state.overCollateralizedFundDestination;
+  }
+
+  /// @notice Returns the current over-collateralized amount for a currency in raw ERC20
+  ///         native-decimal units (exchange balance minus totalSpotBalances).
+  function getOverCollateralizedAmount(Currency currency) external view returns (uint256) {
+    require(_currencyCanHoldSpotBalance(currency), "invalid currency");
+    (, uint256 surplus) = _computeOverCollateralizedAmount(currency);
+    return surplus;
+  }
+
+  /// @notice Sweeps a caller-specified amount of ERC20 surplus to the admin-configured L1 destination.
+  /// @param currency The spot currency whose surplus to sweep.
+  /// @param amount   Raw ERC20 amount in the token's native decimals (NOT the exchange's
+  ///                 internal int64 balance-decimal representation). Passed directly to
+  ///                 IL2SharedBridge.withdraw.
+  function sweepOverCollateralizedFund(
+    Currency currency,
+    uint256 amount
+  ) external nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(amount > 0, "invalid amount");
+    (address destination, address erc20Address, uint256 surplus) = _requireSweepable(currency);
+    require(amount <= surplus, "amount exceeds over-collateralized balance");
+    _doSweep(currency, destination, erc20Address, amount);
+  }
+
+  /// @notice Sweeps the entire current ERC20 surplus for a currency to the admin-configured L1 destination.
+  /// @return swept Raw ERC20 amount bridged out.
+  function sweepAllOverCollateralizedFund(
+    Currency currency
+  ) external nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256 swept) {
+    (address destination, address erc20Address, uint256 surplus) = _requireSweepable(currency);
+    require(surplus > 0, "no over-collateralized balance");
+    _doSweep(currency, destination, erc20Address, surplus);
+    return surplus;
+  }
+
+  /// @dev Validates sweep preconditions (currency, destination set, queue empty) and returns
+  ///      the ERC20 address, destination, and current surplus. Reverts on any precondition
+  ///      failure so the two sweep entry points cannot diverge.
+  function _requireSweepable(
+    Currency currency
+  ) private view returns (address destination, address erc20Address, uint256 surplus) {
+    require(_currencyCanHoldSpotBalance(currency), "invalid currency");
+
+    destination = state.overCollateralizedFundDestination;
+    require(destination != address(0), "destination not set");
+
+    // Queued withdrawals have already been debited from totalSpotBalances but their tokens
+    // still sit on this contract, so they would otherwise show up as surplus.
+    require(_isPendingWithdrawalQueueEmpty(), "pending withdrawal queue must be empty");
+
+    (erc20Address, surplus) = _computeOverCollateralizedAmount(currency);
+  }
+
+  /// @dev Pure arithmetic: derives the over-collateralized amount in raw ERC20 units.
+  ///      scaleToERC20Amount requires a positive int64, so non-positive tracked totals are
+  ///      treated as zero (whole balance counts as surplus).
+  function _computeOverCollateralizedAmount(
+    Currency currency
+  ) private view returns (address erc20Address, uint256 surplus) {
+    erc20Address = getCurrencyERC20Address(currency);
+    uint256 erc20Balance = IERC20MetadataUpgradeable(erc20Address).balanceOf(address(this));
+    int64 tracked = state.totalSpotBalances[currency];
+    uint256 trackedErc20 = tracked > 0 ? scaleToERC20Amount(currency, tracked) : 0;
+    surplus = erc20Balance > trackedErc20 ? erc20Balance - trackedErc20 : 0;
+  }
+
+  function _doSweep(Currency currency, address destination, address erc20Address, uint256 amount) private {
+    _withdrawToL1Raw(destination, erc20Address, amount);
+    emit OverCollateralizedFundSwept(currency, erc20Address, destination, amount);
+  }
+
   /// @dev Applies withdrawal accounting immediately; this function does not perform bridge side effects.
   function _prepareWithdrawalInfo(
     Account storage acc,

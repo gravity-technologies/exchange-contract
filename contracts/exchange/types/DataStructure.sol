@@ -145,10 +145,12 @@ struct State {
   address nativeVaultGatewayAddress;
   // Currencies that have an ERC20 address configured (append-only)
   Currency[] erc20Currencies;
+  // L1 destination for sweepOverCollateralizedFund. Updatable by DEFAULT_ADMIN_ROLE.
+  address overCollateralizedFundDestination;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-  uint256[43] __gap;
+  uint256[42] __gap;
 }
 
 struct CurrencyConfig {

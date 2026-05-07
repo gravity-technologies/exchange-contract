@@ -34,6 +34,15 @@ interface ITransfer {
 
   event L1DefiVaultBridge(address indexed l2Token, uint256 amount, address indexed recipient);
 
+  event OverCollateralizedFundDestinationSet(address indexed destination);
+
+  event OverCollateralizedFundSwept(
+    Currency indexed currency,
+    address indexed erc20Address,
+    address indexed destination,
+    uint256 amount
+  );
+
   /**
    * @notice Deposit collateral into a sub account
    *
@@ -96,6 +105,35 @@ interface ITransfer {
   ///      withdrawal flow and routes to the native vault gateway.
   /// @dev Callable only by the liquidity orchestrator.
   function bridgeToL1DefiVault(address l2Token, uint256 amount) external;
+
+  /// @notice Sets the L1 destination used by sweepOverCollateralizedFund. Updatable by admin.
+  function setOverCollateralizedFundDestination(address destination) external;
+
+  /// @notice Returns the L1 destination used by sweepOverCollateralizedFund.
+  function getOverCollateralizedFundDestination() external view returns (address);
+
+  /// @notice Returns the current over-collateralized surplus for a currency in raw ERC20
+  ///         native-decimal units.
+  function getOverCollateralizedAmount(Currency currency) external view returns (uint256);
+
+  /// @notice Bridges a caller-specified portion of the ERC20 surplus (exchange balance in
+  ///         excess of totalSpotBalances) to the admin-configured L1 recovery destination.
+  /// @param currency The spot currency whose surplus to sweep.
+  /// @param amount   Raw ERC20 amount in the token's native decimals (NOT the exchange's
+  ///                 internal int64 balance-decimal representation). Passed directly to
+  ///                 IL2SharedBridge.withdraw. Must be <=
+  ///                 erc20Balance(this) - scaledInternalTotalSpotBalances(currency).
+  /// @dev Callable only by DEFAULT_ADMIN_ROLE. Requires the pending withdrawal queue to be
+  ///      empty so that queued (but not yet bridged) user withdrawals are not counted as
+  ///      surplus.
+  function sweepOverCollateralizedFund(Currency currency, uint256 amount) external;
+
+  /// @notice Bridges the entire current ERC20 surplus for a currency to the admin-configured
+  ///         L1 recovery destination.
+  /// @return swept Raw ERC20 amount bridged out.
+  /// @dev Same role and precondition rules as sweepOverCollateralizedFund. Reverts if the
+  ///      surplus is zero.
+  function sweepAllOverCollateralizedFund(Currency currency) external returns (uint256 swept);
 
   /**
    * @notice Transfer tokens from one sub account to another sub account
