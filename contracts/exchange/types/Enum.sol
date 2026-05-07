@@ -174,5 +174,8 @@ enum Currency {
   SNDK, // 122
   MSFT, // 123
   AVGO, // 124
-  BABA // 125
+  BABA, // 125
+  AMD, // 126
+  QCOM, // 127
+  USAR // 128
 }
