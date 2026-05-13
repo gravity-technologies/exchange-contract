@@ -81,7 +81,7 @@ contract MarginConfigSettersFacet is IMarginConfig, MarginConfigContractGetter {
   function _convertToListMarginTiersBI(
     bytes32 kud,
     MarginTier[] calldata tiers
-  ) private pure returns (ListMarginTiersBI memory) {
+  ) private view returns (ListMarginTiersBI memory) {
     MarginTierBI[] memory biTiers = new MarginTierBI[](tiers.length);
 
     for (uint i = 0; i < tiers.length; i++) {

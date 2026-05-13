@@ -1,22 +1,64 @@
 import { execSync } from "child_process"
 import { Contract, ethers } from "ethers"
+import * as fs from "fs"
+import * as yaml from "js-yaml"
 import path from "path"
 import { L2TokenInfo } from "../../deploy/testutil"
 import { LOCAL_RICH_WALLETS, deployContract, getWallet } from "../../deploy/utils"
 import { L2SharedBridgeFactory } from "../../lib/era-contracts/l2-contracts/typechain/L2SharedBridgeFactory"
 import { getDeployerWallet } from "../util"
-import { generateDiamondCutDataForNewFacets, getLocalFacetInfo, validateFacetStorage, validateHybridProxy } from "../../scripts/utils"
+import { FacetCutAction, generateDiamondCutDataForNewFacets, getLocalFacetInfo, validateFacetStorage, validateHybridProxy } from "../../scripts/utils"
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import * as hre from "hardhat"
 import { hashBytecode } from "zksync-web3/build/src/utils"
 import { Interface } from "ethers/lib/utils"
 import { ExchangeFacetInfos } from "../../scripts/diamond-info"
+
+interface CurrencyEntry {
+  id: number
+  balance_decimals: number
+  name: string
+}
+
+const currencyEntries = yaml.load(
+  fs.readFileSync(path.resolve(__dirname, "../currencies.yaml"), "utf8")
+) as CurrencyEntry[]
+
 export async function setupTestEnvironment() {
   const w1 = getDeployerWallet()
   const exchangeContract = await deployContracts()
+  await seedCurrencies(exchangeContract)
   const l2SharedBridgeAsL1Bridge = await setupL2SharedBridge(exchangeContract)
 
   return { exchangeContract, l2SharedBridgeAsL1Bridge, w1 }
+}
+
+async function seedCurrencies(exchangeContract: Contract) {
+  const deployerWallet = getWallet(LOCAL_RICH_WALLETS[0].privateKey)
+  const deployOptions = { wallet: deployerWallet, silent: true, noVerify: true }
+
+  const testFacet = await deployContract("TestCurrencyFacet", [], deployOptions)
+  const testFacetArtifact = await hre.artifacts.readArtifact("TestCurrencyFacet")
+  const testFacetInterface = new ethers.utils.Interface(testFacetArtifact.abi)
+  const selector = testFacetInterface.getSighash("seedCurrencies(uint16[],uint16[])")
+
+  const diamondCutContract = new Contract(
+    exchangeContract.address,
+    (await hre.artifacts.readArtifact("IDiamondCut")).abi,
+    deployerWallet
+  )
+  await (await diamondCutContract.diamondCut(
+    [{ facetAddress: testFacet.address, action: FacetCutAction.Add, functionSelectors: [selector] }],
+    ethers.constants.AddressZero,
+    "0x"
+  )).wait()
+
+  const testFacetAsProxy = new Contract(exchangeContract.address, testFacetArtifact.abi, deployerWallet)
+  const ids = currencyEntries.map((e) => e.id)
+  const decimals = currencyEntries.map((e) => e.balance_decimals)
+  await (await testFacetAsProxy.seedCurrencies(ids, decimals)).wait()
+
+  console.log(`Seeded ${currencyEntries.length} currencies into contract state`)
 }
 
 async function deployContracts() {

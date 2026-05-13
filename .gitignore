@@ -318,3 +318,5 @@ Temporary Items
 .apdisk
 
 *.out
+
+.tool-versions

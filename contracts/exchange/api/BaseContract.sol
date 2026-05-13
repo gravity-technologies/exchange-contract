@@ -421,70 +421,16 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return address(state.depositProxyBeacon);
   }
 
-  // Bit N set means Currency(N) has 9 decimals
-  uint256 private constant NINE_DEC_MASK =
-    (1 << uint(Currency.ETH))    | (1 << uint(Currency.BTC))    | (1 << uint(Currency.SOL))    |
-    (1 << uint(Currency.BNB))    | (1 << uint(Currency.AAVE))   | (1 << uint(Currency.LTC))    |
-    (1 << uint(Currency.BCH))    | (1 << uint(Currency.ZEC))    | (1 << uint(Currency.GIGGLE))  |
-    (1 << uint(Currency.PAXG))   | (1 << uint(Currency.TAO))    | (1 << uint(Currency.XMR))    |
-    (1 << uint(Currency.RIVER))  | (1 << uint(Currency.XAU))    | (1 << uint(Currency.XPT))    |
-    (1 << uint(Currency.XPD))    | (1 << uint(Currency.TSLA))   | (1 << uint(Currency.INTC))   |
-    (1 << uint(Currency.HOOD))   | (1 << uint(Currency.AMZN))   | (1 << uint(Currency.COIN))   |
-    (1 << uint(Currency.CRCL))   | (1 << uint(Currency.MSTR))   | (1 << uint(Currency.PLTR))  |
-    (1 << uint(Currency.EWJ))    | (1 << uint(Currency.EWY))   |
-    (1 << uint(Currency.PAYP))   | (1 << uint(Currency.GOOGL))  | (1 << uint(Currency.NVDA))   |
-    (1 << uint(Currency.META))   | (1 << uint(Currency.BZ))     | (1 << uint(Currency.CL))    |
-    (1 << uint(Currency.QQQ))    | (1 << uint(Currency.SPY))    | (1 << uint(Currency.AAPL))   |
-    (1 << uint(Currency.TSM))    | (1 << uint(Currency.MU))     | (1 << uint(Currency.SNDK))   |
-    (1 << uint(Currency.MSFT))   | (1 << uint(Currency.AVGO))   | (1 << uint(Currency.BABA))   |
-    (1 << uint(Currency.AMD))    | (1 << uint(Currency.QCOM))   | (1 << uint(Currency.USAR));
+  function _getBalanceDecimal(Currency currency) internal view returns (uint64) {
+    if (currency == Currency.USDT) return 6;
 
-  // Bit N set means Currency(N) has 6 decimals
-  uint256 private constant SIX_DEC_MASK =
-    (1 << uint(Currency.USD))       | (1 << uint(Currency.USDC))      | (1 << uint(Currency.USDT))      |
-    (1 << uint(Currency.ARB))       | (1 << uint(Currency.ZK))        | (1 << uint(Currency.POL))       |
-    (1 << uint(Currency.OP))        | (1 << uint(Currency.ATOM))      | (1 << uint(Currency.TON))       |
-    (1 << uint(Currency.XRP))       | (1 << uint(Currency.XLM))       | (1 << uint(Currency.WLD))       |
-    (1 << uint(Currency.WIF))       | (1 << uint(Currency.VIRTUAL))   | (1 << uint(Currency.TRUMP))     |
-    (1 << uint(Currency.SUI))       | (1 << uint(Currency.KSHIB))     | (1 << uint(Currency.POPCAT))    |
-    (1 << uint(Currency.PENGU))     | (1 << uint(Currency.LINK))      | (1 << uint(Currency.KBONK))     |
-    (1 << uint(Currency.JUP))       | (1 << uint(Currency.FARTCOIN))  | (1 << uint(Currency.ENA))       |
-    (1 << uint(Currency.DOGE))      | (1 << uint(Currency.AIXBT))     | (1 << uint(Currency.AI_16_Z))   |
-    (1 << uint(Currency.ADA))       | (1 << uint(Currency.BERA))      | (1 << uint(Currency.VINE))      |
-    (1 << uint(Currency.PENDLE))    | (1 << uint(Currency.UXLINK))    | (1 << uint(Currency.KAITO))     |
-    (1 << uint(Currency.IP))        | (1 << uint(Currency.HYPE))      | (1 << uint(Currency.LAUNCHCOIN))|
-    (1 << uint(Currency.MOODENG))   | (1 << uint(Currency.UNI))       | (1 << uint(Currency.SAHARA))    |
-    (1 << uint(Currency.H))         | (1 << uint(Currency.PUMP))      | (1 << uint(Currency.AVAX))      |
-    (1 << uint(Currency.CRV))       | (1 << uint(Currency.SEI))       | (1 << uint(Currency.HBAR))      |
-    (1 << uint(Currency.ONDO))      | (1 << uint(Currency.CFX))       | (1 << uint(Currency.PROVE))     |
-    (1 << uint(Currency.MNT))       | (1 << uint(Currency.WLFI))      | (1 << uint(Currency.LINEA))     |
-    (1 << uint(Currency.ASTER))     | (1 << uint(Currency.AVNT))      | (1 << uint(Currency.BARD))      |
-    (1 << uint(Currency.DOT))       | (1 << uint(Currency.EIGEN))     | (1 << uint(Currency.LA))        |
-    (1 << uint(Currency.NEAR))      | (1 << uint(Currency.W))         | (1 << uint(Currency.XPL))       |
-    (1 << uint(Currency.APEX))      | (1 << uint(Currency.BLESS))     | (1 << uint(Currency.COAI))      |
-    (1 << uint(Currency.STRK))      | (1 << uint(Currency.SPX))       | (1 << uint(Currency.LDO))       |
-    (1 << uint(Currency.APT))       | (1 << uint(Currency.MON))       | (1 << uint(Currency.FIL))       |
-    (1 << uint(Currency.ICP))       | (1 << uint(Currency.RESOLV))    | (1 << uint(Currency.ZEN))       |
-    (1 << uint(Currency.LIT))       | (1 << uint(Currency.XAG))       | (1 << uint(Currency.TRX))       |
-    (1 << uint(Currency.AXS))       | (1 << uint(Currency.KAIA))      | (1 << uint(Currency.MEGA))      |
-    (1 << uint(Currency.CC))        | (1 << uint(Currency.COPPER))    |
-    (1 << uint(Currency.BASED))     | (1 << uint(Currency.EDGE))     | (1 << uint(Currency.NATGAS));
+    CurrencyConfig storage config = state.currencyConfigs[uint16(uint8(currency))];
+    require(config.id != 0, ERR_UNSUPPORTED_CURRENCY);
 
-  // Bit N set means Currency(N) has 3 decimals
-  uint256 private constant THREE_DEC_MASK =
-    (1 << uint(Currency.KPEPE));
-
-  function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
-    uint c = uint(currency);
-    // Check 9 → 6 → 3, revert if none match
-    // When adding a new currency, add its bit to the appropriate mask
-    if ((NINE_DEC_MASK >> c) & 1 == 1) return 9;
-    if ((SIX_DEC_MASK >> c) & 1 == 1) return 6;
-    if ((THREE_DEC_MASK >> c) & 1 == 1) return 3;
-    revert(ERR_UNSUPPORTED_CURRENCY);
+    return uint64(config.balanceDecimals);
   }
 
-  function _getBalanceMultiplier(Currency currency) internal pure returns (uint64) {
+  function _getBalanceMultiplier(Currency currency) internal view returns (uint64) {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 

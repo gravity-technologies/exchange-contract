@@ -1169,7 +1169,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     return totalFee;
   }
 
-  function _getLegUnderlyingDecimals(OrderLeg[] calldata legs) private pure returns (uint64[] memory) {
+  function _getLegUnderlyingDecimals(OrderLeg[] calldata legs) private view returns (uint64[] memory) {
     uint len = legs.length;
     uint64[] memory decimals = new uint64[](len);
     for (uint i; i < len; ) {

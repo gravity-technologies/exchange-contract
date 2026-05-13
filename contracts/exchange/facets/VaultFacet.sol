@@ -596,7 +596,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       (newMarketingFeeCentiBeeps != vaultInfo.marketingFeeCentiBeeps);
   }
 
-  function _getLpTokenDecimal() internal pure returns (uint64) {
+  function _getLpTokenDecimal() internal view returns (uint64) {
     // lp token has the same decimal as USD
     return _getBalanceDecimal(Currency.USD);
   }

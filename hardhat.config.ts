@@ -32,7 +32,8 @@ import "./scripts/replay-tx";
 import "./scripts/parse-tx";
 import "./scripts/fork";
 import "./scripts/migrate-diamond-through-l1-governance";
-import "./scripts/check-diamond-facets";
+import "./scripts/check-diamond-facets"
+import "./scripts/check-currency-state";
 
 const config: HardhatUserConfig = {
   defaultNetwork: "inMemoryNode",
