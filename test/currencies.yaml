@@ -373,3 +373,12 @@
 - id: 125
   balance_decimals: 9
   name: BABA
+- id: 126
+  balance_decimals: 9
+  name: AMD
+- id: 127
+  balance_decimals: 9
+  name: QCOM
+- id: 128
+  balance_decimals: 9
+  name: USAR
