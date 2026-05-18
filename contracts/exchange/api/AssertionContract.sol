@@ -37,7 +37,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     int64 lastAppliedFundingTimestamp
   ) external view {
     _assertCreateAccountWithSubAccountBase(accountID, subAccountID, marginType, quoteCurrency, lastAppliedFundingTimestamp);
@@ -47,7 +47,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     int64 lastAppliedFundingTimestamp,
     SubAccountMode subAccountMode
   ) external view {
@@ -63,7 +63,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     int64 lastAppliedFundingTimestamp
   ) private view {
     // Verify account creation
@@ -165,7 +165,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertCreateSubAccount(
     uint64 subAccountID,
     address accountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp
   ) external view {
@@ -175,7 +175,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertCreateSubAccountV2(
     uint64 subAccountID,
     address accountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
     SubAccountMode subAccountMode
@@ -191,7 +191,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function _assertCreateSubAccountBase(
     uint64 subAccountID,
     address accountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp
   ) private view {
@@ -347,7 +347,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertDeposit(
     bytes32 txHash,
     address accountID,
-    Currency currency,
+    uint8 currency,
     int64 expectedBalance,
     int64 expectedTotalSpotBalance
   ) external view {
@@ -367,7 +367,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
   function assertWithdraw(
     address fromAccID,
-    Currency currency,
+    uint8 currency,
     int64 expectedBalance,
     uint64 feeSubAccId,
     int64 expectedFeeBalance,
@@ -383,7 +383,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
 
     // USDT fees go to futures wallet, non-USDT fees go to spot wallet
     SubAccount storage feeSubAcc = state.subAccounts[feeSubAccId];
-    int64 actualFeeBalance = currency == Currency.USDT
+    int64 actualFeeBalance = currency == CCY_USDT
       ? feeSubAcc.futuresWalletBalances[currency]
       : feeSubAcc.spotWalletBalances[currency];
     if (actualFeeBalance != expectedFeeBalance) {
@@ -409,7 +409,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint64 toSubID,
     int64 expectedFromBalance,
     int64 expectedToBalance,
-    Currency currency,
+    uint8 currency,
     SubAccountAssertion[] calldata subAccounts
   ) external view {
     if (fromSubID == 0) {
@@ -446,7 +446,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     uint64 toSubID,
     int64 expectedFromBalance,
     int64 expectedToBalance,
-    Currency currency,
+    uint8 currency,
     WalletType fromWalletType,
     WalletType toWalletType,
     SubAccountAssertionV2[] calldata subAccounts
@@ -465,7 +465,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     address accID,
     uint64 subID,
     WalletType wt,
-    Currency currency
+    uint8 currency
   ) private view returns (int64) {
     if (wt == WalletType.FUNDING) return state.accounts[accID].fundingWalletBalances[currency];
     if (wt == WalletType.FUTURES) return state.subAccounts[subID].futuresWalletBalances[currency];
@@ -529,7 +529,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   }
 
   function _assertAccount(AccountAssertion calldata exAcc) internal view {
-    mapping(Currency => int64) storage spots = state.accounts[exAcc.accountID].fundingWalletBalances;
+    mapping(uint8 => int64) storage spots = state.accounts[exAcc.accountID].fundingWalletBalances;
     SpotAssertion[] calldata exSpots = exAcc.spots;
     uint256 length = exSpots.length;
     for (uint256 i; i < length; ) {
@@ -771,13 +771,13 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertVaultCreate(
     uint64 vaultID,
     address managerAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
     VaultCreateParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
-    Currency initialInvestmentCurrency,
+    uint8 initialInvestmentCurrency,
     int64 vaultInitialSpotBalance,
     VaultLpAssertion calldata managerAssertion,
     SubAccountAssertion calldata vaultSubAssertion
@@ -865,7 +865,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertVaultInvest(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
-    Currency investmentCurrency,
+    uint8 investmentCurrency,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata investorAssertion,
     SubAccountAssertion calldata vaultSubAssertion
@@ -913,7 +913,7 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
   function assertVaultRedeem(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
-    Currency currencyRedeemed,
+    uint8 currencyRedeemed,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata redeemingLpAssertion,
     VaultLpAssertion calldata managerAssertion,

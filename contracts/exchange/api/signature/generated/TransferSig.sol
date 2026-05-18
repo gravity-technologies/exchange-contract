@@ -10,13 +10,13 @@ bytes32 constant _WITHDRAWAL_H = keccak256(
 function hashWithdrawal(
   address fromAccountID,
   address toEthAddress,
-  Currency currency,
+  uint8 currency,
   uint64 numTokens,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
   return
-    keccak256(abi.encode(_WITHDRAWAL_H, fromAccountID, toEthAddress, uint8(currency), numTokens, nonce, expiration));
+    keccak256(abi.encode(_WITHDRAWAL_H, fromAccountID, toEthAddress, currency, numTokens, nonce, expiration));
 }
 
 bytes32 constant _TRANSFER_H = keccak256(
@@ -28,14 +28,14 @@ function hashTransfer(
   uint64 fromSubID,
   address toAccount,
   uint64 toSubID,
-  Currency currency,
+  uint8 currency,
   uint64 numTokens,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
   return
     keccak256(
-      abi.encode(_TRANSFER_H, fromAccount, fromSubID, toAccount, toSubID, uint8(currency), numTokens, nonce, expiration)
+      abi.encode(_TRANSFER_H, fromAccount, fromSubID, toAccount, toSubID, currency, numTokens, nonce, expiration)
     );
 }
 
@@ -48,7 +48,7 @@ function hashTransferV2(
   uint64 fromSubID,
   address toAccount,
   uint64 toSubID,
-  Currency currency,
+  uint8 currency,
   uint64 numTokens,
   WalletType fromWalletType,
   WalletType toWalletType,
@@ -59,7 +59,7 @@ function hashTransferV2(
     keccak256(
       abi.encode(
         _TRANSFER_V2_H, fromAccount, fromSubID, toAccount, toSubID,
-        uint8(currency), numTokens, nonce, expiration,
+        currency, numTokens, nonce, expiration,
         uint8(fromWalletType), uint8(toWalletType)
       )
     );

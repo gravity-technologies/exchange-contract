@@ -7,49 +7,17 @@ export enum MarginType {
   PORTFOLIO_CROSS_MARGIN,
 }
 
-export enum Currency {
-  UNSPECIFIED,
-  USD,
-  USDC,
-  USDT,
-  ETH,
-  BTC,
-  SOL,
-  ARB,
-  BNB,
-  ZK,
-  POL,
-  OP,
-  ATOM,
-  KPEPE,
-  TON,
-  XRP,
-  XLM,
-  WLD,
-  WIF,
-  VIRTUAL,
-  TRUMP,
-  SUI,
-  KSHIB,
-  POPCAT,
-  PENGU,
-  LINK,
-  KBONK,
-  JUP,
-  FARTCOIN,
-  ENA,
-  DOGE,
-  AIXBT,
-  AI_16_Z,
-  ADA,
-  AAVE,
-  BERA,
-  VINE,
-  PENDLE,
-  UXLINK,
-  KAITO,
-  IP,
-}
+// Currency identifiers mirror the on-chain `type Currency is uint8` UDVT
+// declared in contracts/exchange/types/Enum.sol. The runtime registry
+// (state.currencyConfigs) is the source of truth for which IDs are valid; the
+// named constants below exist only because the contract logic special-cases
+// these specific currencies by name. Any other currency is referenced by raw
+// numeric ID.
+export const CCY_UNSPECIFIED = 0
+export const CCY_USD = 1
+export const CCY_USDC = 2
+export const CCY_USDT = 3
+export const CCY_ETH = 4
 
 export enum Instrument {
   UNSPECIFIED,

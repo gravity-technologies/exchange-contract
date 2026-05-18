@@ -10,12 +10,12 @@ bytes32 constant _CREATE_SUBACCOUNT_H = keccak256(
 function hashCreateSubAccount(
   address accID,
   uint64 subID,
-  Currency currency,
+  uint8 currency,
   MarginType margin,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_CREATE_SUBACCOUNT_H, accID, subID, uint8(currency), uint8(margin), nonce, expiration));
+  return keccak256(abi.encode(_CREATE_SUBACCOUNT_H, accID, subID, currency, uint8(margin), nonce, expiration));
 }
 
 bytes32 constant _SET_SUB_MARGIN_H = keccak256(

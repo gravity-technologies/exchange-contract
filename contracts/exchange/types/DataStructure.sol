@@ -5,23 +5,13 @@ import "./PositionMap.sol";
 import "../util/BIMath.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 
-function currencyStart() pure returns (Currency) {
-  return Currency.USD;
-}
-
-function currencyNext(Currency iter) pure returns (Currency) {
-  if (iter == type(Currency).max) {
-    return Currency.UNSPECIFIED;
-  }
-  return Currency(uint(iter) + 1);
-}
-
-function currencyIsValid(Currency iter) pure returns (bool) {
-  return iter > type(Currency).min && iter <= type(Currency).max;
-}
-
-// spotBalanceCurrencies and currencyCanHoldSpotBalance are now defined in BaseContract
-// as internal view functions that read from state.erc20Currencies.
+// Enum-range iteration helpers (currencyStart / currencyNext / currencyIsValid) and the
+// closed `enum Currency` they walked have been removed. The runtime registry
+// (`state.currencyConfigs`) is now the single source of truth for which currency IDs are
+// valid; see `_currencyIsRegistered` in BaseContract.
+//
+// spotBalanceCurrencies and currencyCanHoldSpotBalance are defined in BaseContract as
+// internal view functions that read from state.erc20Currencies.
 
 uint constant PRICE_DECIMALS = 9;
 uint constant RATE_DECIMALS = 18;
@@ -103,7 +93,7 @@ struct State {
   // The bytecode hash of the deposit proxy
   bytes32 depositProxyProxyBytecodeHash;
   // Total spot balances for all accounts
-  mapping(Currency => int64) totalSpotBalances;
+  mapping(uint8 => int64) totalSpotBalances;
   // Bridging partners
   // Number of bridging partners will be less than 10
   address[] bridgingPartners;
@@ -144,7 +134,7 @@ struct State {
   // Set once through a dedicated admin method and immutable thereafter.
   address nativeVaultGatewayAddress;
   // Currencies that have an ERC20 address configured (append-only)
-  Currency[] erc20Currencies;
+  uint8[] erc20Currencies;
   // L1 destination for sweepOverCollateralizedFund. Updatable by DEFAULT_ADMIN_ROLE.
   address overCollateralizedFundDestination;
   // This empty reserved space is put in place to allow future versions to add new
@@ -169,7 +159,7 @@ struct PendingWithdrawalRequest {
   // L1 withdrawal recipient for the queued request.
   address recipient;
   // Spot currency to bridge out when processed.
-  Currency currency;
+  uint8 currency;
   // Net exchange amount to bridge after socialized loss and withdrawal fee.
   int64 amountToSend;
   // Enqueue timestamp in nanoseconds using exchange sequencer time (`state.timestamp`).
@@ -197,7 +187,7 @@ struct Account {
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint64 multiSigThreshold;
   uint64 adminCount;
-  mapping(Currency => int64) fundingWalletBalances;
+  mapping(uint8 => int64) fundingWalletBalances;
   // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
   mapping(address => address[]) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
@@ -232,13 +222,13 @@ struct SubAccount {
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
-  Currency quoteCurrency;
+  uint8 quoteCurrency;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
   // The total amount of currency that the sub account possesses in the futures wallet
-  mapping(Currency => int64) futuresWalletBalances;
+  mapping(uint8 => int64) futuresWalletBalances;
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
@@ -252,7 +242,7 @@ struct SubAccount {
   // Store the position specific margin config
   mapping(bytes32 => PositionMarginConfig) positionMarginConfigs;
   // The total amount of currency that the sub account possesses in the spot wallet
-  mapping(Currency => int64) spotWalletBalances;
+  mapping(uint8 => int64) spotWalletBalances;
   SubAccountMode subAccountMode;
   uint256[46] __gap;
 }

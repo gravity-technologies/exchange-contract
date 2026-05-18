@@ -31,7 +31,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     uint64 txID,
     address accountID,
     uint64 subAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -49,12 +49,12 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     int64 timestamp,
     address accountID,
     uint64 subAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     address signer
   ) internal returns (SubAccount storage sub) {
     Account storage acc = state.accounts[accountID];
-    require(quoteCurrency == Currency.USDT, "invalid quote currency");
+    require(quoteCurrency == CCY_USDT, "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(acc.id != address(0), "account does not exist");
     require(subAccountID != 0, "invalid subaccount id");

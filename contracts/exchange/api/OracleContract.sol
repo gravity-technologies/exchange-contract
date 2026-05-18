@@ -69,7 +69,7 @@ contract OracleContract is IOracle, ConfigContract {
       }
 
       // Non-Spot assets must be quoted in USD
-      if (kind != Kind.SPOT && assetGetQuote(assetID) != Currency.USD) {
+      if (kind != Kind.SPOT && assetGetQuote(assetID) != CCY_USD) {
         revert SpotPriceNotUSD();
       }
 
@@ -112,13 +112,13 @@ contract OracleContract is IOracle, ConfigContract {
     for (uint i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
       // Verify
-      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == CCY_USD) {
         revert WrongKindOrQuote();
       }
 
       // Funding rate must be within the configured range
       // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
-      bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
+      bytes32 subKey = bytes32(uint256(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
       if (!highFound) {
         revert FundingHighConfigMissing();
@@ -169,7 +169,7 @@ contract OracleContract is IOracle, ConfigContract {
       FundingRateEntry calldata entry = entries[i];
       bytes32 assetID = entry.asset;
       // Verify
-      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == CCY_USD) {
         revert WrongKindOrQuote();
       }
 

@@ -22,7 +22,7 @@ interface IGetter {
     uint64 signerCount;
     address accountID;
     MarginType marginType;
-    Currency quoteCurrency;
+    uint8 quoteCurrency;
     int64 lastAppliedFundingTimestamp;
   }
   // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
@@ -37,7 +37,7 @@ interface IGetter {
 
   function isAllAccountExists(address[] calldata accountIDs) external view returns (bool);
 
-  function getAccountFundingWalletBalance(address accID, Currency currency) external view returns (int64);
+  function getAccountFundingWalletBalance(address accID, uint8 currency) external view returns (int64);
 
   function isRecoveryAddress(address id, address signer, address recoveryAddress) external view returns (bool);
 
@@ -84,9 +84,9 @@ interface IGetter {
 
   function getSubAccountPositionCount(uint64 subAccountID) external view returns (uint);
 
-  function getSubAccountFuturesWalletBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, uint8 currency) external view returns (int64);
 
-  function getSubAccountSpotWalletBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, uint8 currency) external view returns (int64);
 
   function getSubAccountMode(uint64 subAccountID) external view returns (SubAccountMode);
 
@@ -121,11 +121,11 @@ interface IGetter {
 
   function getTimestamp() external view returns (int64);
 
-  function getExchangeCurrencyBalance(Currency currency) external view returns (int64);
+  function getExchangeCurrencyBalance(uint8 currency) external view returns (int64);
 
-  function getInsuranceFundLoss(Currency currency) external view returns (int64);
+  function getInsuranceFundLoss(uint8 currency) external view returns (int64);
 
-  function getTotalClientEquity(Currency currency) external view returns (int64);
+  function getTotalClientEquity(uint8 currency) external view returns (int64);
 
   // Vault related getters
   function isVault(uint64 subAccountID) external view returns (bool);

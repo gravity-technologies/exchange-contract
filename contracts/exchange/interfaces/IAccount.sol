@@ -152,7 +152,7 @@ interface IAccount {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     Signature calldata sig
   ) external;
 

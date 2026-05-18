@@ -20,7 +20,7 @@ import {
   genSetSubAccountMarginTypePayloadSig,
   genWithdrawalSig,
 } from "./signature"
-import { Currency, MarginType, PriceEntry, PriceEntrySig } from "./type"
+import { CCY_USDC, MarginType, PriceEntry, PriceEntrySig } from "./type"
 import { Bytes32, nonce } from "./util"
 
 export const MAX_GAS = 2_000_000_000
@@ -48,13 +48,13 @@ export async function createSubAccount(
   subID: number
 ) {
   const salt = nonce()
-  const sig = genCreateSubAccountSig(txSigner, accID, subID, Currency.USDC, MarginType.PORTFOLIO_CROSS_MARGIN, salt)
+  const sig = genCreateSubAccountSig(txSigner, accID, subID, CCY_USDC, MarginType.PORTFOLIO_CROSS_MARGIN, salt)
   const tx = await contract.createSubAccount(
     ts,
     txID,
     accID,
     subID,
-    Currency.USDC,
+    CCY_USDC,
     MarginType.PORTFOLIO_CROSS_MARGIN,
     sig,
     txRequestDefault()

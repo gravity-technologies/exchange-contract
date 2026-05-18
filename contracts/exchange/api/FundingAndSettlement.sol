@@ -22,7 +22,7 @@ contract FundingAndSettlement is BaseContract {
       return;
     }
 
-    Currency quoteCurrency = sub.quoteCurrency;
+    uint8 quoteCurrency = sub.quoteCurrency;
     uint64 qdec = _getBalanceDecimal(quoteCurrency);
     PositionsMap storage perps = sub.perps;
     mapping(bytes32 => PositionMarginConfig) storage posConfigs = sub.positionMarginConfigs;
@@ -58,8 +58,8 @@ contract FundingAndSettlement is BaseContract {
     Position storage perp,
     int256 fundingIndexChange
   ) internal view returns (BI memory) {
-    Currency underlying = assetGetUnderlying(assetID);
-    Currency quote = assetGetQuote(assetID);
+    uint8 underlying = assetGetUnderlying(assetID);
+    uint8 quote = assetGetQuote(assetID);
 
     uint64 uDec = _getBalanceDecimal(underlying);
     uint64 qDec = _getBalanceDecimal(quote);
@@ -159,8 +159,8 @@ contract FundingAndSettlement is BaseContract {
   }
 
   function _getFutureSettlementPrice9Dec(
-    Currency underlying,
-    Currency quote,
+    uint8 underlying,
+    uint8 quote,
     int64 expiry
   ) private view returns (uint64, bool) {
     (uint64 uPrice, bool underlyingFound) = _getCurrencySettlementPrice9Dec(underlying, expiry);
@@ -178,11 +178,11 @@ contract FundingAndSettlement is BaseContract {
     );
   }
 
-  function _getCurrencySettlementPrice9Dec(Currency currency, int64 expiry) private view returns (uint64, bool) {
+  function _getCurrencySettlementPrice9Dec(uint8 currency, int64 expiry) private view returns (uint64, bool) {
     Asset memory asset = Asset({
       kind: Kind.SETTLEMENT,
       underlying: currency,
-      quote: Currency.USD,
+      quote: CCY_USD,
       expiration: expiry,
       strikePrice: 0
     });

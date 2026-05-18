@@ -4,8 +4,8 @@ import "../types/DataStructure.sol";
 
 struct Asset {
   Kind kind;
-  Currency underlying;
-  Currency quote;
+  uint8 underlying;
+  uint8 quote;
   int64 expiration;
   uint64 strikePrice;
 }
@@ -23,8 +23,8 @@ function parseAssetID(bytes32 assetID) pure returns (Asset memory) {
   return
     Asset(
       Kind(id & 0xFF),
-      Currency((id >> 8) & 0xFF), // Underlying
-      Currency((id >> 16) & 0xFF), // Quote
+      uint8((id >> 8) & 0xFF), // Underlying
+      uint8((id >> 16) & 0xFF), // Quote
       int64(int(id >> 32)), // Expiration
       uint64(id >> 96) // Strike Price
     );
@@ -43,12 +43,12 @@ function assetGetKind(bytes32 assetID) pure returns (Kind) {
   return Kind(uint(assetID) & 0xFF);
 }
 
-function assetGetUnderlying(bytes32 assetID) pure returns (Currency) {
-  return Currency((uint(assetID) >> 8) & 0xFF);
+function assetGetUnderlying(bytes32 assetID) pure returns (uint8) {
+  return uint8((uint(assetID) >> 8) & 0xFF);
 }
 
-function assetGetQuote(bytes32 assetID) pure returns (Currency) {
-  return Currency((uint(assetID) >> 16) & 0xFF);
+function assetGetQuote(bytes32 assetID) pure returns (uint8) {
+  return uint8((uint(assetID) >> 16) & 0xFF);
 }
 
 function assetGetExpiration(bytes32 assetID) pure returns (int64) {
@@ -65,8 +65,8 @@ function assetIsKUQ(bytes32 assetID) pure returns (bool) {
 
 bytes32 constant quoteMask = bytes32(~(uint(0xFF) << 16));
 
-function assetSetQuote(bytes32 assetID, Currency quote) pure returns (bytes32) {
-  return (assetID & quoteMask) | (bytes32(uint(quote)) << 16);
+function assetSetQuote(bytes32 assetID, uint8 quote) pure returns (bytes32) {
+  return (assetID & quoteMask) | (bytes32(uint256(quote)) << 16);
 }
 
 function assetGetKUQ(bytes32 assetID) pure returns (bytes32) {

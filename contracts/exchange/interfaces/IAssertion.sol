@@ -12,7 +12,7 @@ interface IAssertion {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     int64 lastAppliedFundingTimestamp
   ) external view;
 
@@ -20,7 +20,7 @@ interface IAssertion {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     int64 lastAppliedFundingTimestamp,
     SubAccountMode subAccountMode
   ) external view;
@@ -48,7 +48,7 @@ interface IAssertion {
   function assertCreateSubAccount(
     uint64 subAccountID,
     address accountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp
   ) external view;
@@ -56,7 +56,7 @@ interface IAssertion {
   function assertCreateSubAccountV2(
     uint64 subAccountID,
     address accountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
     SubAccountMode subAccountMode
@@ -100,14 +100,14 @@ interface IAssertion {
   function assertDeposit(
     bytes32 txHash,
     address accountID,
-    Currency currency,
+    uint8 currency,
     int64 expectedBalance,
     int64 expectedTotalSpotBalance
   ) external view;
 
   function assertWithdraw(
     address fromAccID,
-    Currency currency,
+    uint8 currency,
     int64 expectedBalance,
     uint64 feeSubAccId,
     int64 expectedFeeBalance,
@@ -124,7 +124,7 @@ interface IAssertion {
     uint64 toSubID,
     int64 expectedFromBalance,
     int64 expectedToBalance,
-    Currency currency,
+    uint8 currency,
     SubAccountAssertion[] calldata subAccounts
   ) external view;
 
@@ -135,7 +135,7 @@ interface IAssertion {
     uint64 toSubID,
     int64 expectedFromBalance,
     int64 expectedToBalance,
-    Currency currency,
+    uint8 currency,
     WalletType fromWalletType,
     WalletType toWalletType,
     SubAccountAssertionV2[] calldata subAccounts
@@ -148,7 +148,7 @@ interface IAssertion {
     int64 marginBalance;
   }
   struct SpotAssertion {
-    Currency currency;
+    uint8 currency;
     int64 balance;
   }
   struct SubAccountAssertion {
@@ -246,13 +246,13 @@ interface IAssertion {
   function assertVaultCreate(
     uint64 vaultID,
     address managerAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     int64 lastAppliedFundingTimestamp,
     VaultCreateParamsAssertion calldata vaultParamsAssertion,
     int64 lastFeeSettlementTimestamp,
     uint64 totalLpTokenSupply,
-    Currency initialInvestmentCurrency,
+    uint8 initialInvestmentCurrency,
     int64 vaultInitialSpotBalance,
     VaultLpAssertion calldata managerAssertion,
     SubAccountAssertion calldata vaultSubAssertion
@@ -267,7 +267,7 @@ interface IAssertion {
   function assertVaultInvest(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
-    Currency investmentCurrency,
+    uint8 investmentCurrency,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata investorAssertion,
     SubAccountAssertion calldata vaultSubAssertion
@@ -282,7 +282,7 @@ interface IAssertion {
   function assertVaultRedeem(
     uint64 vaultID,
     uint64 expectedTotalLpTokenSupply,
-    Currency currencyRedeemed,
+    uint8 currencyRedeemed,
     int64 expectedVaultSpotBalance,
     VaultLpAssertion calldata redeemingLpAssertion,
     VaultLpAssertion calldata managerAssertion,

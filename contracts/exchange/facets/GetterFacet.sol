@@ -30,7 +30,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return true;
   }
 
-  function getAccountFundingWalletBalance(address accID, Currency currency) public view returns (int64) {
+  function getAccountFundingWalletBalance(address accID, uint8 currency) public view returns (int64) {
     Account storage account = state.accounts[accID];
     return account.fundingWalletBalances[currency];
   }
@@ -148,12 +148,12 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return sub.perps.keys.length + sub.futures.keys.length + sub.options.keys.length;
   }
 
-  function getSubAccountFuturesWalletBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, uint8 currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return sub.futuresWalletBalances[currency];
   }
 
-  function getSubAccountSpotWalletBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, uint8 currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     return sub.spotWalletBalances[currency];
   }
@@ -229,17 +229,17 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return state.timestamp;
   }
 
-  function getExchangeCurrencyBalance(Currency currency) public view returns (int64) {
+  function getExchangeCurrencyBalance(uint8 currency) public view returns (int64) {
     return state.totalSpotBalances[currency];
   }
 
-  function getInsuranceFundLoss(Currency currency) public view returns (int64) {
-    require(currency == Currency.USDT, "Invalid currency");
+  function getInsuranceFundLoss(uint8 currency) public view returns (int64) {
+    require(currency == CCY_USDT, "Invalid currency");
     return _getInsuranceFundLossAmountUSDT();
   }
 
-  function getTotalClientEquity(Currency currency) public view returns (int64) {
-    require(currency == Currency.USDT, "Invalid currency");
+  function getTotalClientEquity(uint8 currency) public view returns (int64) {
+    require(currency == CCY_USDT, "Invalid currency");
     return _getTotalClientValueUSDT();
   }
 

@@ -8,12 +8,12 @@ interface IVault {
     uint64 txID,
     uint64 vaultID,
     address managerAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     uint32 managementFeeCentiBeeps,
     uint32 performanceFeeCentiBeeps,
     uint32 marketingFeeCentiBeeps,
-    Currency initialInvestmentCurrency,
+    uint8 initialInvestmentCurrency,
     uint64 initialInvestmentNumTokens,
     bool isCrossExchange,
     Signature calldata sig
@@ -38,7 +38,7 @@ interface IVault {
     uint64 txID,
     uint64 vaultID,
     address accountID,
-    Currency tokenCurrency,
+    uint8 tokenCurrency,
     uint64 numTokens,
     Signature calldata sig
   ) external;
@@ -56,7 +56,7 @@ interface IVault {
     int64 timestamp,
     uint64 txID,
     uint64 vaultID,
-    Currency tokenCurrency,
+    uint8 tokenCurrency,
     uint64 numLpTokens,
     address accountID,
     uint64 marketingFeeChargedInLpToken,

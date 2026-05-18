@@ -19,13 +19,13 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
   /// When only USDT is deposited, this produces bit-for-bit identical results to the old code
   /// because USDT→USDT conversion is the identity.
   function _getTotalClientValueUSDT() internal view returns (int64) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
-    int64 totalSpotBalancesUSDTValue = BI(state.totalSpotBalances[Currency.USDT], dec).toInt64(dec);
+    uint dec = _getBalanceDecimal(CCY_USDT);
+    int64 totalSpotBalancesUSDTValue = BI(state.totalSpotBalances[CCY_USDT], dec).toInt64(dec);
     return totalSpotBalancesUSDTValue - _getTotalInternalValueUSDT() - _getTotalBridgingPartnerValueUSDT();
   }
 
   function _getTotalBridgingPartnerValueUSDT() internal view returns (int64) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
+    uint dec = _getBalanceDecimal(CCY_USDT);
     BI memory totalValueBI = BI(0, dec);
 
     for (uint i = 0; i < state.bridgingPartners.length; ) {
@@ -43,7 +43,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
   }
 
   function _getTotalInternalValueUSDT() internal view returns (int64) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
+    uint dec = _getBalanceDecimal(CCY_USDT);
     BI memory totalValueBI = BI(0, dec);
 
     address[] memory internalAccountAddresses = _getAllInternalFundingAccounts();
@@ -91,7 +91,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
   }
 
   function _getInsuranceFundLossAmountUSDT() internal view returns (int64) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
+    uint dec = _getBalanceDecimal(CCY_USDT);
 
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet) {
@@ -100,7 +100,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
         BI memory insuranceFundValueInUSDT = _convertCurrency(
           insuranceFundValueInQuoteBI,
           insuranceFund.quoteCurrency,
-          Currency.USDT
+          CCY_USDT
         );
         return -insuranceFundValueInUSDT.toInt64(dec);
       }
@@ -263,7 +263,7 @@ contract RiskCheck is BaseContract, MarginConfigContractGetter {
       revert ErrPositionNotFound();
     }
     BI memory mmUSD = _getPerpMaintenanceMarginUSD(assetID, pos);
-    return _convertCurrency(mmUSD, Currency.USD, subAccount.quoteCurrency);
+    return _convertCurrency(mmUSD, CCY_USD, subAccount.quoteCurrency);
   }
 
   /// @dev Returns true if the sub account's total equity is below derisk margin

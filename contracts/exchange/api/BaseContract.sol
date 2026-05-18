@@ -95,18 +95,18 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return acc;
   }
 
-  function _isBaseSpotCurrency(Currency c) internal pure returns (bool) {
-    return c == Currency.USDT || c == Currency.USDC || c == Currency.ETH;
+  function _isBaseSpotCurrency(uint8 c) internal pure returns (bool) {
+    return c == CCY_USDT || c == CCY_USDC || c == CCY_ETH;
   }
 
   // Returns currencies that can hold spot balances: USDT, USDC, ETH + any extra ERC20-configured currencies.
-  function _spotBalanceCurrencies() internal view returns (Currency[] memory) {
-    Currency[] storage stored = state.erc20Currencies;
+  function _spotBalanceCurrencies() internal view returns (uint8[] memory) {
+    uint8[] storage stored = state.erc20Currencies;
     uint len = stored.length;
-    Currency[] memory cs = new Currency[](3 + len);
-    cs[0] = Currency.USDT;
-    cs[1] = Currency.USDC;
-    cs[2] = Currency.ETH;
+    uint8[] memory cs = new uint8[](3 + len);
+    cs[0] = CCY_USDT;
+    cs[1] = CCY_USDC;
+    cs[2] = CCY_ETH;
     for (uint i; i < len; ++i) {
       cs[3 + i] = stored[i];
     }
@@ -114,17 +114,25 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   // Returns true if the currency can hold spot balances
-  function _currencyCanHoldSpotBalance(Currency currency) internal view returns (bool) {
+  function _currencyCanHoldSpotBalance(uint8 currency) internal view returns (bool) {
     if (_isBaseSpotCurrency(currency)) return true;
-    Currency[] storage stored = state.erc20Currencies;
+    uint8[] storage stored = state.erc20Currencies;
     for (uint i; i < stored.length; ++i) {
       if (stored[i] == currency) return true;
     }
     return false;
   }
 
+  /// @notice Returns true iff the given currency ID has been registered via `addCurrency`.
+  /// This is the runtime-registry replacement for the deleted enum-range `currencyIsValid`
+  /// check — call sites that previously relied on enum membership to filter out junk IDs
+  /// should call this instead.
+  function _currencyIsRegistered(uint8 c) internal view returns (bool) {
+    return state.currencyConfigs[uint16(c)].id != 0;
+  }
+
   function _requireAccountNoBalance(Account storage acc) internal view {
-    Currency[] memory cs = _spotBalanceCurrencies();
+    uint8[] memory cs = _spotBalanceCurrencies();
     for (uint i; i < cs.length; ++i) {
       require(acc.fundingWalletBalances[cs[i]] == 0, "account has balance");
     }
@@ -421,16 +429,16 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return address(state.depositProxyBeacon);
   }
 
-  function _getBalanceDecimal(Currency currency) internal view returns (uint64) {
-    if (currency == Currency.USDT) return 6;
+  function _getBalanceDecimal(uint8 currency) internal view returns (uint64) {
+    if (currency == CCY_USDT) return 6;
 
-    CurrencyConfig storage config = state.currencyConfigs[uint16(uint8(currency))];
+    CurrencyConfig storage config = state.currencyConfigs[uint16(currency)];
     require(config.id != 0, ERR_UNSUPPORTED_CURRENCY);
 
     return uint64(config.balanceDecimals);
   }
 
-  function _getBalanceMultiplier(Currency currency) internal view returns (uint64) {
+  function _getBalanceMultiplier(uint8 currency) internal view returns (uint64) {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 
@@ -449,7 +457,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       return _getSpotPriceUsd9Dec(assetGetUnderlying(assetID));
     }
 
-    Currency quote = assetGetQuote(assetID);
+    uint8 quote = assetGetQuote(assetID);
     // Only derivatives remaining
     (uint64 underlyingPrice, bool found) = _getUnderlyingAssetPrice9Dec(assetID);
     if (!found) {
@@ -457,7 +465,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     // If getting price in USD, we can simply scale and return
-    if (quote == Currency.USD) {
+    if (quote == CCY_USD) {
       return (underlyingPrice, true);
     }
 
@@ -473,8 +481,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _getIndexPriceInQuote9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
-    Currency underlying = assetGetUnderlying(assetID);
-    Currency quote = assetGetQuote(assetID);
+    uint8 underlying = assetGetUnderlying(assetID);
+    uint8 quote = assetGetQuote(assetID);
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
@@ -495,7 +503,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getUnderlyingAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
-    uint64 price = state.prices.mark[assetSetQuote(assetID, Currency.USD)];
+    uint64 price = state.prices.mark[assetSetQuote(assetID, CCY_USD)];
     return (price, price != 0);
   }
 
@@ -503,14 +511,14 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @param spot The currency to get the price for
   /// @param quote The quote currency
   /// @return The price of spot in terms of quote
-  function _getSpotPriceInQuote(Currency spot, Currency quote) internal view returns (BI memory) {
+  function _getSpotPriceInQuote(uint8 spot, uint8 quote) internal view returns (BI memory) {
     if (spot == quote) {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
 
     BI memory spotPriceInUsd = _getSpotPriceUsdBI(spot);
 
-    if (quote == Currency.USD) {
+    if (quote == CCY_USD) {
       return spotPriceInUsd;
     }
 
@@ -518,7 +526,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return spotPriceInUsd.div(quotePriceInUsd);
   }
 
-  function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+  function _convertCurrency(BI memory amount, uint8 from, uint8 to) internal view returns (BI memory) {
     // Fast path: same currency
     if (from == to) {
       return amount;
@@ -529,8 +537,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev Get the spot price of a currency in terms of USD
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
-  function _getSpotPriceUsdBI(Currency spot) internal view returns (BI memory) {
-    if (spot == Currency.USD) {
+  function _getSpotPriceUsdBI(uint8 spot) internal view returns (BI memory) {
+    if (spot == CCY_USD) {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
     (uint64 price, bool ok) = _getSpotPriceUsd9Dec(spot);
@@ -541,15 +549,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev Get the spot price of a currency with 9 decimal places
   /// @param currency The currency to get the price for
   /// @return price The price of the currency, ok Whether the price was found
-  function _getSpotPriceUsd9Dec(Currency currency) internal view returns (uint64, bool) {
+  function _getSpotPriceUsd9Dec(uint8 currency) internal view returns (uint64, bool) {
     uint64 price = state.prices.mark[_getSpotAssetID(currency)];
     return (price, price != 0);
   }
 
-  function _getSpotAssetID(Currency currency) internal pure returns (bytes32) {
+  function _getSpotAssetID(uint8 currency) internal pure returns (bytes32) {
     return
       assetToID(
-        Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+        Asset({kind: Kind.SPOT, underlying: currency, quote: CCY_UNSPECIFIED, expiration: 0, strikePrice: 0})
       );
   }
 
@@ -655,19 +663,19 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// that included all currencies, because the USDT-only wallet views go through the same
   /// arithmetic paths (USDT → QuoteCurrency → USDT round-trip via mark prices).
   function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
+    uint dec = _getBalanceDecimal(CCY_USDT);
     // Only USDT from funding wallet (USDT→USDT conversion is identity)
-    BI memory totalValue = BI(account.fundingWalletBalances[Currency.USDT], dec);
+    BI memory totalValue = BI(account.fundingWalletBalances[CCY_USDT], dec);
 
     for (uint256 i; i < account.subAccounts.length; ) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
 
       // Futures wallet: USDT only + perps positions (preserves USDT→QuoteCurrency→USDT round-trip)
       BI memory subValueInQuote = _getTotalEquityInQuoteUSDTOnly(subAcc);
-      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
+      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, CCY_USDT);
 
       // Spot wallet: USDT only (must be included to prevent evasion via futures→spot transfers)
-      BI memory spotUSDTValue = BI(subAcc.spotWalletBalances[Currency.USDT], dec);
+      BI memory spotUSDTValue = BI(subAcc.spotWalletBalances[CCY_USDT], dec);
 
       totalValue = totalValue.add(subValueInUSDT).add(spotUSDTValue);
       unchecked { ++i; }
@@ -677,11 +685,11 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getSpotBalanceValueInCurrencyBI(
-    mapping(Currency => int64) storage balances,
-    Currency quoteCurrency
+    mapping(uint8 => int64) storage balances,
+    uint8 quoteCurrency
   ) internal view returns (BI memory) {
     BI memory total = BIMath.zero();
-    Currency[] memory cs = _spotBalanceCurrencies();
+    uint8[] memory cs = _spotBalanceCurrencies();
     for (uint i; i < cs.length; ++i) {
       int64 balance = balances[cs[i]];
       if (balance == 0) continue;
@@ -698,7 +706,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// https://github.com/gravity-technologies/platform/blob/f4bd7c084cd6d2415247be2dc620923b2c65c8e3/backend/lib/statemachine/pkg/state/vault_api_deprecated.go#L20
   function _getTotalEquityInUSD(SubAccount storage sub) internal view returns (BI memory) {
     BI memory totalValue = _getTotalEquityInQuote(sub);
-    return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
+    return _convertCurrency(totalValue, sub.quoteCurrency, CCY_USD);
   }
 
   /// @dev Get the total value of a sub account in quote currency (including both cross/isolated positions values + cash balance)
@@ -732,21 +740,21 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     // Only USDT from futures wallet, converted to quote currency.
     // Matches _getSpotBalanceValueInCurrencyBI's BI construction: BI(balance, quoteCurrencyDecimals).
     return positionExposureValue.add(
-      _usdtBalanceInQuote(sub.futuresWalletBalances[Currency.USDT], sub.quoteCurrency).add(marginBalanceValue)
+      _usdtBalanceInQuote(sub.futuresWalletBalances[CCY_USDT], sub.quoteCurrency).add(marginBalanceValue)
     );
   }
 
   /// @dev Convert a raw USDT int64 balance to a BI denominated in quoteCurrency.
   /// Extracted to a separate function to reduce stack depth in callers.
-  function _usdtBalanceInQuote(int64 usdtBalance, Currency quoteCurrency) internal view returns (BI memory) {
+  function _usdtBalanceInQuote(int64 usdtBalance, uint8 quoteCurrency) internal view returns (BI memory) {
     if (usdtBalance == 0) return BIMath.zero();
-    return _convertCurrency(BI(usdtBalance, _getBalanceDecimal(quoteCurrency)), Currency.USDT, quoteCurrency);
+    return _convertCurrency(BI(usdtBalance, _getBalanceDecimal(quoteCurrency)), CCY_USDT, quoteCurrency);
   }
 
   /// @dev Get the total value of a positions collection and their margin balance (ie cash) in quote currency
   function _getPositionsValueInQuote(
     PositionsMap storage positions,
-    Currency subAccountQuote
+    uint8 subAccountQuote
   ) internal view returns (BI memory, BI memory) {
     BI memory totalPositionValue;
     BI memory totalMarginBalanceValue;
@@ -762,12 +770,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     for (uint i; i < positionsCount; ) {
       Position storage pos = values[positionKeys[i]];
       bytes32 assetID = pos.id;
-      Currency posQuote = assetGetQuote(assetID);
+      uint8 posQuote = assetGetQuote(assetID);
       if (posQuote != subAccountQuote) {
         revert ErrInvalidQuote();
       }
 
-      Currency underlying = assetGetUnderlying(assetID);
+      uint8 underlying = assetGetUnderlying(assetID);
       BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
       BI memory assetPrice = _requireAssetPriceInQuoteBI(assetID);
       totalPositionValue = totalPositionValue.add(balance.mul(assetPrice));
@@ -813,7 +821,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       // Assumption: if the position margin type == UNSPECIFIED (ie missing value), it is a cross position.
       // This is because this positionMarginConfigs mappings was introduced during isolated margin feature.
       if (marginType == PositionMarginType.UNSPECIFIED || marginType == PositionMarginType.CROSS) {
-        Currency underlying = assetGetUnderlying(assetID);
+        uint8 underlying = assetGetUnderlying(assetID);
         BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
         BI memory price = _requireAssetPriceInQuoteBI(assetID);
         te = te.add(balance.mul(price));
@@ -834,8 +842,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     if (sub.positionMarginConfigs[assetID].marginType != PositionMarginType.ISOLATED) {
       revert ErrNotIsolatedMarginPosition();
     }
-    Currency underlying = assetGetUnderlying(assetID);
-    Currency quote = assetGetQuote(assetID);
+    uint8 underlying = assetGetUnderlying(assetID);
+    uint8 quote = assetGetQuote(assetID);
     BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
     BI memory price = _requireAssetPriceInQuoteBI(assetID);
     BI memory te = BI(pos.marginBalance, _getBalanceDecimal(quote));

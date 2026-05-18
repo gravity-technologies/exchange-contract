@@ -170,7 +170,7 @@ abstract contract ConfigContract is BaseContract {
     return state.config1DValues[key].val == TRUE_BYTES32;
   }
 
-  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
+  function _currencyToConfig(uint8 v) internal pure returns (bytes32) {
     return bytes32(uint256(v));
   }
 
@@ -244,7 +244,7 @@ abstract contract ConfigContract is BaseContract {
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
       _validateInternalSubAccountChange(_configToUint(value));
     } else if (key == ConfigID.ERC20_ADDRESSES) {
-      _addErc20Currency(Currency(uint(subKey)));
+      _addErc20Currency(uint8(uint(subKey)));
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
@@ -252,11 +252,15 @@ abstract contract ConfigContract is BaseContract {
     config.val = value;
   }
 
-  function _addErc20Currency(Currency currency) internal {
+  function _addErc20Currency(uint8 currency) internal {
     // Base spot currencies are always included; don't store them
-    if (currency == Currency.USDT || currency == Currency.USDC || currency == Currency.ETH) return;
+    if (currency == CCY_USDT || currency == CCY_USDC || currency == CCY_ETH) return;
+    // After deletion of the closed Currency enum, the runtime-registry check is the only
+    // way to reject junk subKeys. The currency must have been registered via addCurrency
+    // before its ERC20 address can be configured.
+    require(_currencyIsRegistered(currency), "currency not registered");
     // Skip if already tracked (e.g. re-setting the same ERC20 address)
-    Currency[] storage stored = state.erc20Currencies;
+    uint8[] storage stored = state.erc20Currencies;
     for (uint i; i < stored.length; ++i) {
       if (stored[i] == currency) return;
     }
@@ -285,7 +289,7 @@ abstract contract ConfigContract is BaseContract {
 
     Account storage account = _requireAccount(newSubAcc.accountID);
     require(
-      _getFundingAccountEquityInUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      _getFundingAccountEquityInUSDT(account).toInt64(_getBalanceDecimal(CCY_USDT)) == 0,
       "new internal acc must have 0 value"
     );
   }

@@ -4,7 +4,7 @@ import "../types/DataStructure.sol";
 
 interface ITransfer {
   struct WithdrawalInfo {
-    Currency currency;
+    uint8 currency;
     int64 amount;
     int64 socializedLossHaircutAmount;
     int64 withdrawalFeeCharged;
@@ -23,7 +23,7 @@ interface ITransfer {
   event Deposit(
     address indexed toAccount,
     bytes32 indexed bridgeMintHash, // the hash of the BridgeMint event on L2
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     uint64 txID
   );
@@ -37,7 +37,7 @@ interface ITransfer {
   event OverCollateralizedFundDestinationSet(address indexed destination);
 
   event OverCollateralizedFundSwept(
-    Currency indexed currency,
+    uint8 indexed currency,
     address indexed erc20Address,
     address indexed destination,
     uint256 amount
@@ -50,7 +50,7 @@ interface ITransfer {
    * @param txID Transaction ID
    * @param txHash hash of the BridgeMint event
    * @param accountID  account to deposit into
-   * @param currency Currency to deposit
+   * @param currency uint8 to deposit
    * @param numTokens Number of tokens to deposit
    **/
   function deposit(
@@ -58,7 +58,7 @@ interface ITransfer {
     uint64 txID,
     bytes32 txHash,
     address accountID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens
   ) external;
 
@@ -69,7 +69,7 @@ interface ITransfer {
    * @param txID Transaction ID
    * @param fromAccID Sub account to withdraw from
    * @param recipient address of the recipient
-   * @param currency Currency to withdraw
+   * @param currency uint8 to withdraw
    * @param numTokens Number of tokens to withdraw
    * @param sig Signature of the transaction
    **/
@@ -78,7 +78,7 @@ interface ITransfer {
     uint64 txID,
     address fromAccID,
     address recipient,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     Signature calldata sig
   ) external;
@@ -114,7 +114,7 @@ interface ITransfer {
 
   /// @notice Returns the current over-collateralized surplus for a currency in raw ERC20
   ///         native-decimal units.
-  function getOverCollateralizedAmount(Currency currency) external view returns (uint256);
+  function getOverCollateralizedAmount(uint8 currency) external view returns (uint256);
 
   /// @notice Bridges a caller-specified portion of the ERC20 surplus (exchange balance in
   ///         excess of totalSpotBalances) to the admin-configured L1 recovery destination.
@@ -126,14 +126,14 @@ interface ITransfer {
   /// @dev Callable only by DEFAULT_ADMIN_ROLE. Requires the pending withdrawal queue to be
   ///      empty so that queued (but not yet bridged) user withdrawals are not counted as
   ///      surplus.
-  function sweepOverCollateralizedFund(Currency currency, uint256 amount) external;
+  function sweepOverCollateralizedFund(uint8 currency, uint256 amount) external;
 
   /// @notice Bridges the entire current ERC20 surplus for a currency to the admin-configured
   ///         L1 recovery destination.
   /// @return swept Raw ERC20 amount bridged out.
   /// @dev Same role and precondition rules as sweepOverCollateralizedFund. Reverts if the
   ///      surplus is zero.
-  function sweepAllOverCollateralizedFund(Currency currency) external returns (uint256 swept);
+  function sweepAllOverCollateralizedFund(uint8 currency) external returns (uint256 swept);
 
   /**
    * @notice Transfer tokens from one sub account to another sub account
@@ -144,7 +144,7 @@ interface ITransfer {
    * @param fromSubID Sub account to transfer from
    * @param toAccID Sub account to transfer to
    * @param toSubID Sub account to transfer to
-   * @param currency Currency to transfer
+   * @param currency uint8 to transfer
    * @param numTokens Number of tokens to transfer
    * @param sig Signature of the transaction
    */
@@ -155,7 +155,7 @@ interface ITransfer {
     uint64 fromSubID,
     address toAccID,
     uint64 toSubID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     Signature calldata sig
   ) external;
@@ -169,7 +169,7 @@ interface ITransfer {
    * @param fromSubID Sub account to transfer from
    * @param toAccID Sub account to transfer to
    * @param toSubID Sub account to transfer to
-   * @param currency Currency to transfer
+   * @param currency uint8 to transfer
    * @param numTokens Number of tokens to transfer
    * @param fromWalletType Source wallet type (UNSPECIFIED resolves to default)
    * @param toWalletType Destination wallet type (UNSPECIFIED resolves to default)
@@ -182,7 +182,7 @@ interface ITransfer {
     uint64 fromSubID,
     address toAccID,
     uint64 toSubID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     WalletType fromWalletType,
     WalletType toWalletType,

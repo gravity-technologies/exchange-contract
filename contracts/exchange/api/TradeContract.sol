@@ -299,7 +299,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     int64 totalFee
   ) private {
     // Arrange from cheapest to most expensive verification
-    Currency subQuote = sub.quoteCurrency;
+    uint8 subQuote = sub.quoteCurrency;
 
     if (isMakerOrder) {
       require(subQuote == takerSub.quoteCurrency, ERR_MISMATCH_QUOTE_CURRENCY);
@@ -332,13 +332,13 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     for (uint i; i < legsLen; ) {
       OrderLeg calldata leg = legs[i];
-      Currency assetQuote = assetGetQuote(leg.assetID);
-      Currency underlying = assetGetUnderlying(leg.assetID);
+      uint8 assetQuote = assetGetQuote(leg.assetID);
+      uint8 underlying = assetGetUnderlying(leg.assetID);
       Kind kind = assetGetKind(leg.assetID);
       require(assetQuote == subQuote, ERR_MISMATCH_QUOTE_CURRENCY);
       require(kind == Kind.PERPS, ERR_NOT_SUPPORTED);
-      require(assetQuote == Currency.USDT, ERR_NOT_SUPPORTED);
-      require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
+      require(assetQuote == CCY_USDT, ERR_NOT_SUPPORTED);
+      require(_currencyIsRegistered(underlying), ERR_NOT_SUPPORTED);
       if (shouldValidateBuilderFee) {
         _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, builderMaxFutureFeeRate);
       }
@@ -401,7 +401,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     int64 fee,
     int64 builderFee
   ) private {
-    Currency subQuote = sub.quoteCurrency;
+    uint8 subQuote = sub.quoteCurrency;
     bool isIsolatedOrder = isolatedAssetID != bytes32(0);
     (SubAccount storage feeSub, bool isFeeCharged) = _getTradingFeeSubAccount(order.isLiquidation);
 
@@ -475,7 +475,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     SubAccount storage sub,
     Order calldata order,
     OrderCalculationResult memory calcResult,
-    Currency subQuote
+    uint8 subQuote
   ) private returns (int64 spotDelta) {
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ) {
@@ -514,7 +514,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   function _applyDerivFees(
     SubAccount storage sub,
     SubAccount storage feeSub,
-    Currency quote,
+    uint8 quote,
     int64 fee,
     int64 spotDelta,
     bool isFeeCharged
@@ -535,8 +535,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       return;
     }
 
-    sub.futuresWalletBalances[Currency.USDT] -= builderFee;
-    _requireAccount(builder).fundingWalletBalances[Currency.USDT] += builderFee;
+    sub.futuresWalletBalances[CCY_USDT] -= builderFee;
+    _requireAccount(builder).fundingWalletBalances[CCY_USDT] += builderFee;
   }
 
   // ======================== Shared Validation ========================
@@ -746,11 +746,11 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
 
     for (uint i; i < legsLen; ) {
       OrderLeg calldata leg = legs[i];
-      Currency assetQuote = assetGetQuote(leg.assetID);
-      Currency underlying = assetGetUnderlying(leg.assetID);
+      uint8 assetQuote = assetGetQuote(leg.assetID);
+      uint8 underlying = assetGetUnderlying(leg.assetID);
       Kind kind = assetGetKind(leg.assetID);
       require(kind == Kind.SPOT_SWAP, ERR_NOT_SUPPORTED);
-      require(currencyIsValid(underlying), ERR_NOT_SUPPORTED);
+      require(_currencyIsRegistered(underlying), ERR_NOT_SUPPORTED);
       if (shouldValidateBuilderFee) {
         _validateBuilderFee(order.builderFee, kind, builderMaxSpotFeeRate, 0);
       }
@@ -803,8 +803,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
         continue;
       }
       OrderLeg calldata leg = order.legs[i];
-      Currency underlying = assetGetUnderlying(leg.assetID);
-      Currency quote = assetGetQuote(leg.assetID);
+      uint8 underlying = assetGetUnderlying(leg.assetID);
+      uint8 quote = assetGetQuote(leg.assetID);
       uint qDec = _getBalanceDecimal(quote);
       int64 quoteAmount = calcResult.legSpotDelta[i].toInt64(qDec);
 
@@ -845,8 +845,8 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
     uint legsLen = order.legs.length;
     for (uint i; i < legsLen; ) {
       OrderLeg calldata leg = order.legs[i];
-      Currency underlying = assetGetUnderlying(leg.assetID);
-      Currency quote = assetGetQuote(leg.assetID);
+      uint8 underlying = assetGetUnderlying(leg.assetID);
+      uint8 quote = assetGetQuote(leg.assetID);
       require(sub.spotWalletBalances[underlying] >= 0, "negative underlying balance");
       require(sub.spotWalletBalances[quote] >= 0, "negative quote balance");
       unchecked { ++i; }
@@ -1078,7 +1078,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   /// @param quote Quote currency of the isolated position.
   /// @param amount Signed amount to move (quote units, 1e6 decimals).
   /// @return Delta to apply to `pos.marginBalance` after spot is updated.
-  function _transferFromSpotToPosition(SubAccount storage sub, Currency quote, int64 amount) private returns (int64) {
+  function _transferFromSpotToPosition(SubAccount storage sub, uint8 quote, int64 amount) private returns (int64) {
     // amount > 0: remove from spot and add to position
     // amount < 0: remove from position and add to spot
     sub.futuresWalletBalances[quote] -= amount;
@@ -1091,7 +1091,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
   /// @param quote Quote currency of the isolated position.
   /// @param amount Signed amount to move (quote units, 1e6 decimals).
   /// @return Delta to apply to `pos.marginBalance` after spot is updated.
-  function _transferFromIsolatedToSpot(SubAccount storage sub, Currency quote, int64 amount) private returns (int64) {
+  function _transferFromIsolatedToSpot(SubAccount storage sub, uint8 quote, int64 amount) private returns (int64) {
     // amount > 0: remove from position and add to spot
     // amount < 0: remove from spot and add to position
     sub.futuresWalletBalances[quote] += amount;
@@ -1147,7 +1147,7 @@ abstract contract TradeContract is ITrade, ConfigContract, FundingAndSettlement,
       // For isolated-margin positions, transfer any outstanding position balance back to spot before deletion.
       if (sub.positionMarginConfigs[assetID].marginType == PositionMarginType.ISOLATED) {
         Position storage pos = sub.perps.values[assetID];
-        Currency quote = assetGetQuote(assetID);
+        uint8 quote = assetGetQuote(assetID);
         sub.futuresWalletBalances[quote] += pos.marginBalance;
         pos.marginBalance = 0;
       }

@@ -21,7 +21,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
    * @param txID Transaction ID
    * @param txHash hash of the BridgeMint event
    * @param accountID  account to deposit into
-   * @param currency Currency to deposit
+   * @param currency uint8 to deposit
    * @param numTokens Number of tokens to deposit
    **/
   function deposit(
@@ -29,7 +29,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     uint64 txID,
     bytes32 txHash,
     address accountID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     require(_currencyCanHoldSpotBalance(currency), "invalid currency");
@@ -67,7 +67,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
    * @param txID Transaction ID
    * @param fromAccID Sub account to withdraw from
    * @param recipient address of the recipient
-   * @param currency Currency to withdraw
+   * @param currency uint8 to withdraw
    * @param numTokens Number of tokens to withdraw
    * @param sig Signature of the transaction
    **/
@@ -76,7 +76,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     uint64 txID,
     address fromAccID,
     address recipient,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     Signature calldata sig
   ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -193,7 +193,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
 
   /// @notice Returns the current over-collateralized amount for a currency in raw ERC20
   ///         native-decimal units (exchange balance minus totalSpotBalances).
-  function getOverCollateralizedAmount(Currency currency) external view returns (uint256) {
+  function getOverCollateralizedAmount(uint8 currency) external view returns (uint256) {
     require(_currencyCanHoldSpotBalance(currency), "invalid currency");
     (, uint256 surplus) = _computeOverCollateralizedAmount(currency);
     return surplus;
@@ -205,7 +205,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   ///                 internal int64 balance-decimal representation). Passed directly to
   ///                 IL2SharedBridge.withdraw.
   function sweepOverCollateralizedFund(
-    Currency currency,
+    uint8 currency,
     uint256 amount
   ) external nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) {
     require(amount > 0, "invalid amount");
@@ -217,7 +217,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   /// @notice Sweeps the entire current ERC20 surplus for a currency to the admin-configured L1 destination.
   /// @return swept Raw ERC20 amount bridged out.
   function sweepAllOverCollateralizedFund(
-    Currency currency
+    uint8 currency
   ) external nonReentrant onlyRole(DEFAULT_ADMIN_ROLE) returns (uint256 swept) {
     (address destination, address erc20Address, uint256 surplus) = _requireSweepable(currency);
     require(surplus > 0, "no over-collateralized balance");
@@ -229,7 +229,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   ///      the ERC20 address, destination, and current surplus. Reverts on any precondition
   ///      failure so the two sweep entry points cannot diverge.
   function _requireSweepable(
-    Currency currency
+    uint8 currency
   ) private view returns (address destination, address erc20Address, uint256 surplus) {
     require(_currencyCanHoldSpotBalance(currency), "invalid currency");
 
@@ -247,7 +247,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   ///      scaleToERC20Amount requires a positive int64, so non-positive tracked totals are
   ///      treated as zero (whole balance counts as surplus).
   function _computeOverCollateralizedAmount(
-    Currency currency
+    uint8 currency
   ) private view returns (address erc20Address, uint256 surplus) {
     erc20Address = getCurrencyERC20Address(currency);
     uint256 erc20Balance = IERC20MetadataUpgradeable(erc20Address).balanceOf(address(this));
@@ -256,7 +256,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     surplus = erc20Balance > trackedErc20 ? erc20Balance - trackedErc20 : 0;
   }
 
-  function _doSweep(Currency currency, address destination, address erc20Address, uint256 amount) private {
+  function _doSweep(uint8 currency, address destination, address erc20Address, uint256 amount) private {
     _withdrawToL1Raw(destination, erc20Address, amount);
     emit OverCollateralizedFundSwept(currency, erc20Address, destination, amount);
   }
@@ -265,7 +265,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   function _prepareWithdrawalInfo(
     Account storage acc,
     int64 amount,
-    Currency currency
+    uint8 currency
   ) private returns (WithdrawalInfo memory) {
     acc.fundingWalletBalances[currency] -= amount;
 
@@ -293,7 +293,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
       });
   }
 
-  function _withdrawToL1(Currency currency, int64 amount, address recipient) private returns (address, uint256) {
+  function _withdrawToL1(uint8 currency, int64 amount, address recipient) private returns (address, uint256) {
     uint256 erc20AmountToSend = scaleToERC20Amount(currency, amount);
     address erc20Address = getCurrencyERC20Address(currency);
     _withdrawToL1Raw(recipient, erc20Address, erc20AmountToSend);
@@ -316,7 +316,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   /// @dev ETH bridging is optional until its ERC20 config is set. Before then, all bridgeable tokens route to the
   ///      L1 DeFi vault.
   function _getL1BridgeRecipient(address l2Token) internal view returns (address) {
-    ConfigValue storage ethConfig = state.config2DValues[ConfigID.ERC20_ADDRESSES][_currencyToConfig(Currency.ETH)];
+    ConfigValue storage ethConfig = state.config2DValues[ConfigID.ERC20_ADDRESSES][_currencyToConfig(CCY_ETH)];
     address ethL2Token = _configToAddress(ethConfig.val);
     bool isEthConfigured = ethConfig.isSet;
     if (isEthConfigured && l2Token == ethL2Token) {
@@ -336,7 +336,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   }
 
   /// @dev Enqueues a new pending withdrawal using current sequencer timestamp.
-  function _enqueuePendingWithdrawal(address recipient, Currency currency, int64 amountToSend) private {
+  function _enqueuePendingWithdrawal(address recipient, uint8 currency, int64 amountToSend) private {
     WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
     uint64 tail = queue.tail;
     require(tail < type(uint64).max, "withdrawal queue overflow");
@@ -354,7 +354,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     return IERC20MetadataUpgradeable(erc20Address).balanceOf(address(this)) >= erc20AmountToSend;
   }
 
-  function _applySocializedLoss(address fromAccID, int64 amount, Currency currency) private returns (int64, int64) {
+  function _applySocializedLoss(address fromAccID, int64 amount, uint8 currency) private returns (int64, int64) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (!isInsuranceFundSet) {
       return (amount, 0);
@@ -365,7 +365,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     // Socialized loss haircut only applies to USDT withdrawals.
     // Non-USDT withdrawals are not subject to socialized loss because the haircut
     // and total client equity calculations operate entirely in USDT terms.
-    if (currency == Currency.USDT) {
+    if (currency == CCY_USDT) {
       int64 socializedLossHaircutAmount = SafeCast.toInt64(int(uint(_getSocializedLossHaircutAmount(fromAccID, amount))));
       if (socializedLossHaircutAmount > 0) {
         insuranceFund.futuresWalletBalances[currency] += socializedLossHaircutAmount;
@@ -376,20 +376,20 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     return (amount, 0);
   }
 
-  function _applyWithdrawalFee(int64 amount, Currency currency) private returns (int64, int64) {
+  function _applyWithdrawalFee(int64 amount, uint8 currency) private returns (int64, int64) {
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (!isFeeSubAccIdSet) {
       return (amount, 0);
     }
 
-    int64 withdrawalFeeCharged = _convertCurrency(_getWithdrawalFeeInUSDT(), Currency.USDT, currency).toInt64(
+    int64 withdrawalFeeCharged = _convertCurrency(_getWithdrawalFeeInUSDT(), CCY_USDT, currency).toInt64(
       _getBalanceDecimal(currency)
     );
 
     int64 amountAfterFee = amount - withdrawalFeeCharged;
     // Route fees by currency: USDT fees go to futures wallet (perps collateral),
     // non-USDT fees go to spot wallet to keep perps wallets USDT-only.
-    if (currency == Currency.USDT) {
+    if (currency == CCY_USDT) {
       feeSubAcc.futuresWalletBalances[currency] += withdrawalFeeCharged;
     } else {
       feeSubAcc.spotWalletBalances[currency] += withdrawalFeeCharged;
@@ -406,10 +406,10 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     if (!feeSet) {
       return BIMath.zero();
     }
-    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(Currency.USDT));
+    return BI(SafeCast.toInt256(uint(fee)), _getBalanceDecimal(CCY_USDT));
   }
 
-  function scaleToERC20Amount(Currency currency, int64 numTokens) private view returns (uint256) {
+  function scaleToERC20Amount(uint8 currency, int64 numTokens) private view returns (uint256) {
     address ta = getCurrencyERC20Address(currency);
     IERC20MetadataUpgradeable token = IERC20MetadataUpgradeable(ta);
     uint8 erc20TokenDec = token.decimals();
@@ -418,7 +418,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     return SafeCast.toUint256(erc20Amount);
   }
 
-  function getCurrencyERC20Address(Currency currency) private view returns (address) {
+  function getCurrencyERC20Address(uint8 currency) private view returns (address) {
     (address addr, bool ok) = _getAddressConfig2D(ConfigID.ERC20_ADDRESSES, _currencyToConfig(currency));
     require(ok, "unsupported currency");
     return addr;
@@ -433,7 +433,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
    * @param fromSubID Sub account to transfer from
    * @param toAccID Sub account to transfer to
    * @param toSubID Sub account to transfer to
-   * @param currency Currency to transfer
+   * @param currency uint8 to transfer
    * @param numTokens Number of tokens to transfer
    * @param sig Signature of the transaction
    */
@@ -444,7 +444,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     uint64 fromSubID,
     address toAccID,
     uint64 toSubID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -461,7 +461,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
    * @param fromSubID Sub account to transfer from
    * @param toAccID Sub account to transfer to
    * @param toSubID Sub account to transfer to
-   * @param currency Currency to transfer
+   * @param currency uint8 to transfer
    * @param numTokens Number of tokens to transfer
    * @param fromWalletType Source wallet type (UNSPECIFIED resolves to default)
    * @param toWalletType Destination wallet type (UNSPECIFIED resolves to default)
@@ -474,7 +474,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     uint64 fromSubID,
     address toAccID,
     uint64 toSubID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     WalletType fromWalletType,
     WalletType toWalletType,
@@ -493,7 +493,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     uint64 fromSubID,
     address toAccID,
     uint64 toSubID,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens,
     WalletType fromWalletType,
     WalletType toWalletType,
@@ -558,7 +558,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   function _transferMainToMain(
     address fromAccID,
     address toAccID,
-    Currency currency,
+    uint8 currency,
     int64 numTokens,
     Signature calldata sig
   ) private {
@@ -595,7 +595,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     address toAccID,
     uint64 toSubID,
     WalletType toWalletType,
-    Currency currency,
+    uint8 currency,
     int64 numTokens,
     Signature calldata sig
   ) private {
@@ -614,7 +614,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     Account storage fromAcc,
     SubAccount storage toSubAcc,
     WalletType toWalletType,
-    Currency currency,
+    uint8 currency,
     int64 numTokens
   ) internal {
     require(numTokens >= 0, "invalid transfer amount");
@@ -632,7 +632,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     address fromAccID,
     address toAccID,
     WalletType fromWalletType,
-    Currency currency,
+    uint8 currency,
     int64 numTokens,
     Signature calldata sig
   ) private {
@@ -651,7 +651,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     SubAccount storage fromSub,
     Account storage toAcc,
     WalletType fromWalletType,
-    Currency currency,
+    uint8 currency,
     int64 numTokens
   ) internal {
     require(numTokens >= 0, "invalid transfer amount");
@@ -674,7 +674,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     address toAccID,
     WalletType fromWalletType,
     WalletType toWalletType,
-    Currency currency,
+    uint8 currency,
     int64 numTokens,
     Signature calldata sig
   ) private {
@@ -716,7 +716,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
 
   /// @dev Validates that the given currency is allowed in the destination wallet.
   /// Spot and funding wallets allow all currencies. Futures wallets are restricted based on SubAccountMode.
-  function _validateCurrencyForDestWallet(uint64 toSubID, WalletType toWalletType, Currency currency) private view {
+  function _validateCurrencyForDestWallet(uint64 toSubID, WalletType toWalletType, uint8 currency) private view {
     if (toWalletType == WalletType.SPOT || toWalletType == WalletType.FUNDING) {
       // Spot and funding wallets allow all spot assets
       return;
@@ -726,7 +726,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
       SubAccountMode mode = sub.subAccountMode;
       // UNSPECIFIED is treated as SINGLE_ASSET_MODE for backward compatibility (existing sub-accounts have UNSPECIFIED in storage)
       if (mode == SubAccountMode.SINGLE_ASSET_MODE || mode == SubAccountMode.UNSPECIFIED) {
-        require(currency == Currency.USDT, "SINGLE_ASSET_MODE only allows USDT");
+        require(currency == CCY_USDT, "SINGLE_ASSET_MODE only allows USDT");
         return;
       }
       revert("unsupported sub account mode");
@@ -737,7 +737,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   function _debitSubAccountWallet(
     SubAccount storage sub,
     WalletType wt,
-    Currency currency,
+    uint8 currency,
     int64 amount
   ) private {
     if (wt == WalletType.FUTURES) {
@@ -751,7 +751,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
   function _creditSubAccountWallet(
     SubAccount storage sub,
     WalletType wt,
-    Currency currency,
+    uint8 currency,
     int64 amount
   ) private {
     if (wt == WalletType.FUTURES) {

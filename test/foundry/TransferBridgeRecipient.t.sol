@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {Test} from "forge-std/Test.sol";
 import {TransferContract} from "../../contracts/exchange/api/TransferContract.sol";
 import {ConfigID, ConfigValue} from "../../contracts/exchange/types/DataStructure.sol";
-import {Currency} from "../../contracts/exchange/types/Enum.sol";
+import {CCY_ETH} from "../../contracts/exchange/types/Enum.sol";
 
 contract TransferContractHarness is TransferContract {
     function setBridgeRecipients(address l1DefiVault, address nativeVaultGateway) external {
@@ -12,7 +12,7 @@ contract TransferContractHarness is TransferContract {
         state.nativeVaultGatewayAddress = nativeVaultGateway;
     }
 
-    function setCurrencyERC20Address(Currency currency, address token) external {
+    function setCurrencyERC20Address(uint8 currency, address token) external {
         state.config2DValues[ConfigID.ERC20_ADDRESSES][_currencyToConfig(currency)] = ConfigValue({
             val: _addressToConfig(token),
             isSet: true
@@ -49,13 +49,13 @@ contract TransferBridgeRecipientTest is Test {
     }
 
     function testGetL1BridgeRecipientUsesNativeGatewayForConfiguredEthToken() public {
-        transferContract.setCurrencyERC20Address(Currency.ETH, ETH_L2);
+        transferContract.setCurrencyERC20Address(CCY_ETH, ETH_L2);
 
         assertEq(transferContract.getL1BridgeRecipient(ETH_L2), NATIVE_VAULT_GATEWAY);
     }
 
     function testGetL1BridgeRecipientKeepsNonEthTokensOnL1VaultWhenEthConfigExists() public {
-        transferContract.setCurrencyERC20Address(Currency.ETH, ETH_L2);
+        transferContract.setCurrencyERC20Address(CCY_ETH, ETH_L2);
 
         assertEq(transferContract.getL1BridgeRecipient(USDT_L2), L1_DEFI_VAULT);
     }

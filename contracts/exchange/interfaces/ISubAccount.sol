@@ -16,7 +16,7 @@ interface ISubAccount {
     uint64 txID,
     address accountID,
     uint64 subAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     Signature calldata sig
   ) external;

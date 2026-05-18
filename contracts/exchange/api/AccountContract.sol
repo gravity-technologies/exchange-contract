@@ -293,7 +293,7 @@ contract AccountContract is IAccount, ConfigContract {
     address accountID,
     uint64 subAccountID,
     MarginType marginType,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
     _setSequence(timestamp, txID);
@@ -304,7 +304,7 @@ contract AccountContract is IAccount, ConfigContract {
     require(accountID == sig.signer, "accountID must be signer");
 
     // Subaccount creation verification
-    require(quoteCurrency == Currency.USDT, "invalid quote currency");
+    require(quoteCurrency == CCY_USDT, "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(subAccountID != 0, "invalid subaccount id");
     SubAccount storage sub = state.subAccounts[subAccountID];
