@@ -35,6 +35,13 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return account.fundingWalletBalances[currency];
   }
 
+  function getAccountStake(
+    address accID
+  ) public view returns (int64 lockedAmount, int64 lockEndTime, int64 cooldownEndTime) {
+    Account storage account = state.accounts[accID];
+    return (account.stakeLockedAmount, account.stakeLockEndTime, account.stakeCooldownEndTime);
+  }
+
   function isRecoveryAddress(address id, address signer, address recoveryAddress) public view returns (bool) {
     Account storage account = state.accounts[id];
     return addressExists(account.recoveryAddresses[signer], recoveryAddress);

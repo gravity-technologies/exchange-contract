@@ -23,6 +23,7 @@ import {
   ExAccountRecoveryAddresses,
   ExNotAccountRecoveryAddresses,
   ExAccountSpot,
+  ExStakeInfo,
   ExConfigNotSet,
   ExConfig2DNotSet,
   ExSimpleCrossMaintenanceMarginTiers,
@@ -117,6 +118,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectNotAccountRecoveryAddresses(contract, expectation.expect as ExNotAccountRecoveryAddresses)
     case "ExAccountSpot":
       return expectAccountSpot(contract, expectation.expect as ExAccountSpot)
+    case "ExStakeInfo":
+      return expectStakeInfo(contract, expectation.expect as ExStakeInfo)
     case "ExConfigNotSet":
       return expectConfigNotSet(contract, expectation.expect as ExConfigNotSet)
     case "ExConfig2DNotSet":
@@ -415,6 +418,41 @@ async function expectNotAccountRecoveryAddresses(contract: Contract, expectation
 async function expectAccountSpot(contract: Contract, expectations: ExAccountSpot) {
   const balance = await contract.getAccountFundingWalletBalance(expectations.account_id, expectations.currency)
   expect(big(balance)).to.equal(big(expectations.balance))
+}
+
+async function expectStakeInfo(contract: Contract, expectations: ExStakeInfo) {
+  const [lockedAmount, lockEndTime, cooldownEndTime] = await contract.getAccountStake(expectations.AccountID)
+  expect(big(lockedAmount)).to.equal(big(expectations.LockedAmount))
+
+  const stateTimestamp = await contract.getTimestamp()
+  expect(deriveStakeState(lockedAmount, lockEndTime, cooldownEndTime, stateTimestamp)).to.equal(expectations.State)
+
+  if (expectations.FundingGRVT != null) {
+    const balance = await contract.getAccountFundingWalletBalance(expectations.AccountID, expectations.FundingCurrency)
+    expect(big(balance)).to.equal(big(expectations.FundingGRVT))
+  }
+}
+
+function deriveStakeState(
+  lockedAmountInput: BigNumber,
+  lockEndTimeInput: BigNumber,
+  cooldownEndTimeInput: BigNumber,
+  timestampInput: BigNumber
+): string {
+  const lockedAmount = big(lockedAmountInput)
+  const lockEndTime = big(lockEndTimeInput)
+  const cooldownEndTime = big(cooldownEndTimeInput)
+  const timestamp = big(timestampInput)
+
+  if (lockedAmount.eq(0)) {
+    return "Idle"
+  }
+
+  if (cooldownEndTime.eq(0)) {
+    return timestamp.lt(lockEndTime) ? "Locked" : "Matured"
+  }
+
+  return timestamp.lt(cooldownEndTime) ? "CoolingDown" : "Withdrawable"
 }
 
 async function expectConfigNotSet(contract: Contract, expectations: ExConfigNotSet) {

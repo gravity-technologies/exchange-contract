@@ -1078,4 +1078,94 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
       revert AssertionBuilderFeeConfigMismatch();
     }
   }
+
+  function assertStake(
+    address accountID,
+    uint8 currency,
+    int64 expectedFundingBalance,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view {
+    Account storage acc = state.accounts[accountID];
+    _assertStakeInfo(accountID, acc, expectedLockedAmount, expectedLockEndTime, expectedCooldownEndTime);
+    _assertStakeFundingBalance(accountID, acc, currency, expectedFundingBalance);
+  }
+
+  function assertInitiateUnstake(
+    address accountID,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view {
+    _assertStakeInfo(
+      accountID,
+      state.accounts[accountID],
+      expectedLockedAmount,
+      expectedLockEndTime,
+      expectedCooldownEndTime
+    );
+  }
+
+  function assertCancelUnstake(
+    address accountID,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view {
+    _assertStakeInfo(
+      accountID,
+      state.accounts[accountID],
+      expectedLockedAmount,
+      expectedLockEndTime,
+      expectedCooldownEndTime
+    );
+  }
+
+  function assertWithdrawStake(
+    address accountID,
+    uint8 currency,
+    int64 expectedFundingBalance,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view {
+    Account storage acc = state.accounts[accountID];
+    _assertStakeInfo(accountID, acc, expectedLockedAmount, expectedLockEndTime, expectedCooldownEndTime);
+    _assertStakeFundingBalance(accountID, acc, currency, expectedFundingBalance);
+  }
+
+  function _assertStakeInfo(
+    address accountID,
+    Account storage acc,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) private view {
+    if (acc.stakeLockedAmount != expectedLockedAmount) {
+      revert AssertionStakeLockedAmountMismatch(accountID, expectedLockedAmount, acc.stakeLockedAmount);
+    }
+    if (acc.stakeLockEndTime != expectedLockEndTime) {
+      revert AssertionStakeLockEndTimeMismatch(accountID, expectedLockEndTime, acc.stakeLockEndTime);
+    }
+    if (acc.stakeCooldownEndTime != expectedCooldownEndTime) {
+      revert AssertionStakeCooldownEndTimeMismatch(accountID, expectedCooldownEndTime, acc.stakeCooldownEndTime);
+    }
+  }
+
+  function _assertStakeFundingBalance(
+    address accountID,
+    Account storage acc,
+    uint8 currency,
+    int64 expectedFundingBalance
+  ) private view {
+    if (acc.fundingWalletBalances[currency] != expectedFundingBalance) {
+      revert AssertionStakeFundingBalanceMismatch(
+        accountID,
+        currency,
+        expectedFundingBalance,
+        acc.fundingWalletBalances[currency]
+      );
+    }
+  }
 }

@@ -84,3 +84,7 @@ error AssertionWithdrawBalanceMismatch();
 error AssertionPositionMarginMismatch();
 error AssertionBuilderFeeConfigMismatch();
 error AssertAccountSpotBalanceMismatch();
+error AssertionStakeLockedAmountMismatch(address accountID, int64 expected, int64 actual);
+error AssertionStakeLockEndTimeMismatch(address accountID, int64 expected, int64 actual);
+error AssertionStakeCooldownEndTimeMismatch(address accountID, int64 expected, int64 actual);
+error AssertionStakeFundingBalanceMismatch(address accountID, uint8 currency, int64 expected, int64 actual);

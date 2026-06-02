@@ -338,4 +338,38 @@ interface IAssertion {
     uint32 maxSpotFeeRate,
     uint256 adminCount
   ) external view;
+
+  // ── Staking ────────────────────────────────────────────────────────────────
+  function assertStake(
+    address accountID,
+    uint8 currency,
+    int64 expectedFundingBalance,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view;
+
+  function assertInitiateUnstake(
+    address accountID,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view;
+
+  function assertCancelUnstake(
+    address accountID,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view;
+
+  function assertWithdrawStake(
+    address accountID,
+    uint8 currency,
+    int64 expectedFundingBalance,
+    int64 expectedLockedAmount,
+    int64 expectedLockEndTime,
+    int64 expectedCooldownEndTime
+  ) external view;
+  // ── End of Staking ────────────────────────────────────────────────────────────────
 }

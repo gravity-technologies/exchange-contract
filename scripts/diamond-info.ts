@@ -54,4 +54,9 @@ export const ExchangeFacetInfos = [
     facet: "ConfigFacet",
     interface: "IConfig",
   },
+  {
+    file: "contracts/exchange/facets/StakingFacet.sol",
+    facet: "StakingFacet",
+    interface: "IStaking",
+  },
 ]

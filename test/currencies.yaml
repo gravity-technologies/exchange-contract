@@ -382,3 +382,27 @@
 - id: 128
   balance_decimals: 9
   name: USAR
+- id: 129
+  balance_decimals: 9
+  name: CSCO
+- id: 130
+  balance_decimals: 9
+  name: DIS
+- id: 131
+  balance_decimals: 9
+  name: HD
+- id: 132
+  balance_decimals: 9
+  name: LITE
+- id: 133
+  balance_decimals: 9
+  name: MRVL
+- id: 134
+  balance_decimals: 9
+  name: ORCL
+- id: 135
+  balance_decimals: 9
+  name: SOXL
+- id: 136
+  balance_decimals: 9
+  name: UBER

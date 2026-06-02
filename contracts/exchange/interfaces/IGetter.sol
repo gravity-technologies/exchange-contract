@@ -39,6 +39,10 @@ interface IGetter {
 
   function getAccountFundingWalletBalance(address accID, uint8 currency) external view returns (int64);
 
+  function getAccountStake(
+    address accID
+  ) external view returns (int64 lockedAmount, int64 lockEndTime, int64 cooldownEndTime);
+
   function isRecoveryAddress(address id, address signer, address recoveryAddress) external view returns (bool);
 
   function isOnboardedWithdrawalAddress(address id, address withdrawalAddress) external view returns (bool);

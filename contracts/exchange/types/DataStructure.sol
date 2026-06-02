@@ -5,14 +5,6 @@ import "./PositionMap.sol";
 import "../util/BIMath.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
 
-// Enum-range iteration helpers (currencyStart / currencyNext / currencyIsValid) and the
-// closed `enum Currency` they walked have been removed. The runtime registry
-// (`state.currencyConfigs`) is now the single source of truth for which currency IDs are
-// valid; see `_currencyIsRegistered` in BaseContract.
-//
-// spotBalanceCurrencies and currencyCanHoldSpotBalance are defined in BaseContract as
-// internal view functions that read from state.erc20Currencies.
-
 uint constant PRICE_DECIMALS = 9;
 uint constant RATE_DECIMALS = 18;
 uint constant PRICE_MULTIPLIER = 10 ** PRICE_DECIMALS;
@@ -201,7 +193,24 @@ struct Account {
   mapping(address => uint64) signers;
   // builders this account has explicitly allowed to receive kickback from its trades
   mapping(address => BuilderFeeConfig) builders;
-  uint256[48] __gap;
+  // === Start of Stake related fields ===
+  // Per-account GRVT staking state (one active stake per account; GRVT-only in v1) ──
+  //
+  // Derived lifecycle state (computed from these fields + current time):
+  //   Idle:         stakeLockedAmount == 0
+  //   Locked:       stakeLockedAmount > 0, stakeCooldownEndTime == 0, now <  stakeLockEndTime
+  //   Matured:      stakeLockedAmount > 0, stakeCooldownEndTime == 0, now >= stakeLockEndTime
+  //   CoolingDown:  stakeLockedAmount > 0, stakeCooldownEndTime != 0, now <  stakeCooldownEndTime
+  //   Withdrawable: stakeLockedAmount > 0, stakeCooldownEndTime != 0, now >= stakeCooldownEndTime
+  //
+  // GRVT locked, raw token units (matches fundingWalletBalances scaling). 0 = Idle.
+  int64 stakeLockedAmount;
+  // Unix nanoseconds. 0 when Idle.
+  int64 stakeLockEndTime;
+  // Unix nanoseconds. 0 unless CoolingDown / Withdrawable.
+  int64 stakeCooldownEndTime;
+  // === End of Stake related fields ===
+  uint256[47] __gap;
 }
 
 struct BuilderFeeConfig {

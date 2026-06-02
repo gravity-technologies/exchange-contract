@@ -15,6 +15,7 @@
         "invalid reward sharing ratio",
         "vault is not locked",
         "vault is locked",
-        "duplicated builder"
+        "duplicated builder",
+        "staking API is disabled"
     ]
 }

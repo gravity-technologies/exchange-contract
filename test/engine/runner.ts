@@ -5,6 +5,7 @@ import { expectToThrowAsync } from "../util"
 import { validateExpectations } from "./expect"
 import { TestCase, TestStep } from "./types"
 import { isDeposit, mockFinalizeDeposit } from "./deposit"
+import { isAddCurrency, registerAddedCurrency } from "./addCurrency"
 import * as testInfo from "./test-info.json"
 
 const GAS_LIMIT = 2100000000
@@ -65,6 +66,9 @@ async function executeTestStep(
     } else {
       await resp.wait()
       await validateExpectations(exchangeContract, step.expectations)
+      if (isAddCurrency(step)) {
+        await registerAddedCurrency(step)
+      }
     }
   } catch (e) {
     console.log("🔴 Failed step", step.tx_id, step.tx?.type)
