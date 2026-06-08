@@ -312,6 +312,16 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     ) {
       signerAuthz |= SubAccountPermTrade;
     }
+
+    if (
+      (requiredPerm & SubAccountPermTransfer > 0) && // transfer permission is required
+      (signerAuthz & SubAccountPermTransfer == 0) && // signer doesn't have transfer permission
+      _isFeatureFlagEnabled(FeatureFlagID.TRADE_PERMISSION_CAN_DO_INTERNAL_TRANSFER) && // trade permission is allowed to do internal transfer
+      signerHasPerm(acc.signers, signer, AccountPermTrade) // signer has trade permission in account
+    ) {
+      signerAuthz |= SubAccountPermTransfer;
+    }
+
     return signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0;
   }
 
@@ -321,7 +331,21 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     address signer,
     uint64 requiredPerm
   ) internal view returns (bool) {
-    return account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0;
+    uint64 signerAuthz = account.signers[signer];
+    if (signerAuthz & (AccountPermAdmin | requiredPerm) > 0) {
+      return true;
+    }
+
+    if (
+      (requiredPerm & AccountPermInternalTransfer > 0) && // internal transfer permission is required
+      (signerAuthz & AccountPermInternalTransfer == 0) && // signer doesn't have internal transfer permission
+      _isFeatureFlagEnabled(FeatureFlagID.TRADE_PERMISSION_CAN_DO_INTERNAL_TRANSFER) && // trade permission is allowed to do internal transfer
+      (signerAuthz & AccountPermTrade > 0) // signer has trade permission
+    ) {
+      signerAuthz |= AccountPermInternalTransfer; // Give signer the internal transfer permission
+    }
+
+    return signerAuthz & requiredPerm > 0;
   }
 
   // Check if the signer has certain permissions on an account
