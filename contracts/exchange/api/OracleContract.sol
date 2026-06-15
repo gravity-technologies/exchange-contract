@@ -219,10 +219,6 @@ contract OracleContract is IOracle, ConfigContract {
       revert PriceTickExpired();
     }
 
-    // Prevent replay
-    if (state.replay.executed[hash]) {
-      revert PayloadAlreadyExecuted();
-    }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
   }
