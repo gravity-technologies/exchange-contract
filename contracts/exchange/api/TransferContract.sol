@@ -274,7 +274,7 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
       amount,
       currency
     );
-    (int64 amountToSend, int64 withdrawalFeeCharged) = _applyWithdrawalFee(amountAfterSocializedLoss, currency);
+    (int64 amountToSend, int64 withdrawalFeeCharged) = _applyWithdrawalFee(acc.id, amountAfterSocializedLoss, currency);
 
     state.totalSpotBalances[currency] -= amountToSend;
 
@@ -376,7 +376,10 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     return (amount, 0);
   }
 
-  function _applyWithdrawalFee(int64 amount, uint8 currency) private returns (int64, int64) {
+  function _applyWithdrawalFee(address fromAccID, int64 amount, uint8 currency) private returns (int64, int64) {
+    if (_isWithdrawalFeeExempt(fromAccID)) {
+      return (amount, 0);
+    }
     (SubAccount storage feeSubAcc, bool isFeeSubAccIdSet) = _getAdminFeeSubAccount();
     if (!isFeeSubAccIdSet) {
       return (amount, 0);

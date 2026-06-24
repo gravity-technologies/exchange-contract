@@ -395,7 +395,23 @@ enum ConfigID {
   BRIDGING_PARTNER_ADDRESSES, // 17, no timelock on add, has timelock on remove
   // Feature flags
   FEATURE_FLAGS, // 18, no timelock
-  EIP712_CHAIN_ID // 19, no timelock
+  EIP712_CHAIN_ID, // 19, no timelock
+  // Spot trading fee configs
+  SPOT_TAKER_FEE_MINIMUM, // 20
+  SPOT_MAKER_FEE_MINIMUM, // 21
+  // Repayment fee configs
+  REPAYMENT_FLOOR_RATIO, // 22
+  LIQUIDATION_REPAYMENT_DIVISOR, // 23
+  AUTOMATED_REPAYMENT_DIVISOR, // 24
+  MANUAL_REPAYMENT_DIVISOR, // 25
+  // Spot asset configs
+  SPOT_ASSET_CVR, // 26
+  SPOT_ASSET_CDR, // 27
+  SPOT_ASSET_MBA, // 28
+  DEFAULT_DISABLED_CURRENCIES, // 29
+  SPOT_ASSET_CDC, // 30
+  // Accounts exempted from withdrawal fee. BOOL2D keyed by account address.
+  WITHDRAWAL_FEE_EXEMPT_ACCOUNTS // 31, no timelock
 }
 
 struct ConfigValue {

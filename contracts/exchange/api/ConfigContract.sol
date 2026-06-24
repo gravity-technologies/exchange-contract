@@ -218,6 +218,10 @@ abstract contract ConfigContract is BaseContract {
     return _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(account));
   }
 
+  function _isWithdrawalFeeExempt(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.WITHDRAWAL_FEE_EXEMPT_ACCOUNTS, _addressToConfig(account));
+  }
+
   function _isInternalAccount(address account) internal view returns (bool) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet && insuranceFund.accountID == account) {
@@ -307,6 +311,17 @@ abstract contract ConfigContract is BaseContract {
     }
 
     setting = state.configSettings[ConfigID.EIP712_CHAIN_ID];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.WITHDRAWAL_FEE_EXEMPT_ACCOUNTS];
     if (setting.typ == ConfigType.UNSPECIFIED) {
       setting.typ = ConfigType.BOOL2D;
       Rule[] storage rules = setting.rules;
