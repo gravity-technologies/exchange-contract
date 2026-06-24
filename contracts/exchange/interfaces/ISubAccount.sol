@@ -102,4 +102,19 @@ interface ISubAccount {
     int32 leverage,
     Signature calldata sig
   ) external;
+
+  /// @param timestamp Sequencing timestamp for the transaction
+  /// @param txID Sequencing transaction id
+  /// @param instrument Asset id whose positions are scaled (perpetual or future)
+  /// @param batchSubAccountIDs Sub accounts whose position in the instrument is scaled
+  /// @param scaleFrom The 'from' side of the split ratio (must be > 0)
+  /// @param scaleTo The 'to' side of the split ratio (must be > 0)
+  function scalePositions(
+    int64 timestamp,
+    uint64 txID,
+    bytes32 instrument,
+    uint64[] calldata batchSubAccountIDs,
+    uint32 scaleFrom,
+    uint32 scaleTo
+  ) external;
 }

@@ -188,6 +188,9 @@ interface IAssertion {
 
   function assertTradeV2(TradeAssertionV2 calldata tradeAssertion) external view;
 
+  // Assertion for Position Contract
+  function assertScalePositions(SubAccountAssertionV2[] calldata subAccounts) external view;
+
   // Assertions for WalletRecovery Contract
   function assertAddRecoveryAddress(
     address accountID,

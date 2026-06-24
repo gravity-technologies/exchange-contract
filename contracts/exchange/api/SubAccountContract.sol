@@ -5,9 +5,14 @@ import "./BaseContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
+import "../types/PositionMap.sol";
+import "../util/Asset.sol";
+import "../util/BIMath.sol";
 import "../interfaces/ISubAccount.sol";
 
 contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, FundingAndSettlement {
+  using BIMath for BI;
+
   int64 private constant _DURATION_37_DAYS_NANO = 37 * 24 * 60 * 60 * 1e9; // 37 days
   int64 private constant _DURATION_150_DAYS_NANO = 150 * 24 * 60 * 60 * 1e9; // 150 days
 
@@ -317,5 +322,51 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     PositionMarginConfig storage conf = sub.positionMarginConfigs[assetID];
     conf.marginType = marginType;
     conf.leverage = leverage;
+  }
+
+  function scalePositions(
+    int64 timestamp,
+    uint64 txID,
+    bytes32 instrument,
+    uint64[] calldata batchSubAccountIDs,
+    uint32 scaleFrom,
+    uint32 scaleTo
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+
+    require(scaleFrom != 0 && scaleTo != 0, "invalid scale ratio");
+
+    uint len = batchSubAccountIDs.length;
+    require(len != 0, "scalePositions: empty batch");
+
+    Kind kind = assetGetKind(instrument);
+    require(kind == Kind.PERPS || kind == Kind.FUTURES, "scalePositions: only perp/future");
+
+    uint256 underlyingDec = _getBalanceDecimal(assetGetUnderlying(instrument));
+    BI memory fromBI = BIMath.fromUint32(scaleFrom, 0);
+    BI memory toBI = BIMath.fromUint32(scaleTo, 0);
+
+    for (uint i; i < len; ) {
+      uint64 subID = batchSubAccountIDs[i];
+
+      // Reject duplicate sub-accounts
+      for (uint j; j < i; ) {
+        require(batchSubAccountIDs[j] != subID, "scalePositions: duplicate sub-account");
+        unchecked {
+          ++j;
+        }
+      }
+
+      SubAccount storage sub = _requireSubAccount(subID);
+      PositionsMap storage posmap = _getPositionCollection(sub, kind);
+      Position storage pos = posmap.values[instrument];
+      
+      require(pos.id != 0x0 && pos.balance != 0, "scalePositions: no open position");
+
+      pos.balance = BIMath.fromInt64(pos.balance, underlyingDec).mul(toBI).div(fromBI).toInt64(underlyingDec);
+      unchecked {
+        ++i;
+      }
+    }
   }
 }

@@ -502,6 +502,10 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
   }
 
+  function assertScalePositions(SubAccountAssertionV2[] calldata subAccounts) external view {
+    _assertSubAccountsV2(subAccounts);
+  }
+
   function _assertSubAccounts(SubAccountAssertion[] calldata exSubs) internal view {
     uint256 len = exSubs.length;
     for (uint256 i; i < len; ) {
