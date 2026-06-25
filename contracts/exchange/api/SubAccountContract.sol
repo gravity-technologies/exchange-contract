@@ -358,6 +358,12 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
       }
 
       SubAccount storage sub = _requireSubAccount(subID);
+
+      // Settle pending perp funding on the CURRENT (pre-scale) size before resizing. Funding is lazy
+      // ((fundingIndex - lastAppliedFundingIndex) * balance), so scaling balance first would mis-charge
+      // it; this advances lastAppliedFundingIndex without changing balance.
+      _fundAndSettle(sub);
+
       PositionsMap storage posmap = _getPositionCollection(sub, kind);
       Position storage pos = posmap.values[instrument];
       
