@@ -79,7 +79,11 @@ contract OracleContract is IOracle, ConfigContract {
         revert InvalidExpiry();
       }
 
-      marks[assetID] = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
+      uint64 price = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
+      if (kind == Kind.SPOT) {
+        price = _applyStablecoinPeg(assetGetUnderlying(assetID), price);
+      }
+      marks[assetID] = price;
     }
   }
 
@@ -238,5 +242,20 @@ contract OracleContract is IOracle, ConfigContract {
     }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
+  }
+
+  function _applyStablecoinPeg(uint8 underlying, uint64 rawPrice) internal view returns (uint64) {
+    bytes32 subKey = _currencyToConfig(underlying);
+    (uint64 peg, bool pegSet) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_PRICE, subKey);
+    // peg == 0 (or unset) means pegging is disabled for this currency.
+    if (!pegSet || peg == 0) {
+      return rawPrice;
+    }
+    (uint64 lower, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_LOWER_BOUND, subKey);
+    (uint64 upper, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_UPPER_BOUND, subKey);
+    if (rawPrice >= lower && rawPrice <= upper) {
+      return peg;
+    }
+    return rawPrice;
   }
 }

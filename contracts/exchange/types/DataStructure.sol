@@ -411,7 +411,11 @@ enum ConfigID {
   DEFAULT_DISABLED_CURRENCIES, // 29
   SPOT_ASSET_CDC, // 30
   // Accounts exempted from withdrawal fee. BOOL2D keyed by account address.
-  WITHDRAWAL_FEE_EXEMPT_ACCOUNTS // 31, no timelock
+  WITHDRAWAL_FEE_EXEMPT_ACCOUNTS, // 31, no timelock
+  // 32-24 Stablecoin (e.g. USDT/USD) pegging. UINT2D keyed by currency id, value in PriceDecimals (9 dp).
+  STABLE_COIN_PEG_LOWER_BOUND, // 32
+  STABLE_COIN_PEG_UPPER_BOUND, // 33
+  STABLE_COIN_PEG_PRICE // 34, 0 = pegging disabled for the currency
 }
 
 struct ConfigValue {

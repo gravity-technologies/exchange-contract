@@ -102,6 +102,9 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   DEFAULT_DISABLED_CURRENCIES: 29,
   SPOT_ASSET_CDC: 30,
   WITHDRAWAL_FEE_EXEMPT_ACCOUNTS: 31,
+  STABLE_COIN_PEG_LOWER_BOUND: 32,
+  STABLE_COIN_PEG_UPPER_BOUND: 33,
+  STABLE_COIN_PEG_PRICE: 34,
 };
 
 export const VaultStatusToEnum: { [status: string]: number } = {

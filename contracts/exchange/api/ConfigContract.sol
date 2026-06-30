@@ -68,6 +68,10 @@ abstract contract ConfigContract is BaseContract {
   bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
 
+  // Sanity bounds for any active stablecoin peg/bound value, expressed in PriceDecimals (9 dp).
+  uint64 internal constant STABLE_COIN_PEG_SANITY_MIN = 900_000_000; // 0.9
+  uint64 internal constant STABLE_COIN_PEG_SANITY_MAX = 1_100_000_000; // 1.1
+
   event ConfigUpdateMessageSent(uint256 configVersion, bytes4 selector, bytes data);
 
   ///////////////////////////////////////////////////////////////////
@@ -249,6 +253,12 @@ abstract contract ConfigContract is BaseContract {
       _validateInternalSubAccountChange(_configToUint(value));
     } else if (key == ConfigID.ERC20_ADDRESSES) {
       _addErc20Currency(uint8(uint(subKey)));
+    } else if (
+      key == ConfigID.STABLE_COIN_PEG_PRICE ||
+      key == ConfigID.STABLE_COIN_PEG_LOWER_BOUND ||
+      key == ConfigID.STABLE_COIN_PEG_UPPER_BOUND
+    ) {
+      _validateStablecoinPeg(key, subKey, value);
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
@@ -298,6 +308,41 @@ abstract contract ConfigContract is BaseContract {
     );
   }
 
+  /// Rules (for a given currency `subKey`):
+  ///   - pegPrice == 0 disables pegging for the currency and is always accepted (instant rollback).
+  ///   - Any active peg/bound value must lie within the parity sanity range (catches scale errors).
+  ///   - While pegging is active (resulting pegPrice > 0), the ordering invariant must hold:
+  ///       0 < lowerBound <= pegPrice <= upperBound
+  function _validateStablecoinPeg(ConfigID key, bytes32 subKey, bytes32 value) internal view {
+    uint64 newVal = _configToUint(value);
+
+    // pegPrice == 0 disables pegging for this currency; bounds are left intact for re-activation.
+    if (key == ConfigID.STABLE_COIN_PEG_PRICE && newVal == 0) {
+      return;
+    }
+
+    require(
+      newVal >= STABLE_COIN_PEG_SANITY_MIN && newVal <= STABLE_COIN_PEG_SANITY_MAX,
+      "stablecoin peg out of sanity range"
+    );
+
+    (uint64 peg, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_PRICE, subKey);
+    (uint64 lower, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_LOWER_BOUND, subKey);
+    (uint64 upper, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_UPPER_BOUND, subKey);
+    if (key == ConfigID.STABLE_COIN_PEG_PRICE) {
+      peg = newVal;
+    } else if (key == ConfigID.STABLE_COIN_PEG_LOWER_BOUND) {
+      lower = newVal;
+    } else {
+      upper = newVal;
+    }
+
+    // The ordering invariant only needs to hold while pegging is active for the currency.
+    if (peg > 0) {
+      require(lower > 0 && lower <= peg && peg <= upper, "stablecoin peg invariant violated");
+    }
+  }
+
   function _initializeNewConfigSettingIfNeeded() internal {
     ConfigSetting storage setting = state.configSettings[ConfigID.FEATURE_FLAGS];
     if (setting.typ == ConfigType.UNSPECIFIED) {
@@ -330,6 +375,23 @@ abstract contract ConfigContract is BaseContract {
       rule.lockDuration = 0;
       rule.deltaPositive = 0;
       rule.deltaNegative = 0;
+    }
+
+    ConfigID[3] memory pegConfigs = [
+      ConfigID.STABLE_COIN_PEG_LOWER_BOUND,
+      ConfigID.STABLE_COIN_PEG_UPPER_BOUND,
+      ConfigID.STABLE_COIN_PEG_PRICE
+    ];
+    for (uint256 i; i < pegConfigs.length; ++i) {
+      setting = state.configSettings[pegConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT2D;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
     }
   }
 
