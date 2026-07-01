@@ -55,7 +55,10 @@ contract MarginConfigSettersFacet is IMarginConfig, MarginConfigContractGetter {
     ListMarginTiersBI memory tiersBI = _convertToListMarginTiersBI(kud, tiers);
 
     int64 lockDuration = _getSimpleCrossMaintenanceMarginTiersLockDuration(kud, tiersBI);
-    if (lockDuration > 0) {
+    // The timelock can be bypassed via a feature flag to defend against price-manipulation
+    // attacks by raising maintenance margin fast. Off-chain side is responsible of the possible
+    // liquidations that may happened after the config change
+    if (lockDuration > 0 && !_isFeatureFlagEnabled(FeatureFlagID.BYPASS_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIMELOCK)) {
       int64 lockEndTime = state.simpleCrossMaintenanceMarginTimelockEndTime[kud];
       if (!(lockEndTime > 0 && lockEndTime <= timestamp)) revert MarginLockActive();
     }
