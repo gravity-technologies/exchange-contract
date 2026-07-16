@@ -1,21 +1,27 @@
 {
-    "skip_test_cases": [
-        "Scenario: 1. V2 waive_spot_balance=true allows transfer when spot balance insufficient but TE >= 0",
-        "Scenario: 5. V2 waive_spot_balance=true allows sub-account to sub-account transfer taking spot negative"
-    ],
-    "risk_only_constraints": [
-        "vault valuation cap too high",
-        "vault min redemption period too high",
-        "vault max redemption period too low",
-        "vault max redemption period too high",
-        "vault max redemption period less than min redemption period",
-        "auto redemption barrier too low",
-        "auto redemption barrier too high",
-        "vault reward sharing ratio cannot be decreased",
-        "invalid reward sharing ratio",
-        "vault is not locked",
-        "vault is locked",
-        "duplicated builder",
-        "staking API is disabled"
-    ]
+  "skip_test_cases": [
+    "Scenario: 1. V2 waive_spot_balance=true allows transfer when spot balance insufficient but TE >= 0",
+    "Scenario: 5. V2 waive_spot_balance=true allows sub-account to sub-account transfer taking spot negative"
+  ],
+  "risk_only_constraints": [
+    "vault valuation cap too high",
+    "vault min redemption period too high",
+    "vault max redemption period too low",
+    "vault max redemption period too high",
+    "vault max redemption period less than min redemption period",
+    "auto redemption barrier too low",
+    "auto redemption barrier too high",
+    "vault reward sharing ratio cannot be decreased",
+    "invalid reward sharing ratio",
+    "vault is not locked",
+    "vault is locked",
+    "duplicated builder",
+    "staking API is disabled",
+    "RFR must be <= 100%",
+    "Repayment divisor must be > 0",
+    "CVR must be in [0, 100%]",
+    "CDR must be in [0, 100%]",
+    "CVR must be <= 1 - RFR",
+    "RFR increase would violate CVR <= 1 - RFR for an existing spot asset"
+  ]
 }

@@ -396,6 +396,9 @@ enum ConfigID {
   // Feature flags
   FEATURE_FLAGS, // 18, no timelock
   EIP712_CHAIN_ID, // 19, no timelock
+  // ConfigID integers MUST match the platform capnp field numbers EXACTLY. The encoder
+  // passes uint8(payload.Key()) straight through (no translation), so these ordinals are
+  // consensus-critical. Append only; never reorder existing entries.
   // Spot trading fee configs
   SPOT_TAKER_FEE_MINIMUM, // 20
   SPOT_MAKER_FEE_MINIMUM, // 21

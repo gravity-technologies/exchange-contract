@@ -64,8 +64,6 @@ abstract contract ConfigContract is BaseContract {
   int32 private constant ONE_BEEP = 100;
   int32 private constant ONE_PERCENT = 10000;
   uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
-  // The default fallback value which is a zero value array
-  bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
 
   // Sanity bounds for any active stablecoin peg/bound value, expressed in PriceDecimals (9 dp).
@@ -392,6 +390,75 @@ abstract contract ConfigContract is BaseContract {
         rule.deltaPositive = 0;
         rule.deltaNegative = 0;
       }
+    }
+
+    // MAM configs (TRADE-1127). Risk owns all value validation (bounds + cross-checks);
+    // the chain stores only. @27 CDR is deprecated platform-side but still routed/validated,
+    // so its slot must be registered.
+    ConfigID[2] memory mamCentibeep2DConfigs = [ConfigID.SPOT_ASSET_CVR, ConfigID.SPOT_ASSET_MBA];
+    for (uint256 i; i < mamCentibeep2DConfigs.length; ++i) {
+      setting = state.configSettings[mamCentibeep2DConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.CENTIBEEP2D;
+        Rule[] storage rules = setting.rules;
+        // This config does not have timelock as it is controlled by GRVT
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    ConfigID[2] memory mamUint2DConfigs = [ConfigID.SPOT_ASSET_CDR, ConfigID.SPOT_ASSET_CDC];
+    for (uint256 i; i < mamUint2DConfigs.length; ++i) {
+      setting = state.configSettings[mamUint2DConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT2D;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    ConfigID[3] memory repaymentDivisorConfigs = [
+      ConfigID.LIQUIDATION_REPAYMENT_DIVISOR,
+      ConfigID.AUTOMATED_REPAYMENT_DIVISOR,
+      ConfigID.MANUAL_REPAYMENT_DIVISOR
+    ];
+    for (uint256 i; i < repaymentDivisorConfigs.length; ++i) {
+      setting = state.configSettings[repaymentDivisorConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    setting = state.configSettings[ConfigID.REPAYMENT_FLOOR_RATIO];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.CENTIBEEP;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.DEFAULT_DISABLED_CURRENCIES];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
     }
   }
 

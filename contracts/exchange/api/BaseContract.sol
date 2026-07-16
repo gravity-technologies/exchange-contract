@@ -69,6 +69,8 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   bytes32 internal constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 internal constant FALSE_BYTES32 = bytes32(uint256(0));
+  // The catchall 2D-config row (subKey 0) every per-subKey read falls back to
+  bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
@@ -887,7 +889,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
-    return state.config2DValues[key][subKey].val == TRUE_BYTES32;
+    // Mirror the platform's GetBoolCfg2D (and every other 2D getter here): an unset
+    // per-subKey row falls back to the catchall DEFAULT_CONFIG_ENTRY row.
+    ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
+    return c.val == TRUE_BYTES32;
   }
 
   function _isNativeChainID(uint256 chainId) internal view returns (bool) {

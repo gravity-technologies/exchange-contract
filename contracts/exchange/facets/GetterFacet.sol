@@ -338,4 +338,55 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     PositionMarginConfig storage cfg = _requireSubAccount(subAccountID).positionMarginConfigs[assetID];
     return (cfg.marginType, cfg.leverage);
   }
+
+  ///////////////////////////////////////////////////////////////////
+  /// MAM config getters (TRADE-1127)
+  ///
+  /// Typed reads for the per-currency MAM configs. The generic getConfig2D/getConfig1D
+  /// already work; these mirror the existing typed-getter style and decode to the right
+  /// type. The CENTIBEEP2D/UINT2D getters fall back to the DEFAULT_CONFIG_ENTRY (subKey 0)
+  /// when no per-currency value is set (matching the underlying decoders); the BOOL2D
+  /// getter reads the exact subKey (mirrors `_getBoolConfig2D`). CDC is store-only and
+  /// exposed here for tooling/audit; nothing enforces it.
+  ///////////////////////////////////////////////////////////////////
+
+  /// @notice Spot asset Collateral Value Ratio (centi-beep, 1e6 = 100%). Read by the margin recompute.
+  function getSpotAssetCVR(uint8 currency) external view returns (int32 cvr, bool isSet) {
+    return _getCentibeepConfig2D(ConfigID.SPOT_ASSET_CVR, _currencyToConfig(currency));
+  }
+
+  /// @notice Spot asset CDC cap (native asset units). Store-only — not enforced on-chain.
+  function getSpotAssetCDC(uint8 currency) external view returns (uint64 cap, bool isSet) {
+    return _getUintConfig2D(ConfigID.SPOT_ASSET_CDC, _currencyToConfig(currency));
+  }
+
+  /// @notice Spot asset Margin Borrow Allowance (centi-beep). Store-only — enforcement is off-chain.
+  function getSpotAssetMBA(uint8 currency) external view returns (int32 mba, bool isSet) {
+    return _getCentibeepConfig2D(ConfigID.SPOT_ASSET_MBA, _currencyToConfig(currency));
+  }
+
+  /// @notice Whether a currency is disabled-by-default as collateral. Read by the [02] eligibility guard.
+  function getDefaultDisabledCurrency(uint8 currency) external view returns (bool) {
+    return _getBoolConfig2D(ConfigID.DEFAULT_DISABLED_CURRENCIES, _currencyToConfig(currency));
+  }
+
+  /// @notice Repayment floor ratio (centi-beep, 1D). Store-only.
+  function getRepaymentFloorRatio() external view returns (int32 ratio, bool isSet) {
+    return _getCentibeepConfig(ConfigID.REPAYMENT_FLOOR_RATIO);
+  }
+
+  /// @notice Liquidation repayment divisor (uint, 1D). Store-only.
+  function getLiquidationRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.LIQUIDATION_REPAYMENT_DIVISOR);
+  }
+
+  /// @notice Automated repayment divisor (uint, 1D). Store-only.
+  function getAutomatedRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.AUTOMATED_REPAYMENT_DIVISOR);
+  }
+
+  /// @notice Manual repayment divisor (uint, 1D). Store-only.
+  function getManualRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.MANUAL_REPAYMENT_DIVISOR);
+  }
 }
