@@ -64,6 +64,12 @@ interface IAssertion {
 
   function assertSetSubAccountMarginType(uint64 subAccountID, MarginType expectedMarginType) external view;
 
+  function assertSetSubAccountMode(
+    SubAccountAssertionV2 calldata exSub,
+    SubAccountMode expectedMode,
+    PositionMarginConfigAssertion[] calldata expectedPositionMarginConfigs
+  ) external view;
+
   function assertAddSubAccountSigner(uint64 subAccountID, address signer, uint64 expectedPermissions) external view;
 
   function assertRemoveSubAccountSigner(uint64 subAccountID, address signer) external view;
@@ -166,6 +172,13 @@ interface IAssertion {
     SpotAssertion[] futuresWalletSpots;
     SpotAssertion[] spotWalletSpots;
     int64 lastDeriskTimestamp;
+  }
+
+  // Expected post-state of one per-position margin config (setSubAccountMode conversions)
+  struct PositionMarginConfigAssertion {
+    bytes32 assetID;
+    PositionMarginType marginType;
+    int32 leverage;
   }
 
   struct AccountAssertion {

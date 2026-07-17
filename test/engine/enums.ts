@@ -107,6 +107,14 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   STABLE_COIN_PEG_PRICE: 34,
 };
 
+// Mirrors the contract's SubAccountMode enum (types/Enum.sol) ordinals.
+export const SubAccountModeToEnum: { [mode: string]: number } = {
+  UNSPECIFIED: 0,
+  SINGLE_ASSET_MODE: 1,
+  MULTI_ASSET_MODE: 2,
+  UNIFIED_MODE: 3,
+}
+
 export const VaultStatusToEnum: { [status: string]: number } = {
   UNSPECIFIED: 0,
   ACTIVE: 1,

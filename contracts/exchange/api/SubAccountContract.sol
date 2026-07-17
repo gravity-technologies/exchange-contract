@@ -324,6 +324,67 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     conf.leverage = leverage;
   }
 
+  /// @notice Switch a sub account between SINGLE_ASSET_MODE and MULTI_ASSET_MODE (MAM).
+  /// @dev Mirrors the platform's SetSubAccountMode (MAM-3). The platform validates all switch
+  /// preconditions (isolated-position MMR buffer, CDC headroom, IM coverage, zero USDT debt for
+  /// MAM->SAM, whitelist/modeSwitchEnabled gating); the chain lacks CL/CDC/buffer config and trusts
+  /// the trusted sequencer to only submit a switch that passed platform validation. The contract
+  /// just records the resulting mode and the paired assertion confirms the field value.
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param subAccID The subaccount ID
+  /// @param mode The target mode (SINGLE_ASSET_MODE or MULTI_ASSET_MODE; UNIFIED is out of scope)
+  /// @param isolatedAssets Sequencer-derived context (excluded from the signed payload, like
+  /// `feeCharged`): the assets whose isolated margin configs this switch converts to cross.
+  /// Risk stamps it at confirmation by iterating its config map (EVM mappings are not
+  /// iterable); empty when isolated margin is allowed in MAM or the target is not MAM.
+  /// @param sig The signature of the acting user
+  function setSubAccountMode(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    SubAccountMode mode,
+    bytes32[] calldata isolatedAssets,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+
+    // permission: TRADE (verified) — account-level AccountPermTrade OR sub-level SubAccountPermTrade,
+    // directly or via a valid session key, mirroring the platform's
+    // requireSignerOrSessionKeySubAccountPerm. Same as SetSubAccountPositionMarginConfig. NOT admin.
+    _requireSignerOrSessionKeySubAccountPerm(sub, sig.signer, SubAccountPermTrade, timestamp);
+
+    // ---------- Signature Verification -----------
+    _preventReplay(hashSetSubAccountMode(subAccID, mode, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    // UNIFIED out of scope; only SINGLE <-> MULTI is supported.
+    require(
+      mode == SubAccountMode.SINGLE_ASSET_MODE || mode == SubAccountMode.MULTI_ASSET_MODE,
+      "unsupported target mode"
+    );
+
+    // Mirror the platform apply order: settle pending funding at switch time so the
+    // post-switch state matches the platform's (which funds-and-settles before flipping).
+    _fundAndSettle(sub);
+
+    // Mirror the platform apply: rewrite the stamped isolated configs to cross (leverage
+    // preserved). The set is sequencer context — empty when no conversion applies — so the
+    // contract needs no flag read and no iterable config storage.
+    // The entries are isolated configs by construction (Risk derived the list from the same
+    // state at confirmation) — trust the context, no re-check; leverage stays as stored.
+    uint256 len = isolatedAssets.length;
+    for (uint256 i; i < len; ) {
+      sub.positionMarginConfigs[isolatedAssets[i]].marginType = PositionMarginType.CROSS;
+      unchecked {
+        ++i;
+      }
+    }
+
+    sub.subAccountMode = mode;
+  }
+
   function scalePositions(
     int64 timestamp,
     uint64 txID,

@@ -22,6 +22,9 @@
     "CVR must be in [0, 100%]",
     "CDR must be in [0, 100%]",
     "CVR must be <= 1 - RFR",
-    "RFR increase would violate CVR <= 1 - RFR for an existing spot asset"
+    "RFR increase would violate CVR <= 1 - RFR for an existing spot asset",
+    "sub account is already in the target mode",
+    "close all isolated positions before switching to Multi-Asset mode",
+    "initial margin not covered after mode switch"
   ]
 }

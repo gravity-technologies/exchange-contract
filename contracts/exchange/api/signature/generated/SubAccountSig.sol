@@ -87,3 +87,16 @@ function hashSetSubAccountPositionMarginConfig(
       abi.encode(_SET_SUB_POSITION_MARGIN_CONFIG_H, subID, asset, uint8(marginType), leverage, nonce, expiration)
     );
 }
+
+bytes32 constant _SET_SUB_ACCOUNT_MODE_H = keccak256(
+  "SetSubAccountMode(uint64 subAccountID,uint8 subAccountMode,uint32 nonce,int64 expiration)"
+);
+
+function hashSetSubAccountMode(
+  uint64 subID,
+  SubAccountMode mode,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return keccak256(abi.encode(_SET_SUB_ACCOUNT_MODE_H, subID, uint8(mode), nonce, expiration));
+}

@@ -16,6 +16,7 @@ import {
   ExSessionKeys,
   ExSettlementPrice,
   ExSubAccountMarginType,
+  ExSubAccountMode,
   ExSubAccountPosition,
   ExSubAccountSigners,
   ExSubAccountSpot,
@@ -55,7 +56,7 @@ import {
   ExSubAccountPositionMarginConfig,
   ExSubAccountSpotWalletBalance,
 } from "./types"
-import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, PositionMarginTypeToEnum, VaultStatusToEnum } from "./enums"
+import { ConfigIDToEnum, CurrencyToEnum, MarginTypeToEnum, PositionMarginTypeToEnum, SubAccountModeToEnum, VaultStatusToEnum } from "./enums"
 import { hex32, toAssetID } from "./util"
 
 // These expectations are only in risk
@@ -96,6 +97,8 @@ export async function validateExpectation(contract: Contract, expectation: Expec
       return expectSubAccountSigners(contract, expectation.expect as ExSubAccountSigners)
     case "ExSubAccountMarginType":
       return expectSubAccountMarginType(contract, expectation.expect as ExSubAccountMarginType)
+    case "ExSubAccountMode":
+      return expectSubAccountMode(contract, expectation.expect as ExSubAccountMode)
     case "ExFundingIndex":
       return expectFundingIndex(contract, expectation.expect as ExFundingIndex)
     case "ExMarkPrice":
@@ -277,6 +280,11 @@ async function expectSubAccountSigners(contract: Contract, expectations: ExSubAc
 async function expectSubAccountMarginType(contract: Contract, expectations: ExSubAccountMarginType) {
   let res = await getSubAccountResult(contract, expectations.sub_account_id)
   expect(big(res.marginType)).to.equal(big(expectations.margin_type))
+}
+
+async function expectSubAccountMode(contract: Contract, expectations: ExSubAccountMode) {
+  const mode = await contract.getSubAccountMode(expectations.sub_account_id)
+  expect(big(mode)).to.equal(big(SubAccountModeToEnum[expectations.sub_account_mode]))
 }
 
 async function expectFundingIndex(contract: Contract, expectations: ExFundingIndex) {

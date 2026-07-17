@@ -227,6 +227,33 @@ contract AssertionContract is IAssertion, ConfigContract, RiskCheck {
     }
   }
 
+  /// @notice Asserts the post-state of a `setSubAccountMode`: the new mode, the per-position
+  /// margin configs the switch rewrote (isolated -> cross, leverage preserved), plus the full
+  /// sub-account post-state (funding timestamp, positions, wallet balances) — the switch
+  /// settles pending funding, so wallet balances can move.
+  function assertSetSubAccountMode(
+    SubAccountAssertionV2 calldata exSub,
+    SubAccountMode expectedMode,
+    PositionMarginConfigAssertion[] calldata expectedPositionMarginConfigs
+  ) external view {
+    SubAccount storage sub = state.subAccounts[exSub.subAccountID];
+    if (sub.subAccountMode != expectedMode) {
+      revert AssertionSubAccountModeMismatch();
+    }
+    uint256 len = expectedPositionMarginConfigs.length;
+    for (uint256 i; i < len; ) {
+      PositionMarginConfigAssertion calldata e = expectedPositionMarginConfigs[i];
+      PositionMarginConfig storage cfg = sub.positionMarginConfigs[e.assetID];
+      if (cfg.marginType != e.marginType || cfg.leverage != e.leverage) {
+        revert AssertionPositionMarginMismatch();
+      }
+      unchecked {
+        ++i;
+      }
+    }
+    _assertSubAccountV2(exSub);
+  }
+
   function assertAddSubAccountSigner(uint64 subAccountID, address signer, uint64 expectedPermissions) external view {
     if (state.subAccounts[subAccountID].signers[signer] != expectedPermissions) {
       revert AssertionSubAccountSignerPermissionMismatch();

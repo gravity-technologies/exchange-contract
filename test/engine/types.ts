@@ -78,6 +78,12 @@ export interface ExSubAccountMarginType {
   margin_type: string
 }
 
+// Expects a sub-account with the given sub-account mode (SAM/MAM)
+export interface ExSubAccountMode {
+  sub_account_id: string
+  sub_account_mode: string
+}
+
 export interface SessionValue {
   main_signing_key: string
   session_key: string

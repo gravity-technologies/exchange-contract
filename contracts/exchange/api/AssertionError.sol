@@ -45,6 +45,7 @@ error AssertionSimpleCrossTierLengthMismatch();
 error AssertionSimpleCrossTierRateMismatch();
 error AssertionSimpleCrossTierScheduleActive();
 error AssertionSubAccountIdsLengthMismatch();
+error AssertionSubAccountModeMismatch();
 error AssertionSubAccountNotLinked();
 error AssertionSubAccountPermissionsLengthMismatch();
 error AssertionSubAccountSignerMismatch();

@@ -78,6 +78,23 @@ interface ISubAccount {
     Signature calldata sig
   ) external;
 
+  /// @notice Switch a sub account between SINGLE_ASSET_MODE and MULTI_ASSET_MODE.
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param subAccID The subaccount ID
+  /// @param mode The target mode (SINGLE_ASSET_MODE or MULTI_ASSET_MODE; UNIFIED is out of scope)
+  /// @param isolatedAssets Sequencer-derived context (excluded from the signed payload): assets
+  /// whose isolated margin configs this switch converts to cross; empty when no conversion applies
+  /// @param sig The signature of the acting user
+  function setSubAccountMode(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    SubAccountMode mode,
+    bytes32[] calldata isolatedAssets,
+    Signature calldata sig
+  ) external;
+
   /// @notice Remove a session key
   ///
   /// @param timestamp The timestamp of the transaction
