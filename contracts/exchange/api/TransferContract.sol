@@ -565,6 +565,13 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
     int64 numTokens,
     Signature calldata sig
   ) private {
+    // Block external main-account -> main-account transfers for currencies on the
+    // blockTransferMainToMainCurrencies denylist (e.g. GRVT), unless the source account is
+    // exempt via blockTransferMainToMainExemptAccounts. Only this path is affected.
+    require(
+      !_isBlockTransferMainToMainCurrency(currency) || _isBlockTransferMainToMainExempt(fromAccID),
+      "currency blocked for main to main transfer"
+    );
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     require(

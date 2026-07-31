@@ -224,6 +224,18 @@ abstract contract ConfigContract is BaseContract {
     return _getBoolConfig2D(ConfigID.WITHDRAWAL_FEE_EXEMPT_ACCOUNTS, _addressToConfig(account));
   }
 
+  /// @dev Whether external main-account -> main-account transfers are blocked for a currency.
+  /// Shared by the transferMainToMain guard and the GetterFacet getter.
+  function _isBlockTransferMainToMainCurrency(uint8 currency) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES, _currencyToConfig(currency));
+  }
+
+  /// @dev Whether a source main account is exempt from the main-to-main currency block.
+  /// Shared by the transferMainToMain guard and the GetterFacet getter.
+  function _isBlockTransferMainToMainExempt(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS, _addressToConfig(account));
+  }
+
   function _isInternalAccount(address account) internal view returns (bool) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet && insuranceFund.accountID == account) {
@@ -451,6 +463,28 @@ abstract contract ConfigContract is BaseContract {
     }
 
     setting = state.configSettings[ConfigID.DEFAULT_DISABLED_CURRENCIES];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS];
     if (setting.typ == ConfigType.UNSPECIFIED) {
       setting.typ = ConfigType.BOOL2D;
       Rule[] storage rules = setting.rules;

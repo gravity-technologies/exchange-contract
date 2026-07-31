@@ -105,6 +105,8 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   STABLE_COIN_PEG_LOWER_BOUND: 32,
   STABLE_COIN_PEG_UPPER_BOUND: 33,
   STABLE_COIN_PEG_PRICE: 34,
+  BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES: 35,
+  BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS: 36,
 };
 
 // Mirrors the contract's SubAccountMode enum (types/Enum.sol) ordinals.

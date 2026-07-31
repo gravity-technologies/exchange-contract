@@ -418,7 +418,14 @@ enum ConfigID {
   // 32-24 Stablecoin (e.g. USDT/USD) pegging. UINT2D keyed by currency id, value in PriceDecimals (9 dp).
   STABLE_COIN_PEG_LOWER_BOUND, // 32
   STABLE_COIN_PEG_UPPER_BOUND, // 33
-  STABLE_COIN_PEG_PRICE // 34, 0 = pegging disabled for the currency
+  STABLE_COIN_PEG_PRICE, // 34, 0 = pegging disabled for the currency
+  // Currencies for which external main-account -> main-account transfers are blocked.
+  // BOOL2D keyed by currency id (e.g. GRVT). true = transferMainToMain rejected for that currency.
+  BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES, // 35, no timelock
+  // Source main accounts exempt from BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES. BOOL2D keyed by
+  // funding account address. true = the account's transferMainToMain is allowed even for a
+  // blocked currency. Applies to the source account only, independent of the destination.
+  BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS // 36, no timelock
 }
 
 struct ConfigValue {

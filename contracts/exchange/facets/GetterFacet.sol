@@ -370,6 +370,18 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return _getBoolConfig2D(ConfigID.DEFAULT_DISABLED_CURRENCIES, _currencyToConfig(currency));
   }
 
+  /// @notice Whether external main-account -> main-account transfers are blocked for a currency.
+  /// Read by the transferMainToMain guard; true rejects the transfer for that currency.
+  function getBlockTransferMainToMainCurrency(uint8 currency) external view returns (bool) {
+    return _isBlockTransferMainToMainCurrency(currency);
+  }
+
+  /// @notice Whether a source main account is exempt from the main-to-main currency block.
+  /// When true, the account's main-to-main transfers are allowed even for a blocked currency.
+  function getBlockTransferMainToMainExemptAccount(address account) external view returns (bool) {
+    return _isBlockTransferMainToMainExempt(account);
+  }
+
   /// @notice Repayment floor ratio (centi-beep, 1D). Store-only.
   function getRepaymentFloorRatio() external view returns (int32 ratio, bool isSet) {
     return _getCentibeepConfig(ConfigID.REPAYMENT_FLOOR_RATIO);
