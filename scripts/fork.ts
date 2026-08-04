@@ -16,8 +16,7 @@ task("fork", "Fork network with implementation contract")
   .addOptionalParam("txHash", "Fork from specific transaction hash")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
-    const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+    const exchangeAddr = taskArgs.exchangeAddr || (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     if (!exchangeAddr) {
       throw new Error(`No exchange address provided and none found in config for network ${hre.network.name}`)
@@ -32,18 +31,18 @@ task("fork", "Fork network with implementation contract")
     const overrideJson = {
       abi: exchangeArtifact.abi,
       bytecode: {
-        object: exchangeArtifact.bytecode.replace('0x', ''),
+        object: exchangeArtifact.bytecode.replace("0x", ""),
       },
       methodIdentifiers: {},
       storageLayout: {
         storage: [],
-        types: {}
+        types: {},
       },
       userdoc: {},
       devdoc: {},
       hash: hashBytecode(exchangeArtifact.bytecode),
       factoryDependencies: {},
-      id: 0
+      id: 0,
     }
 
     // 2. Query implementation address
@@ -54,14 +53,11 @@ task("fork", "Fork network with implementation contract")
     console.log("Implementation address:", implAddress)
 
     // 3. Create temp directory and copy artifact
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'grvt-fork-'))
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "grvt-fork-"))
     console.log("Using temporary directory:", tempDir)
 
     // Write override JSON to file named with implementation address
-    fs.writeFileSync(
-      path.join(tempDir, `${implAddress}.json`),
-      JSON.stringify(overrideJson, null, 2)
-    )
+    fs.writeFileSync(path.join(tempDir, `${implAddress}.json`), JSON.stringify(overrideJson, null, 2))
 
     // 4. Run anvil-zksync
     const anvilArgs = [
@@ -71,7 +67,7 @@ task("fork", "Fork network with implementation contract")
       "--override-bytecodes-dir=" + tempDir,
       "fork",
       "--fork-url",
-      (hre.network.config as HttpNetworkConfig).url
+      (hre.network.config as HttpNetworkConfig).url,
     ]
 
     // Add optional fork arguments if provided
@@ -84,7 +80,7 @@ task("fork", "Fork network with implementation contract")
 
     const anvilProcess = spawn("cargo", anvilArgs, {
       cwd: path.join(__dirname, "../lib/anvil-zksync"),
-      stdio: "inherit"
+      stdio: "inherit",
     })
 
     // 5. Clean up on process exit
@@ -94,13 +90,13 @@ task("fork", "Fork network with implementation contract")
       }
     }
 
-    process.on('SIGINT', () => {
+    process.on("SIGINT", () => {
       anvilProcess.kill()
       cleanup()
       process.exit()
     })
 
-    process.on('SIGTERM', () => {
+    process.on("SIGTERM", () => {
       anvilProcess.kill()
       cleanup()
       process.exit()
@@ -108,7 +104,7 @@ task("fork", "Fork network with implementation contract")
 
     // Wait for anvil to exit
     await new Promise((resolve) => {
-      anvilProcess.on('close', () => {
+      anvilProcess.on("close", () => {
         cleanup()
         resolve(null)
       })

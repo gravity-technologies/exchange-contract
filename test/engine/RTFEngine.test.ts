@@ -6,6 +6,7 @@ import { runTestCase } from "./runner";
 import { setupTestEnvironment } from "./setup";
 import type { TestCase } from "./types";
 import { getTestFixtures, parseTestsFromFile } from "./util";
+import * as testInfo from "./test-info.json";
 
 const TEST_FIXTURES_DIR = `${process.cwd()}/test/engine/fixtures/`;
 
@@ -38,6 +39,7 @@ describe("API - TestEngine", () => {
 		testFileFilters.length === 0 ? true : testFileFilters.includes(name),
 	);
 	const testNamesFilter: string[] = [];
+	const skipTestCases: string[] = (testInfo as Record<string, any>).skip_test_cases ?? [];
 
 	testFiles.forEach((file) => {
 		describe(file, () => {
@@ -46,6 +48,10 @@ describe("API - TestEngine", () => {
 			);
 
 			tests.forEach((test: TestCase) => {
+				if (skipTestCases.includes(test.name)) {
+					it.skip(test.name, () => {});
+					return;
+				}
 				it(test.name, async () => {
 					await runTestCase(
 						test,

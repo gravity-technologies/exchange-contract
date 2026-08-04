@@ -5,15 +5,23 @@ import "./BaseContract.sol";
 import "./ConfigContract.sol";
 import "./signature/generated/SubAccountSig.sol";
 import "../types/DataStructure.sol";
+import "../types/PositionMap.sol";
+import "../util/Asset.sol";
+import "../util/BIMath.sol";
 import "../interfaces/ISubAccount.sol";
 
 contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, FundingAndSettlement {
+  using BIMath for BI;
+
   int64 private constant _DURATION_37_DAYS_NANO = 37 * 24 * 60 * 60 * 1e9; // 37 days
   int64 private constant _DURATION_150_DAYS_NANO = 150 * 24 * 60 * 60 * 1e9; // 150 days
 
   // DeriskToMaintenanceMarginRatio constants
   uint32 private constant DERISK_MM_RATIO_MIN = 1_000_000; // 1x
   uint32 private constant DERISK_MM_RATIO_MAX = 2_000_000; // 2x
+
+  int32 private constant _MIN_ISOLATED_POSITION_LEVERAGE = 1_000_000; // 1x
+  int32 private constant _MAX_ISOLATED_POSITION_LEVERAGE = 50_000_000; // 50x
 
   /// @notice Create a subaccount
   /// @param timestamp The timestamp of the transaction
@@ -28,7 +36,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     uint64 txID,
     address accountID,
     uint64 subAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     Signature calldata sig
   ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -46,12 +54,12 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     int64 timestamp,
     address accountID,
     uint64 subAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     address signer
   ) internal returns (SubAccount storage sub) {
     Account storage acc = state.accounts[accountID];
-    require(currencyCanHoldSpotBalance(quoteCurrency), "invalid quote currency");
+    require(quoteCurrency == CCY_USDT, "invalid quote currency");
     require(marginType == MarginType.SIMPLE_CROSS_MARGIN, "invalid margin type");
     require(acc.id != address(0), "account does not exist");
     require(subAccountID != 0, "invalid subaccount id");
@@ -68,6 +76,7 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     sub.marginType = marginType;
     sub.quoteCurrency = quoteCurrency;
     sub.lastAppliedFundingTimestamp = timestamp;
+    sub.subAccountMode = SubAccountMode.SINGLE_ASSET_MODE;
 
     // We will not create any authorizedSigners in subAccount upon creation.
     // All account admins are presumably authorizedSigners
@@ -260,5 +269,171 @@ contract SubAccountContract is ISubAccount, BaseContract, ConfigContract, Fundin
     // ------- End of Signature Verification -------
 
     sub.deriskToMaintenanceMarginRatio = deriskToMaintenanceMarginRatio;
+  }
+
+  /// @notice Set margin configuration for a specific asset on a sub account.
+  /// @dev Requires a trade permission signature, only allows isolated or simple cross margin, and
+  /// rejects vaults or sub accounts with existing positions.
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The id of the transaction
+  /// @param subAccID Target sub account id
+  /// @param assetID Asset identifier whose margin config is updated
+  /// @param marginType Desired margin type (isolated or simple cross)
+  /// @param leverage Desired leverage for the asset on the sub account
+  /// @param sig Permissioned signature authorizing the change
+  function setSubAccountPositionMarginConfig(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    bytes32 assetID,
+    PositionMarginType marginType,
+    int32 leverage,
+    Signature calldata sig
+  ) external {
+    _setSequence(timestamp, txID);
+
+    if (marginType != PositionMarginType.ISOLATED && marginType != PositionMarginType.CROSS) {
+      revert ErrSetPositionMarginConfigInvalidMarginType();
+    }
+    if (leverage < _MIN_ISOLATED_POSITION_LEVERAGE || leverage > _MAX_ISOLATED_POSITION_LEVERAGE) {
+      revert ErrSetPositionMarginConfigInvalidLeverage();
+    }
+    SubAccount storage sub = _requireSubAccount(subAccID);
+    _requireSignerOrSessionKeySubAccountPerm(sub, sig.signer, SubAccountPermTrade, timestamp);
+
+    // In Risk, we also have a check for vault that relies on cluster config, which is not replicated on chain. Omit here
+
+    PositionMarginConfig storage currentCfg = sub.positionMarginConfigs[assetID];
+    PositionMarginType currentMarginType = currentCfg.marginType;
+    currentMarginType = currentMarginType == PositionMarginType.UNSPECIFIED
+      ? PositionMarginType.CROSS
+      : currentMarginType;
+    if (currentMarginType != marginType && _hasPosition(sub, assetID)) {
+      revert ErrSetPostionMarginConfigPositionNotEmpty();
+    }
+
+    // ---------- Signature Verification -----------
+    _preventReplayNoDupCheck(
+      hashSetSubAccountPositionMarginConfig(subAccID, assetID, marginType, leverage, sig.nonce, sig.expiration),
+      sig
+    );
+    // ------- End of Signature Verification -------
+
+    PositionMarginConfig storage conf = sub.positionMarginConfigs[assetID];
+    conf.marginType = marginType;
+    conf.leverage = leverage;
+  }
+
+  /// @notice Switch a sub account between SINGLE_ASSET_MODE and MULTI_ASSET_MODE (MAM).
+  /// @dev Mirrors the platform's SetSubAccountMode (MAM-3). The platform validates all switch
+  /// preconditions (isolated-position MMR buffer, CDC headroom, IM coverage, zero USDT debt for
+  /// MAM->SAM, whitelist/modeSwitchEnabled gating); the chain lacks CL/CDC/buffer config and trusts
+  /// the trusted sequencer to only submit a switch that passed platform validation. The contract
+  /// just records the resulting mode and the paired assertion confirms the field value.
+  /// @param timestamp The timestamp of the transaction
+  /// @param txID The transaction ID
+  /// @param subAccID The subaccount ID
+  /// @param mode The target mode (SINGLE_ASSET_MODE or MULTI_ASSET_MODE; UNIFIED is out of scope)
+  /// @param isolatedAssets Sequencer-derived context (excluded from the signed payload, like
+  /// `feeCharged`): the assets whose isolated margin configs this switch converts to cross.
+  /// Risk stamps it at confirmation by iterating its config map (EVM mappings are not
+  /// iterable); empty when isolated margin is allowed in MAM or the target is not MAM.
+  /// @param sig The signature of the acting user
+  function setSubAccountMode(
+    int64 timestamp,
+    uint64 txID,
+    uint64 subAccID,
+    SubAccountMode mode,
+    bytes32[] calldata isolatedAssets,
+    Signature calldata sig
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+    SubAccount storage sub = _requireSubAccount(subAccID);
+
+    // permission: TRADE (verified) — account-level AccountPermTrade OR sub-level SubAccountPermTrade,
+    // directly or via a valid session key, mirroring the platform's
+    // requireSignerOrSessionKeySubAccountPerm. Same as SetSubAccountPositionMarginConfig. NOT admin.
+    _requireSignerOrSessionKeySubAccountPerm(sub, sig.signer, SubAccountPermTrade, timestamp);
+
+    // ---------- Signature Verification -----------
+    _preventReplay(hashSetSubAccountMode(subAccID, mode, sig.nonce, sig.expiration), sig);
+    // ------- End of Signature Verification -------
+
+    // UNIFIED out of scope; only SINGLE <-> MULTI is supported.
+    require(
+      mode == SubAccountMode.SINGLE_ASSET_MODE || mode == SubAccountMode.MULTI_ASSET_MODE,
+      "unsupported target mode"
+    );
+
+    // Mirror the platform apply order: settle pending funding at switch time so the
+    // post-switch state matches the platform's (which funds-and-settles before flipping).
+    _fundAndSettle(sub);
+
+    // Mirror the platform apply: rewrite the stamped isolated configs to cross (leverage
+    // preserved). The set is sequencer context — empty when no conversion applies — so the
+    // contract needs no flag read and no iterable config storage.
+    // The entries are isolated configs by construction (Risk derived the list from the same
+    // state at confirmation) — trust the context, no re-check; leverage stays as stored.
+    uint256 len = isolatedAssets.length;
+    for (uint256 i; i < len; ) {
+      sub.positionMarginConfigs[isolatedAssets[i]].marginType = PositionMarginType.CROSS;
+      unchecked {
+        ++i;
+      }
+    }
+
+    sub.subAccountMode = mode;
+  }
+
+  function scalePositions(
+    int64 timestamp,
+    uint64 txID,
+    bytes32 instrument,
+    uint64[] calldata batchSubAccountIDs,
+    uint32 scaleFrom,
+    uint32 scaleTo
+  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
+    _setSequence(timestamp, txID);
+
+    require(scaleFrom != 0 && scaleTo != 0, "invalid scale ratio");
+
+    uint len = batchSubAccountIDs.length;
+    require(len != 0, "scalePositions: empty batch");
+
+    Kind kind = assetGetKind(instrument);
+    require(kind == Kind.PERPS || kind == Kind.FUTURES, "scalePositions: only perp/future");
+
+    uint256 underlyingDec = _getBalanceDecimal(assetGetUnderlying(instrument));
+    BI memory fromBI = BIMath.fromUint32(scaleFrom, 0);
+    BI memory toBI = BIMath.fromUint32(scaleTo, 0);
+
+    for (uint i; i < len; ) {
+      uint64 subID = batchSubAccountIDs[i];
+
+      // Reject duplicate sub-accounts
+      for (uint j; j < i; ) {
+        require(batchSubAccountIDs[j] != subID, "scalePositions: duplicate sub-account");
+        unchecked {
+          ++j;
+        }
+      }
+
+      SubAccount storage sub = _requireSubAccount(subID);
+
+      // Settle pending perp funding on the CURRENT (pre-scale) size before resizing. Funding is lazy
+      // ((fundingIndex - lastAppliedFundingIndex) * balance), so scaling balance first would mis-charge
+      // it; this advances lastAppliedFundingIndex without changing balance.
+      _fundAndSettle(sub);
+
+      PositionsMap storage posmap = _getPositionCollection(sub, kind);
+      Position storage pos = posmap.values[instrument];
+      
+      require(pos.id != 0x0 && pos.balance != 0, "scalePositions: no open position");
+
+      pos.balance = BIMath.fromInt64(pos.balance, underlyingDec).mul(toBI).div(fromBI).toInt64(underlyingDec);
+      unchecked {
+        ++i;
+      }
+    }
   }
 }

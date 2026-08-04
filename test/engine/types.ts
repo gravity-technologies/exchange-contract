@@ -33,6 +33,7 @@ export interface TestStep {
 export interface TxInfo {
   type: string
   deposit: DepositTxInfo | undefined
+  add_currency: AddCurrencyTxInfo | undefined
 }
 
 export interface DepositTxInfo {
@@ -40,6 +41,12 @@ export interface DepositTxInfo {
   token_currency: string
   num_tokens: string
   currency: number
+}
+
+export interface AddCurrencyTxInfo {
+  id: number
+  balance_decimals: number
+  name: string
 }
 
 export interface ExNumAccounts {
@@ -69,6 +76,12 @@ export interface ExSubAccountSigners {
 export interface ExSubAccountMarginType {
   sub_account_id: string
   margin_type: string
+}
+
+// Expects a sub-account with the given sub-account mode (SAM/MAM)
+export interface ExSubAccountMode {
+  sub_account_id: string
+  sub_account_mode: string
 }
 
 export interface SessionValue {
@@ -181,6 +194,14 @@ export interface ExAccountSpot {
   balance: string
 }
 
+export interface ExStakeInfo {
+  AccountID: string
+  LockedAmount: string
+  State: string
+  FundingGRVT?: string | null
+  FundingCurrency: number
+}
+
 export interface ExConfigNotSet {
   key: string
 }
@@ -231,7 +252,8 @@ export interface ExNumSubAccountPositions {
 export interface ExSubAccountSpotReal {
   sub_account_id: string
   currency: string
-  balance: string
+  balance: string // not usable by contract since this is a derived value
+  raw_balance: string // use this to compare with sub.futuresWalletBalances[currency]
 }
 
 export interface ExSubAccountPositionOptional {
@@ -250,6 +272,7 @@ export interface ExSubAccountPositionOptional {
     roi: number
     quote_index_price: string
   }
+  raw_position_balance: string
 }
 
 export interface ExInsuranceFundLoss {
@@ -273,7 +296,7 @@ export interface ExVaultParams {
 
 export interface ExVaultStatus {
   vault_id: string
-  status: string  // "ACTIVE", "DELISTED", or "CLOSED"
+  status: string // "ACTIVE", "DELISTED", or "CLOSED"
 }
 
 export interface ExVaultTotalLpTokenSupply {
@@ -347,53 +370,77 @@ export interface ExIfAccountHasVaultPosition {
   has_position: boolean
 }
 
+export interface ExAuthorizeBuilder {
+  main_account_id: string
+  builder_account_id: string
+  max_future_fee_rate: string
+  max_spot_fee_rate: string
+}
+
+export interface ExSubAccountPositionMarginConfig {
+  sub_account_id: string
+  asset: Asset
+  margin_type: string
+  leverage: string
+}
+
+export interface ExSubAccountSpotWalletBalance {
+  sub_account_id: string
+  spot_balances: {
+    currency: number
+    balance: string
+  }[]
+}
 
 export interface Expectation {
   name: string
   expect:
-  | ExNumAccounts
-  | ExAccountSigners
-  | ExAccountMultiSigThreshold
-  | ExAccountWithdrawalAddresses
-  | ExSessionKeys
-  | ExConfig1D
-  | ExConfig2D
-  | ExConfigSchedule
-  | ExConfigScheduleAbsent
-  | ExSubAccountSigners
-  | ExSubAccountMarginType
-  | ExFundingIndex
-  | ExMarkPrice
-  | ExInterestRate
-  | ExFundingTimeDelta
-  | ExSubAccountValue
-  | ExSubAccountPosition
-  | ExSubAccountSpot
-  | ExSettlementPrice
-  | ExAccountRecoveryAddresses
-  | ExNotAccountRecoveryAddresses
-  | ExAccountSpot
-  | ExSimpleCrossMaintenanceMarginTiers
-  | ExSimpleCrossMaintenanceMarginTimelockEndTime
-  | ExSimpleCrossMaintenanceMarginTiersNoTimelock
-  | ExSubAccountMaintMargin
-  | ExOnboardedTransferAccount
-  | ExSubAccountSummaryOptional
-  | ExSubAccountSpotReal
-  | ExSubAccountPositionOptional
-  | ExNumSubAccountPositions
-  | ExInsuranceFundLoss
-  | ExTotalClientEquity
-  | ExVaultParams
-  | ExVaultStatus
-  | ExVaultTotalLpTokenSupply
-  | ExVaultLpInfo
-  | ExSubAccountUnderDeriskMargin
-  | ExCurrencyConfig
-  | ExCurrencyCount
-  | ExVaultIsCrossExchange
-  | ExVaultManagerAttestedSharePrice
-  | ExVaultLastUpdateTimestampIncreased
-  | ExVaultAllTimePnl
-  | ExIfAccountHasVaultPosition
+    | ExNumAccounts
+    | ExAccountSigners
+    | ExAccountMultiSigThreshold
+    | ExAccountWithdrawalAddresses
+    | ExSessionKeys
+    | ExConfig1D
+    | ExConfig2D
+    | ExConfigSchedule
+    | ExConfigScheduleAbsent
+    | ExSubAccountSigners
+    | ExSubAccountMarginType
+    | ExFundingIndex
+    | ExMarkPrice
+    | ExInterestRate
+    | ExFundingTimeDelta
+    | ExSubAccountValue
+    | ExSubAccountPosition
+    | ExSubAccountSpot
+    | ExSettlementPrice
+    | ExAccountRecoveryAddresses
+    | ExNotAccountRecoveryAddresses
+    | ExAccountSpot
+    | ExStakeInfo
+    | ExSimpleCrossMaintenanceMarginTiers
+    | ExSimpleCrossMaintenanceMarginTimelockEndTime
+    | ExSimpleCrossMaintenanceMarginTiersNoTimelock
+    | ExSubAccountMaintMargin
+    | ExOnboardedTransferAccount
+    | ExSubAccountSummaryOptional
+    | ExSubAccountSpotReal
+    | ExSubAccountPositionOptional
+    | ExNumSubAccountPositions
+    | ExInsuranceFundLoss
+    | ExTotalClientEquity
+    | ExVaultParams
+    | ExVaultStatus
+    | ExVaultTotalLpTokenSupply
+    | ExVaultLpInfo
+    | ExSubAccountUnderDeriskMargin
+    | ExCurrencyConfig
+    | ExCurrencyCount
+    | ExVaultIsCrossExchange
+    | ExVaultManagerAttestedSharePrice
+    | ExVaultLastUpdateTimestampIncreased
+    | ExVaultAllTimePnl
+    | ExIfAccountHasVaultPosition
+    | ExAuthorizeBuilder
+    | ExSubAccountSpotWalletBalance
 }

@@ -17,7 +17,12 @@ interface RevertContext {
   previousCall?: CallTrace
 }
 
-function findRevertInCalls(calls: CallTrace[] | undefined, multicallAddr: string, exchangeAddr: string, includeContext = false): RevertContext | null {
+function findRevertInCalls(
+  calls: CallTrace[] | undefined,
+  multicallAddr: string,
+  exchangeAddr: string,
+  includeContext = false
+): RevertContext | null {
   if (!calls) return null
 
   for (const call of calls) {
@@ -26,11 +31,14 @@ function findRevertInCalls(calls: CallTrace[] | undefined, multicallAddr: string
       let lastExchangeCall: CallTrace | undefined
 
       for (const innerCall of call.calls) {
-        if (innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() && innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
+        if (
+          innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() &&
+          innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()
+        ) {
           if (innerCall.revertReason) {
             return {
               call: innerCall,
-              previousCall: includeContext ? lastExchangeCall : undefined
+              previousCall: includeContext ? lastExchangeCall : undefined,
             }
           }
           lastExchangeCall = innerCall
@@ -43,7 +51,11 @@ function findRevertInCalls(calls: CallTrace[] | undefined, multicallAddr: string
     }
 
     // Direct call to exchange
-    if (call.from?.toLowerCase() === multicallAddr.toLowerCase() && call.to?.toLowerCase() === exchangeAddr.toLowerCase() && call.revertReason) {
+    if (
+      call.from?.toLowerCase() === multicallAddr.toLowerCase() &&
+      call.to?.toLowerCase() === exchangeAddr.toLowerCase() &&
+      call.revertReason
+    ) {
       return { call }
     }
   }
@@ -53,20 +65,20 @@ function findRevertInCalls(calls: CallTrace[] | undefined, multicallAddr: string
 
 function parseArguments(functionFragment: any, decodedData: any) {
   return Object.keys(decodedData)
-    .filter(k => isNaN(Number(k))) // Filter out numeric indices
+    .filter((k) => isNaN(Number(k))) // Filter out numeric indices
     .reduce((acc: any, key) => {
       const value = decodedData[key]
       const param = functionFragment.inputs.find((input: any) => input.name === key)
 
       if (param?.components) {
         // This is a struct or array of structs
-        if (param.type.includes('[]')) {
+        if (param.type.includes("[]")) {
           // Handle array of structs
           if (Array.isArray(value)) {
             acc[key] = value.map((item: any) => parseStruct(item, param.components))
           } else {
             // Handle comma-separated string case
-            const values = value.toString().split(',')
+            const values = value.toString().split(",")
             const structSize = param.components.length
             const structs = []
 
@@ -98,7 +110,7 @@ function parseStruct(value: any, components: any[]): any {
 
     if (component.components) {
       // Nested struct
-      if (component.type.includes('[]')) {
+      if (component.type.includes("[]")) {
         // Array of nested structs
         result[component.name] = Array.isArray(fieldValue)
           ? fieldValue.map((item: any) => parseStruct(item, component.components))
@@ -115,30 +127,32 @@ function parseStruct(value: any, components: any[]): any {
   return result
 }
 
-function formatCallData(call: CallTrace, exchangeInterface: Interface, facetInterfaces: Map<string, Interface>): string {
+function formatCallData(
+  call: CallTrace,
+  exchangeInterface: Interface,
+  facetInterfaces: Map<string, Interface>
+): string {
   try {
     const selector = call.input?.slice(0, 10)
 
     // First try the main exchange interface
     try {
       const functionFragment = exchangeInterface.getFunction(selector || "0x")
-      const decodedData = call.input ?
-        exchangeInterface.decodeFunctionData(functionFragment, call.input) : null
+      const decodedData = call.input ? exchangeInterface.decodeFunctionData(functionFragment, call.input) : null
 
       const args = decodedData ? parseArguments(functionFragment, decodedData) : null
 
-      return `${functionFragment.name}(${args ? JSON.stringify(args, null, 2) : 'no args'})`
+      return `${functionFragment.name}(${args ? JSON.stringify(args, null, 2) : "no args"})`
     } catch (e) {
       // If main interface fails, try facet interfaces
       for (const [facetName, facetInterface] of facetInterfaces) {
         try {
           const functionFragment = facetInterface.getFunction(selector || "0x")
-          const decodedData = call.input ?
-            facetInterface.decodeFunctionData(functionFragment, call.input) : null
+          const decodedData = call.input ? facetInterface.decodeFunctionData(functionFragment, call.input) : null
 
           const args = decodedData ? parseArguments(functionFragment, decodedData) : null
 
-          return `[${facetName}] ${functionFragment.name}(${args ? JSON.stringify(args, null, 2) : 'no args'})`
+          return `[${facetName}] ${functionFragment.name}(${args ? JSON.stringify(args, null, 2) : "no args"})`
         } catch (facetError) {
           // Continue to next facet
           continue
@@ -146,14 +160,18 @@ function formatCallData(call: CallTrace, exchangeInterface: Interface, facetInte
       }
 
       // If no facet interface works, return raw input
-      return call.input || 'no input'
+      return call.input || "no input"
     }
   } catch (e) {
-    return call.input || 'no input'
+    return call.input || "no input"
   }
 }
 
-function findAllExchangeCalls(calls: CallTrace[] | undefined, multicallAddr: string, exchangeAddr: string): CallTrace[] {
+function findAllExchangeCalls(
+  calls: CallTrace[] | undefined,
+  multicallAddr: string,
+  exchangeAddr: string
+): CallTrace[] {
   if (!calls) return []
 
   const exchangeCalls: CallTrace[] = []
@@ -162,9 +180,12 @@ function findAllExchangeCalls(calls: CallTrace[] | undefined, multicallAddr: str
     // For multicall contracts, look at their internal calls
     if (call.calls?.length) {
       for (const innerCall of call.calls) {
-        let callFound = false;
-        if (innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() && innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
-          callFound = true;
+        let callFound = false
+        if (
+          innerCall.from?.toLowerCase() === multicallAddr.toLowerCase() &&
+          innerCall.to?.toLowerCase() === exchangeAddr.toLowerCase()
+        ) {
+          callFound = true
           exchangeCalls.push(innerCall)
         }
 
@@ -176,7 +197,10 @@ function findAllExchangeCalls(calls: CallTrace[] | undefined, multicallAddr: str
     }
 
     // Direct call to exchange
-    if (call.from?.toLowerCase() === multicallAddr.toLowerCase() && call.to?.toLowerCase() === exchangeAddr.toLowerCase()) {
+    if (
+      call.from?.toLowerCase() === multicallAddr.toLowerCase() &&
+      call.to?.toLowerCase() === exchangeAddr.toLowerCase()
+    ) {
       exchangeCalls.push(call)
     }
   }
@@ -190,8 +214,7 @@ task("find-contract-error", "Find contract error in a specific transaction")
   .addFlag("showCalldata", "Show raw calldata in output")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
-    const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+    const exchangeAddr = taskArgs.exchangeAddr || (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     const multicallAddr = (hre.config as any).contractAddresses?.[hre.network.name]?.multicall3
 
@@ -222,10 +245,7 @@ task("find-contract-error", "Find contract error in a specific transaction")
       }
     }
 
-    const response = await l2Provider.send("debug_traceTransaction", [
-      taskArgs.txHash,
-      { tracer: "callTracer" }
-    ])
+    const response = await l2Provider.send("debug_traceTransaction", [taskArgs.txHash, { tracer: "callTracer" }])
 
     // Find revert in call tree, include context for assertion errors
     const revertContext = findRevertInCalls(
@@ -264,7 +284,7 @@ task("find-contract-error", "Find contract error in a specific transaction")
         }
 
         if (functionFragment) {
-          const isAssertionError = functionFragment.name.startsWith('assert')
+          const isAssertionError = functionFragment.name.startsWith("assert")
 
           if (previousCall && isAssertionError) {
             console.log("Previous successful call:")
@@ -305,8 +325,7 @@ task("view-contract-calls", "View all calls to exchange contract in a transactio
   .addFlag("showCalldata", "Show raw calldata in output")
   .setAction(async (taskArgs, hre) => {
     // Get exchange address from param or config
-    const exchangeAddr = taskArgs.exchangeAddr ||
-      (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
+    const exchangeAddr = taskArgs.exchangeAddr || (hre.config as any).contractAddresses?.[hre.network.name]?.exchange
 
     const multicallAddr = (hre.config as any).contractAddresses?.[hre.network.name]?.multicall3
 
@@ -337,10 +356,7 @@ task("view-contract-calls", "View all calls to exchange contract in a transactio
       }
     }
 
-    const response = await l2Provider.send("debug_traceTransaction", [
-      taskArgs.txHash,
-      { tracer: "callTracer" }
-    ])
+    const response = await l2Provider.send("debug_traceTransaction", [taskArgs.txHash, { tracer: "callTracer" }])
 
     // Find all exchange calls in the transaction
     const exchangeCalls = findAllExchangeCalls([response], multicallAddr, exchangeAddr)
@@ -396,7 +412,7 @@ task("decode-calldata", "Decode and format calldata for exchange contract")
     const mockCall: CallTrace = {
       from: "0x0000000000000000000000000000000000000000",
       to: "0x0000000000000000000000000000000000000000",
-      input: taskArgs.calldata
+      input: taskArgs.calldata,
     }
 
     try {

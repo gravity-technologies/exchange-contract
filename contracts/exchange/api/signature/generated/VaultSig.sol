@@ -9,12 +9,12 @@ bytes32 constant _VAULT_CREATE_H = keccak256(
 function hashVaultCreate(
   uint64 vaultID,
   address managerAccountID,
-  Currency quoteCurrency,
+  uint8 quoteCurrency,
   MarginType marginType,
   uint32 managementFeeCentiBeeps,
   uint32 performanceFeeCentiBeeps,
   uint32 marketingFeeCentiBeeps,
-  Currency initialInvestmentCurrency,
+  uint8 initialInvestmentCurrency,
   uint64 initialInvestmentNumTokens,
   uint32 nonce,
   int64 expiration
@@ -25,12 +25,12 @@ function hashVaultCreate(
         _VAULT_CREATE_H,
         vaultID,
         managerAccountID,
-        uint8(quoteCurrency),
+        quoteCurrency,
         uint8(marginType),
         managementFeeCentiBeeps,
         performanceFeeCentiBeeps,
         marketingFeeCentiBeeps,
-        uint8(initialInvestmentCurrency),
+        initialInvestmentCurrency,
         initialInvestmentNumTokens,
         nonce,
         expiration
@@ -71,12 +71,12 @@ bytes32 constant _VAULT_INVEST_H = keccak256(
 function hashVaultInvest(
   uint64 vaultID,
   address accountID,
-  Currency tokenCurrency,
+  uint8 tokenCurrency,
   uint64 numTokens,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_VAULT_INVEST_H, vaultID, accountID, uint8(tokenCurrency), numTokens, nonce, expiration));
+  return keccak256(abi.encode(_VAULT_INVEST_H, vaultID, accountID, tokenCurrency, numTokens, nonce, expiration));
 }
 
 bytes32 constant _VAULT_BURN_LP_TOKEN_H = keccak256(
@@ -99,14 +99,14 @@ bytes32 constant _VAULT_REDEEM_H = keccak256(
 
 function hashVaultRedeem(
   uint64 vaultID,
-  Currency tokenCurrency,
+  uint8 tokenCurrency,
   uint64 numLpTokens,
   address accountID,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
   return
-    keccak256(abi.encode(_VAULT_REDEEM_H, vaultID, uint8(tokenCurrency), numLpTokens, accountID, nonce, expiration));
+    keccak256(abi.encode(_VAULT_REDEEM_H, vaultID, tokenCurrency, numLpTokens, accountID, nonce, expiration));
 }
 
 bytes32 constant _VAULT_CROSS_EXCHANGE_UPDATE_H = keccak256(

@@ -8,6 +8,8 @@ import "../interfaces/IGetter.sol";
 contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, RiskCheck {
   using BIMath for BI;
 
+  uint64 internal constant MAX_PENDING_WITHDRAWAL_PAGE_SIZE = 100;
+
   function getAccountResult(address accID) public view returns (AccountResult memory) {
     Account storage account = state.accounts[accID];
     return
@@ -28,9 +30,16 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return true;
   }
 
-  function getAccountSpotBalance(address accID, Currency currency) public view returns (int64) {
+  function getAccountFundingWalletBalance(address accID, uint8 currency) public view returns (int64) {
     Account storage account = state.accounts[accID];
-    return account.spotBalances[currency];
+    return account.fundingWalletBalances[currency];
+  }
+
+  function getAccountStake(
+    address accID
+  ) public view returns (int64 lockedAmount, int64 lockEndTime, int64 cooldownEndTime) {
+    Account storage account = state.accounts[accID];
+    return (account.stakeLockedAmount, account.stakeLockEndTime, account.stakeCooldownEndTime);
   }
 
   function isRecoveryAddress(address id, address signer, address recoveryAddress) public view returns (bool) {
@@ -113,7 +122,7 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
   }
 
   function getMarkPrice(bytes32 assetID) public view returns (uint64, bool) {
-    return _getAssetPrice9Dec(assetID);
+    return _getAssetPriceInQuote9Dec(assetID);
   }
 
   function getSettlementPrice(bytes32 assetID) public view returns (uint64, bool) {
@@ -128,17 +137,17 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
   function getSubAccountValue(uint64 subAccountID) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     uint64 quoteDecimals = _getBalanceDecimal(sub.quoteCurrency);
-    return _getSubAccountValueInQuote(sub).toInt64(quoteDecimals);
+    return _getTotalEquityInQuote(sub).toInt64(quoteDecimals);
   }
 
   function getSubAccountPosition(
     uint64 subAccountID,
     bytes32 assetID
-  ) public view returns (bool found, int64 balance, int64 lastAppliedFundingIndex) {
+  ) public view returns (bool found, int64 balance, int64 lastAppliedFundingIndex, int64 marginBalance) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
     PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
     Position storage pos = posmap.values[assetID];
-    return (pos.id != 0x0, pos.balance, pos.lastAppliedFundingIndex);
+    return (pos.id != 0x0, pos.balance, pos.lastAppliedFundingIndex, pos.marginBalance);
   }
 
   function getSubAccountPositionCount(uint64 subAccountID) public view returns (uint) {
@@ -146,9 +155,19 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return sub.perps.keys.length + sub.futures.keys.length + sub.options.keys.length;
   }
 
-  function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) public view returns (int64) {
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, uint8 currency) public view returns (int64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return sub.spotBalances[currency];
+    return sub.futuresWalletBalances[currency];
+  }
+
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, uint8 currency) public view returns (int64) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.spotWalletBalances[currency];
+  }
+
+  function getSubAccountMode(uint64 subAccountID) public view returns (SubAccountMode) {
+    SubAccount storage sub = _requireSubAccount(subAccountID);
+    return sub.subAccountMode;
   }
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) public view returns (MarginTier[] memory) {
@@ -170,24 +189,64 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) public view returns (uint64) {
     SubAccount storage sub = _requireSubAccount(subAccountID);
-    return _getMaintenanceMargin(sub);
+    uint qDec = _getBalanceDecimal(sub.quoteCurrency);
+    return _getMaintenanceMarginCrossInQuote(sub).toUint64(qDec);
+  }
+
+  function hasOverdueWithdrawalRequest() public view returns (bool) {
+    return _hasOverdueWithdrawalRequestAt(state.timestamp);
+  }
+
+  function hasOverdueWithdrawalRequestAt(int64 timestampNs) public view returns (bool) {
+    return _hasOverdueWithdrawalRequestAt(timestampNs);
+  }
+
+  function getPendingWithdrawalQueueBounds() public view returns (uint64 head, uint64 tail) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    return (queue.head, queue.tail);
+  }
+
+  function getPendingWithdrawalRequests(
+    uint64 start,
+    uint64 limit
+  ) public view returns (PendingWithdrawalRequest[] memory requests) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    uint64 head = queue.head;
+    uint64 tail = queue.tail;
+
+    if (start < head) {
+      start = head;
+    }
+    if (start >= tail || limit == 0) {
+      return new PendingWithdrawalRequest[](0);
+    }
+
+    require(limit <= MAX_PENDING_WITHDRAWAL_PAGE_SIZE, "limit too large");
+
+    uint64 available = tail - start;
+    uint64 count = limit < available ? limit : available;
+
+    requests = new PendingWithdrawalRequest[](count);
+    for (uint256 i; i < uint256(count); ++i) {
+      requests[i] = queue.requests[start + uint64(i)];
+    }
   }
 
   function getTimestamp() public view returns (int64) {
     return state.timestamp;
   }
 
-  function getExchangeCurrencyBalance(Currency currency) public view returns (int64) {
+  function getExchangeCurrencyBalance(uint8 currency) public view returns (int64) {
     return state.totalSpotBalances[currency];
   }
 
-  function getInsuranceFundLoss(Currency currency) public view returns (int64) {
-    require(currency == Currency.USDT, "Invalid currency");
+  function getInsuranceFundLoss(uint8 currency) public view returns (int64) {
+    require(currency == CCY_USDT, "Invalid currency");
     return _getInsuranceFundLossAmountUSDT();
   }
 
-  function getTotalClientEquity(Currency currency) public view returns (int64) {
-    require(currency == Currency.USDT, "Invalid currency");
+  function getTotalClientEquity(uint8 currency) public view returns (int64) {
+    require(currency == CCY_USDT, "Invalid currency");
     return _getTotalClientValueUSDT();
   }
 
@@ -235,30 +294,16 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     return (lpInfo.lpTokenBalance, lpInfo.usdNotionalInvested);
   }
 
-  function isUnderDeriskMargin(uint64 subAccountID, bool underDeriskMargin) public view returns (bool) {
-    SubAccount storage sub = _requireSubAccount(subAccountID);
-
-    // Compute the maintenance margin
-    uint64 mm = _getMaintenanceMargin(sub);
-    uint64 qDec = _getBalanceDecimal(sub.quoteCurrency);
-    BI memory mmBI = BI(SafeCast.toInt256(uint(mm)), qDec);
-
-    // Compute the derisk margin
-    // TODO: if subAccount is vault, ratio = DERISK_MM_RATIO_VAULT
-    uint64 ratio = sub.deriskToMaintenanceMarginRatio == 0
-      ? DERISK_MM_RATIO_DEFAULT
-      : sub.deriskToMaintenanceMarginRatio;
-    BI memory ratioBI = BI(int64(ratio), DERISK_RATIO_DECIMALS);
-    uint64 deriskMargin = mmBI.mul(ratioBI).toUint64(qDec);
-
-    BI memory totalEquityBI = _getSubAccountValueInQuote(sub);
-    int64 totalEquity = totalEquityBI.toInt64(qDec);
-
-    if (underDeriskMargin) {
-      return totalEquity < int64(deriskMargin);
-    } else {
-      return totalEquity >= int64(deriskMargin);
-    }
+  /// This function is more correctly named as isUnderDeriskMarginCross
+  function isUnderDeriskMargin(uint64 subAccountID, bool expectedUnderDeriskMargin) public view returns (bool) {
+    SubAccount storage subAccount = _requireSubAccount(subAccountID);
+    return
+      expectedUnderDeriskMargin ==
+      isTotalEquityBelowDeriskMargin(
+        subAccount,
+        _getMaintenanceMarginCrossInQuote(subAccount),
+        _getTotalEquityCrossInQuote(subAccount)
+      );
   }
 
   function getCurrencyDecimals(uint16 id) public view returns (uint16) {
@@ -275,5 +320,85 @@ contract GetterFacet is IGetter, CurrencyContract, MarginConfigContractGetter, R
     SubAccount storage sub = _requireSubAccount(vaultID);
     require(sub.isVault, "Not a vault");
     return sub.vaultInfo.managerAttestedSharePrice;
+  }
+
+  function getAuthorizedBuilderConfig(
+    address mainAccountID,
+    address builderAccountID
+  ) external view returns (uint64, uint64) {
+    Account storage mainAccount = state.accounts[mainAccountID];
+    BuilderFeeConfig storage cfg = mainAccount.builders[builderAccountID];
+    return (cfg.maxFutureFeeRate, cfg.maxSpotFeeRate);
+  }
+
+  function getSubAccountPositionMarginConfig(
+    uint64 subAccountID,
+    bytes32 assetID
+  ) external view returns (PositionMarginType, int32) {
+    PositionMarginConfig storage cfg = _requireSubAccount(subAccountID).positionMarginConfigs[assetID];
+    return (cfg.marginType, cfg.leverage);
+  }
+
+  ///////////////////////////////////////////////////////////////////
+  /// MAM config getters (TRADE-1127)
+  ///
+  /// Typed reads for the per-currency MAM configs. The generic getConfig2D/getConfig1D
+  /// already work; these mirror the existing typed-getter style and decode to the right
+  /// type. The CENTIBEEP2D/UINT2D getters fall back to the DEFAULT_CONFIG_ENTRY (subKey 0)
+  /// when no per-currency value is set (matching the underlying decoders); the BOOL2D
+  /// getter reads the exact subKey (mirrors `_getBoolConfig2D`). CDC is store-only and
+  /// exposed here for tooling/audit; nothing enforces it.
+  ///////////////////////////////////////////////////////////////////
+
+  /// @notice Spot asset Collateral Value Ratio (centi-beep, 1e6 = 100%). Read by the margin recompute.
+  function getSpotAssetCVR(uint8 currency) external view returns (int32 cvr, bool isSet) {
+    return _getCentibeepConfig2D(ConfigID.SPOT_ASSET_CVR, _currencyToConfig(currency));
+  }
+
+  /// @notice Spot asset CDC cap (native asset units). Store-only — not enforced on-chain.
+  function getSpotAssetCDC(uint8 currency) external view returns (uint64 cap, bool isSet) {
+    return _getUintConfig2D(ConfigID.SPOT_ASSET_CDC, _currencyToConfig(currency));
+  }
+
+  /// @notice Spot asset Margin Borrow Allowance (centi-beep). Store-only — enforcement is off-chain.
+  function getSpotAssetMBA(uint8 currency) external view returns (int32 mba, bool isSet) {
+    return _getCentibeepConfig2D(ConfigID.SPOT_ASSET_MBA, _currencyToConfig(currency));
+  }
+
+  /// @notice Whether a currency is disabled-by-default as collateral. Read by the [02] eligibility guard.
+  function getDefaultDisabledCurrency(uint8 currency) external view returns (bool) {
+    return _getBoolConfig2D(ConfigID.DEFAULT_DISABLED_CURRENCIES, _currencyToConfig(currency));
+  }
+
+  /// @notice Whether external main-account -> main-account transfers are blocked for a currency.
+  /// Read by the transferMainToMain guard; true rejects the transfer for that currency.
+  function getBlockTransferMainToMainCurrency(uint8 currency) external view returns (bool) {
+    return _isBlockTransferMainToMainCurrency(currency);
+  }
+
+  /// @notice Whether a source main account is exempt from the main-to-main currency block.
+  /// When true, the account's main-to-main transfers are allowed even for a blocked currency.
+  function getBlockTransferMainToMainExemptAccount(address account) external view returns (bool) {
+    return _isBlockTransferMainToMainExempt(account);
+  }
+
+  /// @notice Repayment floor ratio (centi-beep, 1D). Store-only.
+  function getRepaymentFloorRatio() external view returns (int32 ratio, bool isSet) {
+    return _getCentibeepConfig(ConfigID.REPAYMENT_FLOOR_RATIO);
+  }
+
+  /// @notice Liquidation repayment divisor (uint, 1D). Store-only.
+  function getLiquidationRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.LIQUIDATION_REPAYMENT_DIVISOR);
+  }
+
+  /// @notice Automated repayment divisor (uint, 1D). Store-only.
+  function getAutomatedRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.AUTOMATED_REPAYMENT_DIVISOR);
+  }
+
+  /// @notice Manual repayment divisor (uint, 1D). Store-only.
+  function getManualRepaymentDivisor() external view returns (uint64 divisor, bool isSet) {
+    return _getUintConfig(ConfigID.MANUAL_REPAYMENT_DIVISOR);
   }
 }

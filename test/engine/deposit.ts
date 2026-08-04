@@ -4,6 +4,7 @@ import { L2SharedBridge } from "../../lib/era-contracts/l2-contracts/typechain/L
 import { DepositTxInfo, TestStep } from "./types"
 import { scaleBigInt } from "./util"
 import { CurrencyIDToName } from "./enums"
+import { getAddedCurrencyTokenInfo } from "./addCurrency"
 
 export function isDeposit(step: TestStep) {
   return step.tx != undefined && step.tx.type == "DEPOSIT"
@@ -21,34 +22,31 @@ export async function mockFinalizeDeposit(
   exchangeContract: Contract
 ) {
   const currency = deposit.currency
+  const tokenInfo = L2TokenInfo[currency] ?? getAddedCurrencyTokenInfo(currency)
 
-  const rawAmount = scaleBigInt(
-    deposit.num_tokens,
-    L2TokenInfo[currency].exchangeDecimals,
-    L2TokenInfo[currency].erc20Decimals
-  )
+  if (tokenInfo === undefined) {
+    console.log(`🚨 Unknown currency - add the currency in your test: ${currency} 🚨 `)
+    return
+  }
+
+  const rawAmount = scaleBigInt(deposit.num_tokens, tokenInfo.exchangeDecimals, tokenInfo.erc20Decimals)
 
   const to_account_id = ethers.utils.hexZeroPad(deposit.to_account_id, 20)
+  const depositProxy = await exchangeContract.getDepositProxy(to_account_id)
 
-  if (currency in L2TokenInfo) {
-    const depositProxy = await exchangeContract.getDepositProxy(to_account_id)
-    await l2SharedBridgeAsL1Bridge.finalizeDeposit(
-      // Depositor and l2Receiver can be any here
-      to_account_id,
-      depositProxy,
-      L2TokenInfo[currency].l1Token,
-      rawAmount,
-      encodedTokenData(L2TokenInfo[currency].name, currency, L2TokenInfo[currency].erc20Decimals)
-    )
-  } else {
-    console.log(`🚨 Unknown currency - add the currency in your test: ${currency} 🚨 `)
-  }
+  await l2SharedBridgeAsL1Bridge.finalizeDeposit(
+    // Depositor and l2Receiver can be any here
+    to_account_id,
+    depositProxy,
+    tokenInfo.l1Token,
+    rawAmount,
+    encodedTokenData(tokenInfo.name, CurrencyIDToName[currency] ?? tokenInfo.name, tokenInfo.erc20Decimals)
+  )
 }
 
-function encodedTokenData(name: string, currencyID: number, decimals: number) {
+function encodedTokenData(name: string, symbol: string, decimals: number) {
   const abiCoder = ethers.utils.defaultAbiCoder
   const encodedName = abiCoder.encode(["string"], [name])
-  const symbol = CurrencyIDToName[currencyID]
   const encodedSymbol = abiCoder.encode(["string"], [symbol])
   const encodedDecimals = abiCoder.encode(["uint8"], [decimals])
   return abiCoder.encode(["bytes", "bytes", "bytes"], [encodedName, encodedSymbol, encodedDecimals])

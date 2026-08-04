@@ -13,12 +13,12 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint64 txID,
     uint64 vaultID,
     address managerAccountID,
-    Currency quoteCurrency,
+    uint8 quoteCurrency,
     MarginType marginType,
     uint32 managementFeeCentiBeeps,
     uint32 performanceFeeCentiBeeps,
     uint32 marketingFeeCentiBeeps,
-    Currency initialInvestmentCurrency,
+    uint8 initialInvestmentCurrency,
     uint64 initialInvestmentNumTokens,
     bool isCrossExchange,
     Signature calldata sig
@@ -42,7 +42,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     _preventReplay(hash, sig);
     // ------- End of Signature Verification -------
 
-    require(quoteCurrency == Currency.USDT, "only USDT vault is supported");
+    require(quoteCurrency == CCY_USDT, "only USDT vault is supported");
     require(initialInvestmentCurrency == quoteCurrency, "only investment in quote currency is supported");
 
     // signer Admin permission is checked here
@@ -199,7 +199,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint64 txID,
     uint64 vaultID,
     address accountID,
-    Currency tokenCurrency,
+    uint8 tokenCurrency,
     uint64 numTokens,
     Signature calldata sig
   ) external nonReentrant onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
@@ -214,7 +214,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
 
     // ---------- Signature Verification -----------
     bytes32 hash = hashVaultInvest(vaultID, accountID, tokenCurrency, numTokens, sig.nonce, sig.expiration);
-    _preventReplay(hash, sig);
+    _preventReplayNoDupCheck(hash, sig);
     // ------- End of Signature Verification -------
 
     _investAndMintLpToken(vaultSub, account, tokenCurrency, numTokens);
@@ -223,10 +223,10 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
   function _investAndMintLpToken(
     SubAccount storage vaultSub,
     Account storage account,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens
   ) internal {
-    require(currency == Currency.USDT, "Only USDT vault investment is supported");
+    require(currency == CCY_USDT, "Only USDT vault investment is supported");
 
     int64 numTokensSigned = int64(numTokens);
     require(numTokensSigned > 0, "investment amount must be positive");
@@ -234,19 +234,19 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     (uint64 lpTokensToMint, uint64 amountInUsd) = _calculateLpTokensToMintOnInvest(vaultSub, currency, numTokens);
     require(lpTokensToMint > 0, "no LP tokens minted");
 
-    _doTransferMainToSub(account, vaultSub, currency, numTokensSigned);
+    _doTransferMainToSub(account, vaultSub, WalletType.FUTURES, currency, numTokensSigned);
     _mintLpTokens(vaultSub, account.id, lpTokensToMint, amountInUsd);
   }
 
   function _calculateLpTokensToMintOnInvest(
     SubAccount storage vaultSub,
-    Currency currency,
+    uint8 currency,
     uint64 numTokens
   ) internal view returns (uint64, uint64) {
     BI memory numTokensBI = BIMath.fromUint64(numTokens, _getBalanceDecimal(currency));
 
     uint64 lpDec = _getLpTokenDecimal();
-    BI memory amountInUsdBI = _convertCurrency(numTokensBI, currency, Currency.USD);
+    BI memory amountInUsdBI = _convertCurrency(numTokensBI, currency, CCY_USD);
     uint64 amountInUsd = amountInUsdBI.toUint64(lpDec);
 
     if (vaultSub.vaultInfo.totalLpTokenSupply == 0) {
@@ -305,7 +305,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     int64 timestamp,
     uint64 txID,
     uint64 vaultID,
-    Currency tokenCurrency,
+    uint8 tokenCurrency,
     uint64 numLpTokens,
     address accountID,
     uint64 marketingFeeChargedInLpToken,
@@ -351,14 +351,14 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint64 lpDec = _getLpTokenDecimal();
     BI memory redeemedInUsdAfterFeeBI = BIMath.fromUint64(redeemedInUsdAfterFee, lpDec);
 
-    int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, Currency.USD, tokenCurrency).toInt64(
+    int64 redeemedInQuoteAfterFee = _convertCurrency(redeemedInUsdAfterFeeBI, CCY_USD, tokenCurrency).toInt64(
       _getBalanceDecimal(tokenCurrency)
     );
 
     require(redeemedInQuoteAfterFee > 0, "redeemed in quote after fee is not positive");
 
     _burnLpTokens(vaultSub, accountID, numLpTokens, costOfLpTokenBurntInUsd);
-    _doTransferSubToMain(vaultSub, account, tokenCurrency, redeemedInQuoteAfterFee);
+    _doTransferSubToMain(vaultSub, account, WalletType.FUTURES, tokenCurrency, redeemedInQuoteAfterFee);
   }
 
   function _calculateUsdRedeemed(SubAccount storage vaultSub, uint64 numLpTokens) internal view returns (uint64) {
@@ -378,7 +378,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     address accountID,
     uint64 redeemedInUsd,
     uint64 costOfLpTokenBurntInUsd
-  ) internal returns (uint64, uint64) {
+  ) internal view returns (uint64, uint64) {
     uint64 lpDec = _getLpTokenDecimal();
     if (vaultSub.accountID == accountID || costOfLpTokenBurntInUsd >= redeemedInUsd) {
       return (0, 0);
@@ -390,7 +390,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     BI memory performanceFeeBI = profitInUsdBI.mul(performanceFeeRateBI);
     uint64 performanceFeeInUsd = performanceFeeBI.toUint64(lpDec);
 
-    (uint64 performanceFeeInLpToken, ) = _calculateLpTokensToMintOnInvest(vaultSub, Currency.USD, performanceFeeInUsd);
+    (uint64 performanceFeeInLpToken, ) = _calculateLpTokensToMintOnInvest(vaultSub, CCY_USD, performanceFeeInUsd);
 
     if (performanceFeeInLpToken > 0) {
       return (performanceFeeInUsd, performanceFeeInLpToken);
@@ -421,7 +421,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     uint64 lpTokenToBurn
   ) internal view returns (uint64) {
     uint64 lpDec = _getLpTokenDecimal();
-    uint64 usdDec = _getBalanceDecimal(Currency.USD);
+    uint64 usdDec = _getBalanceDecimal(CCY_USD);
     BI memory usdNotionalInvestedBI = BIMath.fromUint64(lpInfo.usdNotionalInvested, usdDec);
     BI memory balanceBI = BIMath.fromUint64(lpInfo.lpTokenBalance, lpDec);
     BI memory burnBI = BIMath.fromUint64(lpTokenToBurn, lpDec);
@@ -463,7 +463,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
 
     // Share price consistency check
     {
-      uint64 usdDec = _getBalanceDecimal(Currency.USD);
+      uint64 usdDec = _getBalanceDecimal(CCY_USD);
       uint64 lpDec = _getLpTokenDecimal();
 
       BI memory totalEquityBI = BIMath.fromUint64(totalEquity, usdDec);
@@ -596,9 +596,9 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       (newMarketingFeeCentiBeeps != vaultInfo.marketingFeeCentiBeeps);
   }
 
-  function _getLpTokenDecimal() internal pure returns (uint64) {
+  function _getLpTokenDecimal() internal view returns (uint64) {
     // lp token has the same decimal as USD
-    return _getBalanceDecimal(Currency.USD);
+    return _getBalanceDecimal(CCY_USD);
   }
 
   function _getVaultTotalEquityInUsdBI(SubAccount storage vaultSub) internal view returns (BI memory) {
@@ -606,7 +606,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
     if (vaultInfo.isCrossExchange) {
       // For cross-exchange vaults, equity = share price * total LP supply (scaled to USD decimals)
 
-      uint64 usdDec = _getBalanceDecimal(Currency.USD);
+      uint64 usdDec = _getBalanceDecimal(CCY_USD);
       uint64 lpDec = _getLpTokenDecimal();
 
       BI memory vaultSharePriceInUsdBI = BIMath.fromUint64(vaultInfo.managerAttestedSharePrice, PRICE_DECIMALS);
@@ -615,7 +615,7 @@ contract VaultFacet is IVault, SubAccountContract, TransferContract {
       return equity;
     }
 
-    BI memory vaultEquityUSDBI = _getSubAccountValueInUSD(vaultSub);
+    BI memory vaultEquityUSDBI = _getTotalEquityInUSD(vaultSub);
     require(vaultEquityUSDBI.isPositive(), "vault equity is not positive");
 
     return vaultEquityUSDBI;

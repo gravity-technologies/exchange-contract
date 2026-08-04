@@ -10,12 +10,12 @@ bytes32 constant _CREATE_SUBACCOUNT_H = keccak256(
 function hashCreateSubAccount(
   address accID,
   uint64 subID,
-  Currency currency,
+  uint8 currency,
   MarginType margin,
   uint32 nonce,
   int64 expiration
 ) pure returns (bytes32) {
-  return keccak256(abi.encode(_CREATE_SUBACCOUNT_H, accID, subID, uint8(currency), uint8(margin), nonce, expiration));
+  return keccak256(abi.encode(_CREATE_SUBACCOUNT_H, accID, subID, currency, uint8(margin), nonce, expiration));
 }
 
 bytes32 constant _SET_SUB_MARGIN_H = keccak256(
@@ -68,4 +68,35 @@ function hashSetDeriskToMaintenanceMarginRatio(
     keccak256(
       abi.encode(_SET_DERISK_TO_MAINTENANCE_MARGIN_RATIO_H, subID, deriskToMaintenanceMarginRatio, nonce, expiration)
     );
+}
+
+bytes32 constant _SET_SUB_POSITION_MARGIN_CONFIG_H = keccak256(
+  "SetSubAccountPositionMarginConfig(uint64 subAccountID,uint256 asset,uint8 marginType,int32 leverage,uint32 nonce,int64 expiration)"
+);
+
+function hashSetSubAccountPositionMarginConfig(
+  uint64 subID,
+  bytes32 asset,
+  PositionMarginType marginType,
+  int32 leverage,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return
+    keccak256(
+      abi.encode(_SET_SUB_POSITION_MARGIN_CONFIG_H, subID, asset, uint8(marginType), leverage, nonce, expiration)
+    );
+}
+
+bytes32 constant _SET_SUB_ACCOUNT_MODE_H = keccak256(
+  "SetSubAccountMode(uint64 subAccountID,uint8 subAccountMode,uint32 nonce,int64 expiration)"
+);
+
+function hashSetSubAccountMode(
+  uint64 subID,
+  SubAccountMode mode,
+  uint32 nonce,
+  int64 expiration
+) pure returns (bytes32) {
+  return keccak256(abi.encode(_SET_SUB_ACCOUNT_MODE_H, subID, uint8(mode), nonce, expiration));
 }

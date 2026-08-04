@@ -10,6 +10,12 @@ struct BI {
 
 // TODO: add division test
 library BIMath {
+  // DivToScaleMaxDecimals caps opt-in division precision so BI stays aligned
+  // with the chain-compatible int256 backend. 18 is the highest common
+  // fixed-point precision and covers ratio-style calculations that need
+  // materially more precision than asset decimals.
+  uint256 constant DIV_TO_SCALE_MAX_DECIMALS = 18;
+
   function add(BI memory a, BI memory b) internal pure returns (BI memory) {
     BI memory c;
     if (a.dec == b.dec) {
@@ -37,10 +43,30 @@ library BIMath {
   function div(BI memory a, BI memory b) internal pure returns (BI memory) {
     require(b.val != 0, ERR_DIV_BY_ZERO);
     uint256 maxDec = a.dec > b.dec ? a.dec : b.dec;
-    uint256 exponent = maxDec + b.dec - a.dec;
-    int256 numerator = a.val * (int256(10) ** exponent);
-    BI memory c = BI(numerator / b.val, maxDec); // Perform the division
-    return c;
+    return _divToScale(a, b, maxDec);
+  }
+
+  /// @notice Divides a by b and returns the quotient at the requested decimal scale.
+  /// @dev Requested scales above DIV_TO_SCALE_MAX_DECIMALS are clamped so BI
+  /// remains chain-compatible with the int256 backend.
+  function divToScale(BI memory a, BI memory b, uint256 dec) internal pure returns (BI memory) {
+    require(b.val != 0, ERR_DIV_BY_ZERO);
+    uint256 clamped = dec > DIV_TO_SCALE_MAX_DECIMALS ? DIV_TO_SCALE_MAX_DECIMALS : dec;
+    return _divToScale(a, b, clamped);
+  }
+
+  function _divToScale(BI memory a, BI memory b, uint256 dec) private pure returns (BI memory) {
+    int256 numerator = a.val;
+    int256 denominator = b.val;
+    // shift = dec + b.dec - a.dec
+    if (dec + b.dec >= a.dec) {
+      uint256 shift = dec + b.dec - a.dec;
+      numerator = numerator * (int256(10) ** shift);
+    } else {
+      uint256 shift = a.dec - dec - b.dec;
+      denominator = denominator * (int256(10) ** shift);
+    }
+    return BI(numerator / denominator, dec);
   }
 
   uint256 constant POW_SCALE_DECIMALS = 12;

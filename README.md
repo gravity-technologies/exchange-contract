@@ -9,44 +9,45 @@ This project is based on Foundry(Ethereum) + Hardhat(Zksync). Foundry is used mo
 - `/test`: Test files. Files tested using foundry are under `test/foundry`
 - `hardhat.config.ts`: Configuration settings.
 
+## Getting Started
+
+Clone the repo:
+
+```
+git clone https://github.com/gravity-technologies/dev-exchange-contract
+```
+
 ## Dependencies
 
 - `curl -L https://foundry.paradigm.xyz | bash` and `foundryup` to install foundry
-- `npm install -g surya`: Install [Consensys Surya](https://github.com/ConsenSys/surya?tab=readme-ov-file) for static analysis of code like drawing inheritance graph. (Optional)
-- Install [Era Test Node](https://docs.zksync.io/build/test-and-debug/era-test-node.html#understanding-the-in-memory-node). To test your installation, run `era_test_node run`.
+- Install [Era Test Node](https://docs.zksync.io/build/test-and-debug/era-test-node.html#understanding-the-in-memory-node) from [this branch](https://github.com/gravity-technologies/era-test-node/tree/dz-free-pubdata). Build it with `cargo run --release -- run`, or copy the binary under `target/release/` to your PATH for convenience. To test your installation, run `era_test_node run`.
+
+## Setup
+
+```
+yarn && yarn compile:era && yarn compile
+```
 
 ## How to Use
 
 - `era_test_node run`: Run zkSync Era In-memory node locally (an alternative is to run `yarn hardhat node-zksync`).
 - `yarn compile`: Compiles contracts.
-- `yarn deploy:upgradable`: Deploys `GRVTExchange.sol` using the [transparent proxy pattern](https://blog.openzeppelin.com/the-transparent-proxy-pattern).
-- `yarn test`: Tests the contracts using both forge and harhat.
+- `yarn test`: Tests the contracts using both forge and hardhat.
 
-## Static Analysis
+## RTF Test Fixtures
 
-- `yarn draw`: draw the inherittance graph using the surya consensys module
-  ![GRVTExchange Logo](analysis/GRVTExchange.png)
+We verify equivalence with backend code using the RTF framework. To generate and use RTF test fixtures:
 
-### Environment Settings
+1. Run `make rtf` in `integration/bdd` and `backend/svc/risk` in the [platform repo](https://github.com/gravity-technologies/platform) to generate RTF test fixture JSON files.
+2. Copy the generated fixture files to `test/engine/fixtures` in this repo.
 
-To keep private keys safe, this project pulls in environment variables from `.env` files. Primarily, it fetches the wallet's private key.
+## Running Tests
 
-Rename `.env.example` to `.env` and fill in your private key:
+Tests require a local era test node running. Start it with `era_test_node run`, then:
 
 ```
-WALLET_PRIVATE_KEY=your_private_key_here...
+npx hardhat test
 ```
-
-### Network Support
-
-Modify networks in `hardhat.config.ts` using the `networks` section. Set a default with `defaultNetwork` or use `--network`, e.g., `hardhat test --network dockerizedNode`.
-
-### Deployment
-To deploy the smart contract, run `yarn deploy:upgradable --network <networkName>` with networkName defined in `hardhat.config.ts`
-
-## Notes
-
-This project was scaffolded with [zksync-cli](https://github.com/matter-labs/zksync-cli).
 
 ## Important Temporary Note
 

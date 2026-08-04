@@ -8,13 +8,13 @@ interface IGetter {
     uint64 multiSigThreshold;
     uint64 adminCount;
     uint64[] subAccounts;
-    // Not returned fields since mapping is not supported in return type include:
-    // 1. spotBalances
-    // 2. recoveryAddresses
-    // 3. onboardedWithdrawalAddresses
-    // 4. onboardedTransferAccounts
-    // 5. signers
   }
+  // Not returned fields since mapping is not supported in return type include:
+  // 1. spotBalances
+  // 2. recoveryAddresses
+  // 3. onboardedWithdrawalAddresses
+  // 4. onboardedTransferAccounts
+  // 5. signers
 
   struct SubAccountResult {
     uint64 id;
@@ -22,22 +22,26 @@ interface IGetter {
     uint64 signerCount;
     address accountID;
     MarginType marginType;
-    Currency quoteCurrency;
+    uint8 quoteCurrency;
     int64 lastAppliedFundingTimestamp;
-    // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
-    // 1. spotBalances
-    // 2. PositionsMap options;
-    // 3. PositionsMap futures;
-    // 4. PositionsMap perps;
-    // 5. mapping(bytes => uint256) positionIndex;
-    // 6. signers;
   }
+  // Not returned fields since mapping or stucts with nested mapping is not supported in return type include:// The total amount of base currency that the sub account possesses
+  // 1. spotBalances
+  // 2. PositionsMap options;
+  // 3. PositionsMap futures;
+  // 4. PositionsMap perps;
+  // 5. mapping(bytes => uint256) positionIndex;
+  // 6. signers;
 
   function getAccountResult(address accID) external view returns (AccountResult memory);
 
   function isAllAccountExists(address[] calldata accountIDs) external view returns (bool);
 
-  function getAccountSpotBalance(address accID, Currency currency) external view returns (int64);
+  function getAccountFundingWalletBalance(address accID, uint8 currency) external view returns (int64);
+
+  function getAccountStake(
+    address accID
+  ) external view returns (int64 lockedAmount, int64 lockEndTime, int64 cooldownEndTime);
 
   function isRecoveryAddress(address id, address signer, address recoveryAddress) external view returns (bool);
 
@@ -80,11 +84,15 @@ interface IGetter {
   function getSubAccountPosition(
     uint64 subAccountID,
     bytes32 assetID
-  ) external view returns (bool found, int64 balance, int64 lastAppliedFundingIndex);
+  ) external view returns (bool found, int64 balance, int64 lastAppliedFundingIndex, int64 marginBalance);
 
   function getSubAccountPositionCount(uint64 subAccountID) external view returns (uint);
 
-  function getSubAccountSpotBalance(uint64 subAccountID, Currency currency) external view returns (int64);
+  function getSubAccountFuturesWalletBalance(uint64 subAccountID, uint8 currency) external view returns (int64);
+
+  function getSubAccountSpotWalletBalance(uint64 subAccountID, uint8 currency) external view returns (int64);
+
+  function getSubAccountMode(uint64 subAccountID) external view returns (SubAccountMode);
 
   function getSimpleCrossMaintenanceMarginTiers(bytes32 kuq) external view returns (MarginTier[] memory);
 
@@ -92,13 +100,36 @@ interface IGetter {
 
   function getSubAccountMaintenanceMargin(uint64 subAccountID) external view returns (uint64);
 
+  /// @notice Returns true when the oldest queued withdrawal has missed its deadline at current state timestamp.
+  function hasOverdueWithdrawalRequest() external view returns (bool);
+
+  /// @notice Returns true when the oldest queued withdrawal has missed its deadline at `timestampNs`.
+  /// @dev `timestampNs` is expected to follow exchange sequencing timestamp units (nanoseconds).
+  function hasOverdueWithdrawalRequestAt(int64 timestampNs) external view returns (bool);
+
+  /// @notice Returns queue index bounds where valid entries exist in [head, tail).
+  /// @dev `head == tail` means the pending-withdrawal queue is empty.
+  /// @return head Queue head index (inclusive).
+  /// @return tail Queue tail index (exclusive).
+  function getPendingWithdrawalQueueBounds() external view returns (uint64 head, uint64 tail);
+
+  /// @notice Returns up to `limit` queued withdrawal requests starting at `start`.
+  /// @dev Reads are clipped to current [head, tail) bounds. If `start` is before `head`, it is treated as `head`.
+  /// @param start Requested first queue index.
+  /// @param limit Maximum number of requests to return.
+  /// @return requests Contiguous queue entries in [start, min(start + limit, tail)).
+  function getPendingWithdrawalRequests(
+    uint64 start,
+    uint64 limit
+  ) external view returns (PendingWithdrawalRequest[] memory requests);
+
   function getTimestamp() external view returns (int64);
 
-  function getExchangeCurrencyBalance(Currency currency) external view returns (int64);
+  function getExchangeCurrencyBalance(uint8 currency) external view returns (int64);
 
-  function getInsuranceFundLoss(Currency currency) external view returns (int64);
+  function getInsuranceFundLoss(uint8 currency) external view returns (int64);
 
-  function getTotalClientEquity(Currency currency) external view returns (int64);
+  function getTotalClientEquity(uint8 currency) external view returns (int64);
 
   // Vault related getters
   function isVault(uint64 subAccountID) external view returns (bool);
@@ -126,4 +157,14 @@ interface IGetter {
   function vaultIsCrossExchange(uint64 vaultID) external view returns (bool);
 
   function getVaultManagerAttestedSharePrice(uint64 vaultID) external view returns (uint64);
+
+  function getAuthorizedBuilderConfig(
+    address mainAccountID,
+    address builderAccountID
+  ) external view returns (uint64, uint64);
+
+  function getSubAccountPositionMarginConfig(
+    uint64 subAccountID,
+    bytes32 assetID
+  ) external view returns (PositionMarginType, int32);
 }

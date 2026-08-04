@@ -10,6 +10,14 @@ import "../../../contracts/exchange/util/BIMath.sol";
 contract BIMathTest is Test {
   using BIMath for BI;
 
+  function divExternal(BI memory a, BI memory b) external pure returns (BI memory) {
+    return a.div(b);
+  }
+
+  function divToScaleExternal(BI memory a, BI memory b, uint256 dec) external pure returns (BI memory) {
+    return a.divToScale(b, dec);
+  }
+
   function testAdd() public {
     // Test Case 1: 1+2, same decimals
     BI memory a = BI(1_000_000_000, 9);
@@ -175,7 +183,86 @@ contract BIMathTest is Test {
     a = BIMath.one();
     b = BIMath.zero();
     vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
-    a.div(b);
+    this.divExternal(a, b);
+  }
+
+  function testDivToScale() public {
+    BI memory a;
+    BI memory b;
+    BI memory c;
+    BI memory want;
+
+    // Test Case 1: Small ratio with explicit precision (1/75001 at 18 decimals)
+    a = BI(1, 3);
+    b = BI(75001, 3);
+    c = a.divToScale(b, 18);
+    want = BI(13_333_155_557_925, 18);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 2: Lower requested precision than inputs
+    a = BI(1234, 2);
+    b = BI(200, 2);
+    c = a.divToScale(b, 1);
+    want = BI(61, 1);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 3: Mixed decimals
+    a = BI(500, 2);
+    b = BI(2_000_000_000, 9);
+    c = a.divToScale(b, 6);
+    want = BI(2_500_000, 6);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 4: Negative quotient
+    a = BI(-500, 2);
+    b = BI(200, 2);
+    c = a.divToScale(b, 2);
+    want = BI(-250, 2);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 5: Both negative
+    a = BI(-500, 2);
+    b = BI(-200, 2);
+    c = a.divToScale(b, 18);
+    want = BI(2_500_000_000_000_000_000, 18);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 6: Zero numerator
+    a = BI(0, 9);
+    b = BI(3_000_000_000, 9);
+    c = a.divToScale(b, 18);
+    want = BI(0, 18);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 7: Requested precision above cap is clamped to 18
+    a = BI(1, 3);
+    b = BI(75001, 3);
+    c = a.divToScale(b, 30);
+    want = BI(13_333_155_557_925, 18);
+    assertEq(c.val, want.val);
+    assertEq(c.dec, want.dec);
+
+    // Test Case 8: Division by zero
+    a = BI(1, 0);
+    b = BI(0, 0);
+    vm.expectRevert(bytes(ERR_DIV_BY_ZERO));
+    this.divToScaleExternal(a, b, 18);
+
+    // Test Case 9: Legacy div still allows scales above DivToScale cap
+    a = BI(1, 24);
+    b = BI(3, 24);
+    BI memory legacy = a.div(b);
+    assertEq(legacy.dec, 24);
+    assertEq(legacy.val, int256(333333333333333333333333));
+    BI memory capped = a.divToScale(b, 30);
+    assertEq(capped.dec, 18);
+    assertEq(capped.val, int256(333333333333333333));
   }
 
   function testScale() public {

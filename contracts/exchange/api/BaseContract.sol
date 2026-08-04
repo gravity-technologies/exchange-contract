@@ -12,7 +12,12 @@ import "@openzeppelin/contracts/utils/math/SafeCast.sol";
 import {DepositProxy} from "../../DepositProxy.sol";
 import {BeaconProxy} from "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import {SystemContractsCaller} from "../../../lib/era-contracts/l2-contracts/contracts/SystemContractsCaller.sol";
-import {L2ContractHelper, DEPLOYER_SYSTEM_CONTRACT, IContractDeployer} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {
+  L2ContractHelper,
+  DEPLOYER_SYSTEM_CONTRACT,
+  IContractDeployer
+} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
+import {FeatureFlagID} from "../types/DataStructure.sol";
 
 contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   using BIMath for BI;
@@ -20,6 +25,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   State internal state;
 
   bytes32 public constant CHAIN_SUBMITTER_ROLE = keccak256("CHAIN_SUBMITTER_ROLE");
+  bytes32 public constant LIQUIDITY_ORCHESTRATOR_ROLE = keccak256("LIQUIDITY_ORCHESTRATOR_ROLE");
 
   /// @dev Check if the tx.origin has a specific role.
   /// This is applied to all exchange transaction functions.
@@ -55,16 +61,21 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
 
   int64 internal constant ONE_HOUR_NANOS = 60 * 60 * 1e9;
   int64 internal constant ONE_DAY_NANOS = 24 * 60 * 60 * 1e9;
+  // Hard deadline for queued withdrawals. If queue head exceeds this window, sequenced tx processing halts.
+  int64 internal constant WITHDRAWAL_QUEUE_DEADLINE_NANOS = 2 * ONE_HOUR_NANOS;
 
   /// @dev The maximum signature expiry time for all signatures except TPSL orders
   int64 private constant THIRTY_DAY_EXPIRY = 30 * 24 * ONE_HOUR_NANOS;
 
   bytes32 internal constant TRUE_BYTES32 = bytes32(uint256(1));
   bytes32 internal constant FALSE_BYTES32 = bytes32(uint256(0));
+  // The catchall 2D-config row (subKey 0) every per-subKey read falls back to
+  bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
 
   /// @dev set the system timestamp and last transactionID.
   /// Require that the timestamp is monotonic, and the transactionID to be in sequence without any gap
   function _setSequence(int64 timestamp, uint64 txID) internal {
+    _requireNoOverdueWithdrawalRequest(timestamp);
     require(timestamp >= state.timestamp, "invalid timestamp");
     require(state.lastTxID != 0, "tx before initializeConfig");
     require(txID == state.lastTxID + 1, "invalid txID");
@@ -86,9 +97,46 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return acc;
   }
 
+  function _isBaseSpotCurrency(uint8 c) internal pure returns (bool) {
+    return c == CCY_USDT || c == CCY_USDC || c == CCY_ETH;
+  }
+
+  // Returns currencies that can hold spot balances: USDT, USDC, ETH + any extra ERC20-configured currencies.
+  function _spotBalanceCurrencies() internal view returns (uint8[] memory) {
+    uint8[] storage stored = state.erc20Currencies;
+    uint len = stored.length;
+    uint8[] memory cs = new uint8[](3 + len);
+    cs[0] = CCY_USDT;
+    cs[1] = CCY_USDC;
+    cs[2] = CCY_ETH;
+    for (uint i; i < len; ++i) {
+      cs[3 + i] = stored[i];
+    }
+    return cs;
+  }
+
+  // Returns true if the currency can hold spot balances
+  function _currencyCanHoldSpotBalance(uint8 currency) internal view returns (bool) {
+    if (_isBaseSpotCurrency(currency)) return true;
+    uint8[] storage stored = state.erc20Currencies;
+    for (uint i; i < stored.length; ++i) {
+      if (stored[i] == currency) return true;
+    }
+    return false;
+  }
+
+  /// @notice Returns true iff the given currency ID has been registered via `addCurrency`.
+  /// This is the runtime-registry replacement for the deleted enum-range `currencyIsValid`
+  /// check — call sites that previously relied on enum membership to filter out junk IDs
+  /// should call this instead.
+  function _currencyIsRegistered(uint8 c) internal view returns (bool) {
+    return state.currencyConfigs[uint16(c)].id != 0;
+  }
+
   function _requireAccountNoBalance(Account storage acc) internal view {
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      require(!currencyCanHoldSpotBalance(i) || acc.spotBalances[i] == 0, "account has balance");
+    uint8[] memory cs = _spotBalanceCurrencies();
+    for (uint i; i < cs.length; ++i) {
+      require(acc.fundingWalletBalances[cs[i]] == 0, "account has balance");
     }
   }
 
@@ -117,12 +165,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
     bool isSubAccSigner = false;
     uint256 numSubAccs = acc.subAccounts.length;
-    for (uint256 i; i < numSubAccs; ++i) {
+    for (uint256 i; i < numSubAccs; ) {
       SubAccount storage subAcc = _requireSubAccount(acc.subAccounts[i]);
       if (subAcc.signers[signer] != 0) {
         isSubAccSigner = true;
         break;
       }
+      unchecked { ++i; }
     }
     require(isSubAccSigner, "signer not tagged to account");
   }
@@ -137,26 +186,30 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     uint numSigs = sigs.length;
     require(numSigs == hashes.length, "invalid number of hashes");
     // 1. Check that there are no duplicate signing key in the signatures
-    for (uint i; i < numSigs; ++i) {
-      for (uint j = i + 1; j < numSigs; ++j) {
+    for (uint i; i < numSigs; ) {
+      for (uint j = i + 1; j < numSigs; ) {
         require(sigs[i].signer != sigs[j].signer, "duplicate signing key");
+        unchecked { ++j; }
       }
+      unchecked { ++i; }
     }
 
     // 2. Check that the signatures form a quorum
     require(numSigs >= quorum, "failed quorum");
 
     // 3. Check that the payload hash was not executed before
-    for (uint i; i < numSigs; ++i) {
+    for (uint i; i < numSigs; ) {
       require(!state.replay.executed[hashes[i]], "invalid transaction");
+      unchecked { ++i; }
     }
 
     // 4. Check that the signatures are valid and from the list of eligible signers
     int64 timestamp = state.timestamp;
-    for (uint i; i < numSigs; ++i) {
+    for (uint i; i < numSigs; ) {
       require(signerHasPerm(eligibleSigners, sigs[i].signer, AccountPermAdmin), "ineligible signer");
       _requireValidSig30DaysExpiry(timestamp, hashes[i], sigs[i]);
       state.replay.executed[hashes[i]] = true;
+      unchecked { ++i; }
     }
   }
 
@@ -168,11 +221,41 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return a >= b ? a : b;
   }
 
+  /// @dev True when the queue head exists and its derived deadline is strictly earlier than `timestampNs`.
+  function _hasOverdueWithdrawalRequestAt(int64 timestampNs) internal view returns (bool) {
+    if (_isPendingWithdrawalQueueEmpty()) {
+      return false;
+    }
+
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    PendingWithdrawalRequest storage req = queue.requests[queue.head];
+    return (int256(timestampNs) - int256(req.enqueuedTimestampNs)) > int256(WITHDRAWAL_QUEUE_DEADLINE_NANOS);
+  }
+
+  /// @dev Queue invariant: valid items exist only in index interval [head, tail).
+  function _isPendingWithdrawalQueueEmpty() internal view returns (bool) {
+    WithdrawalQueue storage queue = state.pendingWithdrawalQueue;
+    return queue.head >= queue.tail;
+  }
+
+  /// @dev Global forward-progress guard: sequenced txs revert while the queue head is overdue.
+  function _requireNoOverdueWithdrawalRequest(int64 timestampNs) internal view {
+    if (_hasOverdueWithdrawalRequestAt(timestampNs)) {
+      revert("overdue withdrawal request");
+    }
+  }
+
   /// @dev Verify that a signature is valid with replay attack prevention
   /// To understand why require the payload hash to be unique, and not the signature, read
   /// https://github.com/kadenzipfel/smart-contract-vulnerabilities/blob/master/vulnerabilities/signature-malleability.md
   function _preventReplay(bytes32 hash, Signature calldata sig) internal {
     require(!state.replay.executed[hash], "replayed payload");
+    _requireValidSig30DaysExpiry(state.timestamp, hash, sig);
+    state.replay.executed[hash] = true;
+  }
+
+  /// @dev Verify that a signature is valid with replay attack prevention without replay check
+  function _preventReplayNoDupCheck(bytes32 hash, Signature calldata sig) internal {
     _requireValidSig30DaysExpiry(state.timestamp, hash, sig);
     state.replay.executed[hash] = true;
   }
@@ -186,7 +269,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   function _requireValidNoExipry(bytes32 hash, Signature calldata sig) internal view {
     _requireSupportedEIP712ChainID(sig.chainId);
     bytes32 digest = keccak256(
-      abi.encodePacked(abi.encodePacked("\x19\x01", _getDomainSeparatorHash(sig.chainId)), hash)
+      abi.encodePacked("\x19\x01", _getDomainSeparatorHash(sig.chainId), hash)
     );
     (address addr, ECDSA.RecoverError err) = ECDSA.tryRecover(digest, sig.v, sig.r, sig.s);
     require(err == ECDSA.RecoverError.NoError && addr == sig.signer, "invalid signature");
@@ -223,6 +306,24 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     Account storage acc = _requireAccount(sub.accountID);
     if (signerHasPerm(acc.signers, signer, AccountPermAdmin)) return true;
     uint64 signerAuthz = sub.signers[signer];
+    if (
+      (requiredPerm & SubAccountPermTrade > 0) && // trade permission is required
+      (signerAuthz & SubAccountPermTrade == 0) && // signer doesn't have trade permission
+      _isFeatureFlagEnabled(FeatureFlagID.MAIN_ACCOUNT_TRADE_PERMISSION) && // main account trade permission is enabled
+      signerHasPerm(acc.signers, signer, AccountPermTrade) // signer has trade permission in account
+    ) {
+      signerAuthz |= SubAccountPermTrade;
+    }
+
+    if (
+      (requiredPerm & SubAccountPermTransfer > 0) && // transfer permission is required
+      (signerAuthz & SubAccountPermTransfer == 0) && // signer doesn't have transfer permission
+      _isFeatureFlagEnabled(FeatureFlagID.TRADE_PERMISSION_CAN_DO_INTERNAL_TRANSFER) && // trade permission is allowed to do internal transfer
+      signerHasPerm(acc.signers, signer, AccountPermTrade) // signer has trade permission in account
+    ) {
+      signerAuthz |= SubAccountPermTransfer;
+    }
+
     return signerAuthz & (SubAccountPermAdmin | requiredPerm) > 0;
   }
 
@@ -232,12 +333,44 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     address signer,
     uint64 requiredPerm
   ) internal view returns (bool) {
-    return account.signers[signer] & (AccountPermAdmin | requiredPerm) > 0;
+    uint64 signerAuthz = account.signers[signer];
+    if (signerAuthz & (AccountPermAdmin | requiredPerm) > 0) {
+      return true;
+    }
+
+    if (
+      (requiredPerm & AccountPermInternalTransfer > 0) && // internal transfer permission is required
+      (signerAuthz & AccountPermInternalTransfer == 0) && // signer doesn't have internal transfer permission
+      _isFeatureFlagEnabled(FeatureFlagID.TRADE_PERMISSION_CAN_DO_INTERNAL_TRANSFER) && // trade permission is allowed to do internal transfer
+      (signerAuthz & AccountPermTrade > 0) // signer has trade permission
+    ) {
+      signerAuthz |= AccountPermInternalTransfer; // Give signer the internal transfer permission
+    }
+
+    return signerAuthz & requiredPerm > 0;
   }
 
   // Check if the signer has certain permissions on an account
   function _requireAccountPermission(Account storage account, address signer, uint64 requiredPerm) internal view {
     require(hasAccountPermission(account, signer, requiredPerm), "no permission");
+  }
+
+  /// @notice Verify that at least one signer has the required permission
+  /// @param account The account to check permissions for
+  /// @param signers Array of signer addresses to check
+  /// @param requiredPerm The required permission bitmask
+  function _requireAtLeastOneSignerHasPermission(
+    Account storage account,
+    address[] memory signers,
+    uint64 requiredPerm
+  ) internal view {
+    for (uint256 i = 0; i < signers.length; ) {
+      if (hasAccountPermission(account, signers[i], requiredPerm)) {
+        return;
+      }
+      unchecked { ++i; }
+    }
+    revert("no permission");
   }
 
   /// @notice Helper function to resolve effective signer from session key or direct signer
@@ -322,121 +455,35 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return address(state.depositProxyBeacon);
   }
 
-  function _getBalanceDecimal(Currency currency) internal pure returns (uint64) {
-    uint64 decimals;
-    if (
-      currency == Currency.BTC ||
-      currency == Currency.ETH ||
-      currency == Currency.SOL ||
-      currency == Currency.BNB ||
-      currency == Currency.AAVE ||
-      currency == Currency.LTC ||
-      currency == Currency.BCH ||
-      currency == Currency.ZEC
-    ) {
-      decimals = 9;
-    } else if (
-      currency == Currency.USD ||
-      currency == Currency.USDC ||
-      currency == Currency.USDT ||
-      currency == Currency.ARB ||
-      currency == Currency.ZK ||
-      currency == Currency.POL ||
-      currency == Currency.OP ||
-      currency == Currency.ATOM ||
-      currency == Currency.TON ||
-      currency == Currency.XRP ||
-      currency == Currency.XLM ||
-      currency == Currency.WLD ||
-      currency == Currency.WIF ||
-      currency == Currency.VIRTUAL ||
-      currency == Currency.TRUMP ||
-      currency == Currency.SUI ||
-      currency == Currency.KSHIB ||
-      currency == Currency.POPCAT ||
-      currency == Currency.PENGU ||
-      currency == Currency.LINK ||
-      currency == Currency.KBONK ||
-      currency == Currency.JUP ||
-      currency == Currency.FARTCOIN ||
-      currency == Currency.ENA ||
-      currency == Currency.DOGE ||
-      currency == Currency.AIXBT ||
-      currency == Currency.AI_16_Z ||
-      currency == Currency.ADA ||
-      currency == Currency.BERA ||
-      currency == Currency.VINE ||
-      currency == Currency.PENDLE ||
-      currency == Currency.UXLINK ||
-      currency == Currency.KAITO ||
-      currency == Currency.IP ||
-      currency == Currency.HYPE ||
-      currency == Currency.LAUNCHCOIN ||
-      currency == Currency.MOODENG ||
-      currency == Currency.UNI ||
-      currency == Currency.SAHARA ||
-      currency == Currency.H ||
-      currency == Currency.PUMP ||
-      currency == Currency.AVAX ||
-      currency == Currency.CRV ||
-      currency == Currency.SEI ||
-      currency == Currency.HBAR ||
-      currency == Currency.ONDO ||
-      currency == Currency.CFX ||
-      currency == Currency.PROVE ||
-      currency == Currency.MNT ||
-      currency == Currency.WLFI ||
-      currency == Currency.LINEA ||
-      currency == Currency.ASTER ||
-      currency == Currency.AVNT ||
-      currency == Currency.BARD ||
-      currency == Currency.DOT ||
-      currency == Currency.EIGEN ||
-      currency == Currency.LA ||
-      currency == Currency.NEAR ||
-      currency == Currency.W ||
-      currency == Currency.XPL ||
-      currency == Currency.APEX ||
-      currency == Currency.BLESS ||
-      currency == Currency.COAI ||
-      currency == Currency.STRK ||
-      currency == Currency.SPX ||
-      currency == Currency.LDO ||
-      currency == Currency.APT ||
-      currency == Currency.MON ||
-      currency == Currency.FIL ||
-      currency == Currency.ICP
-    ) {
-      decimals = 6;
-    } else if (currency == Currency.KPEPE) {
-      decimals = 3;
-    } else {
-      revert(ERR_UNSUPPORTED_CURRENCY);
-    }
+  function _getBalanceDecimal(uint8 currency) internal view returns (uint64) {
+    if (currency == CCY_USDT) return 6;
 
-    return decimals;
+    CurrencyConfig storage config = state.currencyConfigs[uint16(currency)];
+    require(config.id != 0, ERR_UNSUPPORTED_CURRENCY);
+
+    return uint64(config.balanceDecimals);
   }
 
-  function _getBalanceMultiplier(Currency currency) internal pure returns (uint64) {
+  function _getBalanceMultiplier(uint8 currency) internal view returns (uint64) {
     return uint64(10) ** _getBalanceDecimal(currency);
   }
 
-  function _requireAssetPriceBI(bytes32 assetID) internal view returns (BI memory) {
-    (uint64 markPrice, bool found) = _getAssetPrice9Dec(assetID);
+  function _requireAssetPriceInQuoteBI(bytes32 assetID) internal view returns (BI memory) {
+    (uint64 markPrice, bool found) = _getAssetPriceInQuote9Dec(assetID);
     require(found, "mark price not found");
     return BI(int256(uint256(markPrice)), PRICE_DECIMALS);
   }
 
   // Price utils
-  function _getAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getAssetPriceInQuote9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getSpotPrice9Dec(assetGetUnderlying(assetID));
+      return _getSpotPriceUsd9Dec(assetGetUnderlying(assetID));
     }
 
-    Currency quote = assetGetQuote(assetID);
+    uint8 quote = assetGetQuote(assetID);
     // Only derivatives remaining
     (uint64 underlyingPrice, bool found) = _getUnderlyingAssetPrice9Dec(assetID);
     if (!found) {
@@ -444,12 +491,12 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     }
 
     // If getting price in USD, we can simply scale and return
-    if (quote == Currency.USD) {
+    if (quote == CCY_USD) {
       return (underlyingPrice, true);
     }
 
     // Otherwise, we have to convert to USDT/USDC price
-    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPriceUsd9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
@@ -457,23 +504,23 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     return (SafeCast.toUint64((uint(underlyingPrice) * (PRICE_MULTIPLIER)) / uint(quotePrice)), true);
   }
 
-  function _getIndexPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
+  function _getIndexPriceInQuote9Dec(bytes32 assetID) internal view returns (uint64, bool) {
     Kind kind = assetGetKind(assetID);
 
-    Currency underlying = assetGetUnderlying(assetID);
-    Currency quote = assetGetQuote(assetID);
+    uint8 underlying = assetGetUnderlying(assetID);
+    uint8 quote = assetGetQuote(assetID);
 
     // If spot, process separately
     if (kind == Kind.SPOT) {
-      return _getSpotPrice9Dec(underlying);
+      return _getSpotPriceUsd9Dec(underlying);
     }
 
-    (uint64 underlyingPrice, bool found) = _getSpotPrice9Dec(underlying);
+    (uint64 underlyingPrice, bool found) = _getSpotPriceUsd9Dec(underlying);
     if (!found) {
       return (0, false);
     }
 
-    (uint64 quotePrice, bool quoteFound) = _getSpotPrice9Dec(quote);
+    (uint64 quotePrice, bool quoteFound) = _getSpotPriceUsd9Dec(quote);
     if (!quoteFound) {
       return (0, false);
     }
@@ -482,7 +529,7 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getUnderlyingAssetPrice9Dec(bytes32 assetID) internal view returns (uint64, bool) {
-    uint64 price = state.prices.mark[assetSetQuote(assetID, Currency.USD)];
+    uint64 price = state.prices.mark[assetSetQuote(assetID, CCY_USD)];
     return (price, price != 0);
   }
 
@@ -490,33 +537,37 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @param spot The currency to get the price for
   /// @param quote The quote currency
   /// @return The price of spot in terms of quote
-  function _getSpotPriceInQuote(Currency spot, Currency quote) internal view returns (BI memory) {
+  function _getSpotPriceInQuote(uint8 spot, uint8 quote) internal view returns (BI memory) {
     if (spot == quote) {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
 
-    BI memory spotPriceInUsd = _getSpotPriceBI(spot);
+    BI memory spotPriceInUsd = _getSpotPriceUsdBI(spot);
 
-    if (quote == Currency.USD) {
+    if (quote == CCY_USD) {
       return spotPriceInUsd;
     }
 
-    BI memory quotePriceInUsd = _getSpotPriceBI(quote);
+    BI memory quotePriceInUsd = _getSpotPriceUsdBI(quote);
     return spotPriceInUsd.div(quotePriceInUsd);
   }
 
-  function _convertCurrency(BI memory amount, Currency from, Currency to) internal view returns (BI memory) {
+  function _convertCurrency(BI memory amount, uint8 from, uint8 to) internal view returns (BI memory) {
+    // Fast path: same currency
+    if (from == to) {
+      return amount;
+    }
     return amount.mul(_getSpotPriceInQuote(from, to)).scale(_getBalanceDecimal(to));
   }
 
   /// @dev Get the spot price of a currency in terms of USD
   /// @param spot The currency to get the price for
   /// @return The price of the currency in USD
-  function _getSpotPriceBI(Currency spot) internal view returns (BI memory) {
-    if (spot == Currency.USD) {
+  function _getSpotPriceUsdBI(uint8 spot) internal view returns (BI memory) {
+    if (spot == CCY_USD) {
       return BI(int(PRICE_MULTIPLIER), PRICE_DECIMALS);
     }
-    (uint64 price, bool ok) = _getSpotPrice9Dec(spot);
+    (uint64 price, bool ok) = _getSpotPriceUsd9Dec(spot);
     require(ok, "mark price not found");
     return BI(int256(uint(price)), PRICE_DECIMALS);
   }
@@ -524,15 +575,15 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   /// @dev Get the spot price of a currency with 9 decimal places
   /// @param currency The currency to get the price for
   /// @return price The price of the currency, ok Whether the price was found
-  function _getSpotPrice9Dec(Currency currency) internal view returns (uint64, bool) {
+  function _getSpotPriceUsd9Dec(uint8 currency) internal view returns (uint64, bool) {
     uint64 price = state.prices.mark[_getSpotAssetID(currency)];
     return (price, price != 0);
   }
 
-  function _getSpotAssetID(Currency currency) internal pure returns (bytes32) {
+  function _getSpotAssetID(uint8 currency) internal pure returns (bytes32) {
     return
       assetToID(
-        Asset({kind: Kind.SPOT, underlying: currency, quote: Currency.UNSPECIFIED, expiration: 0, strikePrice: 0})
+        Asset({kind: Kind.SPOT, underlying: currency, quote: CCY_UNSPECIFIED, expiration: 0, strikePrice: 0})
       );
   }
 
@@ -543,17 +594,28 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
     revert("invalid asset kind");
   }
 
+  function _getPosition(SubAccount storage sub, bytes32 assetID) internal view returns (Position storage) {
+    PositionsMap storage posmap = _getPositionCollection(sub, assetGetKind(assetID));
+    return posmap.values[assetID];
+  }
+
+  function _hasPosition(SubAccount storage sub, bytes32 assetID) internal view returns (bool) {
+    Position storage pos = _getPosition(sub, assetID);
+    return pos.id != 0x0 && pos.balance != 0;
+  }
+
   function _getOrCreatePosition(SubAccount storage sub, bytes32 assetID) internal returns (Position storage) {
     Kind kind = assetGetKind(assetID);
     PositionsMap storage posmap = _getPositionCollection(sub, kind);
 
     // If the position already exists, return it
-    if (posmap.values[assetID].id != 0x0) {
-      return posmap.values[assetID];
+    Position storage pos = posmap.values[assetID];
+    if (pos.id != 0x0) {
+      return pos;
     }
 
     // Otherwise, create a new position
-    Position storage pos = getOrNew(posmap, assetID);
+    pos = getOrNew(posmap, assetID);
 
     if (kind == Kind.PERPS) {
       // IMPT: Perpetual positions MUST have LastAppliedFundingIndex set to the current funding index
@@ -621,76 +683,205 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
       );
   }
 
-  function _getTotalAccountValueUSDT(Account storage account) internal view returns (BI memory) {
-    uint dec = _getBalanceDecimal(Currency.USDT);
+  /// @dev Computes account equity considering only USDT balances in all wallets.
+  /// Non-USDT balances are excluded because socialized loss operates entirely in USDT terms.
+  /// When only USDT is deposited, this produces bit-for-bit identical results to the old code
+  /// that included all currencies, because the USDT-only wallet views go through the same
+  /// arithmetic paths (USDT → QuoteCurrency → USDT round-trip via mark prices).
+  function _getFundingAccountEquityInUSDT(Account storage account) internal view returns (BI memory) {
+    uint dec = _getBalanceDecimal(CCY_USDT);
+    // Only USDT from funding wallet (USDT→USDT conversion is identity)
+    BI memory totalValue = BI(account.fundingWalletBalances[CCY_USDT], dec);
 
-    BI memory totalValue = _getBalanceValueInQuoteCurrencyBI(account.spotBalances, Currency.USDT);
-
-    for (uint256 i; i < account.subAccounts.length; ++i) {
+    for (uint256 i; i < account.subAccounts.length; ) {
       SubAccount storage subAcc = _requireSubAccount(account.subAccounts[i]);
-      BI memory subValueInQuote = _getSubAccountValueInQuote(subAcc);
-      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, Currency.USDT);
 
-      totalValue = totalValue.add(subValueInUSDT);
+      // Futures wallet: USDT only + perps positions (preserves USDT→QuoteCurrency→USDT round-trip)
+      BI memory subValueInQuote = _getTotalEquityInQuoteUSDTOnly(subAcc);
+      BI memory subValueInUSDT = _convertCurrency(subValueInQuote, subAcc.quoteCurrency, CCY_USDT);
+
+      // Spot wallet: USDT only (must be included to prevent evasion via futures→spot transfers)
+      BI memory spotUSDTValue = BI(subAcc.spotWalletBalances[CCY_USDT], dec);
+
+      totalValue = totalValue.add(subValueInUSDT).add(spotUSDTValue);
+      unchecked { ++i; }
     }
 
     return totalValue;
   }
 
-  function _getBalanceValueInQuoteCurrencyBI(
-    mapping(Currency => int64) storage balances,
-    Currency quoteCurrency
+  function _getSpotBalanceValueInCurrencyBI(
+    mapping(uint8 => int64) storage balances,
+    uint8 quoteCurrency
   ) internal view returns (BI memory) {
     BI memory total = BIMath.zero();
-    for (Currency i = currencyStart(); currencyIsValid(i); i = currencyNext(i)) {
-      if (!currencyCanHoldSpotBalance(i)) {
-        continue;
-      }
-
-      int64 balance = balances[i];
-      if (balance == 0) {
-        continue;
-      }
+    uint8[] memory cs = _spotBalanceCurrencies();
+    for (uint i; i < cs.length; ++i) {
+      int64 balance = balances[cs[i]];
+      if (balance == 0) continue;
       BI memory balanceBI = BI(balance, _getBalanceDecimal(quoteCurrency));
-      BI memory balanceValueInQuote = _convertCurrency(balanceBI, i, quoteCurrency);
+      BI memory balanceValueInQuote = _convertCurrency(balanceBI, cs[i], quoteCurrency);
       total = total.add(balanceValueInQuote);
     }
     return total;
   }
 
-  function _getSubAccountValueInUSD(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getSubAccountValueInQuote(sub);
-    return _convertCurrency(totalValue, sub.quoteCurrency, Currency.USD);
+  /// @dev Get the total value of a sub account in USD (including both cross/isolated positions values + cash balance)
+  ///
+  /// TODO: update once Risk migrated all call sites away from deprecatedGetTotalQuityInUSD
+  /// https://github.com/gravity-technologies/platform/blob/f4bd7c084cd6d2415247be2dc620923b2c65c8e3/backend/lib/statemachine/pkg/state/vault_api_deprecated.go#L20
+  function _getTotalEquityInUSD(SubAccount storage sub) internal view returns (BI memory) {
+    BI memory totalValue = _getTotalEquityInQuote(sub);
+    return _convertCurrency(totalValue, sub.quoteCurrency, CCY_USD);
   }
 
-  /// @dev Get the total value of a sub account in quote currency
-  function _getSubAccountValueInQuote(SubAccount storage sub) internal view returns (BI memory) {
-    BI memory totalValue = _getPositionsValueInQuote(sub.perps).add(_getPositionsValueInQuote(sub.futures)).add(
-      _getPositionsValueInQuote(sub.options)
+  /// @dev Get the total value of a sub account in quote currency (including both cross/isolated positions values + cash balance)
+  ///
+  /// TODO: update once Risk migrated all call sites away from deprecatedGetTotalQuityInUSD
+  function _getTotalEquityInQuote(SubAccount storage sub) internal view returns (BI memory) {
+    // We have to follow the addition order of statemachine
+    // TE = positionVal + spotBalances + positionBalances
+    // See https://github.com/gravity-technologies/platform/blob/f4bd7c084cd6d2415247be2dc620923b2c65c8e3/backend/lib/statemachine/pkg/state/subaccount_accessor.go#L146-L182
+    (BI memory positionExposureValue, BI memory marginBalanceValue) = _getPositionsValueInQuote(
+      sub.perps,
+      sub.quoteCurrency
     );
 
-    totalValue = totalValue.add(_getBalanceValueInQuoteCurrencyBI(sub.spotBalances, sub.quoteCurrency));
+    BI memory cashValueInQuote = _getSpotBalanceValueInCurrencyBI(sub.futuresWalletBalances, sub.quoteCurrency).add(
+      marginBalanceValue
+    );
 
-    return totalValue;
+    return positionExposureValue.add(cashValueInQuote);
   }
 
-  /// @dev Get the total value of a position collections in quote currency
-  function _getPositionsValueInQuote(PositionsMap storage positions) internal view returns (BI memory) {
-    BI memory total;
-    bytes32[] storage keys = positions.keys;
-    mapping(bytes32 => Position) storage values = positions.values;
+  /// @dev Same as _getTotalEquityInQuote but only considers USDT balance in the futures wallet.
+  /// Uses the same BI construction and _convertCurrency path as _getSpotBalanceValueInCurrencyBI
+  /// to preserve the exact arithmetic for the USDT entry.
+  function _getTotalEquityInQuoteUSDTOnly(SubAccount storage sub) internal view returns (BI memory) {
+    (BI memory positionExposureValue, BI memory marginBalanceValue) = _getPositionsValueInQuote(
+      sub.perps,
+      sub.quoteCurrency
+    );
 
-    uint count = keys.length;
-    for (uint i; i < count; ++i) {
-      Position storage pos = values[keys[i]];
-      bytes32 assetID = pos.id;
-      Currency underlying = assetGetUnderlying(assetID);
-      uint64 uDec = _getBalanceDecimal(underlying);
-      BI memory balance = BI(pos.balance, uDec);
-      BI memory assetPrice = _requireAssetPriceBI(assetID);
-      total = total.add(balance.mul(assetPrice));
+    // Only USDT from futures wallet, converted to quote currency.
+    // Matches _getSpotBalanceValueInCurrencyBI's BI construction: BI(balance, quoteCurrencyDecimals).
+    return positionExposureValue.add(
+      _usdtBalanceInQuote(sub.futuresWalletBalances[CCY_USDT], sub.quoteCurrency).add(marginBalanceValue)
+    );
+  }
+
+  /// @dev Convert a raw USDT int64 balance to a BI denominated in quoteCurrency.
+  /// Extracted to a separate function to reduce stack depth in callers.
+  function _usdtBalanceInQuote(int64 usdtBalance, uint8 quoteCurrency) internal view returns (BI memory) {
+    if (usdtBalance == 0) return BIMath.zero();
+    return _convertCurrency(BI(usdtBalance, _getBalanceDecimal(quoteCurrency)), CCY_USDT, quoteCurrency);
+  }
+
+  /// @dev Get the total value of a positions collection and their margin balance (ie cash) in quote currency
+  function _getPositionsValueInQuote(
+    PositionsMap storage positions,
+    uint8 subAccountQuote
+  ) internal view returns (BI memory, BI memory) {
+    BI memory totalPositionValue;
+    BI memory totalMarginBalanceValue;
+    bytes32[] storage positionKeys = positions.keys;
+    uint positionsCount = positionKeys.length;
+    if (positionsCount == 0) {
+      return (totalPositionValue, totalMarginBalanceValue);
     }
-    return total;
+
+    mapping(bytes32 => Position) storage values = positions.values;
+    uint64 quoteDecimals = _getBalanceDecimal(subAccountQuote);
+
+    for (uint i; i < positionsCount; ) {
+      Position storage pos = values[positionKeys[i]];
+      bytes32 assetID = pos.id;
+      uint8 posQuote = assetGetQuote(assetID);
+      if (posQuote != subAccountQuote) {
+        revert ErrInvalidQuote();
+      }
+
+      uint8 underlying = assetGetUnderlying(assetID);
+      BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+      BI memory assetPrice = _requireAssetPriceInQuoteBI(assetID);
+      totalPositionValue = totalPositionValue.add(balance.mul(assetPrice));
+
+      // Assumption, position is always properly zeroed out when removed (see PositionMap.sol)
+      // For non isolated position, marginBalance is always 0
+      // We can't change the marginType if the position is still open, see SubAccount.sol#setSubAccountPositionMarginConfig
+      int64 marginBalance = pos.marginBalance;
+      if (marginBalance != 0) {
+        // We don't need to this value using convertCurrency like in StateMachine since it's already in subAccountQuote (see the validation above)
+        totalMarginBalanceValue = totalMarginBalanceValue.add(BI(marginBalance, quoteDecimals));
+      }
+      unchecked { ++i; }
+    }
+    return (totalPositionValue, totalMarginBalanceValue);
+  }
+
+  /// @dev Returns the cross total equity for a sub account in quote currency
+  ///      This is the sum of sub.SpotBalances value and cross position values
+  ///
+  /// @notice This function only supports perpetuals for now
+  function _getTotalEquityCrossInQuote(SubAccount storage sub) internal view returns (BI memory) {
+    // Get spot values
+    BI memory te = _getSpotBalanceValueInCurrencyBI(sub.futuresWalletBalances, sub.quoteCurrency);
+
+    // Get cross positions values
+    PositionsMap storage perps = sub.perps;
+    mapping(bytes32 => PositionMarginConfig) storage posConfigs = sub.positionMarginConfigs;
+    bytes32[] storage perpKeys = perps.keys;
+    uint count = perpKeys.length;
+
+    // Fast path
+    if (count == 0) {
+      return te;
+    }
+
+    mapping(bytes32 => Position) storage perpValues = sub.perps.values;
+    for (uint i; i < count; ) {
+      Position storage pos = perpValues[perpKeys[i]];
+      bytes32 assetID = pos.id;
+      PositionMarginType marginType = posConfigs[assetID].marginType;
+
+      // Assumption: if the position margin type == UNSPECIFIED (ie missing value), it is a cross position.
+      // This is because this positionMarginConfigs mappings was introduced during isolated margin feature.
+      if (marginType == PositionMarginType.UNSPECIFIED || marginType == PositionMarginType.CROSS) {
+        uint8 underlying = assetGetUnderlying(assetID);
+        BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+        BI memory price = _requireAssetPriceInQuoteBI(assetID);
+        te = te.add(balance.mul(price));
+      }
+      unchecked { ++i; }
+    }
+
+    return te;
+  }
+
+  /// @dev Returns the total equity for an isolated margin position in a subaccount
+  ///      Isolated Position Equity = Position Balance + Position Size * Mark Price
+  ///      Risk's definition:https://github.com/gravity-technologies/platform/blob/04be067a577cb288169d5781e4228f10bfc1ae83/backend/lib/statemachine/pkg/state/margin_equity_isolated.go#L9-L44
+  ///
+  /// @notice This function only supports perpetuals for now
+  function _getTotalEquityIsolatedInQuote(SubAccount storage sub, bytes32 assetID) internal view returns (BI memory) {
+    Position storage pos = _getPosition(sub, assetID);
+    if (sub.positionMarginConfigs[assetID].marginType != PositionMarginType.ISOLATED) {
+      revert ErrNotIsolatedMarginPosition();
+    }
+    uint8 underlying = assetGetUnderlying(assetID);
+    uint8 quote = assetGetQuote(assetID);
+    BI memory balance = BI(pos.balance, _getBalanceDecimal(underlying));
+    BI memory price = _requireAssetPriceInQuoteBI(assetID);
+    BI memory te = BI(pos.marginBalance, _getBalanceDecimal(quote));
+    return te.add(balance.mul(price));
+  }
+
+  function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
+  }
+
+  function _featureFlagToConfig(FeatureFlagID v) internal pure returns (bytes32) {
+    return bytes32(uint256(v));
   }
 
   function _uintToConfig(uint256 v) internal pure returns (bytes32) {
@@ -698,7 +889,13 @@ contract BaseContract is AccessControlUpgradeable, ReentrancyGuardUpgradeable {
   }
 
   function _getBoolConfig2D(ConfigID key, bytes32 subKey) internal view returns (bool) {
-    return state.config2DValues[key][subKey].val == TRUE_BYTES32;
+    // Mirror the platform's GetBoolCfg2D (and every other 2D getter here): an unset
+    // per-subKey row falls back to the catchall DEFAULT_CONFIG_ENTRY row.
+    ConfigValue storage c = state.config2DValues[key][subKey];
+    if (!c.isSet) {
+      c = state.config2DValues[key][DEFAULT_CONFIG_ENTRY];
+    }
+    return c.val == TRUE_BYTES32;
   }
 
   function _isNativeChainID(uint256 chainId) internal view returns (bool) {

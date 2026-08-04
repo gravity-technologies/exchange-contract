@@ -1,5 +1,7 @@
 pragma solidity ^0.8.20;
 
+import "./Enum.sol";
+
 // The type of each field in this struct have been extended from the one defined in https://github.com/gravity-technologies/smart-contract-interface/blob/main/state.go#L74C23-L74C23
 // This is to allow better packing of the struct in storage
 struct Position {
@@ -9,6 +11,9 @@ struct Position {
   int64 balance;
   // (expressed in USD with 10 decimal points)
   int64 lastAppliedFundingIndex;
+  // The isolated margin balance of the isolated margin position. 0 for cross margin
+  // The margin type  for the position is stored at subAccount.positionMarginConfigs[assetID].marginType
+  int64 marginBalance;
 }
 
 // Copied and modified from https://solidity-by-example.org/app/iterable-mapping/

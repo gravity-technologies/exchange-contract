@@ -20,8 +20,8 @@ contract AssetHelperTest is Test {
       name: "ETH USDC Perp",
       asset: Asset({
         kind: Kind.UNSPECIFIED,
-        underlying: Currency.UNSPECIFIED,
-        quote: Currency.UNSPECIFIED,
+        underlying: CCY_UNSPECIFIED,
+        quote: CCY_UNSPECIFIED,
         expiration: int64(0),
         strikePrice: uint64(0)
       }),
@@ -34,8 +34,8 @@ contract AssetHelperTest is Test {
       name: "ETH USDC Perp",
       asset: Asset({
         kind: Kind.PERPS,
-        underlying: Currency.ETH,
-        quote: Currency.USDC,
+        underlying: CCY_ETH,
+        quote: CCY_USDC,
         expiration: int64(0),
         strikePrice: uint64(0)
       }),
@@ -48,8 +48,8 @@ contract AssetHelperTest is Test {
       name: "BTC USDT Fut 20Oct23",
       asset: Asset({
         kind: Kind.FUTURES,
-        underlying: Currency.BTC,
-        quote: Currency.USDT,
+        underlying: 5,
+        quote: CCY_USDT,
         expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
@@ -62,8 +62,8 @@ contract AssetHelperTest is Test {
       name: "ETH USDC Call 20Oct23 4123",
       asset: Asset({
         kind: Kind.CALL,
-        underlying: Currency.ETH,
-        quote: Currency.USDC,
+        underlying: CCY_ETH,
+        quote: CCY_USDC,
         expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(4123_000_000)
       }),
@@ -76,8 +76,8 @@ contract AssetHelperTest is Test {
       name: "USDT BTC Put 20Oct23 4123",
       asset: Asset({
         kind: Kind.PUT,
-        quote: Currency.BTC,
-        underlying: Currency.USDT,
+        quote: 5,
+        underlying: CCY_USDT,
         expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(4123_000_000_000)
       }),
@@ -90,8 +90,8 @@ contract AssetHelperTest is Test {
       name: "USDC Spot",
       asset: Asset({
         kind: Kind.SPOT,
-        underlying: Currency.USDC,
-        quote: Currency.UNSPECIFIED,
+        underlying: CCY_USDC,
+        quote: CCY_UNSPECIFIED,
         expiration: int64(0),
         strikePrice: uint64(0)
       }),
@@ -104,8 +104,8 @@ contract AssetHelperTest is Test {
       name: "ETH Sett 20Oct23",
       asset: Asset({
         kind: Kind.SETTLEMENT,
-        underlying: Currency.ETH,
-        quote: Currency.USD,
+        underlying: CCY_ETH,
+        quote: CCY_USD,
         expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
@@ -118,8 +118,8 @@ contract AssetHelperTest is Test {
       name: "ETH Rate 20Oct23",
       asset: Asset({
         kind: Kind.RATE,
-        underlying: Currency.ETH,
-        quote: Currency.USD,
+        underlying: CCY_ETH,
+        quote: CCY_USD,
         expiration: int64(1697801813_000_000_000),
         strikePrice: uint64(0)
       }),
@@ -134,8 +134,16 @@ contract AssetHelperTest is Test {
       bytes32 actualID = bytes32(assetToID(asset));
       assertEq(expectedID, actualID, concat(tc.name, " ids mismatch"));
       assertEq(uint(asset.kind), uint(assetGetKind(actualID)), concat(tc.name, " kind mismatch"));
-      assertEq(uint(asset.underlying), uint(assetGetUnderlying(actualID)), concat(tc.name, " underlying mismatch"));
-      assertEq(uint(asset.quote), uint(assetGetQuote(actualID)), concat(tc.name, " quote mismatch"));
+      assertEq(
+        uint(asset.underlying),
+        uint(assetGetUnderlying(actualID)),
+        concat(tc.name, " underlying mismatch")
+      );
+      assertEq(
+        uint(asset.quote),
+        uint(assetGetQuote(actualID)),
+        concat(tc.name, " quote mismatch")
+      );
       assertEq(asset.expiration, assetGetExpiration(actualID), concat(tc.name, " expiration mismatch"));
       // assertEq(asset.strikePrice, assetGetStrikePrice(actualID), concat(tc.name, " strike price mismatch"));
     }

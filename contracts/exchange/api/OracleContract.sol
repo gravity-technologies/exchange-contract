@@ -24,7 +24,9 @@ contract OracleContract is IOracle, ConfigContract {
   /// Require timestamp and the transactionID to increase
   /// This is in contrast to _setSequence in BaseContract, where the transactionID to be in sequence without any gap
   /// This is because a mark price tick can be skipped if superceded before being used.
+  /// Also enforces queue overdue halt so mark price updates cannot bypass global progress guard.
   function _setSequenceMarkPriceTick(int64 timestamp, uint64 txID) private {
+    _requireNoOverdueWithdrawalRequest(timestamp);
     if (timestamp < state.timestamp) {
       revert InvalidTimestamp();
     }
@@ -67,7 +69,7 @@ contract OracleContract is IOracle, ConfigContract {
       }
 
       // Non-Spot assets must be quoted in USD
-      if (kind != Kind.SPOT && assetGetQuote(assetID) != Currency.USD) {
+      if (kind != Kind.SPOT && assetGetQuote(assetID) != CCY_USD) {
         revert SpotPriceNotUSD();
       }
 
@@ -77,7 +79,11 @@ contract OracleContract is IOracle, ConfigContract {
         revert InvalidExpiry();
       }
 
-      marks[assetID] = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
+      uint64 price = SafeCast.toUint64(SafeCast.toUint256(prices[i].value));
+      if (kind == Kind.SPOT) {
+        price = _applyStablecoinPeg(assetGetUnderlying(assetID), price);
+      }
+      marks[assetID] = price;
     }
   }
 
@@ -110,13 +116,13 @@ contract OracleContract is IOracle, ConfigContract {
     for (uint i; i < len; ++i) {
       bytes32 assetID = prices[i].assetID;
       // Verify
-      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == CCY_USD) {
         revert WrongKindOrQuote();
       }
 
       // Funding rate must be within the configured range
       // IMPT: This is important to prevent large funding rates from coming in, and quickly manipulating the funding index
-      bytes32 subKey = bytes32(uint(assetGetUnderlying(assetID)));
+      bytes32 subKey = bytes32(uint256(assetGetUnderlying(assetID)));
       (int64 fundingHigh, bool highFound) = _getCentibeepConfig2D(ConfigID.FUNDING_RATE_HIGH, subKey);
       if (!highFound) {
         revert FundingHighConfigMissing();
@@ -133,7 +139,7 @@ contract OracleContract is IOracle, ConfigContract {
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
       PriceEntry calldata entry = prices[i];
-      BI memory markPrice = _requireAssetPriceBI(entry.assetID);
+      BI memory markPrice = _requireAssetPriceInQuoteBI(entry.assetID);
       // Funding (10 & 11.1): Computing the new funding index (a way to do lazy funding payments on-demand)
       int64 delta = markPrice.mul(BI(entry.value, CENTIBEEP_DECIMALS)).div(BI(TIME_FACTOR, 0)).toInt64(PRICE_DECIMALS);
       fundings[entry.assetID] += delta;
@@ -167,7 +173,7 @@ contract OracleContract is IOracle, ConfigContract {
       FundingRateEntry calldata entry = entries[i];
       bytes32 assetID = entry.asset;
       // Verify
-      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == Currency.USD) {
+      if (assetGetKind(assetID) != Kind.PERPS || assetGetQuote(assetID) == CCY_USD) {
         revert WrongKindOrQuote();
       }
 
@@ -197,7 +203,7 @@ contract OracleContract is IOracle, ConfigContract {
 
       // Update
       // DO NOT USE MARK PRICE FROM FUNDING TICK, SINCE THAT IS MORE EASY TO MANIPULATE
-      BI memory markPrice = _requireAssetPriceBI(assetID);
+      BI memory markPrice = _requireAssetPriceInQuoteBI(assetID);
 
       // V2: Apply funding rate directly without 480 divisor
       // Rate already represents the full interval amount (1h/2h/4h/8h)
@@ -217,10 +223,6 @@ contract OracleContract is IOracle, ConfigContract {
       revert PriceTickExpired();
     }
 
-    // Prevent replay
-    if (state.replay.executed[hash]) {
-      revert PayloadAlreadyExecuted();
-    }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
   }
@@ -240,5 +242,20 @@ contract OracleContract is IOracle, ConfigContract {
     }
     _requireValidNoExipry(hash, sig);
     state.replay.executed[hash] = true;
+  }
+
+  function _applyStablecoinPeg(uint8 underlying, uint64 rawPrice) internal view returns (uint64) {
+    bytes32 subKey = _currencyToConfig(underlying);
+    (uint64 peg, bool pegSet) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_PRICE, subKey);
+    // peg == 0 (or unset) means pegging is disabled for this currency.
+    if (!pegSet || peg == 0) {
+      return rawPrice;
+    }
+    (uint64 lower, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_LOWER_BOUND, subKey);
+    (uint64 upper, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_UPPER_BOUND, subKey);
+    if (rawPrice >= lower && rawPrice <= upper) {
+      return peg;
+    }
+    return rawPrice;
   }
 }

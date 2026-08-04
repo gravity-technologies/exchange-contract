@@ -1,138 +1,9 @@
 pragma solidity ^0.8.20;
 
+import "./Enum.sol";
 import "./PositionMap.sol";
 import "../util/BIMath.sol";
 import {UpgradeableBeacon} from "@openzeppelin/contracts/proxy/beacon/UpgradeableBeacon.sol";
-
-enum MarginType {
-  UNSPECIFIED,
-  ISOLATED,
-  SIMPLE_CROSS_MARGIN,
-  PORTFOLIO_CROSS_MARGIN
-}
-
-enum TimeInForce {
-  UNSPECIFIED,
-  GOOD_TILL_TIME,
-  ALL_OR_NONE,
-  IMMEDIATE_OR_CANCEL,
-  FILL_OR_KILL,
-  RETAIL_PRICE_IMPROVEMENT
-}
-
-enum Kind {
-  UNSPECIFIED, // 0
-  PERPS, // 1
-  FUTURES, // 2
-  CALL, // 3
-  PUT, // 4
-  SPOT, // 5
-  SETTLEMENT, // 6
-  RATE // 7
-}
-
-enum Currency {
-  UNSPECIFIED, // 0
-  USD, // 1
-  USDC, // 2
-  USDT, // 3
-  ETH, // 4
-  BTC, // 5
-  SOL, // 6
-  ARB, // 7
-  BNB, // 8
-  ZK, // 9
-  POL, // 10
-  OP, // 11
-  ATOM, // 12
-  KPEPE, // 13
-  TON, // 14
-  XRP, // 15
-  XLM, // 16
-  WLD, // 17
-  WIF, // 18
-  VIRTUAL, // 19
-  TRUMP, // 20
-  SUI, // 21
-  KSHIB, // 22
-  POPCAT, // 23
-  PENGU, // 24
-  LINK, // 25
-  KBONK, // 26
-  JUP, // 27
-  FARTCOIN, // 28
-  ENA, // 29
-  DOGE, // 30
-  AIXBT, // 31
-  AI_16_Z, // 32
-  ADA, // 33
-  AAVE, // 34
-  BERA, // 35
-  VINE, // 36
-  PENDLE, // 37
-  UXLINK, // 38
-  KAITO, // 39
-  IP, // 40
-  HYPE, // 41
-  LAUNCHCOIN, // 42
-  MOODENG, // 43
-  UNI, // 44
-  SAHARA, // 45
-  H, // 46
-  PUMP, // 47
-  AVAX, // 48
-  CRV, // 49
-  SEI, // 50
-  LTC, // 51
-  HBAR, // 52
-  ONDO, // 53
-  CFX, // 54
-  PROVE, // 55
-  MNT, // 56
-  WLFI, // 57
-  LINEA, // 58
-  ASTER, // 59
-  AVNT, // 60
-  BARD, // 61
-  DOT, // 62
-  EIGEN, // 63
-  LA, // 64
-  NEAR, // 65
-  W, // 66
-  BCH, // 67
-  XPL, // 68
-  APEX, // 69
-  ZEC, // 70
-  BLESS, // 71
-  COAI, // 72
-  STRK, // 73
-  SPX, // 74
-  LDO, // 75
-  APT, // 76
-  MON, // 77
-  FIL, // 78
-  ICP // 79
-}
-
-function currencyStart() pure returns (Currency) {
-  return Currency.USD;
-}
-
-function currencyNext(Currency iter) pure returns (Currency) {
-  if (iter == type(Currency).max) {
-    return Currency.UNSPECIFIED;
-  }
-  return Currency(uint(iter) + 1);
-}
-
-function currencyIsValid(Currency iter) pure returns (bool) {
-  return iter > type(Currency).min && iter <= type(Currency).max;
-}
-
-// only USDT spot balances is supported
-function currencyCanHoldSpotBalance(Currency currency) pure returns (bool) {
-  return currency == Currency.USDT;
-}
 
 uint constant PRICE_DECIMALS = 9;
 uint constant RATE_DECIMALS = 18;
@@ -146,6 +17,7 @@ uint64 constant AccountPermInternalTransfer = 1 << 2;
 uint64 constant AccountPermExternalTransfer = 1 << 3;
 uint64 constant AccountPermWithdraw = 1 << 4;
 uint64 constant AccountPermVaultInvestor = 1 << 5;
+uint64 constant AccountPermTrade = 1 << 6;
 
 // SubAccountPermissions:
 // Permission is represented as a uint64 value, where each bit represents a permission. The value defined below is a bit mask for each permission
@@ -213,7 +85,7 @@ struct State {
   // The bytecode hash of the deposit proxy
   bytes32 depositProxyProxyBytecodeHash;
   // Total spot balances for all accounts
-  mapping(Currency => int64) totalSpotBalances;
+  mapping(uint8 => int64) totalSpotBalances;
   // Bridging partners
   // Number of bridging partners will be less than 10
   address[] bridgingPartners;
@@ -221,10 +93,46 @@ struct State {
   mapping(uint16 => CurrencyConfig) currencyConfigs;
   // Per instrument funding configs (funding V2)
   mapping(bytes32 => FundingInfo) fundingConfigs;
+  /**
+   * @notice FIFO queue for withdrawals that were accepted on L2 but not yet bridged to L1.
+   *
+   * @dev New withdrawal flow:
+   * - Sync path (unchanged behavior): if queue is empty and current L2 token balance is sufficient,
+   *   withdrawal is bridged to L1 immediately in the same transaction.
+   * - Async path (new behavior): if queue is non-empty OR current L2 token balance is insufficient,
+   *   withdrawal is enqueued for later processing by `processWithdrawalQueue()`.
+   *
+   * Why this exists:
+   * - L2 may intentionally hold only operational liquidity while a large part of exchange TVL
+   *   is moved to an Ethereum L1 DeFi vault contract to generate yield.
+   * - Without queueing, insufficient L2 liquidity would make withdrawals revert and block chain progress.
+   *
+   * Nuances:
+   * - Accounting (user balance debit, socialized loss, fee, and `totalSpotBalances` update) happens at
+   *   withdrawal request time, not at queue-drain time.
+   * - `Withdrawal` event is emitted for both sync and async paths to preserve existing history ingestion.
+   * - Queue processing is strict FIFO: only the head item can be processed next; no reordering/bypass.
+   * - Each queued request stores its enqueue timestamp from sequencer time (`state.timestamp`, nanoseconds),
+   *   not `block.timestamp`.
+   * - The effective deadline is computed dynamically as `enqueuedTimestampNs + WITHDRAWAL_QUEUE_DEADLINE_NANOS`.
+   * - If the head request becomes overdue, sequenced tx processing is halted until liquidity is restored and
+   *   the queue is drained enough to clear overdue state.
+   */
+  WithdrawalQueue pendingWithdrawalQueue;
+  // L1 DeFi vault address for direct bridge operations.
+  // Set once through a dedicated admin method and immutable thereafter.
+  address l1DefiVaultAddress;
+  // L1 native vault gateway address for ETH bridge operations.
+  // Set once through a dedicated admin method and immutable thereafter.
+  address nativeVaultGatewayAddress;
+  // Currencies that have an ERC20 address configured (append-only)
+  uint8[] erc20Currencies;
+  // L1 destination for sweepOverCollateralizedFund. Updatable by DEFAULT_ADMIN_ROLE.
+  address overCollateralizedFundDestination;
   // This empty reserved space is put in place to allow future versions to add new
   // variables without shifting down storage in the inheritance chain.
   // See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-  uint256[47] __gap;
+  uint256[42] __gap;
 }
 
 struct CurrencyConfig {
@@ -239,6 +147,28 @@ struct TmpLegData {
   uint64 limitPrice;
 }
 
+struct PendingWithdrawalRequest {
+  // L1 withdrawal recipient for the queued request.
+  address recipient;
+  // Spot currency to bridge out when processed.
+  uint8 currency;
+  // Net exchange amount to bridge after socialized loss and withdrawal fee.
+  int64 amountToSend;
+  // Enqueue timestamp in nanoseconds using exchange sequencer time (`state.timestamp`).
+  int64 enqueuedTimestampNs;
+}
+
+// Storage-optimized FIFO queue with monotonic indices.
+// items at [head, tail) are valid; head == tail means queue is empty.
+struct WithdrawalQueue {
+  // Queue storage for pending withdrawals
+  mapping(uint64 => PendingWithdrawalRequest) requests;
+  // Queue head index (inclusive)
+  uint64 head;
+  // Queue tail index (exclusive)
+  uint64 tail;
+}
+
 struct Account {
   address id;
   // Number of account admin signers required to make any privileged changes on the account level. Defaults to 1
@@ -249,7 +179,7 @@ struct Account {
   //   - https://ethereum.stackexchange.com/questions/3067/why-does-uint8-cost-more-gas-than-uint256
   uint64 multiSigThreshold;
   uint64 adminCount;
-  mapping(Currency => int64) spotBalances;
+  mapping(uint8 => int64) fundingWalletBalances;
   // All signers tagged to this account can nominate recovery addresses that can be used to replace the wallet that can be used to sign transactions
   mapping(address => address[]) recoveryAddresses;
   // All subaccounts belonging to the account can only withdraw assets to these L1 Wallet addresses
@@ -261,7 +191,32 @@ struct Account {
   uint64[] subAccounts;
   // All users who have Account Admin privileges. They automatically inherit all SubAccountPermissions on subaccount level
   mapping(address => uint64) signers;
-  uint256[49] __gap;
+  // builders this account has explicitly allowed to receive kickback from its trades
+  mapping(address => BuilderFeeConfig) builders;
+  // === Start of Stake related fields ===
+  // Per-account GRVT staking state (one active stake per account; GRVT-only in v1) ──
+  //
+  // Derived lifecycle state (computed from these fields + current time):
+  //   Idle:         stakeLockedAmount == 0
+  //   Locked:       stakeLockedAmount > 0, stakeCooldownEndTime == 0, now <  stakeLockEndTime
+  //   Matured:      stakeLockedAmount > 0, stakeCooldownEndTime == 0, now >= stakeLockEndTime
+  //   CoolingDown:  stakeLockedAmount > 0, stakeCooldownEndTime != 0, now <  stakeCooldownEndTime
+  //   Withdrawable: stakeLockedAmount > 0, stakeCooldownEndTime != 0, now >= stakeCooldownEndTime
+  //
+  // GRVT locked, raw token units (matches fundingWalletBalances scaling). 0 = Idle.
+  int64 stakeLockedAmount;
+  // Unix nanoseconds. 0 when Idle.
+  int64 stakeLockEndTime;
+  // Unix nanoseconds. 0 unless CoolingDown / Withdrawable.
+  int64 stakeCooldownEndTime;
+  // === End of Stake related fields ===
+  uint256[47] __gap;
+}
+
+struct BuilderFeeConfig {
+  uint32 maxFutureFeeRate;
+  uint32 maxSpotFeeRate;
+  uint256[50] __gap;
 }
 
 struct SubAccount {
@@ -276,13 +231,13 @@ struct SubAccount {
   address accountID;
   MarginType marginType;
   // The Quote Currency that this Sub Account is denominated in
-  Currency quoteCurrency;
+  uint8 quoteCurrency;
   // Mapping from the uint256 representation to derivate position
   PositionsMap options;
   PositionsMap futures;
   PositionsMap perps;
-  // The total amount of base currency that the sub account possesses
-  mapping(Currency => int64) spotBalances;
+  // The total amount of currency that the sub account possesses in the futures wallet
+  mapping(uint8 => int64) futuresWalletBalances;
   mapping(bytes => uint256) positionIndex;
   // Signers who are authorized to trade on this sub account
   mapping(address => uint64) signers;
@@ -293,7 +248,18 @@ struct SubAccount {
   int64 lastDeriskTimestamp;
   bool isVault;
   VaultInfo vaultInfo;
-  uint256[49] __gap;
+  // Store the position specific margin config
+  mapping(bytes32 => PositionMarginConfig) positionMarginConfigs;
+  // The total amount of currency that the sub account possesses in the spot wallet
+  mapping(uint8 => int64) spotWalletBalances;
+  SubAccountMode subAccountMode;
+  uint256[46] __gap;
+}
+
+struct PositionMarginConfig {
+  PositionMarginType marginType;
+  int32 leverage;
+  uint256[50] __gap;
 }
 
 struct VaultInfo {
@@ -429,7 +395,37 @@ enum ConfigID {
   BRIDGING_PARTNER_ADDRESSES, // 17, no timelock on add, has timelock on remove
   // Feature flags
   FEATURE_FLAGS, // 18, no timelock
-  EIP712_CHAIN_ID // 19, no timelock
+  EIP712_CHAIN_ID, // 19, no timelock
+  // ConfigID integers MUST match the platform capnp field numbers EXACTLY. The encoder
+  // passes uint8(payload.Key()) straight through (no translation), so these ordinals are
+  // consensus-critical. Append only; never reorder existing entries.
+  // Spot trading fee configs
+  SPOT_TAKER_FEE_MINIMUM, // 20
+  SPOT_MAKER_FEE_MINIMUM, // 21
+  // Repayment fee configs
+  REPAYMENT_FLOOR_RATIO, // 22
+  LIQUIDATION_REPAYMENT_DIVISOR, // 23
+  AUTOMATED_REPAYMENT_DIVISOR, // 24
+  MANUAL_REPAYMENT_DIVISOR, // 25
+  // Spot asset configs
+  SPOT_ASSET_CVR, // 26
+  SPOT_ASSET_CDR, // 27
+  SPOT_ASSET_MBA, // 28
+  DEFAULT_DISABLED_CURRENCIES, // 29
+  SPOT_ASSET_CDC, // 30
+  // Accounts exempted from withdrawal fee. BOOL2D keyed by account address.
+  WITHDRAWAL_FEE_EXEMPT_ACCOUNTS, // 31, no timelock
+  // 32-24 Stablecoin (e.g. USDT/USD) pegging. UINT2D keyed by currency id, value in PriceDecimals (9 dp).
+  STABLE_COIN_PEG_LOWER_BOUND, // 32
+  STABLE_COIN_PEG_UPPER_BOUND, // 33
+  STABLE_COIN_PEG_PRICE, // 34, 0 = pegging disabled for the currency
+  // Currencies for which external main-account -> main-account transfers are blocked.
+  // BOOL2D keyed by currency id (e.g. GRVT). true = transferMainToMain rejected for that currency.
+  BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES, // 35, no timelock
+  // Source main accounts exempt from BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES. BOOL2D keyed by
+  // funding account address. true = the account's transferMainToMain is allowed even for a
+  // blocked currency. Applies to the source account only, independent of the destination.
+  BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS // 36, no timelock
 }
 
 struct ConfigValue {
@@ -451,7 +447,13 @@ struct ConfigSetting {
 enum FeatureFlagID {
   UNSPECIFIED,
   VAULT_LP_SHARE_PRICE_9_DECIMALS,
-  EXTEND_MAX_SESSION_DURATION_TO_150_DAYS
+  EXTEND_MAX_SESSION_DURATION_TO_150_DAYS,
+  MAIN_ACCOUNT_TRADE_PERMISSION,
+  FIX_ISOLATED_REDUCTION_RATE_SCALE,
+  SKIP_POST_TRADE_MARGIN_CHECK,
+  ALLOW_ISOLATED_MARGIN_IN_MAM,
+  TRADE_PERMISSION_CAN_DO_INTERNAL_TRANSFER,
+  BYPASS_SIMPLE_CROSS_MAINTENANCE_MARGIN_TIMELOCK
 }
 
 struct MarginTier {
@@ -485,6 +487,7 @@ struct Trade {
   Order takerOrder;
   MakerTradeMatch[] makerOrders;
   int64[] feeCharged;
+  int64[] builderFees;
 }
 
 struct Order {
@@ -522,6 +525,8 @@ struct Order {
   bool isLiquidation;
   // If the order is a derisk order (to reduce subaccount's leverage and risk of liquidation)
   bool isDerisk;
+  address builder;
+  uint32 builderFee;
 }
 
 struct OrderLeg {
@@ -540,6 +545,7 @@ struct MakerTradeMatch {
   Order makerOrder;
   uint64[] matchedSize;
   int64[] feeCharged;
+  int64[] builderFees;
 }
 
 struct PriceEntry {

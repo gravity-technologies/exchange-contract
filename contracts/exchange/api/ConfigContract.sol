@@ -6,7 +6,7 @@ import "./signature/generated/ConfigSig.sol";
 import {ConfigID, FeatureFlagID, ConfigTimelockRule as Rule} from "../types/DataStructure.sol";
 
 import {L2ContractHelper} from "../../../lib/era-contracts/l2-contracts/contracts/L2ContractHelper.sol";
-import "../interfaces/IConfig.sol";
+// IConfig implemented in ConfigFacet to avoid exposing config selectors from the base
 
 struct ConfigProofMessage {
   uint256 blockTimestamp;
@@ -56,7 +56,7 @@ struct ConfigProofMessage {
 ///    the new value by calling `setConfig`
 ///
 ///////////////////////////////////////////////////////////////////
-contract ConfigContract is IConfig, BaseContract {
+abstract contract ConfigContract is BaseContract {
   using BIMath for BI;
 
   // --------------- Constants ---------------
@@ -64,9 +64,11 @@ contract ConfigContract is IConfig, BaseContract {
   int32 private constant ONE_BEEP = 100;
   int32 private constant ONE_PERCENT = 10000;
   uint64 private constant ONE_HUNDRED_PERCENT = 1000000;
-  // The default fallback value which is a zero value array
-  bytes32 internal constant DEFAULT_CONFIG_ENTRY = bytes32(uint256(0));
   uint64 internal constant ONE_WEEK_NANOS = 7 * 24 * 60 * 60 * 1e9;
+
+  // Sanity bounds for any active stablecoin peg/bound value, expressed in PriceDecimals (9 dp).
+  uint64 internal constant STABLE_COIN_PEG_SANITY_MIN = 900_000_000; // 0.9
+  uint64 internal constant STABLE_COIN_PEG_SANITY_MAX = 1_100_000_000; // 1.1
 
   event ConfigUpdateMessageSent(uint256 configVersion, bytes4 selector, bytes data);
 
@@ -170,11 +172,7 @@ contract ConfigContract is IConfig, BaseContract {
     return state.config1DValues[key].val == TRUE_BYTES32;
   }
 
-  function _currencyToConfig(Currency v) internal pure returns (bytes32) {
-    return bytes32(uint256(v));
-  }
-
-  function _featureFlagToConfig(FeatureFlagID v) internal pure returns (bytes32) {
+  function _currencyToConfig(uint8 v) internal pure returns (bytes32) {
     return bytes32(uint256(v));
   }
 
@@ -222,6 +220,22 @@ contract ConfigContract is IConfig, BaseContract {
     return _getBoolConfig2D(ConfigID.BRIDGING_PARTNER_ADDRESSES, _addressToConfig(account));
   }
 
+  function _isWithdrawalFeeExempt(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.WITHDRAWAL_FEE_EXEMPT_ACCOUNTS, _addressToConfig(account));
+  }
+
+  /// @dev Whether external main-account -> main-account transfers are blocked for a currency.
+  /// Shared by the transferMainToMain guard and the GetterFacet getter.
+  function _isBlockTransferMainToMainCurrency(uint8 currency) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES, _currencyToConfig(currency));
+  }
+
+  /// @dev Whether a source main account is exempt from the main-to-main currency block.
+  /// Shared by the transferMainToMain guard and the GetterFacet getter.
+  function _isBlockTransferMainToMainExempt(address account) internal view returns (bool) {
+    return _getBoolConfig2D(ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS, _addressToConfig(account));
+  }
+
   function _isInternalAccount(address account) internal view returns (bool) {
     (SubAccount storage insuranceFund, bool isInsuranceFundSet) = _getInsuranceFundSubAccount();
     if (isInsuranceFundSet && insuranceFund.accountID == account) {
@@ -236,49 +250,6 @@ contract ConfigContract is IConfig, BaseContract {
     return false;
   }
 
-  ///////////////////////////////////////////////////////////////////
-  /// Config APIs
-  ///////////////////////////////////////////////////////////////////
-
-  /**
-   * @dev Sends a message to L1 containing the latest config version.
-   * This function is used to prove that no config updates have occurred
-   * since the config operation with the version sent to L1.
-   * Note that the timestamp used is the block timestamp at the time of the call
-   * as opposed to cluster timestamp in other config update operations.
-   * This is sufficient to prove that no config updates have occurred before a certain
-   * L2 block timestamp.
-   */
-  function proveConfig() external {
-    _sendConfigProofMessageToL1("");
-  }
-
-  function initializeConfig(
-    int64 timestamp,
-    uint64 txID,
-    InitializeConfigItem[] calldata items,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequenceInitializeConfig(timestamp, txID);
-
-    // ---------- Signature Verification -----------
-    require(sig.signer == state.initializeConfigSigner, "not initializeConfig signer");
-    _preventReplay(hashInitializeConfig(items, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    for (uint256 i = 0; i < items.length; i++) {
-      ConfigID key = items[i].key;
-      bytes32 subKey = items[i].subKey;
-      bytes32 value = items[i].value;
-
-      ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-      _setConfigValue(key, subKey, value, setting);
-    }
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, items));
-  }
-
   function _setConfigValue(ConfigID key, bytes32 subKey, bytes32 value, ConfigSetting storage settings) internal {
     if (key == ConfigID.BRIDGING_PARTNER_ADDRESSES) {
       address partnerAddress = _configToAddress(subKey);
@@ -290,11 +261,34 @@ contract ConfigContract is IConfig, BaseContract {
       }
     } else if (key == ConfigID.INSURANCE_FUND_SUB_ACCOUNT_ID || key == ConfigID.ADMIN_FEE_SUB_ACCOUNT_ID) {
       _validateInternalSubAccountChange(_configToUint(value));
+    } else if (key == ConfigID.ERC20_ADDRESSES) {
+      _addErc20Currency(uint8(uint(subKey)));
+    } else if (
+      key == ConfigID.STABLE_COIN_PEG_PRICE ||
+      key == ConfigID.STABLE_COIN_PEG_LOWER_BOUND ||
+      key == ConfigID.STABLE_COIN_PEG_UPPER_BOUND
+    ) {
+      _validateStablecoinPeg(key, subKey, value);
     }
 
     ConfigValue storage config = _is2DConfig(settings) ? state.config2DValues[key][subKey] : state.config1DValues[key];
     config.isSet = true;
     config.val = value;
+  }
+
+  function _addErc20Currency(uint8 currency) internal {
+    // Base spot currencies are always included; don't store them
+    if (currency == CCY_USDT || currency == CCY_USDC || currency == CCY_ETH) return;
+    // After deletion of the closed Currency enum, the runtime-registry check is the only
+    // way to reject junk subKeys. The currency must have been registered via addCurrency
+    // before its ERC20 address can be configured.
+    require(_currencyIsRegistered(currency), "currency not registered");
+    // Skip if already tracked (e.g. re-setting the same ERC20 address)
+    uint8[] storage stored = state.erc20Currencies;
+    for (uint i; i < stored.length; ++i) {
+      if (stored[i] == currency) return;
+    }
+    stored.push(currency);
   }
 
   function _validateBridgingPartnerChange(address partnerAddress) internal view {
@@ -319,9 +313,44 @@ contract ConfigContract is IConfig, BaseContract {
 
     Account storage account = _requireAccount(newSubAcc.accountID);
     require(
-      _getTotalAccountValueUSDT(account).toInt64(_getBalanceDecimal(Currency.USDT)) == 0,
+      _getFundingAccountEquityInUSDT(account).toInt64(_getBalanceDecimal(CCY_USDT)) == 0,
       "new internal acc must have 0 value"
     );
+  }
+
+  /// Rules (for a given currency `subKey`):
+  ///   - pegPrice == 0 disables pegging for the currency and is always accepted (instant rollback).
+  ///   - Any active peg/bound value must lie within the parity sanity range (catches scale errors).
+  ///   - While pegging is active (resulting pegPrice > 0), the ordering invariant must hold:
+  ///       0 < lowerBound <= pegPrice <= upperBound
+  function _validateStablecoinPeg(ConfigID key, bytes32 subKey, bytes32 value) internal view {
+    uint64 newVal = _configToUint(value);
+
+    // pegPrice == 0 disables pegging for this currency; bounds are left intact for re-activation.
+    if (key == ConfigID.STABLE_COIN_PEG_PRICE && newVal == 0) {
+      return;
+    }
+
+    require(
+      newVal >= STABLE_COIN_PEG_SANITY_MIN && newVal <= STABLE_COIN_PEG_SANITY_MAX,
+      "stablecoin peg out of sanity range"
+    );
+
+    (uint64 peg, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_PRICE, subKey);
+    (uint64 lower, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_LOWER_BOUND, subKey);
+    (uint64 upper, ) = _getUintConfig2D(ConfigID.STABLE_COIN_PEG_UPPER_BOUND, subKey);
+    if (key == ConfigID.STABLE_COIN_PEG_PRICE) {
+      peg = newVal;
+    } else if (key == ConfigID.STABLE_COIN_PEG_LOWER_BOUND) {
+      lower = newVal;
+    } else {
+      upper = newVal;
+    }
+
+    // The ordering invariant only needs to hold while pegging is active for the currency.
+    if (peg > 0) {
+      require(lower > 0 && lower <= peg && peg <= upper, "stablecoin peg invariant violated");
+    }
   }
 
   function _initializeNewConfigSettingIfNeeded() internal {
@@ -337,6 +366,125 @@ contract ConfigContract is IConfig, BaseContract {
     }
 
     setting = state.configSettings[ConfigID.EIP712_CHAIN_ID];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.WITHDRAWAL_FEE_EXEMPT_ACCOUNTS];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    ConfigID[3] memory pegConfigs = [
+      ConfigID.STABLE_COIN_PEG_LOWER_BOUND,
+      ConfigID.STABLE_COIN_PEG_UPPER_BOUND,
+      ConfigID.STABLE_COIN_PEG_PRICE
+    ];
+    for (uint256 i; i < pegConfigs.length; ++i) {
+      setting = state.configSettings[pegConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT2D;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    // MAM configs (TRADE-1127). Risk owns all value validation (bounds + cross-checks);
+    // the chain stores only. @27 CDR is deprecated platform-side but still routed/validated,
+    // so its slot must be registered.
+    ConfigID[2] memory mamCentibeep2DConfigs = [ConfigID.SPOT_ASSET_CVR, ConfigID.SPOT_ASSET_MBA];
+    for (uint256 i; i < mamCentibeep2DConfigs.length; ++i) {
+      setting = state.configSettings[mamCentibeep2DConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.CENTIBEEP2D;
+        Rule[] storage rules = setting.rules;
+        // This config does not have timelock as it is controlled by GRVT
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    ConfigID[2] memory mamUint2DConfigs = [ConfigID.SPOT_ASSET_CDR, ConfigID.SPOT_ASSET_CDC];
+    for (uint256 i; i < mamUint2DConfigs.length; ++i) {
+      setting = state.configSettings[mamUint2DConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT2D;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    ConfigID[3] memory repaymentDivisorConfigs = [
+      ConfigID.LIQUIDATION_REPAYMENT_DIVISOR,
+      ConfigID.AUTOMATED_REPAYMENT_DIVISOR,
+      ConfigID.MANUAL_REPAYMENT_DIVISOR
+    ];
+    for (uint256 i; i < repaymentDivisorConfigs.length; ++i) {
+      setting = state.configSettings[repaymentDivisorConfigs[i]];
+      if (setting.typ == ConfigType.UNSPECIFIED) {
+        setting.typ = ConfigType.UINT;
+        Rule[] storage rules = setting.rules;
+        ConfigTimelockRule storage rule = rules.push();
+        rule.lockDuration = 0;
+        rule.deltaPositive = 0;
+        rule.deltaNegative = 0;
+      }
+    }
+
+    setting = state.configSettings[ConfigID.REPAYMENT_FLOOR_RATIO];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.CENTIBEEP;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.DEFAULT_DISABLED_CURRENCIES];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES];
+    if (setting.typ == ConfigType.UNSPECIFIED) {
+      setting.typ = ConfigType.BOOL2D;
+      Rule[] storage rules = setting.rules;
+      // This config does not have timelock as it is controlled by GRVT
+      ConfigTimelockRule storage rule = rules.push();
+      rule.lockDuration = 0;
+      rule.deltaPositive = 0;
+      rule.deltaNegative = 0;
+    }
+
+    setting = state.configSettings[ConfigID.BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS];
     if (setting.typ == ConfigType.UNSPECIFIED) {
       setting.typ = ConfigType.BOOL2D;
       Rule[] storage rules = setting.rules;
@@ -364,90 +512,9 @@ contract ConfigContract is IConfig, BaseContract {
     return uint256(settings.typ) % 2 == 0;
   }
 
-  /// @notice Schedule a config update. Afterwards, the timestamp at
-  /// which the config is enforce is updated. This must be followed by a call
-  /// to `setConfig` at some point in the future to actually make the config changes.
-  ///
-  /// @param timestamp the new system timestamp
-  /// @param txID the new system txID
-  /// @param key the config key
-  /// @param subKey the config subKey, 0x0 for 1D config
-  /// @param value the config value in bytes32
-  /// @param sig the signature of the transaction
-  function scheduleConfig(
-    int64 timestamp,
-    uint64 txID,
-    ConfigID key,
-    bytes32 subKey,
-    bytes32 value,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequence(timestamp, txID);
-
-    // ---------- Signature Verification -----------
-    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
-
-    _preventReplay(hashScheduleConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-    ConfigSchedule storage sched = setting.schedules[subKey];
-    sched.lockEndTime = timestamp + _getLockDuration(key, subKey, value);
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
-  }
-
-  /// @notice Update a specific config. Performs check to ensure that the value
-  /// is within the permissible range.
-  ///
-  /// @param timestamp the new system timestamp
-  /// @param txID the new system txID
-  /// @param key the config key
-  /// @param subKey the config sub key, for 1D config it must be 0
-  /// @param value the config value in bytes32
-  /// @param sig the signature of the transaction
-  function setConfig(
-    int64 timestamp,
-    uint64 txID,
-    ConfigID key,
-    bytes32 subKey,
-    bytes32 value,
-    Signature calldata sig
-  ) external onlyTxOriginRole(CHAIN_SUBMITTER_ROLE) {
-    _setSequence(timestamp, txID);
-
-    require(_getBoolConfig2D(ConfigID.CONFIG_ADDRESS, _addressToConfig(sig.signer)), "not config address");
-
-    // ---------- Signature Verification -----------
-    _preventReplay(hashSetConfig(key, subKey, value, sig.nonce, sig.expiration), sig);
-    // ------- End of Signature Verification -------
-
-    _initializeNewConfigSettingIfNeeded();
-    ConfigSetting storage setting = _requireValidConfigSetting(key, subKey);
-
-    int64 lockDuration = _getLockDuration(key, subKey, value);
-    if (lockDuration > 0) {
-      int64 lockEndTime = setting.schedules[subKey].lockEndTime;
-      require(lockEndTime > 0 && lockEndTime <= timestamp, "not scheduled or still locked");
-    }
-
-    _setConfigValue(key, subKey, value, setting);
-
-    // Must delete the schedule after the config is set (to prevent replays)
-    delete setting.schedules[subKey];
-
-    state.configVersion++;
-    _sendConfigProofMessageToL1(abi.encode(timestamp, key, subKey, value));
-  }
-
-  function _isFeatureFlagEnabled(FeatureFlagID flag) internal view returns (bool) {
-    return _getBoolConfig2D(ConfigID.FEATURE_FLAGS, _featureFlagToConfig(flag));
-  }
-
   /// @dev Find the timelock duration in nanoseconds that corresponds to the change in value
   /// Expect the timelocks duration should be in increasing order of delta change and timelock duration
-  function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) private view returns (int64) {
+  function _getLockDuration(ConfigID key, bytes32 subKey, bytes32 newVal) internal view returns (int64) {
     ConfigType typ = state.configSettings[key].typ;
     require(typ != ConfigType.UNSPECIFIED, "404");
 
@@ -496,13 +563,17 @@ contract ConfigContract is IConfig, BaseContract {
     // These 4 config types are not numerical and have a fixed lock duration
     // There should be only 1 timelock rule for these config types
     if (typ == ConfigType.ADDRESS) {
-      (address oldVal, bool isSet) = _getAddressConfig(key);
+      (, bool isSet) = _getAddressConfig(key);
       if (isSet) return rules[0].lockDuration;
       return 0;
     }
     if (typ == ConfigType.ADDRESS2D) {
-      (, bool isSet) = _getAddressConfig2D(key, subKey);
-      if (isSet) return rules[0].lockDuration;
+      (address currentAddr, bool isSet) = _getAddressConfig2D(key, subKey);
+      if (isSet) {
+        // Allow setConfig calls that don't change the value
+        if (_configToAddress(newVal) == currentAddr) return 0;
+        return rules[0].lockDuration;
+      }
       return 0;
     }
     if (typ == ConfigType.BOOL) {

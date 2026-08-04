@@ -63,6 +63,12 @@ export const KindToEnum: { [kind: string]: number } = {
   RATE: 7,
 }
 
+export const PositionMarginTypeToEnum: { [type: string]: number } = {
+  UNSPECIFIED: 0,
+  ISOLATED: 1,
+  CROSS: 2,
+}
+
 export const ConfigIDToEnum: { [config: string]: number } = {
   UNSPECIFIED: 0,
   DEPRECATED_1: 1,
@@ -84,7 +90,32 @@ export const ConfigIDToEnum: { [config: string]: number } = {
   BRIDGING_PARTNER_ADDRESSES: 17,
   FEATURE_FLAGS: 18,
   EIP_712_CHAIN_ID: 19,
+  SPOT_TAKER_FEE_MINIMUM: 20,
+  SPOT_MAKER_FEE_MINIMUM: 21,
+  REPAYMENT_FLOOR_RATIO: 22,
+  LIQUIDATION_REPAYMENT_DIVISOR: 23,
+  AUTOMATED_REPAYMENT_DIVISOR: 24,
+  MANUAL_REPAYMENT_DIVISOR: 25,
+  SPOT_ASSET_CVR: 26,
+  SPOT_ASSET_CDR: 27,
+  SPOT_ASSET_MBA: 28,
+  DEFAULT_DISABLED_CURRENCIES: 29,
+  SPOT_ASSET_CDC: 30,
+  WITHDRAWAL_FEE_EXEMPT_ACCOUNTS: 31,
+  STABLE_COIN_PEG_LOWER_BOUND: 32,
+  STABLE_COIN_PEG_UPPER_BOUND: 33,
+  STABLE_COIN_PEG_PRICE: 34,
+  BLOCK_TRANSFER_MAIN_TO_MAIN_CURRENCIES: 35,
+  BLOCK_TRANSFER_MAIN_TO_MAIN_EXEMPT_ACCOUNTS: 36,
 };
+
+// Mirrors the contract's SubAccountMode enum (types/Enum.sol) ordinals.
+export const SubAccountModeToEnum: { [mode: string]: number } = {
+  UNSPECIFIED: 0,
+  SINGLE_ASSET_MODE: 1,
+  MULTI_ASSET_MODE: 2,
+  UNIFIED_MODE: 3,
+}
 
 export const VaultStatusToEnum: { [status: string]: number } = {
   UNSPECIFIED: 0,

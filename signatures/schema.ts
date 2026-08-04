@@ -26,6 +26,7 @@ export const PrimaryType = keyMirror({
   // Account
   CreateAccount: 0,
   AddAccountSigner: 0,
+  AddAccountSignerWithBuilder: 0,
   RemoveAccountSigner: 0,
   AddTransferAccount: 0,
   RemoveTransferAccount: 0,
@@ -105,6 +106,24 @@ export const AddAccountSigner = {
       { name: "accountID", type: "address" },
       { name: "signer", type: "address" },
       { name: "permissions", type: "uint64" },
+      { name: "nonce", type: "uint32" },
+      { name: "expiration", type: "int64" },
+    ],
+  },
+}
+
+export const AddAccountSignerWithBuilder = {
+  primaryType: PrimaryType.AddAccountSignerWithBuilder,
+  domain,
+  types: {
+    EIP712Domain,
+    [PrimaryType.AddAccountSignerWithBuilder]: [
+      { name: "accountID", type: "address" },
+      { name: "signer", type: "address" },
+      { name: "permissions", type: "string" },
+      { name: "builderAccountID", type: "address" },
+      { name: "maxFutureFeeRate", type: "uint32" },
+      { name: "maxSpotFeeRate", type: "uint32" },
       { name: "nonce", type: "uint32" },
       { name: "expiration", type: "int64" },
     ],

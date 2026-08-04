@@ -5,6 +5,7 @@ import { expectToThrowAsync } from "../util"
 import { validateExpectations } from "./expect"
 import { TestCase, TestStep } from "./types"
 import { isDeposit, mockFinalizeDeposit } from "./deposit"
+import { isAddCurrency, registerAddedCurrency } from "./addCurrency"
 import * as testInfo from "./test-info.json"
 
 const GAS_LIMIT = 2100000000
@@ -16,6 +17,10 @@ export async function runTestCase(
   w1: Wallet,
   l2SharedBridgeAsL1Bridge: L2SharedBridge
 ) {
+  if (DEBUG) {
+    console.log("🟢 Test case", test.name)
+  }
+
   for (const step of test.steps ?? []) {
     if (DEBUG) {
       console.log(`Executing step ${step.tx_id} of ${step.tx?.type}`)
@@ -61,9 +66,12 @@ async function executeTestStep(
     } else {
       await resp.wait()
       await validateExpectations(exchangeContract, step.expectations)
+      if (isAddCurrency(step)) {
+        await registerAddedCurrency(step)
+      }
     }
   } catch (e) {
-    console.error("Error sending transaction. Check the input payload:", e)
+    console.log("🔴 Failed step", step.tx_id, step.tx?.type)
     throw e
   }
 

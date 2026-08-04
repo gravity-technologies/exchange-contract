@@ -10,7 +10,7 @@ bytes32 constant _CREATE_ACCOUNT_WITH_SUBACCOUNT_H = keccak256(
 function hashCreateAccountWithSubAccount(
   address accountID,
   uint64 subAccountID,
-  Currency quoteCurrency,
+  uint8 quoteCurrency,
   MarginType marginType,
   uint32 nonce,
   int64 expiration
@@ -21,7 +21,7 @@ function hashCreateAccountWithSubAccount(
         _CREATE_ACCOUNT_WITH_SUBACCOUNT_H,
         accountID,
         subAccountID,
-        uint8(quoteCurrency),
+        quoteCurrency,
         uint8(marginType),
         nonce,
         expiration

@@ -3,7 +3,13 @@ import { ethers, Wallet as L1Wallet, providers as l1Providers } from "ethers"
 import { Deployer } from "@matterlabs/hardhat-zksync-deploy"
 import { Wallet as L2Wallet, Provider as L2Provider } from "zksync-ethers"
 
-import { ADDRESS_ONE, create2DeployFromL1NoFactoryDeps, computeL2Create2Address, createProviders, approveL1SharedBridgeIfNeeded } from "./utils"
+import {
+  ADDRESS_ONE,
+  create2DeployFromL1NoFactoryDeps,
+  computeL2Create2Address,
+  createProviders,
+  approveL1SharedBridgeIfNeeded,
+} from "./utils"
 import { task } from "hardhat/config"
 import { applyL1ToL2Alias, hashBytecode } from "zksync-web3/build/src/utils"
 import { Interface } from "ethers/lib/utils"
@@ -56,19 +62,18 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     const beaconCodehash = hashBytecode(beaconArtifact.bytecode)
 
     const beaconProxyArtifact = await l2Deployer.loadArtifact("BeaconProxy")
-    await l2Deployer.deploy(beaconProxyArtifact, [
-      beaconInstance.address,
-      "0x",
-    ])
+    await l2Deployer.deploy(beaconProxyArtifact, [beaconInstance.address, "0x"])
     const beaconProxyCodehash = hashBytecode(beaconProxyArtifact.bytecode)
 
-    const exchangeInitializeData = new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [admin, chainSubmitter, initializeConfigSigner, depositProxyBeaconOwner, beaconProxyCodehash])
-    const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
-    await l2Deployer.deploy(tupArtifact, [
-      exchangeImpl.address,
-      ADDRESS_ONE,
-      exchangeInitializeData,
+    const exchangeInitializeData = new Interface(exchangeArtifact.abi).encodeFunctionData("initialize", [
+      admin,
+      chainSubmitter,
+      initializeConfigSigner,
+      depositProxyBeaconOwner,
+      beaconProxyCodehash,
     ])
+    const tupArtifact = await l2Deployer.loadArtifact("TransparentUpgradeableProxy")
+    await l2Deployer.deploy(tupArtifact, [exchangeImpl.address, ADDRESS_ONE, exchangeInitializeData])
     const tupCodehash = hashBytecode(tupArtifact.bytecode)
 
     const exchangeImplConstructorData = ethers.utils.arrayify("0x")
@@ -82,11 +87,7 @@ task("deploy-exchange-on-l2-through-l1", "Deploy exchange on L2 through L1")
     const exchangeProxyConstructorData = ethers.utils.arrayify(
       new ethers.utils.AbiCoder().encode(
         ["address", "address", "bytes"],
-        [
-          expectedExchangeImplAddress,
-          applyL1ToL2Alias(governance),
-          exchangeInitializeData,
-        ]
+        [expectedExchangeImplAddress, applyL1ToL2Alias(governance), exchangeInitializeData]
       )
     )
 
