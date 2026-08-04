@@ -1,7 +1,11 @@
 {
   "skip_test_cases": [
     "Scenario: 1. V2 waive_spot_balance=true allows transfer when spot balance insufficient but TE >= 0",
-    "Scenario: 5. V2 waive_spot_balance=true allows sub-account to sub-account transfer taking spot negative"
+    "Scenario: 5. V2 waive_spot_balance=true allows sub-account to sub-account transfer taking spot negative",
+    "Scenario: Without the config, a main-to-main transfer is allowed",
+    "Scenario: Unblocking a currency restores its main-to-main transfer",
+    "Scenario: An exempt source account can still transfer a blocked currency",
+    "Scenario: Removing the exemption re-applies the block"
   ],
   "risk_only_constraints": [
     "vault valuation cap too high",

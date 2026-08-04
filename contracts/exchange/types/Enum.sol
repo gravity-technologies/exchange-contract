@@ -64,3 +64,4 @@ uint8 constant CCY_USD = 1;
 uint8 constant CCY_USDC = 2;
 uint8 constant CCY_USDT = 3;
 uint8 constant CCY_ETH = 4;
+uint8 constant CCY_GRVT = 147;

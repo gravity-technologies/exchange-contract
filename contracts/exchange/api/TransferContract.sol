@@ -1,5 +1,6 @@
 pragma solidity ^0.8.20;
 
+import "./AirdropWhitelist.sol";
 import "./ConfigContract.sol";
 import "./FundingAndSettlement.sol";
 import "./RiskCheck.sol";
@@ -572,17 +573,13 @@ abstract contract TransferContract is ITransfer, ConfigContract, FundingAndSettl
       !_isBlockTransferMainToMainCurrency(currency) || _isBlockTransferMainToMainExempt(fromAccID),
       "currency blocked for main to main transfer"
     );
-    // Hardcoded restriction, effective only on chain 325: external main-account -> main-account
-    // transfers are limited to USDC/USDT/ETH, unless the source account is the exempt address.
-    if (block.chainid == 325) {
-      require(
-        currency == CCY_USDC ||
-          currency == CCY_USDT ||
-          currency == CCY_ETH ||
-          fromAccID == 0x36Fc723E6F3a8A9a916F8E9D08863365cD7c7e82,
-        "currency not allowed for main to main transfer"
-      );
-    }
+    // Hardcoded restriction on all networks: external main-account -> main-account transfers are
+    // limited to USDC and USDT. GRVT token airdrops are separately whitelisted via
+    // isAirdropWhitelisted (see AirdropWhitelist.sol). ETH is not permitted.
+    require(
+      currency == CCY_USDC || currency == CCY_USDT || isAirdropWhitelisted(currency, fromAccID),
+      "transfer blocked"
+    );
     Account storage fromAcc = _requireAccount(fromAccID);
     _requireAccountPermission(fromAcc, sig.signer, AccountPermExternalTransfer);
     require(
